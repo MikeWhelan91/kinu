@@ -142,6 +142,11 @@ func _ready() -> void:
 	run._begin_gesture(above_strip)
 	check(run.gesture=="aim","classic: dragging anywhere above the strip aims")
 	run.gesture = ""
+	var strip_rect := run.spin_strip_rect()
+	check(strip_rect.end.y <= get_viewport().get_visible_rect().size.y-run.bottom_inset,"spin strip stays clear of the bottom safe area")
+	run._begin_gesture(Vector2(270, strip_rect.end.y+4))
+	check(run.gesture=="","classic: touches below the strip box don't spin")
+	run.gesture = ""
 	Save.data.controls = "grab"
 	# Swiping anywhere away from Kinu spins, and never drops.
 	var bottom := Vector2(40,900)

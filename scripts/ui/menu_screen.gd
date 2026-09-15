@@ -81,7 +81,7 @@ static func results(app: Node, stats: Dictionary) -> void:
 	chips.add_theme_constant_override("separation",10)
 	column.add_child(chips)
 	chips.add_child(NestTheme.pill("%d Kinu stacked"%int(stats.get("placed",0)),18))
-	chips.add_child(NestTheme.bean_pill("+%d"%earned,18))
+	chips.add_child(NestTheme.bean_pill("+%d beans"%earned,18))
 	var buttons = app._vbox(app.content,12)
 	buttons.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	buttons.offset_top = -170

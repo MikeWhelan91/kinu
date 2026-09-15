@@ -22,8 +22,7 @@ func _draw() -> void:
 		_draw_spin_arrows(run.orbit.camera.unproject_position(Vector3(0, TofuBox.RIM_HEIGHT*.5, 0)))
 
 func _draw_spin_strip() -> void:
-	var top := run.spin_zone_top()
-	var strip := Rect2(Vector2(14, top), Vector2(size.x-28, size.y-top-14))
+	var strip := run.spin_strip_rect()
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(1, 1, 1, .22 if run.gesture != "spin" else .38)
 	style.border_color = Color(1, 1, 1, .7)

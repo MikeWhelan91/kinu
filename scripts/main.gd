@@ -55,6 +55,7 @@ func _update_safe_area() -> void:
 			var scale_factor := viewport.y/window.y
 			safe_top = maxf(16,safe.position.y*scale_factor+8)
 			safe_bottom = maxf(16,(window.y-safe.end.y)*scale_factor+8)
+	run.bottom_inset = safe_bottom
 
 func _new_screen(name_: String, paper: bool = false) -> void:
 	page = name_

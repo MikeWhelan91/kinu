@@ -34,6 +34,8 @@ var menu_mode: bool = true
 var accepting_input: bool = true
 var fallen_body: KinuBody
 var grab_lift: float = 0.0
+## Space kept clear at the bottom of the screen (home indicator, rounded corners), in viewport pixels.
+var bottom_inset: float = 20.0
 ## 0 = rock solid, 1 = the part above `wobble_cut` is past its support and about to tip.
 var wobble: float = 0.0
 var wobble_cut: float = 0.0
@@ -507,6 +509,12 @@ func control_scheme() -> String:
 func spin_zone_top() -> float:
 	return get_viewport().get_visible_rect().size.y*.78
 
+## The classic spin strip: only touches that start inside it spin the box.
+func spin_strip_rect() -> Rect2:
+	var view := get_viewport().get_visible_rect().size
+	var top := spin_zone_top()
+	return Rect2(Vector2(14, top), Vector2(view.x-28, view.y-top-bottom_inset-8))
+
 ## True when a touch lands on the held Kinu or the drop line beneath it.
 func grabs_active(point: Vector2) -> bool:
 	if active == null or not active.is_inside_tree():
@@ -552,7 +560,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		_move_gesture(event.position, event.relative)
 
 func _begin_gesture(point: Vector2) -> void:
-	var aiming := point.y < spin_zone_top() if control_scheme() == "classic" else grabs_active(point)
+	var classic := control_scheme() == "classic"
+	if classic and point.y >= spin_zone_top() and not spin_strip_rect().has_point(point):
+		gesture = ""
+		return
+	var aiming := point.y < spin_zone_top() if classic else grabs_active(point)
 	if state == "aim" and active and aiming:
 		gesture = "aim"
 		active.poke(-1.8)

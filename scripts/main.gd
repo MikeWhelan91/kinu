@@ -20,7 +20,7 @@ var tutorial_button: Button
 var tutorial_step: int = -1
 var initial_best: int = 0
 var collection_filter: String = "All"
-var shop_tab: String = "kinu"
+var shop_tab: String = "costume"
 var last_stats: Dictionary = {}
 var safe_top: float = 26
 var safe_bottom: float = 20
@@ -178,8 +178,9 @@ func _hud_update() -> void:
 		child.queue_free()
 	_center_label(next_slot,"NEXT",15,NestTheme.MUTED)
 	if run.next_shape:
+		var finish: KinuFlavour = run.catalog.finish(str(Save.data.finish))
 		var preview := KinuPreview.new()
-		preview.setup(run.next_shape,run.next_flavour,true,Vector2i(84,72))
+		preview.setup(run.next_shape,finish if finish else run.next_flavour,true,Vector2i(84,72))
 		next_slot.add_child(preview)
 
 func _toast(text: String, color: Color) -> void:

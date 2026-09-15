@@ -4,7 +4,15 @@ extends Resource
 @export var shapes: Array[KinuShape] = []
 @export var flavours: Array[KinuFlavour] = []
 @export var outfits: Array[KinuOutfit] = []
+## Costume finishes (gold, crystal...) that restyle every Kinu when worn.
+@export var finishes: Array[KinuFlavour] = []
 @export var decor: Array[KinuDecor] = []
+
+func finish(id: String) -> KinuFlavour:
+	for item in finishes:
+		if item.id == id:
+			return item
+	return null
 
 func decor_of(kind: String) -> Array[KinuDecor]:
 	var items: Array[KinuDecor] = []

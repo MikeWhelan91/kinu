@@ -1,7 +1,7 @@
 class_name KinuFlavour
 extends Resource
-## A variety of Kinu. Purely cosmetic: base flavours are found by playing, shop flavours are
-## bought with soybeans and then join the spawn mix.
+## A look for Kinu. Flavours are found by playing (some unlock at a best height); finishes such as
+## gold or crystal use the same data but are bought as costumes and restyle every Kinu.
 
 @export var id: String = ""
 @export var display_name: String = ""
@@ -12,14 +12,19 @@ extends Resource
 @export var pattern: String = ""
 ## Surface finish: "" (matte), "shiny" (metal), "glass" (see-through), "jelly" or "glow".
 @export var material: String = ""
-## Soybeans to unlock in the shop; 0 means it is found by playing instead.
+## Soybeans for a finish in the Costumes shop. Unused for flavours.
 @export var price: int = 0
+## Best tower height (cm) that adds this flavour to the spawn mix; 0 means available from the start.
+@export var unlock_cm: int = 0
 ## Pale features for dark flavours, so the face stays readable.
 @export var light_face: bool = false
 
 func rarity() -> String:
-	if price > 0:
-		return "Shop special"
+	if unlock_cm > 0:
+		return "Unlocked at %s"%height_text(unlock_cm)
 	if spawn_weight >= 3.0:
 		return "Common"
 	return "Uncommon" if spawn_weight >= 1.5 else "Rare"
+
+static func height_text(cm: int) -> String:
+	return "%d cm"%cm if cm < 100 else ("%s m"%str(snappedf(cm/100.0, .1)).trim_suffix(".0"))

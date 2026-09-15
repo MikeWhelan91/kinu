@@ -96,7 +96,7 @@ func _ready() -> void:
 	add_child(app)
 	await frames(5)
 	check(app.page=="home","main scene starts at home")
-	check(app.run.catalog.shapes.size()==5 and app.run.unlocked_flavours().size()==6 and app.run.catalog.flavours.size()==18,"data-driven Kinu shapes, six base flavours and twelve shop flavours")
+	check(app.run.catalog.shapes.size()==5 and app.run.unlocked_flavours().size()==6 and app.run.catalog.flavours.size()==13 and app.run.catalog.finishes.size()==5,"data-driven shapes, six starting flavours, seven height unlocks and five finishes")
 	check(click_button("Play"),"main play button connected")
 	await frames(2)
 	var run: NestRun = app.run
@@ -349,21 +349,32 @@ func _ready() -> void:
 	dressed.queue_free()
 
 	# Soybeans: earned by height, spent on outfits, which then dress every Kinu.
-	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(250,false)==35 and NestRun.beans_for(250,true)==45,"beans scale with height and reward a new best")
+	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(250,false)==18 and NestRun.beans_for(250,true)==23,"beans scale with height and reward a new best")
 	Save.data.beans = 100
 	Save.data.owned = []
 	Save.data.outfit = ""
-	check(not Save.buy("outfit","tanuki",200) and int(Save.data.beans)==100,"can't buy an outfit you can't afford")
+	check(not Save.buy("outfit","tanuki",600) and int(Save.data.beans)==100,"can't buy an outfit you can't afford")
 	check(Save.buy("outfit","frog",90) and int(Save.data.beans)==10 and Save.data.outfit=="frog","buying spends beans and wears the outfit")
 	check(Save.buy("outfit","frog",90) and int(Save.data.beans)==10,"buying something you own again is free")
 	Save.persist()
 	Save.load_data()
 	check(Save.owns("outfit","frog") and int(Save.data.beans)==10,"beans and owned items survive reload")
-	# Shop flavours join the spawn pool only once bought.
-	var gold := run.catalog.flavours.filter(func(f: KinuFlavour) -> bool: return f.id == "gold")[0] as KinuFlavour
-	check(not run.unlocked_flavours().has(gold),"gold Kinu can't spawn before it's bought")
-	Save.data.beans = 2000
-	check(Save.buy("flavour","gold",gold.price) and run.unlocked_flavours().has(gold),"bought flavours join the spawn mix")
+	# Flavours unlock by best height; finishes are bought and restyle every Kinu.
+	var mango := run.catalog.flavours.filter(func(f: KinuFlavour) -> bool: return f.id == "mango")[0] as KinuFlavour
+	var saved_best := int(Save.data.best)
+	Save.data.best = mango.unlock_cm-1
+	check(not run.unlocked_flavours().has(mango),"mango can't spawn before its height goal")
+	Save.data.best = mango.unlock_cm
+	check(run.unlocked_flavours().has(mango),"reaching the height goal unlocks mango")
+	Save.data.best = saved_best
+	Save.data.beans = 10000
+	var gold: KinuFlavour = run.catalog.finish("gold")
+	check(Save.buy("finish","gold",gold.price) and Save.data.finish=="gold","buying a finish wears it")
+	var golden := run.make_body(run.catalog.shapes[0],run.catalog.flavours[1])
+	check(golden.look==gold and golden.flavour.id==run.catalog.flavours[1].id,"a worn finish restyles Kinu while the flavour is still tracked")
+	run.bodies.erase(golden)
+	golden.queue_free()
+	Save.data.finish = ""
 	# Box and room skins swap the scene without changing the box's size.
 	check(Save.buy("box","lacquer",250) and Save.buy("room","winter",350),"buying skins equips them")
 	run.refresh_decor()

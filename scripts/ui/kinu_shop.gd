@@ -1,8 +1,8 @@
 class_name KinuShopScreen
 extends RefCounted
-## Spend soybeans on new Kinu flavours, onesies, box skins and room themes.
+## Spend soybeans on costumes (finishes and onesies), box skins and room themes.
 
-const TABS := [["kinu", "Kinu"], ["outfit", "Onesies"], ["box", "Boxes"], ["room", "Rooms"]]
+const TABS := [["costume", "Costumes"], ["box", "Boxes"], ["room", "Rooms"]]
 
 static func show(app: Node) -> void:
 	app._new_screen("shop",true)
@@ -25,23 +25,22 @@ static func show(app: Node) -> void:
 		tabs.add_child(button)
 	var scroll = DragScroll.new()
 	layout.add_child(scroll)
-	var grid = GridContainer.new()
-	grid.columns = 2
-	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_theme_constant_override("h_separation",14)
-	grid.add_theme_constant_override("v_separation",14)
-	scroll.add_child(grid)
+	var list = app._vbox(scroll,12)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var catalog: KinuCatalog = app.run.catalog
+	var plain: KinuFlavour = catalog.flavours[0]
 	match str(app.shop_tab):
-		"kinu":
-			for flavour in catalog.flavours:
-				if flavour.price > 0:
-					_card(app,grid,"flavour",flavour.id,flavour.display_name,flavour.price,_kinu_preview(app,flavour,null))
-		"outfit":
-			_card(app,grid,"outfit","","Plain Kinu",0,_kinu_preview(app,catalog.flavours[0],null))
+		"costume":
+			var finishes := _section(app,list,"Finishes")
+			_card(app,finishes,"finish","","Plain tofu",0,_kinu_preview(plain,null,false))
+			for finish in catalog.finishes:
+				_card(app,finishes,"finish",finish.id,finish.display_name,finish.price,_kinu_preview(finish,null,false))
+			var onesies := _section(app,list,"Onesies")
+			_card(app,onesies,"outfit","","No onesie",0,_kinu_preview(plain,null,true))
 			for outfit in catalog.outfits:
-				_card(app,grid,"outfit",outfit.id,outfit.display_name,outfit.price,_kinu_preview(app,catalog.flavours[0],outfit))
+				_card(app,onesies,"outfit",outfit.id,outfit.display_name,outfit.price,_kinu_preview(plain,outfit,true))
 		"box", "room":
+			var grid := _section(app,list,"")
 			for decor in catalog.decor_of(app.shop_tab):
 				var preview := DecorPreview.new()
 				if decor.kind == "box":
@@ -49,17 +48,30 @@ static func show(app: Node) -> void:
 				else:
 					preview.setup_room(decor,Vector2i(180,130))
 				_card(app,grid,decor.kind,decor.id,decor.display_name,decor.price,preview)
-	var hints := {"kinu": "New flavours join the mix of Kinu you stack.", "outfit": "Every Kinu wears your onesie.", "box": "Same size box, fresh new look.", "room": "Change where Kinu lives."}
+	var hints := {"costume": "Finishes and onesies dress every Kinu you stack.", "box": "Same size box, fresh new look.", "room": "Change where Kinu lives."}
 	app._center_label(layout,hints[app.shop_tab],15,NestTheme.MUTED)
 
-static func _kinu_preview(app: Node, flavour: KinuFlavour, outfit: KinuOutfit) -> KinuPreview:
+static func _section(app: Node, list: VBoxContainer, title: String) -> GridContainer:
+	if title != "":
+		var heading := NestTheme.headline(title,28,NestTheme.SUN)
+		heading.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		list.add_child(heading)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation",14)
+	grid.add_theme_constant_override("v_separation",14)
+	list.add_child(grid)
+	return grid
+
+static func _kinu_preview(look: KinuFlavour, outfit: KinuOutfit, wide: bool) -> KinuPreview:
 	var preview := KinuPreview.new()
-	# Onesie cards share one wide framing so ears fit; flavour cards frame the tofu closer.
-	preview.setup(app.run.catalog.shapes[0],flavour,true,Vector2i(170,130),"calm",outfit,str(app.shop_tab) == "outfit")
+	var catalog: KinuCatalog = load("res://resources/kinu/catalog.tres")
+	preview.setup(catalog.shapes[0],look,true,Vector2i(170,130),"calm",outfit,wide)
 	return preview
 
 static func equipped(kind: String, id: String) -> bool:
-	return kind in ["outfit", "box", "room"] and str(Save.data[kind]) == id
+	return str(Save.data[kind]) == id
 
 static func _card(app: Node, grid: GridContainer, kind: String, id: String, title: String, price: int, preview: Control) -> void:
 	var owned: bool = Save.owns(kind,id,price)
@@ -82,18 +94,17 @@ static func _card(app: Node, grid: GridContainer, kind: String, id: String, titl
 	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_child(status)
 	if using:
-		status.add_child(NestTheme.label("Wearing" if kind == "outfit" else "In use",16,NestTheme.INK))
+		status.add_child(NestTheme.label("Wearing" if kind in ["outfit", "finish"] else "In use",16,NestTheme.INK))
 	elif owned:
-		status.add_child(NestTheme.label("In your mix" if kind == "flavour" else "Tap to use",16,NestTheme.MUTED))
+		status.add_child(NestTheme.label("Tap to wear" if kind in ["outfit", "finish"] else "Tap to use",16,NestTheme.MUTED))
 	else:
 		status.add_child(NestTheme.bean_pill(str(price),16))
 
 static func _choose(app: Node, kind: String, id: String, title: String, price: int) -> void:
 	if Save.owns(kind,id,price):
-		if kind != "flavour":
-			Save.buy(kind,id,price)
-			app.run.refresh_decor()
-			show(app)
+		Save.buy(kind,id,price)
+		app.run.refresh_decor()
+		show(app)
 		return
 	var stack = app._modal(title)
 	var short: int = price-int(Save.data.beans)
@@ -106,7 +117,7 @@ static func _choose(app: Node, kind: String, id: String, title: String, price: i
 	price_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	price_row.add_child(NestTheme.bean_pill("%d beans"%price,20))
 	stack.add_child(price_row)
-	var action := "Buy" if kind == "flavour" else ("Buy & wear" if kind == "outfit" else "Buy & use")
+	var action := "Buy & wear" if kind in ["outfit", "finish"] else "Buy & use"
 	stack.add_child(NestTheme.button(action,func() -> void:
 		if Save.buy(kind,id,price):
 			Sound.play("record")

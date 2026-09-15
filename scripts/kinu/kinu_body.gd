@@ -14,6 +14,8 @@ static var hitboxes: Dictionary = {}
 
 var shape: KinuShape
 var flavour: KinuFlavour
+## What the Kinu looks like: its flavour, or the costume finish being worn over it.
+var look: KinuFlavour
 var outfit: KinuOutfit
 var visual: Node3D
 var mood: String = "calm"
@@ -42,9 +44,10 @@ var last_position := Vector3.ZERO
 var last_velocity := Vector3.ZERO
 var breath_phase: float = 0.0
 
-func setup(kinu_shape: KinuShape, kinu_flavour: KinuFlavour, kinu_outfit: KinuOutfit = null) -> void:
+func setup(kinu_shape: KinuShape, kinu_flavour: KinuFlavour, kinu_outfit: KinuOutfit = null, finish: KinuFlavour = null) -> void:
 	shape = kinu_shape
 	flavour = kinu_flavour
+	look = finish if finish else kinu_flavour
 	outfit = kinu_outfit
 	mass = shape.mass
 	physics_material_override = PhysicsMaterial.new()
@@ -58,7 +61,7 @@ func setup(kinu_shape: KinuShape, kinu_flavour: KinuFlavour, kinu_outfit: KinuOu
 	collision_layer = 2
 	collision_mask = 3
 	freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
-	visual = KinuModel.build(shape, flavour, outfit)
+	visual = KinuModel.build(shape, look, outfit)
 	add_child(visual)
 	breath_phase = randf()*TAU
 	var collision := CollisionShape3D.new()
@@ -123,7 +126,7 @@ func _process(delta: float) -> void:
 	var wanted := _wanted_mood()
 	if wanted != mood:
 		mood = wanted
-		KinuModel.set_mood(visual, shape, mood, flavour.light_face)
+		KinuModel.set_mood(visual, shape, mood, look.light_face)
 
 func _wanted_mood() -> String:
 	if fallen:

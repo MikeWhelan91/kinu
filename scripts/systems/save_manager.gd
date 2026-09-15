@@ -8,7 +8,7 @@ func _ready() -> void:
 	load_data()
 
 func defaults() -> Dictionary:
-	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned": [], "box": "hinoki", "room": "shop"}
+	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned": [], "box": "hinoki", "room": "shop", "finish": ""}
 
 func load_data() -> void:
 	data = defaults()
@@ -35,7 +35,7 @@ func load_data() -> void:
 				"haptics", "tutorial":
 					if value is bool:
 						data[key] = value
-				"outfit":
+				"outfit", "finish":
 					if value is String:
 						data[key] = value
 				"controls":
@@ -94,7 +94,7 @@ func discover(id: String) -> bool:
 	return true
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit", "box", "room"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit", "box", "room", "finish"]:
 		data[key] = value
 		persist()
 
@@ -102,7 +102,7 @@ func add_beans(amount: int) -> void:
 	data.beans = maxi(0, int(data.beans)+amount)
 	persist()
 
-## kind is "flavour", "outfit", "box" or "room". Free items (price 0 or no outfit) are always owned.
+## kind is "finish", "outfit", "box" or "room". Free items (price 0 or no outfit) are always owned.
 func owns(kind: String, id: String, price: int = 1) -> bool:
 	return id == "" or price <= 0 or data.owned.has(kind+":"+id)
 
@@ -113,7 +113,7 @@ func buy(kind: String, id: String, price: int) -> bool:
 			return false
 		data.beans = int(data.beans)-price
 		data.owned.append(kind+":"+id)
-	if kind in ["outfit", "box", "room"]:
+	if kind in ["outfit", "finish", "box", "room"]:
 		data[kind] = id
 	persist()
 	return true

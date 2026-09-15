@@ -236,11 +236,11 @@ func choose_next() -> void:
 		flavour_weights.append(item.spawn_weight)
 	next_flavour = pool[_weighted(flavour_weights)]
 
-## Base flavours plus any bought in the shop; these are what can spawn.
+## Flavours whose height goal has been reached; these are what can spawn.
 func unlocked_flavours() -> Array[KinuFlavour]:
 	var pool: Array[KinuFlavour] = []
 	for item in catalog.flavours:
-		if Save.owns("flavour", item.id, item.price):
+		if int(Save.data.best) >= item.unlock_cm:
 			pool.append(item)
 	return pool
 
@@ -257,7 +257,7 @@ func _weighted(weights: Array[float]) -> int:
 
 func make_body(shape: KinuShape, flavour: KinuFlavour) -> KinuBody:
 	var body := KinuBody.new()
-	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)))
+	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)), catalog.finish(str(Save.data.finish)))
 	add_child(body)
 	body.landed.connect(_landed)
 	bodies.append(body)
@@ -478,13 +478,23 @@ func _settle() -> void:
 	score = height_cm(tower_height)
 	pending.cheer()
 	var discovered: bool = Save.discover(pending.flavour.id)
+	var unlocked: Array[String] = []
+	for item in catalog.flavours:
+		if item.unlock_cm > int(Save.data.best) and item.unlock_cm <= score:
+			unlocked.append(item.display_name)
 	if score > int(Save.data.best):
 		Save.data.best = score
 		Save.data.best_height = tower_height
 		Save.persist()
-	if score >= next_milestone:
-		var metres := int(score/100.0)
+	var metres := int(score/100.0)
+	var milestone := score >= next_milestone
+	if milestone:
 		next_milestone = (metres+1)*100
+	if not unlocked.is_empty():
+		message.emit("%s unlocked!"%" & ".join(unlocked), Color("7a4fd0"))
+		Sound.play("record")
+		Haptics.pulse(35, .55)
+	elif milestone:
 		message.emit("%s tall! Amazing!"%("1 metre" if metres == 1 else "%d metres"%metres), Color("ff8a1f"))
 		Sound.play("combo")
 		Haptics.pulse(35, .55)
@@ -520,9 +530,9 @@ func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if force > 4:
 		Haptics.pulse(12, .25)
 
-## Soybeans for a run: 1 per 10 cm, 5 per full metre, and 10 more for a new best.
+## Soybeans for a run: 1 per 20 cm, 3 per full metre, and 5 more for a new best.
 static func beans_for(score: int, record: bool) -> int:
-	return int(score/10.0)+int(score/100.0)*5+(10 if record else 0)
+	return int(score/20.0)+int(score/100.0)*3+(5 if record else 0)
 
 static func height_cm(height: float) -> int:
 	return int(round(maxf(0, height-TofuBox.FLOOR_TOP)*20))

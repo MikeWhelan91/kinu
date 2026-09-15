@@ -5,7 +5,7 @@ extends RefCounted
 static func show(app: Node) -> void:
 	app._new_screen("collection",true)
 	var layout = app._header("Kinu Book")
-	var flavours: Array[KinuFlavour] = app.run.unlocked_flavours()
+	var flavours: Array[KinuFlavour] = app.run.catalog.flavours
 	app._center_label(layout,"%d / %d flavours found"%[found(flavours),flavours.size()],18,NestTheme.MUTED)
 	var filter_row = HBoxContainer.new()
 	layout.add_child(filter_row)
@@ -25,7 +25,8 @@ static func show(app: Node) -> void:
 	var grid = _grid(list)
 	var block: KinuShape = app.run.catalog.shapes[0]
 	for flavour in flavours:
-		var known: bool = Save.data.discovered.has(flavour.id)
+		var locked: bool = int(Save.data.best) < flavour.unlock_cm
+		var known: bool = Save.data.discovered.has(flavour.id) and not locked
 		if (app.collection_filter=="Found" and not known) or (app.collection_filter=="Missing" and known):
 			continue
 		var card = _card(app,grid,func() -> void: app._flavour_detail(flavour,known))
@@ -33,7 +34,8 @@ static func show(app: Node) -> void:
 		preview.setup(block,flavour,known,Vector2i(170,130),"calm" if known else "worried")
 		card.add_child(preview)
 		app._center_label(card,flavour.display_name if known else "???",22)
-		app._center_label(card,flavour.rarity() if known else "Not found yet",14,NestTheme.MUTED)
+		var hint: String = "Reach %s to unlock"%KinuFlavour.height_text(flavour.unlock_cm) if locked else "Not found yet"
+		app._center_label(card,flavour.rarity() if known else hint,14,NestTheme.MUTED)
 	if grid.get_child_count() == 0:
 		app._center_label(grid,"Every flavour found. Amazing!",17)
 	var heading = NestTheme.headline("Shapes",30,NestTheme.SUN)
@@ -91,7 +93,8 @@ static func flavour_detail(app: Node, flavour: KinuFlavour, known: bool) -> void
 	var preview = KinuPreview.new()
 	preview.setup(app.run.catalog.shapes[0],flavour,known,Vector2i(280,200),"happy" if known else "worried")
 	stack.add_child(preview)
-	var description = app._center_label(stack,flavour.description if known else "Keep stacking. This flavour turns up now and then.",20)
+	var waiting := "Build a tower %s tall to unlock this flavour."%KinuFlavour.height_text(flavour.unlock_cm) if int(Save.data.best) < flavour.unlock_cm else "Keep stacking. This flavour turns up now and then."
+	var description = app._center_label(stack,flavour.description if known else waiting,20)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if known:
 		app._center_label(stack,flavour.rarity(),18,NestTheme.SKY)

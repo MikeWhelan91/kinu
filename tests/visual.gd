@@ -79,10 +79,10 @@ func _ready() -> void:
 		"settings": app._settings()
 		"shop", "shop_outfit", "shop_box", "shop_room":
 			Save.data.beans = 340
-			Save.data.owned = ["outfit:frog","flavour:mango","box:bamboo","room:night"]
+			Save.data.owned = ["outfit:frog","finish:wood","box:bamboo","room:night"]
 			Save.data.outfit = "frog"
 			Save.data.box = "bamboo"
-			app.shop_tab = {"shop": "kinu", "shop_outfit": "outfit", "shop_box": "box", "shop_room": "room"}[mode]
+			app.shop_tab = {"shop": "costume", "shop_outfit": "costume", "shop_box": "box", "shop_room": "room"}[mode]
 			app._shop()
 		"night", "winter":
 			Save.data.room = "night" if mode == "night" else "winter"

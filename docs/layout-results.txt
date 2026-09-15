@@ -1,0 +1,3 @@
+360x640, 390x844, 430x932; simulated 90/48 logical-pixel safe insets; 4 compass bearings; 3 pile heights.
+Checks: 330
+Failures: 0

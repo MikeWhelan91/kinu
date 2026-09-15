@@ -142,6 +142,13 @@ func _ready() -> void:
 	run._begin_gesture(above_strip)
 	check(run.gesture=="aim","classic: dragging anywhere above the strip aims")
 	run.gesture = ""
+	run.state = "settle"
+	run._begin_gesture(above_strip)
+	check(run.gesture=="waiting","classic: a press while settling waits for the next Kinu instead of spinning")
+	run.state = "aim"
+	run._move_gesture(above_strip, Vector2(30,0))
+	check(run.gesture=="aim","classic: the waiting press picks up the new Kinu when it appears")
+	run.gesture = ""
 	var strip_rect := run.spin_strip_rect()
 	check(strip_rect.end.y <= get_viewport().get_visible_rect().size.y-run.bottom_inset,"spin strip stays clear of the bottom safe area")
 	run._begin_gesture(Vector2(270, strip_rect.end.y+4))

@@ -593,6 +593,11 @@ func _begin_gesture(point: Vector2) -> void:
 	if classic and point.y >= spin_zone_top() and not spin_strip_rect().has_point(point):
 		gesture = ""
 		return
+	# A press in the move area while the last piece settles waits for the next Kinu instead of
+	# spinning, so a slightly early touch still picks it up the moment it appears.
+	if classic and state == "settle" and point.y < spin_zone_top():
+		gesture = "waiting"
+		return
 	var aiming := point.y < spin_zone_top() if classic else grabs_active(point)
 	if state == "aim" and active and aiming:
 		gesture = "aim"
@@ -603,6 +608,8 @@ func _begin_gesture(point: Vector2) -> void:
 		orbit.stop_spin()
 
 func _move_gesture(_point: Vector2, relative: Vector2) -> void:
+	if gesture == "waiting" and state == "aim" and active:
+		gesture = "aim"
 	if gesture == "spin":
 		orbit.orbit(relative.x)
 		if absf(relative.x) > 1:

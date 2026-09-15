@@ -401,9 +401,16 @@ func _ready() -> void:
 	old.close()
 	Save.load_data()
 	check(Save.owns("outfit","bunny"),"outfits bought in the first shop build carry over")
+	app.shop_tab = "costume"
 	app._shop()
 	await frames(2)
 	check(app.page=="shop","shop navigation")
+	var screen_before: Control = app.screen
+	var bunny_card: Dictionary = KinuShopScreen.cards.filter(func(c: Dictionary) -> bool: return c.kind == "outfit" and c.id == "bunny")[0]
+	var plain_card: Dictionary = KinuShopScreen.cards.filter(func(c: Dictionary) -> bool: return c.kind == "outfit" and c.id == "")[0]
+	KinuShopScreen._choose(app,"outfit","bunny","Bunny",350)
+	await frames(1)
+	check(app.screen==screen_before and bunny_card.state=="using" and plain_card.state=="owned","choosing a costume restyles cards without rebuilding the shop")
 	Save.data.outfit = ""
 	for cycle in 3:
 		app._home()

@@ -77,6 +77,14 @@ func _ready() -> void:
 			Save.data.discovered = ["silken","fried","sesame","matcha"]
 			app._collection()
 		"settings": app._settings()
+		"loading":
+			app._shop()
+			Save.data.room = "winter"
+			app._home()
+			await RenderingServer.frame_post_draw
+			get_viewport().get_texture().get_image().save_png("res://docs/loading.png")
+			await get_tree().create_timer(1.5).timeout
+			mode = "loading_done"
 		"flavour_detail":
 			Save.data.discovered = ["silken","fried","sesame","matcha"]
 			Save.data.excluded_flavours = ["sesame"]

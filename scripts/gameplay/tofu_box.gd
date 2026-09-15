@@ -27,7 +27,18 @@ static func contains(point: Vector3, margin: float = 0.0) -> bool:
 	var reach := INNER_HALF+WALL+margin
 	return absf(point.x) <= reach and absf(point.z) <= reach
 
+## Built box models by skin id; new boxes and shop previews duplicate these (sharing meshes).
+static var models: Dictionary = {}
+
 func _ready() -> void:
+	var key := decor.id if decor else "default"
+	if not models.has(key):
+		models[key] = _build_model()
+	add_child((models[key] as Node3D).duplicate())
+	if with_collision:
+		_add_collision()
+
+func _build_model() -> Node3D:
 	var kit := MeshKit.new()
 	var outer := INNER_HALF+WALL
 	var wood := _color("wood", WOOD)
@@ -59,9 +70,10 @@ func _ready() -> void:
 	var model := kit.build(.035)
 	if decor and decor.effect == "shiny":
 		(model.get_node("Fill") as MeshInstance3D).material_override = shiny_material()
-	add_child(model)
-	if not with_collision:
-		return
+	return model
+
+func _add_collision() -> void:
+	var outer := INNER_HALF+WALL
 
 	var body := StaticBody3D.new()
 	body.collision_layer = 1

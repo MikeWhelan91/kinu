@@ -96,18 +96,25 @@ static func bean_pill(text: String, size: int = 18) -> PanelContainer:
 	panel.add_child(row)
 	return panel
 
+## Gives a button the highlighted sun-yellow style, or returns it to the plain theme style.
+static func set_primary(node: Button, primary: bool) -> void:
+	if not primary:
+		for state in ["normal", "hover", "pressed"]:
+			node.remove_theme_stylebox_override(state)
+		return
+	node.add_theme_stylebox_override("normal", box(SUN))
+	node.add_theme_stylebox_override("hover", box(SUN.lightened(.12)))
+	var pressed := box(SUN.darkened(.08), 26, INK, 4)
+	pressed.content_margin_top = 14
+	node.add_theme_stylebox_override("pressed", pressed)
+
 static func button(text: String, callback: Callable, primary: bool = false) -> Button:
 	var node := Button.new()
 	node.text = text
 	node.custom_minimum_size = Vector2(0, 70)
 	node.add_theme_font_size_override("font_size", 24)
 	node.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	if primary:
-		node.add_theme_stylebox_override("normal", box(SUN))
-		node.add_theme_stylebox_override("hover", box(SUN.lightened(.12)))
-		var pressed := box(SUN.darkened(.08), 26, INK, 4)
-		pressed.content_margin_top = 14
-		node.add_theme_stylebox_override("pressed", pressed)
+	set_primary(node, primary)
 	node.pressed.connect(func() -> void:
 		if scroll_dragging:
 			return

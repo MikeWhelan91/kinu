@@ -141,6 +141,9 @@ func _clear() -> void:
 	gesture = ""
 	pointer_id = -99
 
+func decor_outdated() -> bool:
+	return box == null or room == null or box.decor != catalog.find_decor("box", str(Save.data.box)) or room.decor != catalog.find_decor("room", str(Save.data.room))
+
 ## Rebuilds the box and room if the equipped skins changed (e.g. after a shop visit).
 func refresh_decor() -> void:
 	var box_decor := catalog.find_decor("box", str(Save.data.box))

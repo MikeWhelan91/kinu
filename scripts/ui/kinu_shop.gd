@@ -4,12 +4,19 @@ extends RefCounted
 
 const TABS := [["costume", "Costumes"], ["box", "Boxes"], ["room", "Rooms"]]
 
+## Cards on the current page, so choosing or buying restyles them in place instead of rebuilding
+## every 3D preview.
+static var cards: Array[Dictionary] = []
+static var balance: PanelContainer
+
 static func show(app: Node) -> void:
 	app._new_screen("shop",true)
+	cards.clear()
 	var layout = app._header("Kinu Shop")
 	var balance_row = CenterContainer.new()
 	balance_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	balance_row.add_child(NestTheme.bean_pill("%s beans"%app._number(Save.data.beans),22))
+	balance = NestTheme.bean_pill("%s beans"%app._number(Save.data.beans),22)
+	balance_row.add_child(balance)
 	layout.add_child(balance_row)
 	var tabs = HBoxContainer.new()
 	tabs.add_theme_constant_override("separation",8)
@@ -74,9 +81,7 @@ static func equipped(kind: String, id: String) -> bool:
 	return str(Save.data[kind]) == id
 
 static func _card(app: Node, grid: GridContainer, kind: String, id: String, title: String, price: int, preview: Control) -> void:
-	var owned: bool = Save.owns(kind,id,price)
-	var using := equipped(kind,id)
-	var button := NestTheme.button("",func() -> void: _choose(app,kind,id,title,price),using)
+	var button := NestTheme.button("",func() -> void: _choose(app,kind,id,title,price))
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	button.custom_minimum_size = Vector2(210,232)
 	grid.add_child(button)
@@ -93,18 +98,41 @@ static func _card(app: Node, grid: GridContainer, kind: String, id: String, titl
 	var status := CenterContainer.new()
 	status.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_child(status)
-	if using:
-		status.add_child(NestTheme.label("Wearing" if kind in ["outfit", "finish"] else "In use",16,NestTheme.INK))
-	elif owned:
-		status.add_child(NestTheme.label("Tap to wear" if kind in ["outfit", "finish"] else "Tap to use",16,NestTheme.MUTED))
-	else:
-		status.add_child(NestTheme.bean_pill(str(price),16))
+	var card := {"kind": kind, "id": id, "price": price, "button": button, "status": status, "state": ""}
+	cards.append(card)
+	_style_card(card)
+
+## Restyles one card for its current state; skips work when nothing changed.
+static func _style_card(card: Dictionary) -> void:
+	var kind: String = card.kind
+	var wearable := kind in ["outfit", "finish"]
+	var state := "using" if equipped(kind,card.id) else ("owned" if Save.owns(kind,card.id,card.price) else "price")
+	if state == card.state:
+		return
+	card.state = state
+	NestTheme.set_primary(card.button,state == "using")
+	var status: CenterContainer = card.status
+	for child in status.get_children():
+		child.queue_free()
+	match state:
+		"using":
+			status.add_child(NestTheme.label("Wearing" if wearable else "In use",16,NestTheme.INK))
+		"owned":
+			status.add_child(NestTheme.label("Tap to wear" if wearable else "Tap to use",16,NestTheme.MUTED))
+		_:
+			status.add_child(NestTheme.bean_pill(str(card.price),16))
+
+static func _refresh(app: Node) -> void:
+	for card in cards:
+		_style_card(card)
+	var label: Label = balance.get_child(0).get_child(1)
+	label.text = "%s beans"%app._number(Save.data.beans)
 
 static func _choose(app: Node, kind: String, id: String, title: String, price: int) -> void:
+	# Equipping only restyles cards; the box and room are rebuilt when leaving the shop.
 	if Save.owns(kind,id,price):
 		Save.buy(kind,id,price)
-		app.run.refresh_decor()
-		show(app)
+		_refresh(app)
 		return
 	var stack = app._modal(title)
 	var short: int = price-int(Save.data.beans)
@@ -122,7 +150,7 @@ static func _choose(app: Node, kind: String, id: String, title: String, price: i
 		if Save.buy(kind,id,price):
 			Sound.play("record")
 			Haptics.pulse(30,.5)
-			app.run.refresh_decor()
-		show(app)
+		app._close_modal()
+		_refresh(app)
 	,true))
 	stack.add_child(NestTheme.button("Not yet",app._close_modal))

@@ -104,7 +104,17 @@ func _center_label(parent: Node, text: String, font_size: int, color: Color = Ne
 	return label
 
 func _home() -> void:
+	if not run.decor_outdated():
+		NestMenuScreen.home(self)
+		return
+	# A new box or room takes a moment to build: cover it with a curtain rendered first.
+	var curtain := LoadingCurtain.new()
+	canvas.add_child(curtain)
+	await get_tree().process_frame
+	await get_tree().process_frame
 	NestMenuScreen.home(self)
+	canvas.move_child(curtain, -1)
+	curtain.finish()
 
 func _start() -> void:
 	get_tree().paused = false

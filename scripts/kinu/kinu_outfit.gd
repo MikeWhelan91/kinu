@@ -4,6 +4,8 @@ extends Resource
 
 @export var id: String = ""
 @export var display_name: String = ""
+## Cost in soybeans in the Kinu Shop.
+@export var price: int = 100
 @export var hood_color: Color = Color.WHITE
 ## Which extra parts to build: "tanuki", "bunny", "bat", "fox", "frog" or "leaf".
 @export var style: String = ""

@@ -77,6 +77,11 @@ func _ready() -> void:
 			Save.data.discovered = ["silken","fried","sesame","matcha"]
 			app._collection()
 		"settings": app._settings()
+		"shop":
+			Save.data.beans = 140
+			Save.data.owned_outfits = ["leaf","frog"]
+			Save.data.outfit = "frog"
+			app._shop()
 		"results":
 			app.initial_best = 0
 			app._results({"score":124,"placed":23,"height":6.4})

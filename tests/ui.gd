@@ -102,6 +102,9 @@ func _ready() -> void:
 	check(app.page=="credits","pointer opens licences")
 	await click("‹")
 	await click("‹")
+	await click("Shop")
+	check(app.page=="shop","pointer opens shop")
+	await click("‹")
 	await click("Kinu Book")
 	check(app.page=="collection","pointer opens book")
 	for i in 3:

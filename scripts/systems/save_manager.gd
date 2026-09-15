@@ -8,7 +8,7 @@ func _ready() -> void:
 	load_data()
 
 func defaults() -> Dictionary:
-	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic"}
+	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned_outfits": []}
 
 func load_data() -> void:
 	data = defaults()
@@ -23,7 +23,7 @@ func load_data() -> void:
 				continue
 			var value: Variant = loaded[key]
 			match key:
-				"best", "runs":
+				"best", "runs", "beans":
 					if (value is float or value is int) and is_finite(float(value)):
 						data[key] = clampi(int(value), 0, 2147483647)
 				"best_height":
@@ -41,6 +41,11 @@ func load_data() -> void:
 				"controls":
 					if value in ["classic", "grab"]:
 						data[key] = value
+				"owned_outfits":
+					if value is Array:
+						for item in value:
+							if item is String and not data.owned_outfits.has(item):
+								data.owned_outfits.append(item)
 				"discovered":
 					if value is Array:
 						for item in value:
@@ -81,9 +86,28 @@ func discover(id: String) -> bool:
 	return true
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit"]:
 		data[key] = value
 		persist()
+
+func add_beans(amount: int) -> void:
+	data.beans = maxi(0, int(data.beans)+amount)
+	persist()
+
+func owns_outfit(id: String) -> bool:
+	return id == "" or data.owned_outfits.has(id)
+
+## Spends soybeans on an outfit and wears it. Returns false if it can't be afforded.
+func buy_outfit(id: String, price: int) -> bool:
+	if owns_outfit(id):
+		return true
+	if int(data.beans) < price:
+		return false
+	data.beans = int(data.beans)-price
+	data.owned_outfits.append(id)
+	data.outfit = id
+	persist()
+	return true
 
 func finish_run(score: int, height: float = 0.0) -> bool:
 	var record := score > int(data.best)

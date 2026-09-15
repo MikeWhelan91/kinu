@@ -81,6 +81,21 @@ static func pill(text: String, size: int, color: Color = INK) -> PanelContainer:
 	panel.add_child(text_label)
 	return panel
 
+## A pill with a soybean icon before the text, for anything counted in beans.
+static func bean_pill(text: String, size: int = 18) -> PanelContainer:
+	var panel := pill("", size)
+	var text_label: Label = panel.get_child(0)
+	panel.remove_child(text_label)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 6)
+	row.add_child(BeanIcon.new(size*1.3))
+	text_label.text = text
+	row.add_child(text_label)
+	panel.add_child(row)
+	return panel
+
 static func button(text: String, callback: Callable, primary: bool = false) -> Button:
 	var node := Button.new()
 	node.text = text

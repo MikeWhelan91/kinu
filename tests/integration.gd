@@ -336,6 +336,21 @@ func _ready() -> void:
 	run.bodies.erase(dressed)
 	dressed.queue_free()
 
+	# Soybeans: earned by height, spent on outfits, which then dress every Kinu.
+	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(250,false)==35 and NestRun.beans_for(250,true)==45,"beans scale with height and reward a new best")
+	Save.data.beans = 100
+	Save.data.owned_outfits = []
+	Save.data.outfit = ""
+	check(not Save.buy_outfit("tanuki",200) and int(Save.data.beans)==100,"can't buy an outfit you can't afford")
+	check(Save.buy_outfit("frog",90) and int(Save.data.beans)==10 and Save.data.outfit=="frog","buying spends beans and wears the outfit")
+	check(Save.buy_outfit("frog",90) and int(Save.data.beans)==10,"buying something you own again is free")
+	Save.persist()
+	Save.load_data()
+	check(Save.owns_outfit("frog") and int(Save.data.beans)==10,"beans and owned outfits survive reload")
+	app._shop()
+	await frames(2)
+	check(app.page=="shop","shop navigation")
+	Save.data.outfit = ""
 	for cycle in 3:
 		app._home()
 		click_button("Kinu Book")

@@ -489,6 +489,10 @@ func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if force > 4:
 		Haptics.pulse(12, .25)
 
+## Soybeans for a run: 1 per 10 cm, 5 per full metre, and 10 more for a new best.
+static func beans_for(score: int, record: bool) -> int:
+	return int(score/10.0)+int(score/100.0)*5+(10 if record else 0)
+
 static func height_cm(height: float) -> int:
 	return int(round(maxf(0, height-TofuBox.FLOOR_TOP)*20))
 

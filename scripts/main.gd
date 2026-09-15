@@ -224,6 +224,9 @@ func _collection() -> void:
 func _flavour_detail(flavour: KinuFlavour, known: bool) -> void:
 	KinuBookScreen.flavour_detail(self, flavour, known)
 
+func _shop() -> void:
+	KinuShopScreen.show(self)
+
 func _settings() -> void:
 	NestSettingsScreen.show(self)
 
@@ -360,7 +363,7 @@ func _notification(what: int) -> void:
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if page=="play":
 			_pause()
-		elif page in ["collection","settings","credits"]:
+		elif page in ["collection","settings","credits","shop"]:
 			_home()
 
 func _number(value: Variant) -> String:

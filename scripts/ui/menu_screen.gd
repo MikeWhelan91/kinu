@@ -27,21 +27,23 @@ static func home(app: Node) -> void:
 	buttons.add_child(play)
 	var row = HBoxContainer.new()
 	buttons.add_child(row)
-	for item in [["Kinu Book",app._collection],["Settings",app._settings]]:
+	for item in [["Shop",app._shop],["Kinu Book",app._collection],["Settings",app._settings]]:
 		var button = NestTheme.button(item[0],item[1])
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.add_theme_font_size_override("font_size",21)
+		button.add_theme_font_size_override("font_size",19)
 		row.add_child(button)
 	var flavours: Array[KinuFlavour] = app.run.catalog.flavours
 	var stats_row = CenterContainer.new()
 	stats_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stats_row.add_child(NestTheme.pill("Best %s cm  ·  %d / %d flavours"%[app._number(Save.data.best),KinuBookScreen.found(flavours),flavours.size()],18))
+	stats_row.add_child(NestTheme.bean_pill("%s beans  ·  Best %s cm  ·  %d / %d flavours"%[app._number(Save.data.beans),app._number(Save.data.best),KinuBookScreen.found(flavours),flavours.size()],17))
 	buttons.add_child(stats_row)
 
 static func results(app: Node, stats: Dictionary) -> void:
 	app.last_stats = stats
 	var record = int(stats.score)>app.initial_best
 	Save.finish_run(stats.score, float(stats.get("height",0.0)))
+	var earned := NestRun.beans_for(int(stats.score), record)
+	Save.add_beans(earned)
 	app._new_screen("results")
 	Sound.play("record" if record else "over")
 	if record:
@@ -79,7 +81,7 @@ static func results(app: Node, stats: Dictionary) -> void:
 	chips.add_theme_constant_override("separation",10)
 	column.add_child(chips)
 	chips.add_child(NestTheme.pill("%d Kinu stacked"%int(stats.get("placed",0)),18))
-	chips.add_child(NestTheme.pill("Best %s cm"%app._number(Save.data.best),18))
+	chips.add_child(NestTheme.bean_pill("+%d"%earned,18))
 	var buttons = app._vbox(app.content,12)
 	buttons.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	buttons.offset_top = -170

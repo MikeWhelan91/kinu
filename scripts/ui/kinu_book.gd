@@ -25,17 +25,21 @@ static func show(app: Node) -> void:
 	var grid = _grid(list)
 	var block: KinuShape = app.run.catalog.shapes[0]
 	for flavour in flavours:
-		var locked: bool = int(Save.data.best) < flavour.unlock_cm
-		var known: bool = Save.data.discovered.has(flavour.id) and not locked
+		var locked: bool = not Save.flavour_unlocked(flavour)
+		var known: bool = Save.flavour_found(flavour)
+		var in_mix: bool = Save.flavour_in_mix(flavour.id)
 		if (app.collection_filter=="Found" and not known) or (app.collection_filter=="Missing" and known):
 			continue
 		var card = _card(app,grid,func() -> void: app._flavour_detail(flavour,known))
 		var preview = KinuPreview.new()
 		preview.setup(block,flavour,known,Vector2i(170,130),"calm" if known else "worried")
+		if known and not in_mix:
+			preview.modulate.a = .4
 		card.add_child(preview)
 		app._center_label(card,flavour.display_name if known else "???",22)
 		var hint: String = "Reach %s to unlock"%KinuFlavour.height_text(flavour.unlock_cm) if locked else "Not found yet"
-		app._center_label(card,flavour.rarity() if known else hint,14,NestTheme.MUTED)
+		var status: String = (flavour.rarity() if in_mix else "Not in the mix") if known else hint
+		app._center_label(card,status,14,NestTheme.MUTED)
 	if grid.get_child_count() == 0:
 		app._center_label(grid,"Every flavour found. Amazing!",17)
 	var heading = NestTheme.headline("Shapes",30,NestTheme.SUN)
@@ -63,7 +67,7 @@ static func show(app: Node) -> void:
 static func found(flavours: Array[KinuFlavour]) -> int:
 	var count := 0
 	for flavour in flavours:
-		if Save.data.discovered.has(flavour.id):
+		if Save.flavour_found(flavour):
 			count += 1
 	return count
 
@@ -93,9 +97,21 @@ static func flavour_detail(app: Node, flavour: KinuFlavour, known: bool) -> void
 	var preview = KinuPreview.new()
 	preview.setup(app.run.catalog.shapes[0],flavour,known,Vector2i(280,200),"happy" if known else "worried")
 	stack.add_child(preview)
-	var waiting := "Build a tower %s tall to unlock this flavour."%KinuFlavour.height_text(flavour.unlock_cm) if int(Save.data.best) < flavour.unlock_cm else "Keep stacking. This flavour turns up now and then."
+	var waiting := "Build a tower %s tall to unlock this flavour."%KinuFlavour.height_text(flavour.unlock_cm) if not Save.flavour_unlocked(flavour) else "Keep stacking. This flavour turns up now and then."
 	var description = app._center_label(stack,flavour.description if known else waiting,20)
 	description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	if known:
 		app._center_label(stack,flavour.rarity(),18,NestTheme.SKY)
+		var in_mix: bool = Save.flavour_in_mix(flavour.id)
+		var others_on: bool = app.run.flavour_mix().size() > 1 or not in_mix
+		var toggle := NestTheme.button("In the mix   "+("On" if in_mix else "Off"),func() -> void:
+			if in_mix and not others_on:
+				return
+			Save.set_flavour_in_mix(flavour.id,not in_mix)
+			app._collection()
+			app._flavour_detail(flavour,known)
+		)
+		stack.add_child(toggle)
+		var note := "Switched off flavours won't appear while you stack." if others_on else "Keep at least one flavour in the mix."
+		app._center_label(stack,note,14,NestTheme.MUTED).autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	stack.add_child(NestTheme.button("Lovely",app._close_modal,true))

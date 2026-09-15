@@ -230,7 +230,7 @@ func choose_next() -> void:
 		shape_weights.append(weight)
 	next_shape = catalog.shapes[_weighted(shape_weights)]
 	last_shape = next_shape.id
-	var pool := unlocked_flavours()
+	var pool := flavour_mix()
 	var flavour_weights: Array[float] = []
 	for item in pool:
 		flavour_weights.append(item.spawn_weight)
@@ -240,9 +240,15 @@ func choose_next() -> void:
 func unlocked_flavours() -> Array[KinuFlavour]:
 	var pool: Array[KinuFlavour] = []
 	for item in catalog.flavours:
-		if int(Save.data.best) >= item.unlock_cm:
+		if Save.flavour_unlocked(item):
 			pool.append(item)
 	return pool
+
+## Unlocked flavours the player has left switched on in the Kinu Book. Never empty.
+func flavour_mix() -> Array[KinuFlavour]:
+	var unlocked := unlocked_flavours()
+	var mix := unlocked.filter(func(item: KinuFlavour) -> bool: return Save.flavour_in_mix(item.id))
+	return mix if not mix.is_empty() else unlocked
 
 func _weighted(weights: Array[float]) -> int:
 	var total := 0.0

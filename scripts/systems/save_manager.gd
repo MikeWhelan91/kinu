@@ -8,7 +8,7 @@ func _ready() -> void:
 	load_data()
 
 func defaults() -> Dictionary:
-	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned": [], "box": "hinoki", "room": "shop", "finish": ""}
+	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned": [], "box": "hinoki", "room": "shop", "finish": "", "excluded_flavours": [], "debug_unlocked": false}
 
 func load_data() -> void:
 	data = defaults()
@@ -32,7 +32,7 @@ func load_data() -> void:
 				"music", "sfx":
 					if (value is float or value is int) and is_finite(float(value)):
 						data[key] = clampf(float(value), 0, 1)
-				"haptics", "tutorial":
+				"haptics", "tutorial", "debug_unlocked":
 					if value is bool:
 						data[key] = value
 				"outfit", "finish":
@@ -49,6 +49,11 @@ func load_data() -> void:
 				"box", "room":
 					if value is String and value != "":
 						data[key] = value
+				"excluded_flavours":
+					if value is Array:
+						for item in value:
+							if item is String and not data.excluded_flavours.has(item):
+								data.excluded_flavours.append(item)
 				"discovered":
 					if value is Array:
 						for item in value:
@@ -94,7 +99,7 @@ func discover(id: String) -> bool:
 	return true
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit", "box", "room", "finish"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit", "box", "room", "finish", "debug_unlocked"]:
 		data[key] = value
 		persist()
 
@@ -104,7 +109,28 @@ func add_beans(amount: int) -> void:
 
 ## kind is "finish", "outfit", "box" or "room". Free items (price 0 or no outfit) are always owned.
 func owns(kind: String, id: String, price: int = 1) -> bool:
-	return id == "" or price <= 0 or data.owned.has(kind+":"+id)
+	return debug_unlocked() or id == "" or price <= 0 or data.owned.has(kind+":"+id)
+
+## Test switch for development builds only: everything counts as unlocked, found and owned.
+## Beans and best height are untouched, so switching it off restores normal progress.
+func debug_unlocked() -> bool:
+	return OS.is_debug_build() and bool(data.get("debug_unlocked", false))
+
+func flavour_unlocked(flavour: KinuFlavour) -> bool:
+	return debug_unlocked() or int(data.best) >= flavour.unlock_cm
+
+func flavour_found(flavour: KinuFlavour) -> bool:
+	return flavour_unlocked(flavour) and (debug_unlocked() or data.discovered.has(flavour.id))
+
+func flavour_in_mix(id: String) -> bool:
+	return not data.excluded_flavours.has(id)
+
+func set_flavour_in_mix(id: String, included: bool) -> void:
+	if included:
+		data.excluded_flavours.erase(id)
+	elif not data.excluded_flavours.has(id):
+		data.excluded_flavours.append(id)
+	persist()
 
 ## Spends soybeans on a shop item and equips it where that makes sense. False if unaffordable.
 func buy(kind: String, id: String, price: int) -> bool:

@@ -322,7 +322,10 @@ func _ready() -> void:
 		check(run.placed==1 and run.state=="aim","individual landing: "+run.catalog.shapes[i].id)
 	for flavour in run.catalog.flavours:
 		Save.discover(flavour.id)
+	var best_before := int(Save.data.best)
+	Save.data.best = 10000
 	check(KinuBookScreen.found(run.catalog.flavours)==run.catalog.flavours.size(),"every flavour discoverable")
+	Save.data.best = best_before
 
 	# Moods follow the pile: worried while swaying, happy after landing.
 	var mood_body := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0])
@@ -375,6 +378,17 @@ func _ready() -> void:
 	run.bodies.erase(golden)
 	golden.queue_free()
 	Save.data.finish = ""
+	# Kinu Book mix toggle and the debug unlock switch.
+	Save.set_flavour_in_mix("silken",false)
+	check(not run.flavour_mix().any(func(f: KinuFlavour) -> bool: return f.id == "silken"),"switched-off flavours leave the mix")
+	for item in run.unlocked_flavours():
+		Save.set_flavour_in_mix(item.id,false)
+	check(not run.flavour_mix().is_empty(),"the mix never ends up empty")
+	Save.data.excluded_flavours = []
+	Save.data.debug_unlocked = true
+	check(run.unlocked_flavours().size()==run.catalog.flavours.size() and Save.owns("room","winter",1500),"debug unlock opens every flavour and shop item")
+	Save.data.debug_unlocked = false
+	check(not Save.owns("room","sakura_street",1800),"switching debug off restores normal progress")
 	# Box and room skins swap the scene without changing the box's size.
 	check(Save.buy("box","lacquer",250) and Save.buy("room","winter",350),"buying skins equips them")
 	run.refresh_decor()

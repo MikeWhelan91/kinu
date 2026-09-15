@@ -77,6 +77,11 @@ func _ready() -> void:
 			Save.data.discovered = ["silken","fried","sesame","matcha"]
 			app._collection()
 		"settings": app._settings()
+		"flavour_detail":
+			Save.data.discovered = ["silken","fried","sesame","matcha"]
+			Save.data.excluded_flavours = ["sesame"]
+			app._collection()
+			app._flavour_detail(app.run.catalog.flavours[3],true)
 		"shop", "shop_outfit", "shop_box", "shop_room":
 			Save.data.beans = 340
 			Save.data.owned = ["outfit:frog","finish:wood","box:bamboo","room:night"]

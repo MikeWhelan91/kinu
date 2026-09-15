@@ -35,6 +35,12 @@ static func show(app: Node) -> void:
 		app._settings()
 	)
 	list.add_child(haptic)
+	if OS.is_debug_build():
+		list.add_child(NestTheme.button("Debug · unlock all   "+("On" if Save.data.debug_unlocked else "Off"),func() -> void:
+			Save.setting("debug_unlocked",not Save.data.debug_unlocked)
+			app.run.refresh_decor()
+			app._settings()
+		))
 	var classic: bool = Save.data.controls == "classic"
 	var controls = NestTheme.button("Controls   "+("Classic" if classic else "Grab"),func() -> void:
 		Save.setting("controls","grab" if classic else "classic")

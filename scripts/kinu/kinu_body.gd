@@ -123,7 +123,7 @@ func _process(delta: float) -> void:
 	var wanted := _wanted_mood()
 	if wanted != mood:
 		mood = wanted
-		KinuModel.set_mood(visual, shape, mood)
+		KinuModel.set_mood(visual, shape, mood, flavour.light_face)
 
 func _wanted_mood() -> String:
 	if fallen:

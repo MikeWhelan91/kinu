@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="KinuCatalog" load_steps=22 format=3]
+[gd_resource type="Resource" script_class="KinuCatalog" load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://scripts/kinu/kinu_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/kinu/kinu_shape.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/kinu/kinu_flavour.gd" id="3"]
 [ext_resource type="Script" path="res://scripts/kinu/kinu_outfit.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/kinu/kinu_decor.gd" id="5"]
 
 [sub_resource type="Resource" id="shape_block"]
 script = ExtResource("2")
@@ -167,8 +168,339 @@ display_name = "Little leaf"
 hood_color = Color(0.4235, 0.7882, 0.2980, 1)
 style = "leaf"
 
+[sub_resource type="Resource" id="flavour_yuzu"]
+script = ExtResource("3")
+id = "yuzu"
+display_name = "Yuzu"
+description = "Zesty and bright, like a winter citrus."
+color = Color(0.9882, 0.9569, 0.7216, 1)
+spawn_weight = 1.0
+pattern = ""
+material = ""
+price = 80
+light_face = false
+
+[sub_resource type="Resource" id="flavour_mango"]
+script = ExtResource("3")
+id = "mango"
+display_name = "Mango"
+description = "Sweet, sunny and a little bit tropical."
+color = Color(1.0000, 0.8627, 0.5882, 1)
+spawn_weight = 1.0
+pattern = ""
+material = ""
+price = 80
+light_face = false
+
+[sub_resource type="Resource" id="flavour_blueberry"]
+script = ExtResource("3")
+id = "blueberry"
+display_name = "Blueberry"
+description = "A cool little berry blue."
+color = Color(0.8039, 0.8392, 1.0000, 1)
+spawn_weight = 1.0
+pattern = ""
+material = ""
+price = 100
+light_face = false
+
+[sub_resource type="Resource" id="flavour_mint"]
+script = ExtResource("3")
+id = "mint"
+display_name = "Mint"
+description = "Fresh as a spring breeze."
+color = Color(0.7882, 0.9490, 0.8627, 1)
+spawn_weight = 1.0
+pattern = ""
+material = ""
+price = 100
+light_face = false
+
+[sub_resource type="Resource" id="flavour_ube"]
+script = ExtResource("3")
+id = "ube"
+display_name = "Ube"
+description = "Purple yam, soft and dreamy."
+color = Color(0.8392, 0.7216, 0.9412, 1)
+spawn_weight = 1.0
+pattern = ""
+material = ""
+price = 120
+light_face = false
+
+[sub_resource type="Resource" id="flavour_chocolate"]
+script = ExtResource("3")
+id = "chocolate"
+display_name = "Chocolate"
+description = "Rich, smooth and irresistible."
+color = Color(0.8118, 0.6431, 0.5294, 1)
+spawn_weight = 1.0
+pattern = ""
+material = ""
+price = 150
+light_face = false
+
+[sub_resource type="Resource" id="flavour_wood"]
+script = ExtResource("3")
+id = "wood"
+display_name = "Wood"
+description = "Carved from hinoki by a very patient woodworker."
+color = Color(0.8431, 0.6431, 0.4314, 1)
+spawn_weight = 0.8
+pattern = "grain"
+material = ""
+price = 200
+light_face = false
+
+[sub_resource type="Resource" id="flavour_marble"]
+script = ExtResource("3")
+id = "marble"
+display_name = "Marble"
+description = "Cool, polished and very fancy."
+color = Color(0.9529, 0.9451, 0.9255, 1)
+spawn_weight = 0.7
+pattern = "veins"
+material = "shiny"
+price = 260
+light_face = false
+
+[sub_resource type="Resource" id="flavour_jelly"]
+script = ExtResource("3")
+id = "jelly"
+display_name = "Jelly"
+description = "Wobbly, see-through strawberry jelly."
+color = Color(1.0000, 0.7686, 0.8392, 1)
+spawn_weight = 0.7
+pattern = ""
+material = "jelly"
+price = 320
+light_face = false
+
+[sub_resource type="Resource" id="flavour_gold"]
+script = ExtResource("3")
+id = "gold"
+display_name = "Gold"
+description = "Solid gold. Priceless. Still shy."
+color = Color(1.0000, 0.8902, 0.5412, 1)
+spawn_weight = 0.5
+pattern = "sparkle"
+material = "shiny"
+price = 500
+light_face = false
+
+[sub_resource type="Resource" id="flavour_crystal"]
+script = ExtResource("3")
+id = "crystal"
+display_name = "Crystal"
+description = "Glittering and clear as ice."
+color = Color(0.9098, 0.9725, 1.0000, 1)
+spawn_weight = 0.5
+pattern = "facets"
+material = "glass"
+price = 650
+light_face = false
+
+[sub_resource type="Resource" id="flavour_galaxy"]
+script = ExtResource("3")
+id = "galaxy"
+display_name = "Galaxy"
+description = "A whole night sky in one little tofu."
+color = Color(0.2392, 0.1843, 0.4706, 1)
+spawn_weight = 0.4
+pattern = "stars"
+material = "glow"
+price = 800
+light_face = true
+
+[sub_resource type="Resource" id="box_hinoki"]
+script = ExtResource("5")
+id = "hinoki"
+display_name = "Hinoki"
+kind = "box"
+price = 0
+palette = {
+"wood": Color(0.9647, 0.8745, 0.7059, 1),
+"wood_dark": Color(0.8510, 0.6784, 0.4549, 1),
+"wood_light": Color(0.9843, 0.9137, 0.7843, 1),
+"stamp": Color(0.8784, 0.2745, 0.2275, 1),
+"stamp_mark": Color(1.0000, 0.9647, 0.8863, 1)
+}
+effect = ""
+
+[sub_resource type="Resource" id="box_bamboo"]
+script = ExtResource("5")
+id = "bamboo"
+display_name = "Bamboo steamer"
+kind = "box"
+price = 150
+palette = {
+"wood": Color(0.8510, 0.9059, 0.6431, 1),
+"wood_dark": Color(0.5961, 0.7059, 0.3529, 1),
+"wood_light": Color(0.9137, 0.9451, 0.7608, 1),
+"stamp": Color(0.3647, 0.5412, 0.2275, 1),
+"stamp_mark": Color(0.9569, 0.9725, 0.8863, 1)
+}
+effect = ""
+
+[sub_resource type="Resource" id="box_lacquer"]
+script = ExtResource("5")
+id = "lacquer"
+display_name = "Red lacquer"
+kind = "box"
+price = 250
+palette = {
+"wood": Color(0.8118, 0.2314, 0.1882, 1),
+"wood_dark": Color(0.1686, 0.1020, 0.0902, 1),
+"wood_light": Color(0.8784, 0.2902, 0.2431, 1),
+"stamp": Color(0.9490, 0.7569, 0.3059, 1),
+"stamp_mark": Color(0.1686, 0.1020, 0.0902, 1)
+}
+effect = "shiny"
+
+[sub_resource type="Resource" id="box_sakura"]
+script = ExtResource("5")
+id = "sakura"
+display_name = "Sakura"
+kind = "box"
+price = 300
+palette = {
+"wood": Color(1.0000, 0.8275, 0.8745, 1),
+"wood_dark": Color(0.9137, 0.5608, 0.6706, 1),
+"wood_light": Color(1.0000, 0.9020, 0.9333, 1),
+"stamp": Color(1.0000, 0.4353, 0.5882, 1),
+"stamp_mark": Color(1.0000, 0.9647, 0.9725, 1)
+}
+effect = "petals"
+
+[sub_resource type="Resource" id="box_stone"]
+script = ExtResource("5")
+id = "stone"
+display_name = "Stone"
+kind = "box"
+price = 350
+palette = {
+"wood": Color(0.7882, 0.7686, 0.7333, 1),
+"wood_dark": Color(0.5569, 0.5294, 0.4863, 1),
+"wood_light": Color(0.8627, 0.8471, 0.8157, 1),
+"stamp": Color(0.3569, 0.3373, 0.3137, 1),
+"stamp_mark": Color(0.9333, 0.9176, 0.8941, 1)
+}
+effect = ""
+
+[sub_resource type="Resource" id="box_goldbox"]
+script = ExtResource("5")
+id = "goldbox"
+display_name = "Gold"
+kind = "box"
+price = 700
+palette = {
+"wood": Color(0.9686, 0.7882, 0.2824, 1),
+"wood_dark": Color(0.7882, 0.5725, 0.1647, 1),
+"wood_light": Color(1.0000, 0.8784, 0.5412, 1),
+"stamp": Color(0.8784, 0.2745, 0.2275, 1),
+"stamp_mark": Color(1.0000, 0.9647, 0.8863, 1)
+}
+effect = "shiny"
+
+[sub_resource type="Resource" id="room_shop"]
+script = ExtResource("5")
+id = "shop"
+display_name = "Tofu shop"
+kind = "room"
+price = 0
+palette = {
+"plaster": Color(0.9686, 0.9098, 0.8000, 1),
+"post": Color(0.5412, 0.3333, 0.1961, 1),
+"wood": Color(0.7176, 0.4863, 0.2941, 1),
+"wood_deep": Color(0.5608, 0.3529, 0.2039, 1),
+"paper": Color(1.0000, 0.9725, 0.9098, 1),
+"noren": Color(0.2275, 0.3529, 0.6588, 1),
+"lantern": Color(0.9255, 0.2902, 0.2353, 1),
+"floor": Color(0.6118, 0.4157, 0.2588, 1),
+"floor_line": Color(0.4980, 0.3294, 0.2000, 1),
+"background": Color(0.9569, 0.8510, 0.6784, 1),
+"ambient": Color(1.0000, 0.9451, 0.8627, 1),
+"sun": Color(1.0000, 0.9569, 0.8863, 1),
+"sun_energy": 0.9,
+"ambient_energy": 0.1
+}
+effect = "steam"
+
+[sub_resource type="Resource" id="room_night"]
+script = ExtResource("5")
+id = "night"
+display_name = "Night market"
+kind = "room"
+price = 300
+palette = {
+"plaster": Color(0.1843, 0.2078, 0.3765, 1),
+"post": Color(0.1098, 0.1020, 0.1804, 1),
+"wood": Color(0.4196, 0.2902, 0.2275, 1),
+"wood_deep": Color(0.2902, 0.2000, 0.1569, 1),
+"paper": Color(1.0000, 0.9059, 0.6588, 1),
+"noren": Color(0.7216, 0.1961, 0.2275, 1),
+"lantern": Color(1.0000, 0.4157, 0.2392, 1),
+"floor": Color(0.2431, 0.1804, 0.2118, 1),
+"floor_line": Color(0.1647, 0.1216, 0.1490, 1),
+"background": Color(0.1137, 0.1294, 0.2510, 1),
+"ambient": Color(0.5608, 0.6275, 1.0000, 1),
+"sun": Color(0.7882, 0.8235, 1.0000, 1),
+"sun_energy": 0.55,
+"ambient_energy": 0.28
+}
+effect = "fireflies"
+
+[sub_resource type="Resource" id="room_winter"]
+script = ExtResource("5")
+id = "winter"
+display_name = "Winter"
+kind = "room"
+price = 350
+palette = {
+"plaster": Color(0.9333, 0.9569, 0.9843, 1),
+"post": Color(0.4353, 0.4980, 0.5882, 1),
+"wood": Color(0.7255, 0.7804, 0.8471, 1),
+"wood_deep": Color(0.5412, 0.6039, 0.6902, 1),
+"paper": Color(1.0000, 1.0000, 1.0000, 1),
+"noren": Color(0.3098, 0.4980, 0.7608, 1),
+"lantern": Color(0.9098, 0.3137, 0.3569, 1),
+"floor": Color(0.7882, 0.8392, 0.8941, 1),
+"floor_line": Color(0.6627, 0.7216, 0.7882, 1),
+"background": Color(0.8745, 0.9176, 0.9647, 1),
+"ambient": Color(0.9098, 0.9451, 1.0000, 1),
+"sun": Color(1.0000, 1.0000, 1.0000, 1),
+"sun_energy": 0.85,
+"ambient_energy": 0.14
+}
+effect = "snow"
+
+[sub_resource type="Resource" id="room_sakura_street"]
+script = ExtResource("5")
+id = "sakura_street"
+display_name = "Sakura street"
+kind = "room"
+price = 400
+palette = {
+"plaster": Color(1.0000, 0.9098, 0.9333, 1),
+"post": Color(0.6039, 0.3529, 0.3922, 1),
+"wood": Color(0.8510, 0.6039, 0.6510, 1),
+"wood_deep": Color(0.6902, 0.4392, 0.4941, 1),
+"paper": Color(1.0000, 0.9647, 0.9725, 1),
+"noren": Color(0.8784, 0.3412, 0.4980, 1),
+"lantern": Color(1.0000, 0.4784, 0.6039, 1),
+"floor": Color(0.7882, 0.5451, 0.5608, 1),
+"floor_line": Color(0.6588, 0.4353, 0.4588, 1),
+"background": Color(1.0000, 0.8510, 0.8941, 1),
+"ambient": Color(1.0000, 0.9412, 0.9569, 1),
+"sun": Color(1.0000, 0.9569, 0.9647, 1),
+"sun_energy": 0.9,
+"ambient_energy": 0.12
+}
+effect = "petals"
+
 [resource]
 script = ExtResource("1")
 shapes = Array[ExtResource("2")]([SubResource("shape_block"), SubResource("shape_slab"), SubResource("shape_long"), SubResource("shape_tall"), SubResource("shape_ball")])
-flavours = Array[ExtResource("3")]([SubResource("flavour_silken"), SubResource("flavour_fried"), SubResource("flavour_sesame"), SubResource("flavour_matcha"), SubResource("flavour_sakura"), SubResource("flavour_tamago")])
+flavours = Array[ExtResource("3")]([SubResource("flavour_silken"), SubResource("flavour_fried"), SubResource("flavour_sesame"), SubResource("flavour_matcha"), SubResource("flavour_sakura"), SubResource("flavour_tamago"), SubResource("flavour_yuzu"), SubResource("flavour_mango"), SubResource("flavour_blueberry"), SubResource("flavour_mint"), SubResource("flavour_ube"), SubResource("flavour_chocolate"), SubResource("flavour_wood"), SubResource("flavour_marble"), SubResource("flavour_jelly"), SubResource("flavour_gold"), SubResource("flavour_crystal"), SubResource("flavour_galaxy")])
 outfits = Array[ExtResource("4")]([SubResource("outfit_leaf"), SubResource("outfit_frog"), SubResource("outfit_bunny"), SubResource("outfit_fox"), SubResource("outfit_tanuki"), SubResource("outfit_bat")])
+decor = Array[ExtResource("5")]([SubResource("box_hinoki"), SubResource("box_bamboo"), SubResource("box_lacquer"), SubResource("box_sakura"), SubResource("box_stone"), SubResource("box_goldbox"), SubResource("room_shop"), SubResource("room_night"), SubResource("room_winter"), SubResource("room_sakura_street")])

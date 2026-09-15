@@ -77,11 +77,17 @@ func _ready() -> void:
 			Save.data.discovered = ["silken","fried","sesame","matcha"]
 			app._collection()
 		"settings": app._settings()
-		"shop":
-			Save.data.beans = 140
-			Save.data.owned_outfits = ["leaf","frog"]
+		"shop", "shop_outfit", "shop_box", "shop_room":
+			Save.data.beans = 340
+			Save.data.owned = ["outfit:frog","flavour:mango","box:bamboo","room:night"]
 			Save.data.outfit = "frog"
+			Save.data.box = "bamboo"
+			app.shop_tab = {"shop": "kinu", "shop_outfit": "outfit", "shop_box": "box", "shop_room": "room"}[mode]
 			app._shop()
+		"night", "winter":
+			Save.data.room = "night" if mode == "night" else "winter"
+			Save.data.box = "lacquer" if mode == "night" else "goldbox"
+			app._start()
 		"results":
 			app.initial_best = 0
 			app._results({"score":124,"placed":23,"height":6.4})

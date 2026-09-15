@@ -19,7 +19,13 @@ const PAPER := Color("fff8e8")
 const INDIGO := Color("3a5aa8")
 const LANTERN := Color("ec4a3c")
 
+## The equipped room theme. Null uses the default tofu-shop palette.
+var decor: KinuDecor
 var steam: Array[MeshInstance3D] = []
+var particles: Array[Dictionary] = []
+
+func _c(key: String, fallback: Color) -> Color:
+	return decor.palette.get(key, fallback) if decor else fallback
 
 static func make_environment() -> Environment:
 	var settings := Environment.new()
@@ -45,30 +51,38 @@ static func make_sun() -> DirectionalLight3D:
 func _ready() -> void:
 	var environment := WorldEnvironment.new()
 	environment.environment = make_environment()
+	environment.environment.background_color = _c("background", Color("f4d9ad"))
+	environment.environment.ambient_light_color = _c("ambient", Color("fff1dc"))
 	add_child(environment)
-	add_child(make_sun())
+	var sun := make_sun()
+	sun.light_color = _c("sun", Color("fff4e2"))
+	if decor:
+		sun.light_energy = float(decor.palette.get("sun_energy", sun.light_energy))
+		environment.environment.ambient_light_energy = float(decor.palette.get("ambient_energy", .1))
+	add_child(sun)
 	add_child(_counter())
 	add_child(_room())
 	_counter_collision()
 	_build_steam()
+	_build_particles(decor.effect if decor else "")
 
 func _counter() -> Node3D:
 	var kit := MeshKit.new()
 	var span := COUNTER_HALF*2
-	kit.add_rounded_box(Vector3(0, -.225, 0), Vector3(span, .45, span), WOOD, Vector3.ZERO, true, 10.0)
+	kit.add_rounded_box(Vector3(0, -.225, 0), Vector3(span, .45, span), _c("wood", WOOD), Vector3.ZERO, true, 10.0)
 	# Plank seams on the counter top.
 	for i in 6:
 		var x := -COUNTER_HALF+span*(i+1)/7.0
-		kit.add_rounded_box(Vector3(x, .01, 0), Vector3(.05, .03, span-.2), WOOD_DEEP, Vector3.ZERO, false, 10.0)
-	kit.add_rounded_box(Vector3(0, -.45-(COUNTER_HEIGHT-.45)*.5, 0), Vector3(span-.4, COUNTER_HEIGHT-.45, span-.4), WOOD_DEEP, Vector3.ZERO, true, 10.0)
+		kit.add_rounded_box(Vector3(x, .01, 0), Vector3(.05, .03, span-.2), _c("wood_deep", WOOD_DEEP), Vector3.ZERO, false, 10.0)
+	kit.add_rounded_box(Vector3(0, -.45-(COUNTER_HEIGHT-.45)*.5, 0), Vector3(span-.4, COUNTER_HEIGHT-.45, span-.4), _c("wood_deep", WOOD_DEEP), Vector3.ZERO, true, 10.0)
 	for side in 4:
 		var basis := Basis(Vector3.UP, side*PI*.5)
 		for i in 7:
 			var x := -COUNTER_HALF+.6+i*(span-1.2)/6.0
-			kit.add_rounded_box(basis*Vector3(x, -1.8, COUNTER_HALF-.18), Vector3(.12, COUNTER_HEIGHT-.9, .06), POST, Vector3(0, side*PI*.5, 0), false, 10.0)
+			kit.add_rounded_box(basis*Vector3(x, -1.8, COUNTER_HALF-.18), Vector3(.12, COUNTER_HEIGHT-.9, .06), _c("post", POST), Vector3(0, side*PI*.5, 0), false, 10.0)
 	# Tenugui cloth under the tofu box: white border, indigo middle.
-	kit.add_rounded_box(Vector3(0, .02, 0), Vector3(5.0, .04, 5.0), PAPER, Vector3.ZERO, false, 10.0)
-	kit.add_rounded_box(Vector3(0, .04, 0), Vector3(4.5, .06, 4.5), INDIGO, Vector3.ZERO, false, 10.0)
+	kit.add_rounded_box(Vector3(0, .02, 0), Vector3(5.0, .04, 5.0), _c("paper", PAPER), Vector3.ZERO, false, 10.0)
+	kit.add_rounded_box(Vector3(0, .04, 0), Vector3(4.5, .06, 4.5), _c("noren", INDIGO), Vector3.ZERO, false, 10.0)
 	return kit.build(.045)
 
 func _counter_collision() -> void:
@@ -93,20 +107,20 @@ func _counter_collision() -> void:
 func _room() -> Node3D:
 	var kit := MeshKit.new()
 	var floor_y := -COUNTER_HEIGHT
-	kit.add_rounded_box(Vector3(0, floor_y-.2, 0), Vector3(ROOM_HALF*2, .4, ROOM_HALF*2), Color("9c6a42"), Vector3.ZERO, false, 10.0)
+	kit.add_rounded_box(Vector3(0, floor_y-.2, 0), Vector3(ROOM_HALF*2, .4, ROOM_HALF*2), _c("floor", Color("9c6a42")), Vector3.ZERO, false, 10.0)
 	for i in 12:
-		kit.add_rounded_box(Vector3(-ROOM_HALF+(i+.5)*2.5, floor_y+.01, 0), Vector3(.06, .03, ROOM_HALF*2), Color("7f5433"), Vector3.ZERO, false, 10.0)
+		kit.add_rounded_box(Vector3(-ROOM_HALF+(i+.5)*2.5, floor_y+.01, 0), Vector3(.06, .03, ROOM_HALF*2), _c("floor_line", Color("7f5433")), Vector3.ZERO, false, 10.0)
 	for side in 4:
 		var angle := side*PI*.5
 		var basis := Basis(Vector3.UP, angle)
 		var rotation := Vector3(0, angle, 0)
 		var at := func(x: float, y: float, inset: float) -> Vector3:
 			return basis*Vector3(x, floor_y+y, -ROOM_HALF+inset)
-		kit.add_rounded_box(at.call(0.0, WALL_HEIGHT*.5, -.2), Vector3(ROOM_HALF*2, WALL_HEIGHT, .4), PLASTER, rotation, false, 10.0)
-		kit.add_rounded_box(at.call(0.0, 1.6, .06), Vector3(ROOM_HALF*2, 3.2, .3), WOOD_DEEP, rotation, true, 10.0)
+		kit.add_rounded_box(at.call(0.0, WALL_HEIGHT*.5, -.2), Vector3(ROOM_HALF*2, WALL_HEIGHT, .4), _c("plaster", PLASTER), rotation, false, 10.0)
+		kit.add_rounded_box(at.call(0.0, 1.6, .06), Vector3(ROOM_HALF*2, 3.2, .3), _c("wood_deep", WOOD_DEEP), rotation, true, 10.0)
 		for p in 6:
-			kit.add_rounded_box(at.call(-ROOM_HALF+p*6.0, WALL_HEIGHT*.5, .25), Vector3(.5, WALL_HEIGHT, .5), POST, rotation, true, 10.0)
-		kit.add_rounded_box(at.call(0.0, 9.6, .25), Vector3(ROOM_HALF*2, .45, .45), POST, rotation, true, 10.0)
+			kit.add_rounded_box(at.call(-ROOM_HALF+p*6.0, WALL_HEIGHT*.5, .25), Vector3(.5, WALL_HEIGHT, .5), _c("post", POST), rotation, true, 10.0)
+		kit.add_rounded_box(at.call(0.0, 9.6, .25), Vector3(ROOM_HALF*2, .45, .45), _c("post", POST), rotation, true, 10.0)
 		for panel in 5:
 			var x := -ROOM_HALF+3.0+panel*6.0
 			if side == 0 and panel == 2:
@@ -116,48 +130,56 @@ func _room() -> Node3D:
 				_shelves(kit, at, rotation, basis, x)
 				continue
 			_shoji(kit, at, rotation, x)
+	var lanterns := MeshKit.new()
 	for i in 8:
 		var a := TAU*i/8.0+.2
-		_lantern(kit, Vector3(sin(a)*9.5, 5.5+(i % 3)*.9, cos(a)*9.5))
+		_lantern(lanterns, Vector3(sin(a)*9.5, 5.5+(i % 3)*.9, cos(a)*9.5))
+	var lantern_node := lanterns.build(.06, false)
+	if decor and decor.effect == "fireflies":
+		var glow := ShaderMaterial.new()
+		glow.shader = MeshKit.TOON
+		glow.set_shader_parameter("glow", .55)
+		(lantern_node.get_node("Fill") as MeshInstance3D).material_override = glow
+	add_child(lantern_node)
 	_stove(kit, Vector3(-9.5, floor_y, -9.5))
 	return kit.build(.06, false)
 
 func _shoji(kit: MeshKit, at: Callable, rotation: Vector3, x: float) -> void:
-	kit.add_rounded_box(at.call(x, 6.2, .2), Vector3(5.2, 5.6, .1), PAPER, rotation, true, 10.0)
+	kit.add_rounded_box(at.call(x, 6.2, .2), Vector3(5.2, 5.6, .1), _c("paper", PAPER), rotation, true, 10.0)
 	for c in 3:
-		kit.add_rounded_box(at.call(x-1.3+c*1.3, 6.2, .27), Vector3(.08, 5.6, .06), POST, rotation, false, 10.0)
+		kit.add_rounded_box(at.call(x-1.3+c*1.3, 6.2, .27), Vector3(.08, 5.6, .06), _c("post", POST), rotation, false, 10.0)
 	for r in 4:
-		kit.add_rounded_box(at.call(x, 3.9+r*1.5, .27), Vector3(5.2, .08, .06), POST, rotation, false, 10.0)
+		kit.add_rounded_box(at.call(x, 3.9+r*1.5, .27), Vector3(5.2, .08, .06), _c("post", POST), rotation, false, 10.0)
 
 ## Split indigo curtain over the doorway, each strip with a white tofu emblem.
 func _noren(kit: MeshKit, at: Callable, rotation: Vector3, x: float) -> void:
 	kit.add_rounded_box(at.call(x, 6.3, .12), Vector3(5.2, 5.8, .1), Color("6b4a33"), rotation, false, 10.0)
-	kit.add_rounded_box(at.call(x, 9.1, .45), Vector3(5.6, .16, .16), POST, rotation, true, 10.0)
+	kit.add_rounded_box(at.call(x, 9.1, .45), Vector3(5.6, .16, .16), _c("post", POST), rotation, true, 10.0)
 	for s in 4:
 		var sx := x-1.95+s*1.3
-		kit.add_rounded_box(at.call(sx, 7.4, .5), Vector3(1.22, 3.2, .06), INDIGO, rotation, true, 10.0)
-		kit.add("cylinder", at.call(sx, 7.6, .57), Vector3(.8, .04, .8), PAPER, rotation+Vector3(PI*.5, 0, 0), false)
-		kit.add_rounded_box(at.call(sx, 7.6, .62), Vector3(.36, .36, .04), INDIGO, rotation, false, 8.0)
+		kit.add_rounded_box(at.call(sx, 7.4, .5), Vector3(1.22, 3.2, .06), _c("noren", INDIGO), rotation, true, 10.0)
+		kit.add("cylinder", at.call(sx, 7.6, .57), Vector3(.8, .04, .8), _c("paper", PAPER), rotation+Vector3(PI*.5, 0, 0), false)
+		kit.add_rounded_box(at.call(sx, 7.6, .62), Vector3(.36, .36, .04), _c("noren", INDIGO), rotation, false, 8.0)
 
 func _shelves(kit: MeshKit, at: Callable, rotation: Vector3, basis: Basis, x: float) -> void:
 	var tofu := [Color("fff5dc"), Color("e3f3c9"), Color("ffe3ec"), Color("fbdfae")]
 	for level in 3:
 		var y := 4.0+level*1.8
-		kit.add_rounded_box(at.call(x, y, .8), Vector3(5.2, .16, 1.1), WOOD, rotation, true, 10.0)
+		kit.add_rounded_box(at.call(x, y, .8), Vector3(5.2, .16, 1.1), _c("wood", WOOD), rotation, true, 10.0)
 		for item in 5:
 			var ix := x-2.0+item
 			if (item+level) % 3 == 0:
 				kit.add("cylinder", at.call(ix, y+.26, .8), Vector3(.62, .36, .62), Color("f2efe6"))
-				kit.add("torus", at.call(ix, y+.44, .8), Vector3(.64, .12, .64), INDIGO, Vector3.ZERO, false)
+				kit.add("torus", at.call(ix, y+.44, .8), Vector3(.64, .12, .64), _c("noren", INDIGO), Vector3.ZERO, false)
 			else:
 				kit.add_rounded_box(at.call(ix, y+.3, .8), Vector3(.52, .44, .5), tofu[(item+level) % 4], rotation, true, 7.0)
 
 func _lantern(kit: MeshKit, center: Vector3) -> void:
 	# The room is open above so a tall tower never pushes the camera into the ceiling.
 	kit.add("cylinder", center+Vector3(0, (WALL_HEIGHT-center.y)*.5+.8, 0), Vector3(.05, WALL_HEIGHT-center.y-1.6, .05), INK, Vector3.ZERO, false)
-	kit.add("sphere", center, Vector3(1.3, 1.65, 1.3), LANTERN)
+	kit.add("sphere", center, Vector3(1.3, 1.65, 1.3), _c("lantern", LANTERN))
 	for ring in [-.45, 0.0, .45]:
-		kit.add("torus", center+Vector3(0, ring, 0), Vector3(1.28-absf(ring)*.35, .05, 1.28-absf(ring)*.35), LANTERN.darkened(.2), Vector3.ZERO, false)
+		kit.add("torus", center+Vector3(0, ring, 0), Vector3(1.28-absf(ring)*.35, .05, 1.28-absf(ring)*.35), _c("lantern", LANTERN).darkened(.2), Vector3.ZERO, false)
 	for cap in [-1.0, 1.0]:
 		kit.add("cylinder", center+Vector3(0, cap*.8, 0), Vector3(.62, .16, .62), INK)
 	kit.add("cylinder", center+Vector3(0, -1.05, 0), Vector3(.1, .4, .1), Color("ffcf4d"), Vector3.ZERO, false)
@@ -187,7 +209,46 @@ func _build_steam() -> void:
 		add_child(puff)
 		steam.append(puff)
 
+## Ambient drifting particles for the room theme: snowflakes, sakura petals or fireflies.
+func _build_particles(effect: String) -> void:
+	if effect in ["", "steam"]:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = 7
+	var mesh := SphereMesh.new()
+	mesh.radial_segments = 8
+	mesh.rings = 4
+	var material := StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.albedo_color = {"snow": Color(1, 1, 1, .95), "petals": Color("ffb3c8"), "fireflies": Color(1, .9, .45, .9)}[effect]
+	var count: int = {"snow": 70, "petals": 45, "fireflies": 30}[effect]
+	for i in count:
+		var dot := MeshInstance3D.new()
+		dot.mesh = mesh
+		dot.material_override = material
+		dot.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		dot.scale = {"snow": Vector3.ONE*.12, "petals": Vector3(.2, .04, .14), "fireflies": Vector3.ONE*.1}[effect]
+		add_child(dot)
+		particles.append({"node": dot, "effect": effect, "angle": rng.randf()*TAU, "radius": rng.randf_range(3.5, 12.5), "phase": rng.randf(), "speed": rng.randf_range(.7, 1.3)})
+
 func _process(_delta: float) -> void:
+	var now := Time.get_ticks_msec()*.001
+	for item in particles:
+		var node: MeshInstance3D = item.node
+		var t: float = now*float(item.speed)+float(item.phase)*20.0
+		var angle: float = item.angle+sin(t*.3)*.2
+		var height: float
+		match item.effect:
+			"snow":
+				height = 16.0-fmod(t*1.1, 19.0)
+			"petals":
+				height = 16.0-fmod(t*.7, 19.0)
+				node.rotation = Vector3(t*1.7, t, t*1.3)
+			"fireflies":
+				height = 1.5+sin(t*.8)*2.0+float(item.phase)*5.0
+				angle += t*.05
+		node.position = Vector3(sin(angle), 0, cos(angle))*float(item.radius)+Vector3(sin(t)*.4, height, cos(t*.9)*.4)
 	var clock := Time.get_ticks_msec()*.00025
 	for puff in steam:
 		var t := fmod(clock+float(puff.get_meta("phase")), 1.0)

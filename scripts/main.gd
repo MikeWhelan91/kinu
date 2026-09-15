@@ -20,6 +20,7 @@ var tutorial_button: Button
 var tutorial_step: int = -1
 var initial_best: int = 0
 var collection_filter: String = "All"
+var shop_tab: String = "kinu"
 var last_stats: Dictionary = {}
 var safe_top: float = 26
 var safe_bottom: float = 20

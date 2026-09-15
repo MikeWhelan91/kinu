@@ -10,8 +10,37 @@ const LEAF := Color("6cc94c")
 const OUTLINE_WIDTH := .02
 const MOODS := ["calm", "falling", "squish", "happy", "content", "worried"]
 
+const GLASS := preload("res://resources/shaders/toon_glass.gdshader")
+
 static var bodies: Dictionary = {}
 static var faces: Dictionary = {}
+static var materials: Dictionary = {}
+
+## Matte flavours share the plain toon material; special finishes get their own tuned copy.
+static func body_material(flavour: KinuFlavour) -> ShaderMaterial:
+	if flavour.material == "":
+		return MeshKit.toon_material()
+	if not materials.has(flavour.material):
+		var mat := ShaderMaterial.new()
+		mat.shader = GLASS if flavour.material in ["glass", "jelly"] else MeshKit.TOON
+		match flavour.material:
+			"shiny":
+				mat.set_shader_parameter("shine", .9)
+				mat.set_shader_parameter("rim_strength", .2)
+				mat.set_shader_parameter("shadow_tint", Color(.82, .68, .55))
+			"glass":
+				mat.set_shader_parameter("opacity", .72)
+				mat.set_shader_parameter("shine", 1.0)
+				mat.set_shader_parameter("rim_strength", .45)
+			"jelly":
+				mat.set_shader_parameter("opacity", .8)
+				mat.set_shader_parameter("shine", .7)
+				mat.set_shader_parameter("rim_strength", .3)
+			"glow":
+				mat.set_shader_parameter("glow", .28)
+				mat.set_shader_parameter("rim_strength", .35)
+		materials[flavour.material] = mat
+	return materials[flavour.material]
 
 static func build(shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit = null, mood: String = "calm") -> Node3D:
 	var root := Node3D.new()
@@ -23,7 +52,7 @@ static func build(shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit = n
 	var fill := MeshInstance3D.new()
 	fill.name = "Fill"
 	fill.mesh = bodies[key][0]
-	fill.material_override = MeshKit.toon_material()
+	fill.material_override = body_material(flavour)
 	root.add_child(fill)
 	var line := MeshInstance3D.new()
 	line.name = "Outline"
@@ -36,20 +65,21 @@ static func build(shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit = n
 	face.material_override = MeshKit.toon_material()
 	face.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(face)
-	set_mood(root, shape, mood)
+	set_mood(root, shape, mood, flavour.light_face)
 	return root
 
-static func set_mood(root: Node3D, shape: KinuShape, mood: String) -> void:
-	var key := shape.id+"/"+mood
+static func set_mood(root: Node3D, shape: KinuShape, mood: String, light_face: bool = false) -> void:
+	var key := "%s/%s/%s"%[shape.id, mood, light_face]
 	if not faces.has(key):
 		var kit := MeshKit.new()
-		_face(kit, shape, mood)
+		_face(kit, shape, mood, Color("fff6e2") if light_face else INK)
 		faces[key] = kit.commit_fill()
 	(root.get_node("Face") as MeshInstance3D).mesh = faces[key]
 
 static func clear_cache() -> void:
 	bodies.clear()
 	faces.clear()
+	materials.clear()
 
 static func _body(kit: MeshKit, shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit) -> void:
 	var size := shape.size
@@ -64,6 +94,23 @@ static func _body(kit: MeshKit, shape: KinuShape, flavour: KinuFlavour, outfit: 
 		"speckled":
 			for i in 14:
 				surface.mark(sin(i*2.7)*half.x*.8, cos(i*1.9)*half.y*.8, Vector2(.05, .025), INK, i, 0.0)
+		"grain":
+			for i in 6:
+				surface.mark(sin(i*1.3)*half.x*.2, -half.y*.7+i*half.y*.28, Vector2(half.x*1.3, .022), c.darkened(.28), sin(i*2.1)*.12, .002)
+		"veins":
+			for i in 5:
+				surface.mark(sin(i*2.9)*half.x*.5, cos(i*1.7)*half.y*.5, Vector2(.42, .014), Color("b7b1a6"), i*1.1, .002)
+		"stars", "sparkle":
+			var count := 12 if flavour.pattern == "stars" else 3
+			for i in count:
+				var at := Vector2(sin(i*2.7+.4)*half.x*.75, cos(i*1.9+.2)*half.y*.75)
+				var twinkle := .05 if flavour.pattern == "stars" else .14
+				var tone := Color("fff3b0") if i % 3 == 0 else Color.WHITE
+				for arm in 2:
+					surface.mark(at.x, at.y, Vector2(twinkle, twinkle*.18), tone, arm*PI*.5, .006)
+		"facets":
+			for i in 4:
+				surface.mark(-half.x*.4+i*half.x*.28, half.y*(.35-i*.18), Vector2(.3, .016), Color.WHITE, .8, .006)
 		"petal":
 			for i in 5:
 				var a := TAU*i/5.0
@@ -75,7 +122,7 @@ static func _body(kit: MeshKit, shape: KinuShape, flavour: KinuFlavour, outfit: 
 	if outfit:
 		_outfit(kit, outfit, shape)
 
-static func _face(kit: MeshKit, shape: KinuShape, mood: String) -> void:
+static func _face(kit: MeshKit, shape: KinuShape, mood: String, ink: Color = INK) -> void:
 	var face := Face.new(kit, shape.size, shape.roundness)
 	var half := shape.size*.5
 	var y := half.y*.35 if shape.id == "tall" else 0.0
@@ -85,42 +132,42 @@ static func _face(kit: MeshKit, shape: KinuShape, mood: String) -> void:
 		match mood:
 			"happy":
 				for side in [-1.0, 1.0]:
-					face.mark(eye+side*.03, y+.05, Vector2(.08, .026), INK, side*-.75, .004)
+					face.mark(eye+side*.03, y+.05, Vector2(.08, .026), ink, side*-.75, .004)
 			"content":
 				for side in [-1.0, 1.0]:
-					face.mark(eye+side*.03, y+.03, Vector2(.08, .024), INK, side*.75, .004)
+					face.mark(eye+side*.03, y+.03, Vector2(.08, .024), ink, side*.75, .004)
 			"squish":
 				for side in [-1.0, 1.0]:
-					face.mark(eye-s*.01, y+.04+side*.025, Vector2(.085, .026), INK, s*side*.5, .004)
+					face.mark(eye-s*.01, y+.04+side*.025, Vector2(.085, .026), ink, s*side*.5, .004)
 			"falling":
-				face.mark(eye, y+.05, Vector2(.13, .17), INK, 0, 0.0)
+				face.mark(eye, y+.05, Vector2(.13, .17), ink, 0, 0.0)
 				face.mark(eye-.02, y+.09, Vector2(.055, .06), Color.WHITE, 0, .016)
 				face.mark(eye+.025, y+.01, Vector2(.025, .025), Color.WHITE, 0, .016)
 			_:
 				if shape.sleepy and mood == "calm":
-					face.mark(eye, y+.03, Vector2(.16, .04), INK, s*-.15, .006)
+					face.mark(eye, y+.03, Vector2(.16, .04), ink, s*-.15, .006)
 				else:
-					face.mark(eye, y+.04, Vector2(.1, .135), INK, 0, 0.0)
+					face.mark(eye, y+.04, Vector2(.1, .135), ink, 0, 0.0)
 					face.mark(eye-.015, y+.07, Vector2(.035, .04), Color.WHITE, 0, .016)
 		if mood == "worried":
-			face.mark(eye+s*.01, y+.17, Vector2(.11, .026), INK, s*-.45, .004)
+			face.mark(eye+s*.01, y+.17, Vector2(.11, .026), ink, s*-.45, .004)
 		var blush := Color("ff8aa3") if mood in ["happy", "squish", "falling"] else BLUSH
 		face.mark(x+s*minf(half.x*.62, .33), y-.07, Vector2(.18, .09), blush, 0, -.004)
 	match mood:
 		"calm", "content":
 			for s in [-1.0, 1.0]:
-				face.mark(x+s*.034, y-.07, Vector2(.085, .032), INK, s*.55, .004)
+				face.mark(x+s*.034, y-.07, Vector2(.085, .032), ink, s*.55, .004)
 		"worried", "squish":
 			for k in 4:
-				face.mark(x-.06+k*.04, y-.08+(.01 if k % 2 else -.01), Vector2(.03, .02), INK, 0, .004)
+				face.mark(x-.06+k*.04, y-.08+(.01 if k % 2 else -.01), Vector2(.03, .02), ink, 0, .004)
 			if mood == "worried":
 				kit.add("bead", Vector3(-half.x*.72, half.y*.6, half.z+.06), Vector3(.13, .16, .1), SWEAT, Vector3.ZERO, false)
 				kit.add("cone", Vector3(-half.x*.72, half.y*.6+.11, half.z+.06), Vector3(.11, .16, .08), SWEAT, Vector3.ZERO, false)
 		"happy":
-			face.mark(x, y-.08, Vector2(.14, .1), INK, 0, 0.0)
+			face.mark(x, y-.08, Vector2(.14, .1), ink, 0, 0.0)
 			face.mark(x, y-.105, Vector2(.075, .04), Color("ff6f86"), 0, .006)
 		"falling":
-			face.mark(x, y-.1, Vector2(.1, .13), INK, 0, 0.0)
+			face.mark(x, y-.1, Vector2(.1, .13), ink, 0, 0.0)
 			face.mark(x, y-.13, Vector2(.06, .04), Color("ff6f86"), 0, .006)
 
 ## Hood = a cap over the top plus a back panel, so it wraps like a real onesie and leaves the face showing.

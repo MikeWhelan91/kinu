@@ -5,7 +5,7 @@ extends RefCounted
 static func show(app: Node) -> void:
 	app._new_screen("collection",true)
 	var layout = app._header("Kinu Book")
-	var flavours: Array[KinuFlavour] = app.run.catalog.flavours
+	var flavours: Array[KinuFlavour] = app.run.unlocked_flavours()
 	app._center_label(layout,"%d / %d flavours found"%[found(flavours),flavours.size()],18,NestTheme.MUTED)
 	var filter_row = HBoxContainer.new()
 	layout.add_child(filter_row)

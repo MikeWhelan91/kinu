@@ -96,7 +96,7 @@ func _ready() -> void:
 	add_child(app)
 	await frames(5)
 	check(app.page=="home","main scene starts at home")
-	check(app.run.catalog.shapes.size()==5 and app.run.catalog.flavours.size()==6,"data-driven Kinu shapes and flavours")
+	check(app.run.catalog.shapes.size()==5 and app.run.unlocked_flavours().size()==6 and app.run.catalog.flavours.size()==18,"data-driven Kinu shapes, six base flavours and twelve shop flavours")
 	check(click_button("Play"),"main play button connected")
 	await frames(2)
 	var run: NestRun = app.run
@@ -315,7 +315,7 @@ func _ready() -> void:
 		check(run.placed==1 and run.state=="aim","individual landing: "+run.catalog.shapes[i].id)
 	for flavour in run.catalog.flavours:
 		Save.discover(flavour.id)
-	check(KinuBookScreen.found(run.catalog.flavours)==6,"all six flavours discoverable")
+	check(KinuBookScreen.found(run.catalog.flavours)==run.catalog.flavours.size(),"every flavour discoverable")
 
 	# Moods follow the pile: worried while swaying, happy after landing.
 	var mood_body := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0])
@@ -344,14 +344,31 @@ func _ready() -> void:
 	# Soybeans: earned by height, spent on outfits, which then dress every Kinu.
 	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(250,false)==35 and NestRun.beans_for(250,true)==45,"beans scale with height and reward a new best")
 	Save.data.beans = 100
-	Save.data.owned_outfits = []
+	Save.data.owned = []
 	Save.data.outfit = ""
-	check(not Save.buy_outfit("tanuki",200) and int(Save.data.beans)==100,"can't buy an outfit you can't afford")
-	check(Save.buy_outfit("frog",90) and int(Save.data.beans)==10 and Save.data.outfit=="frog","buying spends beans and wears the outfit")
-	check(Save.buy_outfit("frog",90) and int(Save.data.beans)==10,"buying something you own again is free")
+	check(not Save.buy("outfit","tanuki",200) and int(Save.data.beans)==100,"can't buy an outfit you can't afford")
+	check(Save.buy("outfit","frog",90) and int(Save.data.beans)==10 and Save.data.outfit=="frog","buying spends beans and wears the outfit")
+	check(Save.buy("outfit","frog",90) and int(Save.data.beans)==10,"buying something you own again is free")
 	Save.persist()
 	Save.load_data()
-	check(Save.owns_outfit("frog") and int(Save.data.beans)==10,"beans and owned outfits survive reload")
+	check(Save.owns("outfit","frog") and int(Save.data.beans)==10,"beans and owned items survive reload")
+	# Shop flavours join the spawn pool only once bought.
+	var gold := run.catalog.flavours.filter(func(f: KinuFlavour) -> bool: return f.id == "gold")[0] as KinuFlavour
+	check(not run.unlocked_flavours().has(gold),"gold Kinu can't spawn before it's bought")
+	Save.data.beans = 2000
+	check(Save.buy("flavour","gold",gold.price) and run.unlocked_flavours().has(gold),"bought flavours join the spawn mix")
+	# Box and room skins swap the scene without changing the box's size.
+	check(Save.buy("box","lacquer",250) and Save.buy("room","winter",350),"buying skins equips them")
+	run.refresh_decor()
+	check(run.box.decor.id=="lacquer" and run.room.decor.id=="winter","equipped box and room are built into the scene")
+	Save.data.box = "hinoki"
+	Save.data.room = "shop"
+	run.refresh_decor()
+	var old := FileAccess.open(Save.save_path,FileAccess.WRITE)
+	old.store_string(JSON.stringify({"version": 2, "owned_outfits": ["bunny"]}))
+	old.close()
+	Save.load_data()
+	check(Save.owns("outfit","bunny"),"outfits bought in the first shop build carry over")
 	app._shop()
 	await frames(2)
 	check(app.page=="shop","shop navigation")

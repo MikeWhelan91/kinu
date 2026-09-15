@@ -11,7 +11,7 @@ static func home(app: Node) -> void:
 	app.screen.move_child(front,1)
 	var buttons = app._vbox(app.content,12)
 	buttons.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	buttons.offset_top = -250
+	buttons.offset_top = -196
 	buttons.offset_left = 24
 	buttons.offset_right = -24
 	var play = NestTheme.button("Play",func() -> void:
@@ -32,11 +32,12 @@ static func home(app: Node) -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.add_theme_font_size_override("font_size",19)
 		row.add_child(button)
-	var flavours: Array[KinuFlavour] = app.run.catalog.flavours
-	var stats_row = CenterContainer.new()
-	stats_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stats_row.add_child(NestTheme.bean_pill("%s beans  ·  Best %s cm  ·  %d / %d flavours"%[app._number(Save.data.beans),app._number(Save.data.best),KinuBookScreen.found(flavours),flavours.size()],17))
-	buttons.add_child(stats_row)
+	# Currency lives in the top-right corner, like a proper wallet.
+	var wallet := NestTheme.bean_pill(app._number(Save.data.beans),22)
+	wallet.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	wallet.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	wallet.offset_top = 4
+	app.content.add_child(wallet)
 
 static func results(app: Node, stats: Dictionary) -> void:
 	app.last_stats = stats

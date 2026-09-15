@@ -34,6 +34,8 @@ var menu_mode: bool = true
 var accepting_input: bool = true
 var fallen_body: KinuBody
 var grab_lift: float = 0.0
+var room: TofuShop
+var box: TofuBox
 ## Space kept clear at the bottom of the screen (home indicator, rounded corners), in viewport pixels.
 var bottom_inset: float = 20.0
 ## 0 = rock solid, 1 = the part above `wobble_cut` is past its support and about to tip.
@@ -60,8 +62,7 @@ const SPAWN_MAX_TURN := .8
 
 func _ready() -> void:
 	rng.randomize()
-	add_child(TofuShop.new())
-	add_child(TofuBox.new())
+	refresh_decor()
 	orbit.camera = Camera3D.new()
 	orbit.camera.fov = 52
 	orbit.camera.keep_aspect = Camera3D.KEEP_WIDTH
@@ -140,7 +141,25 @@ func _clear() -> void:
 	gesture = ""
 	pointer_id = -99
 
+## Rebuilds the box and room if the equipped skins changed (e.g. after a shop visit).
+func refresh_decor() -> void:
+	var box_decor := catalog.find_decor("box", str(Save.data.box))
+	if box == null or box.decor != box_decor:
+		if box:
+			box.free()
+		box = TofuBox.new()
+		box.decor = box_decor
+		add_child(box)
+	var room_decor := catalog.find_decor("room", str(Save.data.room))
+	if room == null or room.decor != room_decor:
+		if room:
+			room.free()
+		room = TofuShop.new()
+		room.decor = room_decor
+		add_child(room)
+
 func show_menu() -> void:
+	refresh_decor()
 	_clear()
 	state = "menu"
 	menu_mode = true
@@ -176,6 +195,7 @@ func _flavour(id: String) -> KinuFlavour:
 	return catalog.flavours[0]
 
 func begin() -> void:
+	refresh_decor()
 	_clear()
 	menu_mode = false
 	score = 0
@@ -210,10 +230,19 @@ func choose_next() -> void:
 		shape_weights.append(weight)
 	next_shape = catalog.shapes[_weighted(shape_weights)]
 	last_shape = next_shape.id
+	var pool := unlocked_flavours()
 	var flavour_weights: Array[float] = []
-	for item in catalog.flavours:
+	for item in pool:
 		flavour_weights.append(item.spawn_weight)
-	next_flavour = catalog.flavours[_weighted(flavour_weights)]
+	next_flavour = pool[_weighted(flavour_weights)]
+
+## Base flavours plus any bought in the shop; these are what can spawn.
+func unlocked_flavours() -> Array[KinuFlavour]:
+	var pool: Array[KinuFlavour] = []
+	for item in catalog.flavours:
+		if Save.owns("flavour", item.id, item.price):
+			pool.append(item)
+	return pool
 
 func _weighted(weights: Array[float]) -> int:
 	var total := 0.0

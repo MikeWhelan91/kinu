@@ -8,7 +8,7 @@ func _ready() -> void:
 	load_data()
 
 func defaults() -> Dictionary:
-	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned_outfits": []}
+	return {"version": 2, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "beans": 0, "owned": [], "box": "hinoki", "room": "shop"}
 
 func load_data() -> void:
 	data = defaults()
@@ -41,16 +41,24 @@ func load_data() -> void:
 				"controls":
 					if value in ["classic", "grab"]:
 						data[key] = value
-				"owned_outfits":
+				"owned":
 					if value is Array:
 						for item in value:
-							if item is String and not data.owned_outfits.has(item):
-								data.owned_outfits.append(item)
+							if item is String and not data.owned.has(item):
+								data.owned.append(item)
+				"box", "room":
+					if value is String and value != "":
+						data[key] = value
 				"discovered":
 					if value is Array:
 						for item in value:
 							if item is String and not data.discovered.has(item):
 								data.discovered.append(item)
+		# Early shop builds stored outfits separately.
+		if loaded.get("owned_outfits") is Array:
+			for item in loaded.owned_outfits:
+				if item is String and not data.owned.has("outfit:"+item):
+					data.owned.append("outfit:"+item)
 		# Version 1 recorded the best as a piece count; from version 2 it is the tower height in cm.
 		if int(loaded.get("version", 1)) < 2:
 			data.best = NestRun.height_cm(float(data.best_height)) if float(data.best_height) > 0 else 0
@@ -86,7 +94,7 @@ func discover(id: String) -> bool:
 	return true
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "controls", "outfit", "box", "room"]:
 		data[key] = value
 		persist()
 
@@ -94,18 +102,19 @@ func add_beans(amount: int) -> void:
 	data.beans = maxi(0, int(data.beans)+amount)
 	persist()
 
-func owns_outfit(id: String) -> bool:
-	return id == "" or data.owned_outfits.has(id)
+## kind is "flavour", "outfit", "box" or "room". Free items (price 0 or no outfit) are always owned.
+func owns(kind: String, id: String, price: int = 1) -> bool:
+	return id == "" or price <= 0 or data.owned.has(kind+":"+id)
 
-## Spends soybeans on an outfit and wears it. Returns false if it can't be afforded.
-func buy_outfit(id: String, price: int) -> bool:
-	if owns_outfit(id):
-		return true
-	if int(data.beans) < price:
-		return false
-	data.beans = int(data.beans)-price
-	data.owned_outfits.append(id)
-	data.outfit = id
+## Spends soybeans on a shop item and equips it where that makes sense. False if unaffordable.
+func buy(kind: String, id: String, price: int) -> bool:
+	if not owns(kind, id, price):
+		if int(data.beans) < price:
+			return false
+		data.beans = int(data.beans)-price
+		data.owned.append(kind+":"+id)
+	if kind in ["outfit", "box", "room"]:
+		data[kind] = id
 	persist()
 	return true
 

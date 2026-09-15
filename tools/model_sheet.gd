@@ -15,7 +15,9 @@ func _ready() -> void:
 	var block := catalog.shapes[0]
 	var rows := [
 		["Shapes", catalog.shapes.map(func(s: KinuShape) -> Array: return [s, silken, null, "calm", s.display_name])],
-		["Flavours", catalog.flavours.map(func(f: KinuFlavour) -> Array: return [block, f, null, "calm", f.display_name])],
+		["Flavours", catalog.flavours.slice(0, 6).map(func(f: KinuFlavour) -> Array: return [block, f, null, "calm", f.display_name])],
+		["Shop flavours", catalog.flavours.slice(6, 12).map(func(f: KinuFlavour) -> Array: return [block, f, null, "calm", f.display_name])],
+		["Specials", catalog.flavours.slice(12).map(func(f: KinuFlavour) -> Array: return [block, f, null, "calm", f.display_name])],
 		["Moods", KinuModel.MOODS.map(func(m: String) -> Array: return [block, silken, null, m, m.capitalize()])],
 		["Outfits", catalog.outfits.map(func(o: KinuOutfit) -> Array: return [block, silken, o, "calm", o.display_name])],
 	]
@@ -35,10 +37,10 @@ func _ready() -> void:
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.keep_aspect = Camera3D.KEEP_WIDTH
 	camera.size = 16.5
-	camera.position = Vector3(.3, 3.4, 12)
+	camera.position = Vector3(.3, -.7, 12)
 	add_child(camera)
 	camera.rotation.x = -.2
-	get_window().size = Vector2i(1400, 1260)
+	get_window().size = Vector2i(1400, 1900)
 	await get_tree().create_timer(.6).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://docs/models.png")

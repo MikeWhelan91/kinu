@@ -99,6 +99,13 @@ static func _choice(app: Node, parent: VBoxContainer, title: String, options: Ar
 		row.add_child(button)
 	parent.add_child(row)
 
+## Shared MIT terms for the iOS plugins shipped with the game.
+const MIT_LICENSE := """Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."""
+
 static func credits(app: Node) -> void:
 	app._new_screen("credits", true)
 	var layout = app._header("Credits", app._settings)
@@ -112,7 +119,7 @@ static func credits(app: Node) -> void:
 	text.add_theme_color_override("default_color", NestTheme.INK)
 	text.add_theme_font_size_override("normal_font_size", 16)
 	text.add_theme_font_size_override("bold_font_size", 20)
-	text.text = "[b]Kinu Tumble[/b]\nOriginal characters, tofu shop, interface, music and sound effects created for this game.\n\n[b]Nunito[/b]\nVernon Adams, Cyreal, Jacques Le Bailly. SIL Open Font License 1.1.\n\n[b]M PLUS Rounded 1c[/b]\nCopyright 2016 The Rounded M+ Project Authors (Coji Morishita, M+ Fonts Project). SIL Open Font License 1.1, reproduced below.\n\n[b]jf open 粉圓[/b]\nCopyright 2020–2024 jf open huninn, redistributed by justfont Co., Ltd. SIL Open Font License 1.1; Hanzi derived from Kosugi Maru (Apache-2.0).\n\n[b]Noto Sans CJK KR[/b]\nCopyright 2014–2025 Adobe, Google and Noto contributors. SIL Open Font License 1.1, reproduced below.\n\n"+FileAccess.get_file_as_string("res://assets/fonts/OFL.txt")+"\n\n[b]Godot Engine[/b]\n"+Engine.get_license_text()
+	text.text = "[b]Kinu Tumble[/b]\nOriginal characters, tofu shop and interface created for this game. Music and sound effects used under royalty-free licences.\n\n[b]Nunito[/b]\nVernon Adams, Cyreal, Jacques Le Bailly. SIL Open Font License 1.1.\n\n[b]M PLUS Rounded 1c[/b]\nCopyright 2016 The Rounded M+ Project Authors (Coji Morishita, M+ Fonts Project). SIL Open Font License 1.1, reproduced below.\n\n[b]jf open 粉圓[/b]\nCopyright 2020–2024 jf open huninn, redistributed by justfont Co., Ltd. SIL Open Font License 1.1; Hanzi derived from Kosugi Maru (Apache-2.0).\n\n[b]Noto Sans CJK KR[/b]\nCopyright 2014–2025 Adobe, Google and Noto contributors. SIL Open Font License 1.1, reproduced below.\n\n"+FileAccess.get_file_as_string("res://assets/fonts/OFL.txt")+"\n\n[b]SwiftGodot and GodotApplePlugins[/b]\nCopyright (c) 2025 Miguel de Icaza. MIT License, reproduced below.\n\n[b]Godot AdMob Plugin[/b]\nCopyright (c) 2024-present Cengiz (cengiz-pz). MIT License, reproduced below.\n\n"+MIT_LICENSE+"\n\n[b]Godot Engine[/b]\n"+Engine.get_license_text()
 	for info in Engine.get_copyright_info():
 		text.text += "\n\n"+str(info.get("name", ""))
 		for part in info.get("parts", []):

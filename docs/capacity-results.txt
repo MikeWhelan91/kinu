@@ -1,0 +1,5 @@
+BOX  inner half 1.980  wall 0.264  rim height 1.210  |  KINU scale 0.90
+
+PERFECT  avg  18.2 Kinu  best  31  best height 311 cm  (6/6 runs ended by tumbling, not the turn cap)
+SKILLED  avg  18.3 Kinu  best  30  best height 155 cm  (6/6 runs ended by tumbling, not the turn cap)
+SHAKY    avg  20.7 Kinu  best  29  best height 86 cm  (6/6 runs ended by tumbling, not the turn cap)

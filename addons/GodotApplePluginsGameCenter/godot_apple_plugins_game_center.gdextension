@@ -1,0 +1,10 @@
+[configuration]
+
+entry_symbol = "godot_apple_plugins_game_center_start"
+compatibility_minimum = 4.2
+
+[libraries]
+ios = "res://addons/GodotApplePluginsGameCenter/bin/GodotApplePluginsGameCenter.xcframework"
+
+[dependencies]
+ios = { "res://addons/GodotApplePluginsRuntime/bin/SwiftGodotRuntime.xcframework": "" }

@@ -15,11 +15,35 @@ var active_yaw: float = 0.0
 var pending: KinuBody
 var next_shape: KinuShape
 var next_flavour: KinuFlavour
+## "" for a normal Kinu, "lucky" (bonus beans) or "heart" (gives back a tumble).
+var next_special: String = ""
+var lucky_caught: int = 0
+var squirts: int = SQUIRTS_START
+## "kinu" while aiming a Kinu, "bottle" while aiming the shoyu bottle.
+var aim_mode: String = "kinu"
+var bottle: ShoyuBottle
+## Only one Lucky Kinu may appear per run.
+var lucky_spawned: bool = false
+var hearts_caught: int = 0
+var streak: int = 0
+var best_streak: int = 0
+## Seconds of play this run; pausing stops physics, so paused time isn't counted.
+var run_time: float = 0.0
+var squirts_used: int = 0
+var glazed: int = 0
+var new_flavours: int = 0
+## Successful placements at the most recent discovery, used to keep discoveries feeling special.
+var last_new_flavour_placed: int = -NEW_FLAVOUR_GAP
+var shape_counts: Dictionary = {}
+var bonus_beans: int = 0
+var flavour_counts: Dictionary = {}
 var state: String = "menu"
-## The score is the tallest settled tower this run, in centimetres: how high, not how many.
+## The score is how many Kinu are on the pile right now: in the box or stacked on it, not on the counter.
 var score: int = 0
-var next_milestone: int = 100
+var next_milestone: int = MILESTONE_STEP
 var placed: int = 0
+## Kinu that tumbled onto the counter this run; the run ends at MAX_TUMBLES.
+var tumbles: int = 0
 var tower_height: float = 0.0
 var elapsed: float = 0.0
 var hold_time: float = 0.0
@@ -44,13 +68,31 @@ var wobble_cut: float = 0.0
 var wobble_direction: Vector3 = Vector3.ZERO
 var overbalanced_time: float = 0.0
 var balance_timer: float = 0.0
-var best_ring: Node3D
-var best_label: Label3D
-var best_material: StandardMaterial3D
 
 const LEVEL_STEP := .75
+const MAX_TUMBLES := 3
+const MILESTONE_STEP := 10
+const LUCKY_BEANS := 10
+const LUCKY_CHANCE := .06
+## Lucky/Gold Star Kinu are a mid-run surprise, never an opening drop.
+const LUCKY_MIN_PLACED := 12
+const HEART_CHANCE := .12
+const TINY_CHANCE := .08
+## Familiar Kinu establish each pile before an unseen flavour can join it. Once eligible, unseen
+## flavours use their own small draw rather than competing at full weight with familiar ones.
+const NEW_FLAVOUR_FIRST_DROP := 5
+const NEW_FLAVOUR_CHANCE := .20
+const NEW_FLAVOUR_GAP := 5
+## Shoyu bottle: squirts at the start of a run, one more per pile milestone, up to a cap.
+const SQUIRTS_START := 1
+const SQUIRTS_MAX := 3
+const SQUIRT_EVERY := 20
+const TINY_SCALE := .62
+## Fallen Kinu stay on the counter this long before they are cleared away.
+const FALLEN_LINGER := 1.5
 const WOBBLE_WARN := .7
-const TIP_HOLD := .45
+## How long a section can sit overbalanced before it tips: more time to react before disaster.
+const TIP_HOLD := .7
 const KNOCK_LOOSE_SPEED := 5.0
 ## Touches this close (viewport pixels) to the held Kinu, or to its drop line, grab it.
 const GRAB_RADIUS := 120.0
@@ -58,9 +100,10 @@ const GRAB_LINE_RADIUS := 70.0
 ## New Kinu arrive off-centre and turned, so every drop needs aiming (and often a spin).
 const SPAWN_MIN_OFFSET := .6
 const SPAWN_MAX_OFFSET := 1.2
-const SPAWN_MAX_TURN := .8
+const SPAWN_MAX_TURN := .5
 
 func _ready() -> void:
+	KinuProgress.register(catalog)
 	rng.randomize()
 	refresh_decor()
 	orbit.camera = Camera3D.new()
@@ -90,35 +133,7 @@ func _ready() -> void:
 	marker.material_override = marker_material
 	marker.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(marker)
-	_build_best_ring()
 	show_menu()
-
-func _build_best_ring() -> void:
-	best_ring = Node3D.new()
-	var ring := MeshInstance3D.new()
-	var torus := TorusMesh.new()
-	torus.inner_radius = 2.55
-	torus.outer_radius = 2.71
-	torus.rings = 64
-	torus.ring_segments = 6
-	ring.mesh = torus
-	best_material = _flat(Color(1, .8, .2, .95))
-	ring.material_override = best_material
-	ring.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	best_ring.add_child(ring)
-	best_label = Label3D.new()
-	best_label.text = "BEST"
-	best_label.font = NestTheme.font
-	best_label.font_size = 48
-	best_label.outline_size = 20
-	best_label.modulate = NestTheme.CREAM
-	best_label.outline_modulate = NestTheme.INK
-	best_label.pixel_size = .01
-	best_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	best_label.no_depth_test = true
-	best_ring.add_child(best_label)
-	add_child(best_ring)
-	best_ring.hide()
 
 func _flat(color: Color) -> StandardMaterial3D:
 	var material := StandardMaterial3D.new()
@@ -128,6 +143,10 @@ func _flat(color: Color) -> StandardMaterial3D:
 	return material
 
 func _clear() -> void:
+	if is_instance_valid(bottle):
+		bottle.queue_free()
+	bottle = null
+	aim_mode = "kinu"
 	active = null
 	pending = null
 	fallen_body = null
@@ -168,22 +187,31 @@ func show_menu() -> void:
 	menu_mode = true
 	beam.hide()
 	marker.hide()
-	best_ring.hide()
 	orbit.stop_spin()
 	orbit.angle = .35
 	orbit.target_angle = .35
 	orbit.tower_top = 0
-	# Pieces are dropped just above their resting spots and settle with real physics, so they
-	# never overlap. They grip once still, like a finished tower.
+	# A run can leave the view tilted and raised for a tall tower. Snap both back so the home
+	# camera is always framed the same, instead of starting low or gliding down after a run.
+	orbit.tilt = 0.0
+	orbit.focus_height = OrbitController.BASE_FOCUS
+	orbit.shake = 0.0
+	# A deliberately arranged, gripped tableau keeps the home screen full and every face readable;
+	# gameplay still uses real falling and settling physics.
 	var pile := [
-		["slab", "silken", Vector3(-.7, .5, .3), .2], ["block", "matcha", Vector3(.8, .72, .35), -.25],
-		["long", "sesame", Vector3(0, .57, -.95), .05], ["block", "silken", Vector3(-.7, 1.32, .3), .15],
-		["ball", "sakura", Vector3(.8, 1.76, .35), 0.0], ["tall", "fried", Vector3(-.7, 2.58, .3), -.1]]
-	for entry in pile:
+		["slab", "silken", Vector3(-1.05, .46, .62), .18], ["long", "sesame", Vector3(0, .50, -.72), .04],
+		["slab", "fried", Vector3(1.05, .46, .62), -.18], ["block", "matcha", Vector3(-1.02, 1.12, .55), .16],
+		["block", "silken", Vector3(0, 1.08, -.62), -.08], ["block", "tamago", Vector3(1.02, 1.12, .55), -.18],
+		["ball", "sakura", Vector3(-.58, 1.92, .18), .08], ["block", "fried", Vector3(.62, 1.90, .18), -.14],
+		["tall", "silken", Vector3(0, 2.78, .12), .04]]
+	for i in pile.size():
+		var entry: Array = pile[i]
+		# The home tableau previews the actual run: every Kinu wears the equipped outfit.
 		var body := make_body(_shape(entry[0]), _flavour(entry[1]))
 		body.position = entry[2]
 		body.rotation.y = entry[3]
 		body.scored = true
+		body.grip()
 
 func _shape(id: String) -> KinuShape:
 	for item in catalog.shapes:
@@ -202,8 +230,27 @@ func begin() -> void:
 	_clear()
 	menu_mode = false
 	score = 0
-	next_milestone = 100
+	next_milestone = MILESTONE_STEP
 	placed = 0
+	tumbles = 0
+	next_special = ""
+	lucky_caught = 0
+	lucky_spawned = false
+	squirts = SQUIRTS_START
+	aim_mode = "kinu"
+	hearts_caught = 0
+	streak = 0
+	best_streak = 0
+	run_time = 0.0
+	squirts_used = 0
+	glazed = 0
+	new_flavours = 0
+	last_new_flavour_placed = -NEW_FLAVOUR_GAP
+	shape_counts = {}
+	orbit.tilt = 0.0
+	orbit.travelled = 0.0
+	bonus_beans = 0
+	flavour_counts = {}
 	tower_height = 0
 	elapsed = 0
 	last_shape = ""
@@ -214,9 +261,6 @@ func begin() -> void:
 	orbit.angle = 0
 	orbit.tower_top = 0
 	orbit.focus_height = OrbitController.BASE_FOCUS
-	var best := float(Save.data.best_height)
-	best_ring.visible = best > TofuBox.RIM_HEIGHT
-	best_ring.position.y = best
 	choose_next()
 	state = "ready"
 	_spawn()
@@ -227,19 +271,57 @@ func choose_next() -> void:
 		var weight := item.spawn_weight
 		# Early turns favour forgiving shapes; awkward ones arrive as the tower grows.
 		if item.tricky:
-			weight *= lerpf(.3, 1.3, clampf(placed/15.0, 0, 1))
+			weight *= lerpf(.3, 1.3, clampf(placed/25.0, 0, 1))
 		if item.id == last_shape:
 			weight *= .35
 		shape_weights.append(weight)
 	next_shape = catalog.shapes[_weighted(shape_weights)]
 	last_shape = next_shape.id
-	var pool := flavour_mix()
-	var flavour_weights: Array[float] = []
-	for item in pool:
-		flavour_weights.append(item.spawn_weight)
-	next_flavour = pool[_weighted(flavour_weights)]
+	next_flavour = _choose_flavour()
+	next_special = ""
+	if placed >= 3 and not menu_mode:
+		var roll := rng.randf()
+		if tumbles > 0 and roll < HEART_CHANCE:
+			next_special = "heart"
+		elif placed >= LUCKY_MIN_PLACED and roll > 1.0-LUCKY_CHANCE and not lucky_spawned:
+			next_special = "lucky"
+			lucky_spawned = true
+		elif roll > 1.0-LUCKY_CHANCE-TINY_CHANCE and roll <= 1.0-LUCKY_CHANCE:
+			next_special = "tiny"
 
-## Flavours whose height goal has been reached; these are what can spawn.
+## Pick familiar flavours normally, then occasionally draw from the unseen pool once the run has
+## warmed up. The active check prevents two discoveries being queued back-to-back.
+func _choose_flavour() -> KinuFlavour:
+	var pool := flavour_mix()
+	var known: Array[KinuFlavour] = []
+	var unseen: Array[KinuFlavour] = []
+	for item in pool:
+		if Save.data.discovered.has(item.id):
+			known.append(item)
+		else:
+			unseen.append(item)
+	# Respecting the mix must not force an unseen flavour into an opening drop. If every familiar
+	# flavour was switched off, temporarily use the familiar unlocked pool for the warm-up.
+	if known.is_empty() and not Save.data.discovered.is_empty():
+		for item in unlocked_flavours():
+			if Save.data.discovered.has(item.id):
+				known.append(item)
+	# A fresh save has no familiar flavour yet, so Silken (the first catalogue entry) introduces
+	# itself on the opening drop. Every later discovery follows the paced path below.
+	if known.is_empty():
+		return pool[0]
+	var active_is_unseen: bool = is_instance_valid(active) and active.flavour != null and not Save.data.discovered.has(active.flavour.id)
+	var drop_number := placed+2 if is_instance_valid(active) else placed+1
+	var discovery_ready: bool = drop_number >= NEW_FLAVOUR_FIRST_DROP \
+		and placed-last_new_flavour_placed >= NEW_FLAVOUR_GAP \
+		and not active_is_unseen and not unseen.is_empty()
+	var candidates := unseen if discovery_ready and rng.randf() < NEW_FLAVOUR_CHANCE else known
+	var weights: Array[float] = []
+	for item in candidates:
+		weights.append(item.spawn_weight)
+	return candidates[_weighted(weights)]
+
+## Flavours whose pile goal has been reached; these are what can spawn.
 func unlocked_flavours() -> Array[KinuFlavour]:
 	var pool: Array[KinuFlavour] = []
 	for item in catalog.flavours:
@@ -264,9 +346,19 @@ func _weighted(weights: Array[float]) -> int:
 			return i
 	return 0
 
-func make_body(shape: KinuShape, flavour: KinuFlavour) -> KinuBody:
+## The pattern a Kinu of this flavour wears, or null. A flavour not found yet always shows itself,
+## so the "New flavour" moment matches what lands in the box.
+func pattern_for(flavour: KinuFlavour) -> KinuFlavour:
+	return catalog.pattern(str(Save.data.outfit)) if Save.flavour_found(flavour) else null
+
+## Every Kinu wears the equipped outfit: a costume, or a pattern outfit's look over its flavour.
+func make_body(shape: KinuShape, flavour: KinuFlavour, special: String = "", wear_outfit: bool = true) -> KinuBody:
 	var body := KinuBody.new()
-	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)), catalog.finish(str(Save.data.finish)))
+	var finish: KinuFlavour = pattern_for(flavour) if wear_outfit else null
+	if special == "lucky":
+		finish = catalog.finish("gold")
+	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)) if wear_outfit else null, finish, TINY_SCALE if special == "tiny" else 1.0)
+	body.mark_special(special)
 	add_child(body)
 	body.landed.connect(_landed)
 	bodies.append(body)
@@ -276,13 +368,21 @@ func tower_top() -> float:
 	var top := TofuBox.RIM_HEIGHT*.4
 	for body in bodies:
 		if body != active and not body.fallen and body.scored and body.linear_velocity.length() < 2.0:
-			top = maxf(top, body.position.y+body.shape.size.y*.45)
+			top = maxf(top, body.position.y+body.size().y*.45)
 	return top
 
 func _spawn() -> void:
 	if state in ["over", "falling"]:
 		return
-	active = make_body(next_shape, next_flavour)
+	active = make_body(next_shape, next_flavour, next_special)
+	if placed >= 2 and squirts > 0 and not Save.data.seen_specials.has("bottle"):
+		Save.data.seen_specials.append("bottle")
+		Save.persist()
+		message.emit(tr("Tap the shoyu bottle to glue Kinu together!"), Color("a8612c"))
+	elif active.special != "" and not Save.data.seen_specials.has(active.special):
+		Save.data.seen_specials.append(active.special)
+		Save.persist()
+		message.emit(tr(SpecialBadge.INTRO[active.special]), SpecialBadge.COLORS[active.special].darkened(.25))
 	active.freeze = true
 	active.collision_layer = 0
 	active.collision_mask = 0
@@ -307,6 +407,9 @@ func _spawn() -> void:
 func drop() -> void:
 	if state != "aim" or active == null:
 		return
+	if aim_mode == "bottle":
+		_squirt()
+		return
 	state = "settle"
 	active.position = orbit.drop_position(drop_height)
 	active.collision_layer = 2
@@ -319,7 +422,6 @@ func drop() -> void:
 	elapsed = 0
 	beam.hide()
 	marker.hide()
-	Sound.play("drop")
 	Haptics.pulse()
 	action_done.emit("drop")
 	updated.emit()
@@ -328,21 +430,16 @@ func _physics_process(delta: float) -> void:
 	orbit.update(delta, menu_mode)
 	if state in ["menu", "over"]:
 		return
-	if best_ring.visible:
-		# Label on the far side of the ring so it stays small and never fills the screen.
-		best_label.position = -orbit.toward_camera()*2.63+orbit.right()*1.2+Vector3.UP*.3
-		# Fade the ring out as it comes level with the camera, where it would sweep across the view.
-		var gap := absf(orbit.camera.global_position.y-best_ring.position.y)
-		var fade := clampf((gap-.8)/1.6, 0, 1)
-		best_material.albedo_color.a = .95*fade
-		best_label.modulate.a = fade
-		best_label.outline_modulate.a = fade
+	run_time += delta
 	if active:
 		hold_time += delta
 		drop_height = lerpf(drop_height, maxf(3.0, orbit.tower_top+1.4), 1.0-exp(-delta*4))
 		grab_lift = lerpf(grab_lift, .3 if gesture == "aim" else 0.0, 1.0-exp(-delta*14))
 		active.position = orbit.drop_position(drop_height)+Vector3.UP*(sin(hold_time*3.4)*.05+grab_lift)
 		active.rotation.y = orbit.angle+active_yaw
+		if is_instance_valid(bottle) and not bottle.tipping:
+			bottle.position = active.position+Vector3.UP*.3
+			bottle.rotation.y = orbit.angle
 		_update_guide()
 	if state == "falling":
 		elapsed += delta
@@ -351,9 +448,10 @@ func _physics_process(delta: float) -> void:
 		return
 	for body in bodies:
 		# Ground contact counts even for a gripped (frozen) piece resting against the nest.
-		if not body.fallen and (body.touched_ground or (not body.freeze and is_fallen(body))):
+		if not body.fallen and body != active and (body.touched_ground or (not body.freeze and is_fallen(body))):
 			_fall(body)
-			return
+			if state == "falling":
+				return
 	balance_timer -= delta
 	if balance_timer <= 0:
 		balance_timer = .1
@@ -382,7 +480,7 @@ func _physics_process(delta: float) -> void:
 func _measure_balance() -> void:
 	var pile: Array[KinuBody] = []
 	for body in bodies:
-		if body.scored and not body.fallen and body != active:
+		if is_instance_valid(body) and body.scored and not body.fallen and body != active:
 			pile.append(body)
 	var worst := 0.0
 	var worst_cut := 0.0
@@ -394,7 +492,7 @@ func _measure_balance() -> void:
 		var support: Array[KinuBody] = []
 		for body in pile:
 			if body.position.y >= cut:
-				if body.tipped:
+				if body.tipped or body.stuck:
 					continue
 				weight += body.mass
 				com += Vector2(body.position.x, body.position.z)*body.mass
@@ -404,15 +502,20 @@ func _measure_balance() -> void:
 			break
 		com /= weight
 		var center := Vector2.ZERO
-		var radius := TofuBox.RIM_RADIUS+.1
-		if cut > TofuBox.RIM_HEIGHT and not support.is_empty():
+		var ratio: float
+		if cut <= TofuBox.RIM_HEIGHT or support.is_empty():
+			# The box itself is the support: a square, so measure against its outer walls.
+			ratio = maxf(absf(com.x), absf(com.y))/(TofuBox.INNER_HALF+TofuBox.WALL)
+		else:
 			for body in support:
 				center += Vector2(body.position.x, body.position.z)
 			center /= support.size()
-			radius = 0.0
+			var radius := 0.0
 			for body in support:
 				radius = maxf(radius, Vector2(body.position.x, body.position.z).distance_to(center)+body.footprint())
-		var ratio := com.distance_to(center)/maxf(radius, .3)
+			ratio = com.distance_to(center)/maxf(radius, .3)
+		if ratio >= WOBBLE_WARN and _held_up(pile, cut, com, support):
+			ratio = minf(ratio, WOBBLE_WARN*.8)
 		if ratio > worst:
 			worst = ratio
 			worst_cut = cut
@@ -426,11 +529,57 @@ func _measure_balance() -> void:
 	for body in pile:
 		body.sway = sway if body.position.y >= wobble_cut and not body.tipped else 0.0
 
+## A second opinion before warning or tipping: probe straight down around the footprint of every
+## loose piece above `cut` to find where it actually rests (on any Kinu, glued ones included, or
+## the box). The section is held up if its centre of mass lies within those resting points.
+## The probes ring the footprint and never sample the centre: a probe under the centre of a lone
+## piece lands at its own centre of mass, which would call any piece with something below it
+## supported, however far it overhangs.
+func _held_up(pile: Array[KinuBody], cut: float, com: Vector2, support: Array[KinuBody]) -> bool:
+	var loose: Array[KinuBody] = []
+	var excluded: Array[RID] = []
+	for body in pile:
+		if body.position.y >= cut and not body.tipped and not body.stuck:
+			loose.append(body)
+			excluded.append(body.get_rid())
+	var space := get_world_3d().direct_space_state
+	var resting := PackedVector2Array()
+	for body in loose:
+		var b := body.global_basis.orthonormalized()
+		var reach := (absf(b.x.y)*body.size().x+absf(b.y.y)*body.size().y+absf(b.z.y)*body.size().z)*.5
+		var bottom := body.position.y-reach
+		var spread := body.footprint()*.7
+		var corner := spread*.7
+		for offset in [Vector2(spread, 0), Vector2(-spread, 0), Vector2(0, spread), Vector2(0, -spread),
+				Vector2(corner, corner), Vector2(-corner, corner), Vector2(corner, -corner), Vector2(-corner, -corner)]:
+			var from := Vector3(body.position.x+offset.x, bottom+.1, body.position.z+offset.y)
+			var query := PhysicsRayQueryParameters3D.create(from, from-Vector3.UP*.4, 3, excluded)
+			var hit := space.intersect_ray(query)
+			if not hit.is_empty() and not (hit.collider as Node).is_in_group(TofuShop.GROUND_GROUP):
+				resting.append(Vector2(from.x, from.z))
+	if resting.size() >= 3:
+		var hull := Geometry2D.convex_hull(resting)
+		# convex_hull closes the ring, so three corners come back as four points.
+		if hull.size() >= 4 and Geometry2D.is_point_in_polygon(com, hull):
+			return true
+	# Too few probes landed to form a footprint: the centre of mass has to sit right on them.
+	if resting.size() == 1 and com.distance_to(resting[0]) < .12:
+		return true
+	if resting.size() == 2 and com.distance_to(Geometry2D.get_closest_point_to_segment(com, resting[0], resting[1])) < .12:
+		return true
+	# Fall back to the pieces carrying this level, for sections bridging between separate stacks.
+	var points := PackedVector2Array()
+	for body in support:
+		points.append(Vector2(body.position.x, body.position.z))
+	if points.size() >= 3:
+		return Geometry2D.is_point_in_polygon(com, Geometry2D.convex_hull(points))
+	return false
+
 func _tip() -> void:
 	overbalanced_time = 0
 	var loosened := 0
 	for body in bodies:
-		if body.gripped and not body.tipped and body.position.y >= wobble_cut-.2:
+		if body.gripped and not body.tipped and not body.stuck and body.position.y >= wobble_cut-.2:
 			body.tipped = true
 			var lift := clampf((body.position.y-wobble_cut)*.25, 0, 1)
 			body.release(wobble_direction*(.9+lift)+Vector3.UP*.3)
@@ -439,10 +588,70 @@ func _tip() -> void:
 		orbit.shake = .35
 		Sound.play("heavy", .7)
 		Haptics.pulse(40, .6)
-		message.emit("Timber!", Color("ff8a1f"))
+		message.emit(tr("Timber!"), Color("ff8a1f"))
+
+## Swaps the held Kinu for the shoyu bottle, or puts the bottle away again.
+func toggle_bottle() -> void:
+	if state != "aim" or active == null:
+		return
+	if aim_mode == "bottle":
+		aim_mode = "kinu"
+		if is_instance_valid(bottle):
+			bottle.queue_free()
+		bottle = null
+		active.visible = true
+	elif squirts > 0:
+		aim_mode = "bottle"
+		bottle = ShoyuBottle.new()
+		add_child(bottle)
+		bottle.position = active.position+Vector3.UP*.3
+		active.visible = false
+		Sound.play("tap")
+	updated.emit()
+
+func _squirt() -> void:
+	state = "squirting"
+	squirts -= 1
+	squirts_used += 1
+	beam.hide()
+	marker.hide()
+	var from := bottle.position
+	var query := PhysicsRayQueryParameters3D.create(from, from-Vector3.UP*30, 3)
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	var target: KinuBody = null
+	var point := Vector3.INF
+	if not hit.is_empty():
+		point = hit.position
+		if hit.collider is KinuBody and hit.collider.scored and not hit.collider.fallen:
+			target = hit.collider
+	bottle.squirted.connect(_squirted)
+	bottle.squirt(target, point)
+	Sound.play("sauce", .7)
+	Haptics.pulse(20, .3)
+	updated.emit()
+
+func _squirted(target: KinuBody) -> void:
+	bottle = null
+	aim_mode = "kinu"
+	if is_instance_valid(target) and not target.fallen:
+		target.glaze()
+		glazed += 1
+		message.emit(tr("Glued! Drop a Kinu on it"), Color("a8612c"))
+		Sound.play("land", .8)
+	else:
+		message.emit(tr("Splat! Missed"), Color("8a6d5a"))
+	action_done.emit("squirt")
+	if state != "squirting":
+		return
+	state = "aim"
+	if is_instance_valid(active):
+		active.visible = true
+		beam.show()
+		marker.show()
+	updated.emit()
 
 func _update_guide() -> void:
-	var from := active.position-Vector3.UP*active.shape.size.y*.5
+	var from := active.position-Vector3.UP*active.size().y*.5
 	var query := PhysicsRayQueryParameters3D.create(from, from-Vector3.UP*30, 3)
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)
 	var ground: Vector3 = hit.get("position", Vector3(from.x, 0, from.z))
@@ -463,6 +672,20 @@ func is_fallen(body: KinuBody) -> bool:
 func _fall(body: KinuBody) -> void:
 	body.fallen = true
 	fallen_body = body
+	tumbles += 1
+	streak = 0
+	if body == pending:
+		pending = null
+	score = pile_count()
+	orbit.shake = .5
+	Sound.play("mistake")
+	Haptics.pulse(60, .8)
+	_clear_fallen(body)
+	if tumbles < MAX_TUMBLES:
+		var left := MAX_TUMBLES-tumbles
+		message.emit(tr("Kinu tumbled off! 1 tumble left") if left == 1 else tr("Kinu tumbled off! %d tumbles left")%left, Color("e0463a"))
+		updated.emit()
+		return
 	state = "falling"
 	elapsed = 0
 	if active:
@@ -472,11 +695,26 @@ func _fall(body: KinuBody) -> void:
 	beam.hide()
 	marker.hide()
 	gesture = ""
-	orbit.shake = .5
-	Sound.play("escape")
-	Haptics.pulse(60, .8)
-	message.emit("Oh no! Kinu tumbled off!", Color("e0463a"))
+	message.emit(tr("Oh no! That's three tumbles!"), Color("e0463a"))
 	updated.emit()
+
+## Fallen Kinu are cleared off the counter so they can't prop up or knock into the pile.
+func _clear_fallen(body: KinuBody) -> void:
+	await get_tree().create_timer(FALLEN_LINGER, false).timeout
+	if not is_instance_valid(body) or state == "over":
+		return
+	bodies.erase(body)
+	if fallen_body == body:
+		fallen_body = null
+	body.queue_free()
+
+## Kinu counted on the pile: settled at least once and not fallen onto the counter.
+func pile_count() -> int:
+	var count := 0
+	for body in bodies:
+		if is_instance_valid(body) and body.scored and not body.fallen:
+			count += 1
+	return count
 
 func _settle() -> void:
 	if not pending or pending.fallen:
@@ -484,32 +722,49 @@ func _settle() -> void:
 	pending.scored = true
 	placed += 1
 	tower_height = maxf(tower_height, tower_top())
-	score = height_cm(tower_height)
+	score = pile_count()
 	pending.cheer()
+	flavour_counts[pending.flavour.id] = int(flavour_counts.get(pending.flavour.id, 0))+1
+	shape_counts[pending.shape.id] = int(shape_counts.get(pending.shape.id, 0))+1
+	streak += 1
+	best_streak = maxi(best_streak, streak)
 	var discovered: bool = Save.discover(pending.flavour.id)
-	var unlocked: Array[String] = []
-	for item in catalog.flavours:
-		if item.unlock_cm > int(Save.data.best) and item.unlock_cm <= score:
-			unlocked.append(item.display_name)
-	if score > int(Save.data.best):
-		Save.data.best = score
-		Save.data.best_height = tower_height
-		Save.persist()
-	var metres := int(score/100.0)
+	if discovered:
+		new_flavours += 1
+		last_new_flavour_placed = placed
 	var milestone := score >= next_milestone
+	var earned_squirt := false
 	if milestone:
-		next_milestone = (metres+1)*100
-	if not unlocked.is_empty():
-		message.emit("%s unlocked!"%" & ".join(unlocked), Color("7a4fd0"))
-		Sound.play("record")
+		next_milestone = (score/MILESTONE_STEP+1)*MILESTONE_STEP
+		if squirts < SQUIRTS_MAX and score/MILESTONE_STEP*MILESTONE_STEP % SQUIRT_EVERY == 0:
+			squirts += 1
+			earned_squirt = true
+	var special := pending.special
+	pending.mark_special("")
+	if special == "lucky":
+		lucky_caught += 1
+		bonus_beans += LUCKY_BEANS
+		message.emit(tr("Lucky Kinu! +%d beans")%LUCKY_BEANS, Color("e0a81f"))
+		Sound.play("special")
+		Haptics.pulse(35, .55)
+	elif special == "heart":
+		hearts_caught += 1
+		if tumbles > 0:
+			tumbles -= 1
+			message.emit(tr("Heart Kinu! A tumble came back"), Color("ff5d8f"))
+		else:
+			bonus_beans += 5
+			message.emit(tr("Heart Kinu! +5 beans"), Color("ff5d8f"))
+		Sound.play("special", 1.2)
 		Haptics.pulse(35, .55)
 	elif milestone:
-		message.emit("%s tall! Amazing!"%("1 metre" if metres == 1 else "%d metres"%metres), Color("ff8a1f"))
-		Sound.play("combo")
+		var reached := score/MILESTONE_STEP*MILESTONE_STEP
+		message.emit(tr("%d Kinu! +1 shoyu squirt")%reached if earned_squirt else tr("%d Kinu! Amazing!")%reached, Color("ff8a1f"))
+		Sound.play("special")
 		Haptics.pulse(35, .55)
 	elif discovered:
-		message.emit("New flavour: %s!"%pending.flavour.display_name, Color("3f8fe0"))
-		Sound.play("combo", 1.2)
+		message.emit(tr("New flavour: %s!")%tr(pending.flavour.display_name), Color("3f8fe0"))
+		Sound.play("special", 1.2)
 	pending = null
 	action_done.emit("settle")
 	_spawn()
@@ -527,7 +782,11 @@ func end() -> void:
 		bodies.erase(active)
 		active.queue_free()
 		active = null
-	finished.emit({"score": score, "placed": placed, "height": tower_height})
+	finished.emit(summary())
+
+## Everything the results screen, lifetime stats and daily missions need about this run.
+func summary() -> Dictionary:
+	return {"score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "dressed": str(Save.data.outfit) != "", "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
 
 func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if menu_mode or state == "over":
@@ -535,13 +794,21 @@ func _landed(body: KinuBody, other: Node, force: float) -> void:
 	# A heavy landing jolts the piece it hits free of the pile.
 	if other is KinuBody and other.gripped and force*body.mass > KNOCK_LOOSE_SPEED:
 		other.release((other.position-body.position)*Vector3(1, 0, 1)*.4)
-	Sound.play("heavy" if body.mass > 1.5 and force > 3 else "land", clampf(1.3-body.mass*.15, .8, 1.25))
+	Sound.play("drop", clampf(1.3-body.mass*.15, .8, 1.25))
 	if force > 4:
 		Haptics.pulse(12, .25)
 
-## Soybeans for a run: 1 per 20 cm, 3 per full metre, and 5 more for a new best.
+## Soybeans for a run: 1 per Kinu on the pile, 2 more for every 10, and 5 more for a new best.
 static func beans_for(score: int, record: bool) -> int:
-	return int(score/20.0)+int(score/100.0)*3+(5 if record else 0)
+	return score+score/10*2+(5 if record else 0)
+
+## Names of flavours whose pile goal lies above the old best and at or below the new one.
+static func unlocks_between(flavours: Array[KinuFlavour], old_best: int, new_best: int) -> Array[String]:
+	var names: Array[String] = []
+	for item in flavours:
+		if item.unlock_kinu > old_best and item.unlock_kinu <= new_best:
+			names.append(item.display_name)
+	return names
 
 static func height_cm(height: float) -> int:
 	return int(round(maxf(0, height-TofuBox.FLOOR_TOP)*20))
@@ -590,6 +857,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				orbit.release_spin()
 				action_done.emit("spin")
 		return
+	# The claw scheme's two joysticks and its Drop button own touch entirely (each claims its own
+	# finger the moment it lands); there's no free-drag fallback for a touch that lands elsewhere.
+	if control_scheme() == "claw":
+		return
 	if event is InputEventScreenTouch:
 		if event.pressed and pointer_id == -99:
 			pointer_id = event.index
@@ -631,6 +902,7 @@ func _move_gesture(_point: Vector2, relative: Vector2) -> void:
 		gesture = "aim"
 	if gesture == "spin":
 		orbit.orbit(relative.x)
+		orbit.tilt_by(relative.y)
 		if absf(relative.x) > 1:
 			action_done.emit("spin")
 	elif gesture == "aim" and active:

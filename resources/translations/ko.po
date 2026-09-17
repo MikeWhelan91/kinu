@@ -1,0 +1,1114 @@
+msgid ""
+msgstr ""
+"Language: ko\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Play"
+msgstr "플레이"
+
+msgid "Shop"
+msgstr "상점"
+
+msgid "Kinu Book"
+msgstr "키누 도감"
+
+msgid "Settings"
+msgstr "설정"
+
+msgid "Daily"
+msgstr "데일리"
+
+
+msgid "Kinu"
+msgstr "키누"
+
+msgid "Tumble"
+msgstr "텀블"
+
+msgid "Tidying the shop..."
+msgstr "가게 정리 중…"
+
+msgid "Okay"
+msgstr "확인"
+
+msgid "Close"
+msgstr "닫기"
+
+msgid "Lovely"
+msgstr "귀여워!"
+
+msgid "Not Yet"
+msgstr "나중에"
+
+msgid "Main Menu"
+msgstr "메인 메뉴"
+
+msgid "Next"
+msgstr "다음"
+
+msgid "Best %s"
+msgstr "최고 %s"
+
+msgid "Swipe To Spin"
+msgstr "밀어서 회전"
+
+msgid "Drag to move  ·  let go to drop"
+msgstr "드래그로 이동 · 손을 떼면 떨어져요"
+
+msgid "Drag Kinu to move  ·  swipe to spin"
+msgstr "키누를 드래그 · 밀어서 회전"
+
+msgid "TALLEST"
+msgstr "최고 높이"
+
+msgid "Timber!"
+msgstr "무너진다!"
+
+msgid "Oh no! That's three tumbles!"
+msgstr "앗! 벌써 세 번 떨어졌어요!"
+
+msgid "Kinu tumbled off! %d tumbles left"
+msgstr "키누가 떨어졌어요! 기회 %d번 남음"
+
+msgid "Kinu tumbled off! 1 tumble left"
+msgstr "키누가 떨어졌어요! 기회 1번 남음"
+
+msgid "%d Kinu! Amazing!"
+msgstr "키누 %d개! 대단해요!"
+
+msgid "New flavour: %s!"
+msgstr "새로운 맛: %s!"
+
+msgid "Lucky Kinu! +%d beans"
+msgstr "행운 키누! 콩 +%d"
+
+msgid "Heart Kinu! A tumble came back"
+msgstr "하트 키누! 기회가 1번 돌아왔어요"
+
+msgid "Heart Kinu! +5 beans"
+msgstr "하트 키누! 콩 +5"
+
+msgid "Lucky Kinu! Land it for bonus beans"
+msgstr "행운 키누! 올리면 보너스 콩"
+
+msgid "Heart Kinu! Land it to win back a tumble"
+msgstr "하트 키누! 올리면 기회가 1번 돌아와요"
+
+msgid "Tiny Kinu! Squeeze it into a gap"
+msgstr "꼬마 키누! 틈새에 쏙 넣어요"
+
+
+msgid "Skip Guide"
+msgstr "가이드 건너뛰기"
+
+msgid "Let’s Stack!"
+msgstr "쌓아 볼까요!"
+
+msgid "Grab Kinu"
+msgstr "키누 잡기"
+
+msgid "Press on Kinu and drag to move it. The shadow shows where it lands."
+msgstr "키누를 누른 채 드래그해서 옮겨요. 그림자가 떨어질 자리예요."
+
+msgid "Drag To Aim"
+msgstr "드래그로 조준"
+
+msgid "Drag anywhere to move Kinu. The shadow shows where it lands."
+msgstr "아무 곳이나 드래그해서 키누를 옮겨요. 그림자가 떨어질 자리예요."
+
+msgid "Let Go To Drop"
+msgstr "손을 떼면 떨어져요"
+
+msgid "Lift your finger and watch Kinu plop into the box."
+msgstr "손가락을 떼면 키누가 상자 속으로 퐁!"
+
+msgid "Spin The Box"
+msgstr "상자 돌리기"
+
+msgid "Swipe anywhere else to turn the box. Swipe up or down to tilt the view."
+msgstr "다른 곳을 좌우로 밀면 상자가 돌아가요. 위아래로 밀면 시점이 기울어요."
+
+msgid "Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view."
+msgstr "아래 띠를 좌우로 밀면 상자가 돌아가요. 위아래로 밀면 시점이 기울어요."
+
+msgid "Pile Them Up"
+msgstr "잔뜩 쌓아요"
+
+
+msgid "Careful!"
+msgstr "조심해요!"
+
+msgid "Kinu that tumble onto the counter don't count. Three tumbles and the run is over."
+msgstr "받침대로 떨어진 키누는 세지 않아요. 세 번 떨어지면 끝이에요."
+
+msgid "Paused"
+msgstr "일시정지"
+
+msgid "Resume"
+msgstr "계속하기"
+
+msgid "Restart"
+msgstr "다시 시작"
+
+msgid "Kinu Piled"
+msgstr "쌓은 키누"
+
+msgid "%s Tall"
+msgstr "높이 %s"
+
+msgid "%d Tumbles Left"
+msgstr "기회 %d번 남음"
+
+msgid "1 Tumble Left"
+msgstr "기회 1번 남음"
+
+msgid "New Best!"
+msgstr "최고 기록!"
+
+msgid "Tumble!"
+msgstr "와르르!"
+
+msgid "+%d beans"
+msgstr "콩 +%d"
+
+msgid "Play Again"
+msgstr "한 번 더"
+
+msgid "New flavour: %s"
+msgstr "새로운 맛: %s"
+
+msgid "Earned: %s"
+msgstr "획득: %s"
+
+msgid "Daily mission done!"
+msgstr "데일리 미션 완료!"
+
+msgid "%d daily missions done!"
+msgstr "데일리 미션 %d개 완료!"
+
+msgid " & "
+msgstr ", "
+
+msgid "Flavours"
+msgstr "맛"
+
+msgid "All"
+msgstr "전체"
+
+msgid "Found"
+msgstr "발견"
+
+msgid "Missing"
+msgstr "미발견"
+
+msgid "%d / %d flavours found"
+msgstr "맛 %d / %d 발견"
+
+msgid "Every flavour found. Amazing!"
+msgstr "모든 맛을 찾았어요. 대단해요!"
+
+msgid "Pile %d Kinu"
+msgstr "키누 %d개 쌓기"
+
+msgid "Not found yet"
+msgstr "아직 못 찾음"
+
+msgid "Not in the mix"
+msgstr "등장 끔"
+
+msgid "Common"
+msgstr "흔함"
+
+msgid "Uncommon"
+msgstr "드묾"
+
+msgid "Rare"
+msgstr "희귀"
+
+msgid "Unlocked at %d Kinu"
+msgstr "키누 %d개에서 해금"
+
+msgid "%s Kinu"
+msgstr "%s 키누"
+
+msgid "A Flavour To Find"
+msgstr "아직 못 찾은 맛"
+
+msgid "Pile %d Kinu in one run to unlock this flavour."
+msgstr "한 판에 키누 %d개를 쌓으면 이 맛이 해금돼요."
+
+msgid "Keep piling. This flavour turns up now and then."
+msgstr "계속 쌓아요. 이 맛은 가끔 나와요."
+
+msgid "In The Mix: %s"
+msgstr "등장: %s"
+
+msgid "On"
+msgstr "켜기"
+
+msgid "Off"
+msgstr "끄기"
+
+msgid "Switched off flavours won't appear while you stack."
+msgstr "끈 맛은 게임 중에 나오지 않아요."
+
+msgid "Keep at least one flavour in the mix."
+msgstr "최소 한 가지 맛은 켜 두세요."
+
+msgid "Outfits"
+msgstr "옷"
+
+msgid "Boxes"
+msgstr "상자"
+
+msgid "Rooms"
+msgstr "배경"
+
+msgid "Wearing"
+msgstr "착용 중"
+
+msgid "In Use"
+msgstr "사용 중"
+
+msgid "Tap To Wear"
+msgstr "탭해서 입기"
+
+msgid "Tap To Use"
+msgstr "탭해서 사용"
+
+msgid "%s to earn this."
+msgstr "%s 달성 시 획득."
+
+msgid "Pile %d Kinu in one run"
+msgstr "한 판에 키누 %d개 쌓기"
+
+msgid "Land %d Kinu in total"
+msgstr "키누 총 %d개 올리기"
+
+msgid "Play %d runs"
+msgstr "%d판 플레이"
+
+msgid "Find %d flavours"
+msgstr "맛 %d가지 찾기"
+
+msgid "Pile %d Kinu without a tumble"
+msgstr "한 번도 안 떨어뜨리고 키누 %d개 쌓기"
+
+msgid "Catch %d Lucky Kinu"
+msgstr "행운 키누 %d개 받기"
+
+msgid "Build a tower %s tall"
+msgstr "높이 %s까지 쌓기"
+
+msgid "Finish %d daily missions"
+msgstr "데일리 미션 %d개 완료"
+
+msgid "Kinu Shop"
+msgstr "키누 상점"
+
+msgid "%s beans"
+msgstr "콩 %s"
+
+msgid "%d beans"
+msgstr "콩 %d"
+
+msgid "No Outfit"
+msgstr "옷 없음"
+
+msgid "Same size box, fresh new look."
+msgstr "크기는 그대로, 새로운 모습."
+
+msgid "Change where Kinu lives."
+msgstr "키누가 사는 곳을 바꿔요."
+
+msgid "Buy & Wear"
+msgstr "구매하고 입기"
+
+msgid "Buy & Use"
+msgstr "구매하고 사용"
+
+msgid "You need %d more beans.\nPile more Kinu and finish daily missions to earn them!"
+msgstr "콩이 %d개 더 필요해요.\n키누를 더 쌓고 데일리 미션을 완료해서 모아요!"
+
+msgid "Daily Missions"
+msgstr "데일리 미션"
+
+msgid "Collect"
+msgstr "받기"
+
+msgid "Collected"
+msgstr "받음"
+
+msgid "New missions arrive every day."
+msgstr "매일 새로운 미션이 도착해요."
+
+msgid "Land %d Kinu"
+msgstr "키누 %d개 올리기"
+
+msgid "Catch a Lucky Kinu"
+msgstr "행운 키누 받기"
+
+msgid "Catch a Heart Kinu"
+msgstr "하트 키누 받기"
+
+msgid "Catch %d Heart Kinu"
+msgstr "하트 키누 %d개 받기"
+
+msgid "Land %d %s Kinu"
+msgstr "%d개 올리기: %s 키누"
+
+msgid "Land %d Kinu in a row without a tumble"
+msgstr "안 떨어뜨리고 키누 %d개 연속 올리기"
+
+msgid "Spin the box %d full turns"
+msgstr "상자를 %d바퀴 돌리기"
+
+msgid "Pile %d Kinu in %d different runs"
+msgstr "키누 %d개 쌓기 %d판 달성"
+
+msgid "Find a new flavour"
+msgstr "새로운 맛 찾기"
+
+msgid "Play a run with a new box or room"
+msgstr "새 상자나 배경으로 1판 플레이"
+
+msgid "Play %d runs with a new box or room"
+msgstr "새 상자나 배경으로 %d판 플레이"
+
+msgid "Sound"
+msgstr "사운드"
+
+msgid "Music"
+msgstr "음악"
+
+msgid "Sound Effects"
+msgstr "효과음"
+
+msgid "%s   %d%%"
+msgstr "%s   %d%%"
+
+msgid "Haptics"
+msgstr "진동"
+
+msgid "Controls"
+msgstr "조작"
+
+msgid "Classic"
+msgstr "클래식"
+
+msgid "Grab"
+msgstr "잡기"
+
+msgid "Classic: drag anywhere to move, swipe the bottom strip to spin.\nGrab: press on Kinu to move it, swipe anywhere else to spin."
+msgstr "클래식: 아무 곳이나 드래그해서 이동, 아래 띠를 밀어서 회전.\n잡기: 키누를 눌러서 이동, 다른 곳을 밀어서 회전."
+
+msgid "More"
+msgstr "기타"
+
+msgid "Language"
+msgstr "언어"
+
+msgid "Auto"
+msgstr "자동"
+
+msgid "Replay The Tutorial"
+msgstr "튜토리얼 다시 보기"
+
+msgid "Credits & Licences"
+msgstr "크레딧 및 라이선스"
+
+msgid "Credits"
+msgstr "크레딧"
+
+msgid "Debug · Unlock Everything: %s"
+msgstr "디버그 · 전체 해금: %s"
+
+msgid "Your nest saves automatically.\nKINU TUMBLE  ·  1.0"
+msgstr "진행 상황은 자동으로 저장돼요.\n키누 텀블 · 1.0"
+
+msgid "Silken"
+msgstr "연두부"
+
+msgid "Fried"
+msgstr "튀김두부"
+
+msgid "Sesame"
+msgstr "참깨"
+
+msgid "Matcha"
+msgstr "말차"
+
+msgid "Sakura"
+msgstr "벚꽃"
+
+msgid "Tamago"
+msgstr "달걀"
+
+msgid "Kinako"
+msgstr "콩고물"
+
+msgid "Yuzu"
+msgstr "유자"
+
+msgid "Ume"
+msgstr "매실"
+
+msgid "Mango"
+msgstr "망고"
+
+msgid "Hojicha"
+msgstr "호지차"
+
+msgid "Blueberry"
+msgstr "블루베리"
+
+msgid "Wasabi"
+msgstr "와사비"
+
+msgid "Mint"
+msgstr "민트"
+
+msgid "Onigiri"
+msgstr "주먹밥"
+
+msgid "Ube"
+msgstr "자색고구마"
+
+msgid "Azuki"
+msgstr "팥"
+
+msgid "Chocolate"
+msgstr "초콜릿"
+
+msgid "Kabocha"
+msgstr "단호박"
+
+msgid "Jelly"
+msgstr "젤리"
+
+msgid "Ramune"
+msgstr "라무네"
+
+msgid "Hanabi"
+msgstr "불꽃놀이"
+
+msgid "Smooth, soft and a little shy. The original Kinu."
+msgstr "매끈하고 말랑하고 조금 수줍어요. 원조 키누."
+
+msgid "Golden and crisp outside, still soft inside."
+msgstr "겉은 노릇바삭, 속은 여전히 말랑."
+
+msgid "Speckled with toasty black sesame."
+msgstr "고소한 검은깨가 콕콕."
+
+msgid "Calm and green, like a quiet tea house."
+msgstr "조용한 찻집처럼 차분한 초록빛."
+
+msgid "Only blooms for a little while."
+msgstr "아주 잠깐만 피어나요."
+
+msgid "Sunny, sweet egg tofu."
+msgstr "햇살 같은 달콤한 달걀두부."
+
+msgid "Rolled in toasty roasted soybean flour."
+msgstr "고소한 콩고물을 듬뿍 묻혔어요."
+
+msgid "Zesty and bright, like a winter citrus."
+msgstr "겨울 귤처럼 상큼하고 산뜻해요."
+
+msgid "Sweet and sour, like a pickled plum."
+msgstr "매실 장아찌처럼 새콤달콤."
+
+msgid "Sweet, sunny and a little bit tropical."
+msgstr "달콤하고 화사하고 살짝 트로피컬."
+
+msgid "Roasted green tea, warm and nutty."
+msgstr "볶은 녹차의 따뜻하고 고소한 향."
+
+msgid "A cool little berry blue."
+msgstr "시원하고 귀여운 베리 블루."
+
+msgid "A little bit spicy. Handle with care."
+msgstr "살짝 매콤해요. 조심히 다뤄요."
+
+msgid "Fresh as a spring breeze."
+msgstr "봄바람처럼 상쾌해요."
+
+msgid "Fluffy rice with a crisp nori wrap."
+msgstr "포슬포슬한 밥에 바삭한 김."
+
+msgid "Purple yam, soft and dreamy."
+msgstr "보랏빛 고구마, 말랑하고 몽글몽글."
+
+msgid "Sweet red bean, with whole beans inside."
+msgstr "달콤한 팥, 통팥이 쏙쏙."
+
+msgid "Rich, smooth and irresistible."
+msgstr "진하고 부드러워서 멈출 수 없어요."
+
+msgid "Sweet pumpkin, best in autumn."
+msgstr "달콤한 단호박, 가을에 제일 맛있어요."
+
+msgid "Wobbly, see-through strawberry jelly."
+msgstr "말랑말랑 투명한 딸기 젤리."
+
+msgid "Fizzy soda pop. The marble is extra."
+msgstr "톡톡 쏘는 탄산음료. 구슬은 덤이에요."
+
+msgid "Summer fireworks over the river."
+msgstr "강 위로 터지는 여름 불꽃."
+
+msgid "Wood"
+msgstr "나무결"
+
+msgid "Marble"
+msgstr "대리석"
+
+msgid "Gold"
+msgstr "황금"
+
+msgid "Crystal"
+msgstr "크리스털"
+
+msgid "Galaxy"
+msgstr "은하수"
+
+msgid "Carved from hinoki by a very patient woodworker."
+msgstr "아주 인내심 많은 목수가 편백나무로 깎았어요."
+
+msgid "Cool, polished and very fancy."
+msgstr "시원하고 반들반들, 아주 고급스러워요."
+
+msgid "Solid gold. Priceless. Still shy."
+msgstr "순금이에요. 값을 매길 수 없어요. 그래도 수줍어요."
+
+msgid "Glittering and clear as ice."
+msgstr "얼음처럼 반짝이고 투명해요."
+
+msgid "A whole night sky in one little tofu."
+msgstr "작은 두부 속에 밤하늘이 통째로."
+
+msgid "Little Leaf"
+msgstr "작은 잎사귀"
+
+msgid "Frog"
+msgstr "개구리"
+
+msgid "Bunny"
+msgstr "토끼"
+
+msgid "Fox"
+msgstr "여우"
+
+msgid "Tanuki"
+msgstr "너구리"
+
+msgid "Bat"
+msgstr "박쥐"
+
+msgid "Strawberry"
+msgstr "딸기"
+
+msgid "Panda"
+msgstr "판다"
+
+msgid "Ghost"
+msgstr "유령"
+
+msgid "Ninja"
+msgstr "닌자"
+
+msgid "Dino"
+msgstr "공룡"
+
+msgid "Tiger"
+msgstr "호랑이"
+
+msgid "Pirate"
+msgstr "해적"
+
+msgid "Dragon"
+msgstr "드래곤"
+
+msgid "Shark"
+msgstr "상어"
+
+msgid "Astronaut"
+msgstr "우주비행사"
+
+msgid "Just Hatched"
+msgstr "갓 태어난"
+
+msgid "Parcel"
+msgstr "택배 상자"
+
+msgid "Onsen Day"
+msgstr "온천 가는 날"
+
+msgid "Salmon Nigiri"
+msgstr "연어 초밥"
+
+msgid "Bee"
+msgstr "꿀벌"
+
+msgid "Daruma"
+msgstr "다루마"
+
+msgid "Tako"
+msgstr "문어"
+
+msgid "Kappa"
+msgstr "갓파"
+
+msgid "Hinoki"
+msgstr "편백나무"
+
+msgid "Bamboo Steamer"
+msgstr "대나무 찜기"
+
+msgid "Red Lacquer"
+msgstr "붉은 옻칠"
+
+msgid "Stone"
+msgstr "돌"
+
+msgid "Wicker"
+msgstr "라탄"
+
+msgid "Candy Stripe"
+msgstr "캔디 스트라이프"
+
+msgid "Gift Box"
+msgstr "선물 상자"
+
+msgid "Jubako"
+msgstr "찬합"
+
+msgid "Ice"
+msgstr "얼음"
+
+msgid "Neon"
+msgstr "네온"
+
+msgid "Tofu Shop"
+msgstr "두부 가게"
+
+msgid "Night Market"
+msgstr "야시장"
+
+msgid "Winter"
+msgstr "겨울"
+
+msgid "Sakura Street"
+msgstr "벚꽃길"
+
+msgid "Bamboo Grove"
+msgstr "대나무 숲"
+
+msgid "Autumn Temple"
+msgstr "가을 절"
+
+msgid "Onsen"
+msgstr "온천"
+
+msgid "Summer Festival"
+msgstr "여름 축제"
+
+msgid "Moon Viewing"
+msgstr "달맞이"
+
+msgid "Neon Rooftop"
+msgstr "네온 옥상"
+
+msgid "Block"
+msgstr "네모"
+
+msgid "Slab"
+msgstr "납작이"
+
+msgid "Long"
+msgstr "길쭉이"
+
+msgid "Tall"
+msgstr "키다리"
+
+msgid "Ball"
+msgstr "동글이"
+
+msgid "Wardrobe"
+msgstr "옷장"
+
+msgid "Collection"
+msgstr "컬렉션"
+
+msgid "Patterns"
+msgstr "무늬"
+
+msgid "No Pattern"
+msgstr "무늬 없음"
+
+msgid "Owned"
+msgstr "보유 중"
+
+msgid "%d / %d collected"
+msgstr "%d / %d 수집"
+
+msgid "Shop · %s"
+msgstr "상점 · %s"
+
+msgid "Earn rewards by playing, or buy them in the Shop."
+msgstr "플레이해서 얻거나 상점에서 구매해요."
+
+msgid "Nothing here yet."
+msgstr "아직 아무것도 없어요."
+
+msgid "Get More In The Shop"
+msgstr "상점에서 더 보기"
+
+msgid "Earn even more by playing. See the Kinu Book."
+msgstr "플레이하면 더 얻을 수 있어요. 키누 도감을 확인해요."
+
+msgid "Outfits dress every Kinu you stack."
+msgstr "옷은 쌓는 모든 키누가 입어요."
+
+msgid "Patterns appear on some of your Kinu."
+msgstr "무늬는 일부 키누에게 나타나요."
+
+msgid "Play a run in an outfit or pattern"
+msgstr "옷이나 무늬를 적용하고 1판 플레이"
+
+msgid "Play %d runs in an outfit or pattern"
+msgstr "옷이나 무늬를 적용하고 %d판 플레이"
+
+msgid "Lucky Kinu"
+msgstr "행운 키누"
+
+msgid "Heart Kinu"
+msgstr "하트 키누"
+
+msgid "Tiny Kinu"
+msgstr "꼬마 키누"
+
+msgid "Tap the shoyu bottle to glue Kinu together!"
+msgstr "간장병을 탭해서 키누를 붙여요!"
+
+msgid "Glued! Drop a Kinu on it"
+msgstr "간장을 뿌렸어요! 위에 올리면 붙어요"
+
+msgid "Splat! Missed"
+msgstr "철퍼덕! 빗나갔어요"
+
+msgid "%d Kinu! +1 shoyu squirt"
+msgstr "키누 %d개! 간장 +1"
+
+msgid "Shoyu Bottle"
+msgstr "간장병"
+
+msgid "Tap the bottle, aim it over a Kinu and let go. Kinu that land on the glaze stick! You get another squirt every 20 Kinu."
+msgstr "병을 탭하고 키누 위를 조준해서 손을 떼요. 간장 위에 떨어진 키누는 붙어요! 키누 20개마다 한 번 더 쓸 수 있어요."
+
+msgid "Pile in as many Kinu as you can!"
+msgstr "키누를 최대한 많이 쌓아요!"
+
+msgid "Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full."
+msgstr "점수는 높이가 아니라 쌓은 키누의 개수예요. 먼저 상자를 채우고, 가득 차면 위로 쌓아요."
+
+msgid "Leaderboards"
+msgstr "랭킹"
+
+msgid "Drop"
+msgstr "떨구기"
+
+msgid "Squirt"
+msgstr "짜기"
+
+msgid "Move"
+msgstr "이동"
+
+msgid "Spin"
+msgstr "회전"
+
+msgid "Claw"
+msgstr "클로그립"
+
+msgid "Sticks"
+msgstr "스틱"
+
+msgid "Right Hand"
+msgstr "오른손"
+
+msgid "Left Hand"
+msgstr "왼손"
+
+msgid "Classic: drag anywhere to move, swipe the bottom strip to spin.\nGrab: press on Kinu to move it, swipe anywhere else to spin.\nClaw: a move stick and a spin stick with a Drop button between them, down one side of the screen."
+msgstr "클래식: 아무 곳이나 드래그해서 이동, 아래 띠를 밀어서 회전.\n잡기: 키누를 눌러서 이동, 다른 곳을 밀어서 회전.\n클로그립: 화면 한쪽에 이동 스틱과 회전 스틱, 그 사이에 떨구기 버튼이 있어요."
+
+msgid "Left Stick Aims"
+msgstr "왼쪽 스틱으로 조준"
+
+msgid "Push the left stick to move Kinu. The shadow shows where it lands."
+msgstr "왼쪽 스틱으로 키누를 움직여요. 그림자가 떨어질 자리예요."
+
+msgid "Push the right stick to turn the box."
+msgstr "오른쪽 스틱으로 상자를 돌려요."
+
+msgid "Tap Drop"
+msgstr "탭하면 떨어져요"
+
+msgid "Tap the Drop button and watch Kinu plop into the box."
+msgstr "떨구기 버튼을 누르면 키누가 상자 속으로 퐁!"
+
+msgid "Move, spin, then tap Drop"
+msgstr "이동 · 회전 · 떨구기"
+
+msgid "Get Beans"
+msgstr "콩 구하기"
+
+msgid "Get Beans & Extras  +"
+msgstr "콩 · 기타 보기  +"
+
+msgid "Change where Kinu lives, with its own music."
+msgstr "키누가 사는 방을 바꿔요. 음악도 함께 바뀌어요."
+
+msgid "Beans & Extras"
+msgstr "콩 · 기타"
+
+msgid "A little extra for your favourite looks."
+msgstr "마음에 드는 모습에 살짝 더해보세요."
+
+msgid "Extras"
+msgstr "기타"
+
+msgid "Includes %s bonus"
+msgstr "보너스 %s 포함"
+
+msgid "One purchase. Permanently ad-free."
+msgstr "한 번 구매하면 광고가 영원히 사라져요."
+
+msgid "Available when ads arrive."
+msgstr "광고가 도입되면 이용할 수 있어요."
+
+msgid "Remove Ads"
+msgstr "광고 제거"
+
+msgid "Restore Purchases"
+msgstr "구매 복원"
+
+msgid "Retry"
+msgstr "다시 시도"
+
+msgid "Beans can also be earned by playing.\nRestore Purchases recovers Remove Ads; spent beans aren't restored."
+msgstr "콩은 플레이로도 모을 수 있어요.\n'구매 복원'은 광고 제거를 되살려주지만, 이미 쓴 콩은 돌아오지 않아요."
+
+msgid "Opening collection…"
+msgstr "도감을 여는 중…"
+
+msgid "Records"
+msgstr "기록"
+
+msgid "Best Runs"
+msgstr "최고 기록"
+
+msgid "All Time"
+msgstr "전체 기록"
+
+msgid "Treasures"
+msgstr "보물"
+
+msgid "Biggest pile"
+msgstr "가장 많이 쌓은 개수"
+
+msgid "Tallest tower"
+msgstr "가장 높은 탑"
+
+msgid "Biggest pile without a tumble"
+msgstr "안 떨어뜨리고 가장 많이 쌓은 개수"
+
+msgid "Longest landing streak"
+msgstr "가장 긴 연속 올리기"
+
+msgid "Runs played"
+msgstr "플레이 횟수"
+
+msgid "Average pile"
+msgstr "평균 쌓은 개수"
+
+msgid "Kinu landed"
+msgstr "올린 키누"
+
+msgid "Kinu tumbled"
+msgstr "떨어진 키누"
+
+msgid "Box spins"
+msgstr "상자 회전 수"
+
+msgid "Lucky Kinu caught"
+msgstr "잡은 행운 키누"
+
+msgid "Heart Kinu caught"
+msgstr "잡은 하트 키누"
+
+msgid "Flavours found"
+msgstr "찾은 맛"
+
+msgid "Daily missions finished"
+msgstr "완료한 데일리 미션"
+
+msgid "Beans earned"
+msgstr "모은 콩"
+
+msgid "Recent Runs"
+msgstr "최근 플레이"
+
+msgid "Longest run"
+msgstr "가장 긴 플레이"
+
+msgid "Most days in a row"
+msgstr "최장 연속 플레이 일수"
+
+msgid "Play time"
+msgstr "플레이 시간"
+
+msgid "Days in a row"
+msgstr "연속 플레이 일수"
+
+msgid "Favourite shape"
+msgstr "좋아하는 모양"
+
+msgid "Shoyu"
+msgstr "간장"
+
+msgid "Squirts used"
+msgstr "사용한 간장"
+
+msgid "Kinu glazed"
+msgstr "간장을 뿌린 키누"
+
+msgid "Bonus beans won"
+msgstr "보너스로 받은 콩"
+
+msgid "Items collected"
+msgstr "모은 아이템"
+
+msgid "Beans spent"
+msgstr "사용한 콩"
+
+msgid "Best Pile By Room"
+msgstr "배경별 최고 기록"
+
+msgid "Best Pile By Outfit"
+msgstr "옷별 최고 기록"
+
+msgid "Favourite Kinu"
+msgstr "좋아하는 키누"
+
+msgid "Landed 1 time"
+msgstr "1번 올렸어요"
+
+msgid "Landed %s times"
+msgstr "%s번 올렸어요"
+
+msgid "Play a run to meet your favourite Kinu!"
+msgstr "플레이해서 좋아하는 키누를 만나 보세요!"
+
+msgid "Stacking since %s"
+msgstr "%s부터 플레이 중"
+
+msgid "%dh %dm"
+msgstr "%d시간 %d분"
+
+msgid "%dm %ds"
+msgstr "%d분 %d초"
+
+msgid "%s beans added!"
+msgstr "콩 %s개가 들어왔어요!"
+
+msgid "Ads removed. Thank you!"
+msgstr "광고가 제거되었어요. 고마워요!"
+
+msgid "Apple couldn't verify a purchase. Please try again later."
+msgstr "Apple에서 구매를 확인하지 못했어요. 잠시 후 다시 시도해 주세요."
+
+msgid "Bean Jar"
+msgstr "콩 항아리"
+
+msgid "Bean Pantry"
+msgstr "콩 창고"
+
+msgid "Bean Pouch"
+msgstr "콩 주머니"
+
+msgid "Little Bean Bag"
+msgstr "작은 콩 봉지"
+
+msgid "Confirm your purchase with Apple."
+msgstr "Apple에서 구매를 확인해 주세요."
+
+msgid "Connecting to the App Store…"
+msgstr "App Store에 연결 중…"
+
+msgid "Loading…"
+msgstr "불러오는 중…"
+
+msgid "Unavailable"
+msgstr "이용할 수 없음"
+
+msgid "Purchase cancelled."
+msgstr "구매를 취소했어요."
+
+msgid "Purchase couldn't be completed. Please try again."
+msgstr "구매를 완료하지 못했어요. 다시 시도해 주세요."
+
+msgid "Purchases are available in the iPhone app."
+msgstr "구매는 iPhone 앱에서 할 수 있어요."
+
+msgid "Restore couldn't be completed. Please try again."
+msgstr "복원을 완료하지 못했어요. 다시 시도해 주세요."
+
+msgid "Restore requested. Eligible purchases will appear shortly."
+msgstr "복원을 요청했어요. 해당 구매가 곧 표시돼요."
+
+msgid "Restoring purchases…"
+msgstr "구매 복원 중…"
+
+msgid "Some purchases aren't available right now. Please try again."
+msgstr "지금은 일부 구매를 이용할 수 없어요. 다시 시도해 주세요."
+
+msgid "The App Store is taking a while. Please try again."
+msgstr "App Store 응답이 늦어지고 있어요. 다시 시도해 주세요."
+
+msgid "Waiting for approval. Your purchase will arrive when Apple approves it."
+msgstr "승인 대기 중이에요. Apple이 승인하면 구매가 반영돼요."
+
+msgid "We couldn't confirm that purchase. Please try again."
+msgstr "그 구매를 확인하지 못했어요. 다시 시도해 주세요."
+
+msgid "We couldn't confirm the purchase receipt. Please try Restore Purchases."
+msgstr "구매 영수증을 확인하지 못했어요. '구매 복원'을 시도해 주세요."
+
+msgid "Your purchase couldn't be saved. Free some storage and tap Retry."
+msgstr "구매를 저장하지 못했어요. 저장 공간을 확보한 뒤 '다시 시도'를 탭해 주세요."
+
+msgid "Your refunded purchase has been updated."
+msgstr "환불된 구매가 반영되었어요."
+
+msgid "Waiting…"
+msgstr "기다리는 중…"
+
+msgid "Coming soon"
+msgstr "곧 공개"
+
+msgid "Each room plays its own music."
+msgstr "배경마다 음악이 달라요."
+
+msgid "Play %d days in a row"
+msgstr "%d일 연속 플레이"
+
+msgid "Glaze %d Kinu with shoyu"
+msgstr "키누 %d개에 간장 뿌리기"
+
+msgid "Play a run in an outfit"
+msgstr "옷을 입고 1판 플레이"
+
+msgid "Play %d runs in an outfit"
+msgstr "옷을 입고 %d판 플레이"

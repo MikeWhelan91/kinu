@@ -1,0 +1,1114 @@
+msgid ""
+msgstr ""
+"Language: zh_TW\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Play"
+msgstr "開始玩"
+
+msgid "Shop"
+msgstr "商店"
+
+msgid "Kinu Book"
+msgstr "小絹圖鑑"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Daily"
+msgstr "每日"
+
+
+msgid "Kinu"
+msgstr "小絹"
+
+msgid "Tumble"
+msgstr "疊疊樂"
+
+msgid "Tidying the shop..."
+msgstr "正在整理店裡…"
+
+msgid "Okay"
+msgstr "好"
+
+msgid "Close"
+msgstr "關閉"
+
+msgid "Lovely"
+msgstr "好可愛！"
+
+msgid "Not Yet"
+msgstr "先不要"
+
+msgid "Main Menu"
+msgstr "主選單"
+
+msgid "Next"
+msgstr "下一個"
+
+msgid "Best %s"
+msgstr "最佳 %s"
+
+msgid "Swipe To Spin"
+msgstr "滑動旋轉"
+
+msgid "Drag to move  ·  let go to drop"
+msgstr "拖曳移動・放開落下"
+
+msgid "Drag Kinu to move  ·  swipe to spin"
+msgstr "拖曳小絹移動・滑動旋轉"
+
+msgid "TALLEST"
+msgstr "最高紀錄"
+
+msgid "Timber!"
+msgstr "要倒了！"
+
+msgid "Oh no! That's three tumbles!"
+msgstr "糟糕！已經掉了三次！"
+
+msgid "Kinu tumbled off! %d tumbles left"
+msgstr "小絹掉下去了！還剩 %d 次機會"
+
+msgid "Kinu tumbled off! 1 tumble left"
+msgstr "小絹掉下去了！只剩 1 次機會"
+
+msgid "%d Kinu! Amazing!"
+msgstr "%d 個小絹！太厲害了！"
+
+msgid "New flavour: %s!"
+msgstr "新口味：%s！"
+
+msgid "Lucky Kinu! +%d beans"
+msgstr "幸運小絹！豆豆 +%d"
+
+msgid "Heart Kinu! A tumble came back"
+msgstr "愛心小絹！找回一次機會"
+
+msgid "Heart Kinu! +5 beans"
+msgstr "愛心小絹！豆豆 +5"
+
+msgid "Lucky Kinu! Land it for bonus beans"
+msgstr "幸運小絹！放上去就有額外豆豆"
+
+msgid "Heart Kinu! Land it to win back a tumble"
+msgstr "愛心小絹！放上去就能找回一次機會"
+
+msgid "Tiny Kinu! Squeeze it into a gap"
+msgstr "迷你小絹！塞進縫隙裡吧"
+
+
+msgid "Skip Guide"
+msgstr "略過教學"
+
+msgid "Let’s Stack!"
+msgstr "開始疊吧！"
+
+msgid "Grab Kinu"
+msgstr "抓住小絹"
+
+msgid "Press on Kinu and drag to move it. The shadow shows where it lands."
+msgstr "按住小絹拖曳就能移動。影子就是它落下的位置。"
+
+msgid "Drag To Aim"
+msgstr "拖曳瞄準"
+
+msgid "Drag anywhere to move Kinu. The shadow shows where it lands."
+msgstr "在任何地方拖曳都能移動小絹。影子就是它落下的位置。"
+
+msgid "Let Go To Drop"
+msgstr "放開就會落下"
+
+msgid "Lift your finger and watch Kinu plop into the box."
+msgstr "放開手指，看小絹咚一聲掉進盒子裡。"
+
+msgid "Spin The Box"
+msgstr "旋轉盒子"
+
+msgid "Swipe anywhere else to turn the box. Swipe up or down to tilt the view."
+msgstr "在其他地方左右滑動可以旋轉盒子，上下滑動可以調整視角。"
+
+msgid "Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view."
+msgstr "在下方橫條左右滑動可以旋轉盒子，上下滑動可以調整視角。"
+
+msgid "Pile Them Up"
+msgstr "盡量疊高高"
+
+
+msgid "Careful!"
+msgstr "小心！"
+
+msgid "Kinu that tumble onto the counter don't count. Three tumbles and the run is over."
+msgstr "掉到檯面上的小絹不算。掉了三次這局就結束。"
+
+msgid "Paused"
+msgstr "暫停中"
+
+msgid "Resume"
+msgstr "繼續"
+
+msgid "Restart"
+msgstr "重新開始"
+
+msgid "Kinu Piled"
+msgstr "疊了幾個小絹"
+
+msgid "%s Tall"
+msgstr "高度 %s"
+
+msgid "%d Tumbles Left"
+msgstr "還剩 %d 次機會"
+
+msgid "1 Tumble Left"
+msgstr "只剩 1 次機會"
+
+msgid "New Best!"
+msgstr "新紀錄！"
+
+msgid "Tumble!"
+msgstr "掉下去了！"
+
+msgid "+%d beans"
+msgstr "豆豆 +%d"
+
+msgid "Play Again"
+msgstr "再玩一次"
+
+msgid "New flavour: %s"
+msgstr "新口味：%s"
+
+msgid "Earned: %s"
+msgstr "獲得：%s"
+
+msgid "Daily mission done!"
+msgstr "完成每日任務！"
+
+msgid "%d daily missions done!"
+msgstr "完成 %d 個每日任務！"
+
+msgid " & "
+msgstr "、"
+
+msgid "Flavours"
+msgstr "口味"
+
+msgid "All"
+msgstr "全部"
+
+msgid "Found"
+msgstr "已發現"
+
+msgid "Missing"
+msgstr "未發現"
+
+msgid "%d / %d flavours found"
+msgstr "已發現 %d / %d 種口味"
+
+msgid "Every flavour found. Amazing!"
+msgstr "所有口味都找到了，太厲害了！"
+
+msgid "Pile %d Kinu"
+msgstr "疊 %d 個小絹"
+
+msgid "Not found yet"
+msgstr "還沒發現"
+
+msgid "Not in the mix"
+msgstr "不會出現"
+
+msgid "Common"
+msgstr "常見"
+
+msgid "Uncommon"
+msgstr "少見"
+
+msgid "Rare"
+msgstr "稀有"
+
+msgid "Unlocked at %d Kinu"
+msgstr "疊到 %d 個解鎖"
+
+msgid "%s Kinu"
+msgstr "%s小絹"
+
+msgid "A Flavour To Find"
+msgstr "尚未發現的口味"
+
+msgid "Pile %d Kinu in one run to unlock this flavour."
+msgstr "一局內疊 %d 個小絹就能解鎖這個口味。"
+
+msgid "Keep piling. This flavour turns up now and then."
+msgstr "繼續疊吧，這個口味偶爾會出現。"
+
+msgid "In The Mix: %s"
+msgstr "出現：%s"
+
+msgid "On"
+msgstr "開"
+
+msgid "Off"
+msgstr "關"
+
+msgid "Switched off flavours won't appear while you stack."
+msgstr "關閉的口味不會在遊戲中出現。"
+
+msgid "Keep at least one flavour in the mix."
+msgstr "至少要保留一種口味。"
+
+msgid "Outfits"
+msgstr "布偶裝"
+
+msgid "Boxes"
+msgstr "盒子"
+
+msgid "Rooms"
+msgstr "場景"
+
+msgid "Wearing"
+msgstr "穿著中"
+
+msgid "In Use"
+msgstr "使用中"
+
+msgid "Tap To Wear"
+msgstr "點一下穿上"
+
+msgid "Tap To Use"
+msgstr "點一下使用"
+
+msgid "%s to earn this."
+msgstr "%s即可獲得。"
+
+msgid "Pile %d Kinu in one run"
+msgstr "一局內疊 %d 個小絹"
+
+msgid "Land %d Kinu in total"
+msgstr "累計放上 %d 個小絹"
+
+msgid "Play %d runs"
+msgstr "玩 %d 局"
+
+msgid "Find %d flavours"
+msgstr "發現 %d 種口味"
+
+msgid "Pile %d Kinu without a tumble"
+msgstr "一次都不掉，疊 %d 個小絹"
+
+msgid "Catch %d Lucky Kinu"
+msgstr "接到 %d 個幸運小絹"
+
+msgid "Build a tower %s tall"
+msgstr "疊到 %s 高"
+
+msgid "Finish %d daily missions"
+msgstr "完成 %d 個每日任務"
+
+msgid "Kinu Shop"
+msgstr "小絹商店"
+
+msgid "%s beans"
+msgstr "豆豆 %s"
+
+msgid "%d beans"
+msgstr "豆豆 %d"
+
+msgid "No Outfit"
+msgstr "不穿布偶裝"
+
+msgid "Same size box, fresh new look."
+msgstr "一樣大的盒子，全新的造型。"
+
+msgid "Change where Kinu lives."
+msgstr "幫小絹換個地方住。"
+
+msgid "Buy & Wear"
+msgstr "購買並穿上"
+
+msgid "Buy & Use"
+msgstr "購買並使用"
+
+msgid "You need %d more beans.\nPile more Kinu and finish daily missions to earn them!"
+msgstr "還差 %d 顆豆豆。\n多疊一些小絹、完成每日任務來賺豆豆吧！"
+
+msgid "Daily Missions"
+msgstr "每日任務"
+
+msgid "Collect"
+msgstr "領取"
+
+msgid "Collected"
+msgstr "已領取"
+
+msgid "New missions arrive every day."
+msgstr "每天都有新任務。"
+
+msgid "Land %d Kinu"
+msgstr "放上 %d 個小絹"
+
+msgid "Catch a Lucky Kinu"
+msgstr "接到一個幸運小絹"
+
+msgid "Catch a Heart Kinu"
+msgstr "接到一個愛心小絹"
+
+msgid "Catch %d Heart Kinu"
+msgstr "接到 %d 個愛心小絹"
+
+msgid "Land %d %s Kinu"
+msgstr "放上 %d 個%s小絹"
+
+msgid "Land %d Kinu in a row without a tumble"
+msgstr "不掉落連續放上 %d 個小絹"
+
+msgid "Spin the box %d full turns"
+msgstr "把盒子轉 %d 圈"
+
+msgid "Pile %d Kinu in %d different runs"
+msgstr "疊到 %d 個小絹，達成 %d 局"
+
+msgid "Find a new flavour"
+msgstr "發現一種新口味"
+
+msgid "Play a run with a new box or room"
+msgstr "用新的盒子或場景玩一局"
+
+msgid "Play %d runs with a new box or room"
+msgstr "用新的盒子或場景玩 %d 局"
+
+msgid "Sound"
+msgstr "聲音"
+
+msgid "Music"
+msgstr "音樂"
+
+msgid "Sound Effects"
+msgstr "音效"
+
+msgid "%s   %d%%"
+msgstr "%s　%d%%"
+
+msgid "Haptics"
+msgstr "震動"
+
+msgid "Controls"
+msgstr "操作"
+
+msgid "Classic"
+msgstr "經典"
+
+msgid "Grab"
+msgstr "抓取"
+
+msgid "Classic: drag anywhere to move, swipe the bottom strip to spin.\nGrab: press on Kinu to move it, swipe anywhere else to spin."
+msgstr "經典：在任何地方拖曳移動，在下方橫條滑動旋轉。\n抓取：按住小絹移動，在其他地方滑動旋轉。"
+
+msgid "More"
+msgstr "其他"
+
+msgid "Language"
+msgstr "語言"
+
+msgid "Auto"
+msgstr "自動"
+
+msgid "Replay The Tutorial"
+msgstr "重看教學"
+
+msgid "Credits & Licences"
+msgstr "製作名單與授權"
+
+msgid "Credits"
+msgstr "製作名單"
+
+msgid "Debug · Unlock Everything: %s"
+msgstr "除錯・全部解鎖：%s"
+
+msgid "Your nest saves automatically.\nKINU TUMBLE  ·  1.0"
+msgstr "進度會自動儲存。\n小絹疊疊樂・1.0"
+
+msgid "Silken"
+msgstr "嫩豆腐"
+
+msgid "Fried"
+msgstr "炸豆腐"
+
+msgid "Sesame"
+msgstr "芝麻"
+
+msgid "Matcha"
+msgstr "抹茶"
+
+msgid "Sakura"
+msgstr "櫻花"
+
+msgid "Tamago"
+msgstr "玉子"
+
+msgid "Kinako"
+msgstr "黃豆粉"
+
+msgid "Yuzu"
+msgstr "柚子"
+
+msgid "Ume"
+msgstr "梅子"
+
+msgid "Mango"
+msgstr "芒果"
+
+msgid "Hojicha"
+msgstr "焙茶"
+
+msgid "Blueberry"
+msgstr "藍莓"
+
+msgid "Wasabi"
+msgstr "山葵"
+
+msgid "Mint"
+msgstr "薄荷"
+
+msgid "Onigiri"
+msgstr "飯糰"
+
+msgid "Ube"
+msgstr "紫薯"
+
+msgid "Azuki"
+msgstr "紅豆"
+
+msgid "Chocolate"
+msgstr "巧克力"
+
+msgid "Kabocha"
+msgstr "南瓜"
+
+msgid "Jelly"
+msgstr "果凍"
+
+msgid "Ramune"
+msgstr "彈珠汽水"
+
+msgid "Hanabi"
+msgstr "煙火"
+
+msgid "Smooth, soft and a little shy. The original Kinu."
+msgstr "滑嫩柔軟，有點害羞。最原始的小絹。"
+
+msgid "Golden and crisp outside, still soft inside."
+msgstr "外皮金黃酥脆，裡面依然軟嫩。"
+
+msgid "Speckled with toasty black sesame."
+msgstr "撒滿香香的黑芝麻。"
+
+msgid "Calm and green, like a quiet tea house."
+msgstr "像安靜的茶屋一樣，沉穩的綠色。"
+
+msgid "Only blooms for a little while."
+msgstr "只會盛開一小段時間。"
+
+msgid "Sunny, sweet egg tofu."
+msgstr "像陽光一樣的甜甜玉子豆腐。"
+
+msgid "Rolled in toasty roasted soybean flour."
+msgstr "裹滿香噴噴的黃豆粉。"
+
+msgid "Zesty and bright, like a winter citrus."
+msgstr "像冬天的柑橘一樣清爽明亮。"
+
+msgid "Sweet and sour, like a pickled plum."
+msgstr "酸酸甜甜，像醃梅子一樣。"
+
+msgid "Sweet, sunny and a little bit tropical."
+msgstr "甜甜的、明亮的，帶點熱帶風情。"
+
+msgid "Roasted green tea, warm and nutty."
+msgstr "烘焙過的茶，溫暖又帶堅果香。"
+
+msgid "A cool little berry blue."
+msgstr "清涼可愛的莓果藍。"
+
+msgid "A little bit spicy. Handle with care."
+msgstr "有一點點嗆，請小心處理。"
+
+msgid "Fresh as a spring breeze."
+msgstr "像春風一樣清新。"
+
+msgid "Fluffy rice with a crisp nori wrap."
+msgstr "鬆軟的米飯包著酥脆海苔。"
+
+msgid "Purple yam, soft and dreamy."
+msgstr "紫色的薯，軟綿綿又夢幻。"
+
+msgid "Sweet red bean, with whole beans inside."
+msgstr "甜甜的紅豆，裡面還有整顆豆子。"
+
+msgid "Rich, smooth and irresistible."
+msgstr "濃郁滑順，讓人停不下來。"
+
+msgid "Sweet pumpkin, best in autumn."
+msgstr "甜甜的南瓜，秋天最好吃。"
+
+msgid "Wobbly, see-through strawberry jelly."
+msgstr "晃來晃去、透明的草莓果凍。"
+
+msgid "Fizzy soda pop. The marble is extra."
+msgstr "冒著氣泡的汽水，彈珠是贈品。"
+
+msgid "Summer fireworks over the river."
+msgstr "夏夜河面上的煙火。"
+
+msgid "Wood"
+msgstr "木紋"
+
+msgid "Marble"
+msgstr "大理石"
+
+msgid "Gold"
+msgstr "黃金"
+
+msgid "Crystal"
+msgstr "水晶"
+
+msgid "Galaxy"
+msgstr "銀河"
+
+msgid "Carved from hinoki by a very patient woodworker."
+msgstr "由非常有耐心的木匠用檜木雕刻而成。"
+
+msgid "Cool, polished and very fancy."
+msgstr "冰涼光滑，非常高級。"
+
+msgid "Solid gold. Priceless. Still shy."
+msgstr "純金打造，無價之寶，但還是很害羞。"
+
+msgid "Glittering and clear as ice."
+msgstr "像冰一樣閃閃發亮、晶瑩剔透。"
+
+msgid "A whole night sky in one little tofu."
+msgstr "小小的豆腐裡裝著一整片夜空。"
+
+msgid "Little Leaf"
+msgstr "小葉子"
+
+msgid "Frog"
+msgstr "青蛙"
+
+msgid "Bunny"
+msgstr "兔兔"
+
+msgid "Fox"
+msgstr "狐狸"
+
+msgid "Tanuki"
+msgstr "狸貓"
+
+msgid "Bat"
+msgstr "蝙蝠"
+
+msgid "Strawberry"
+msgstr "草莓"
+
+msgid "Panda"
+msgstr "熊貓"
+
+msgid "Ghost"
+msgstr "小幽靈"
+
+msgid "Ninja"
+msgstr "忍者"
+
+msgid "Dino"
+msgstr "恐龍"
+
+msgid "Tiger"
+msgstr "老虎"
+
+msgid "Pirate"
+msgstr "海盜"
+
+msgid "Dragon"
+msgstr "龍"
+
+msgid "Shark"
+msgstr "鯊魚"
+
+msgid "Astronaut"
+msgstr "太空人"
+
+msgid "Just Hatched"
+msgstr "剛孵出來"
+
+msgid "Parcel"
+msgstr "包裹"
+
+msgid "Onsen Day"
+msgstr "泡湯日"
+
+msgid "Salmon Nigiri"
+msgstr "鮭魚握壽司"
+
+msgid "Bee"
+msgstr "蜜蜂"
+
+msgid "Daruma"
+msgstr "達摩"
+
+msgid "Tako"
+msgstr "章魚"
+
+msgid "Kappa"
+msgstr "河童"
+
+msgid "Hinoki"
+msgstr "檜木"
+
+msgid "Bamboo Steamer"
+msgstr "竹蒸籠"
+
+msgid "Red Lacquer"
+msgstr "朱漆"
+
+msgid "Stone"
+msgstr "石頭"
+
+msgid "Wicker"
+msgstr "藤編"
+
+msgid "Candy Stripe"
+msgstr "糖果條紋"
+
+msgid "Gift Box"
+msgstr "禮物盒"
+
+msgid "Jubako"
+msgstr "漆器餐盒"
+
+msgid "Ice"
+msgstr "冰塊"
+
+msgid "Neon"
+msgstr "霓虹燈"
+
+msgid "Tofu Shop"
+msgstr "豆腐店"
+
+msgid "Night Market"
+msgstr "夜市"
+
+msgid "Winter"
+msgstr "冬日"
+
+msgid "Sakura Street"
+msgstr "櫻花街"
+
+msgid "Bamboo Grove"
+msgstr "竹林"
+
+msgid "Autumn Temple"
+msgstr "秋日寺廟"
+
+msgid "Onsen"
+msgstr "溫泉"
+
+msgid "Summer Festival"
+msgstr "夏日祭典"
+
+msgid "Moon Viewing"
+msgstr "賞月"
+
+msgid "Neon Rooftop"
+msgstr "霓虹屋頂"
+
+msgid "Block"
+msgstr "方塊"
+
+msgid "Slab"
+msgstr "扁扁"
+
+msgid "Long"
+msgstr "長長"
+
+msgid "Tall"
+msgstr "高高"
+
+msgid "Ball"
+msgstr "圓圓"
+
+msgid "Wardrobe"
+msgstr "衣櫃"
+
+msgid "Collection"
+msgstr "收藏"
+
+msgid "Patterns"
+msgstr "花紋"
+
+msgid "No Pattern"
+msgstr "不要花紋"
+
+msgid "Owned"
+msgstr "已擁有"
+
+msgid "%d / %d collected"
+msgstr "已收集 %d / %d"
+
+msgid "Shop · %s"
+msgstr "商店・%s"
+
+msgid "Earn rewards by playing, or buy them in the Shop."
+msgstr "玩遊戲獲得，或在商店購買。"
+
+msgid "Nothing here yet."
+msgstr "這裡還是空的。"
+
+msgid "Get More In The Shop"
+msgstr "去商店看更多"
+
+msgid "Earn even more by playing. See the Kinu Book."
+msgstr "多玩就能獲得更多，請看小絹圖鑑。"
+
+msgid "Outfits dress every Kinu you stack."
+msgstr "布偶裝會穿在每一個小絹身上。"
+
+msgid "Patterns appear on some of your Kinu."
+msgstr "花紋會出現在部分小絹身上。"
+
+msgid "Play a run in an outfit or pattern"
+msgstr "穿著布偶裝或花紋玩一局"
+
+msgid "Play %d runs in an outfit or pattern"
+msgstr "穿著布偶裝或花紋玩 %d 局"
+
+msgid "Lucky Kinu"
+msgstr "幸運小絹"
+
+msgid "Heart Kinu"
+msgstr "愛心小絹"
+
+msgid "Tiny Kinu"
+msgstr "迷你小絹"
+
+msgid "Tap the shoyu bottle to glue Kinu together!"
+msgstr "點一下醬油瓶，把小絹黏在一起吧！"
+
+msgid "Glued! Drop a Kinu on it"
+msgstr "淋上醬油了！放上去就會黏住"
+
+msgid "Splat! Missed"
+msgstr "啪！沒淋到"
+
+msgid "%d Kinu! +1 shoyu squirt"
+msgstr "%d 個小絹！醬油 +1"
+
+msgid "Shoyu Bottle"
+msgstr "醬油瓶"
+
+msgid "Tap the bottle, aim it over a Kinu and let go. Kinu that land on the glaze stick! You get another squirt every 20 Kinu."
+msgstr "點一下醬油瓶，瞄準小絹後放開。落在醬油上的小絹會黏住！每疊 20 個小絹就能再用一次。"
+
+msgid "Pile in as many Kinu as you can!"
+msgstr "盡量把越多小絹放進去！"
+
+msgid "Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full."
+msgstr "分數是疊了幾個小絹，不是有多高。先把盒子填滿，滿了再往上疊。"
+
+msgid "Leaderboards"
+msgstr "排行榜"
+
+msgid "Drop"
+msgstr "放下"
+
+msgid "Squirt"
+msgstr "擠壓"
+
+msgid "Move"
+msgstr "移動"
+
+msgid "Spin"
+msgstr "旋轉"
+
+msgid "Claw"
+msgstr "爪型"
+
+msgid "Sticks"
+msgstr "搖桿"
+
+msgid "Right Hand"
+msgstr "右手"
+
+msgid "Left Hand"
+msgstr "左手"
+
+msgid "Classic: drag anywhere to move, swipe the bottom strip to spin.\nGrab: press on Kinu to move it, swipe anywhere else to spin.\nClaw: a move stick and a spin stick with a Drop button between them, down one side of the screen."
+msgstr "經典：在任何地方拖曳移動，在下方橫條滑動旋轉。\n抓取：按住小絹移動，在其他地方滑動旋轉。\n爪型：畫面一側有移動搖桿和旋轉搖桿，中間夾著放下鍵。"
+
+msgid "Left Stick Aims"
+msgstr "左搖桿瞄準"
+
+msgid "Push the left stick to move Kinu. The shadow shows where it lands."
+msgstr "推左搖桿移動小絹。影子就是它落下的位置。"
+
+msgid "Push the right stick to turn the box."
+msgstr "推右搖桿旋轉盒子。"
+
+msgid "Tap Drop"
+msgstr "點一下就會落下"
+
+msgid "Tap the Drop button and watch Kinu plop into the box."
+msgstr "點一下放下鍵，看小絹咚一聲掉進盒子裡。"
+
+msgid "Move, spin, then tap Drop"
+msgstr "移動・旋轉・放下"
+
+msgid "Get Beans"
+msgstr "取得豆豆"
+
+msgid "Get Beans & Extras  +"
+msgstr "查看豆豆・其他  +"
+
+msgid "Change where Kinu lives, with its own music."
+msgstr "換一個小絹住的房間，音樂也會跟著換喔。"
+
+msgid "Beans & Extras"
+msgstr "豆豆・其他"
+
+msgid "A little extra for your favourite looks."
+msgstr "為你喜歡的造型，加一點點巧思。"
+
+msgid "Extras"
+msgstr "其他"
+
+msgid "Includes %s bonus"
+msgstr "附贈 %s 獎勵"
+
+msgid "One purchase. Permanently ad-free."
+msgstr "買一次，永久去除廣告。"
+
+msgid "Available when ads arrive."
+msgstr "廣告上線後即可使用。"
+
+msgid "Remove Ads"
+msgstr "移除廣告"
+
+msgid "Restore Purchases"
+msgstr "恢復購買"
+
+msgid "Retry"
+msgstr "重試"
+
+msgid "Beans can also be earned by playing.\nRestore Purchases recovers Remove Ads; spent beans aren't restored."
+msgstr "豆豆也可以靠遊玩獲得。\n「恢復購買」能救回移除廣告，但用掉的豆豆不會退回。"
+
+msgid "Opening collection…"
+msgstr "正在開啟圖鑑…"
+
+msgid "Records"
+msgstr "紀錄"
+
+msgid "Best Runs"
+msgstr "最佳紀錄"
+
+msgid "All Time"
+msgstr "累計"
+
+msgid "Treasures"
+msgstr "寶物"
+
+msgid "Biggest pile"
+msgstr "最多疊放數"
+
+msgid "Tallest tower"
+msgstr "最高的塔"
+
+msgid "Biggest pile without a tumble"
+msgstr "不掉落最多疊放數"
+
+msgid "Longest landing streak"
+msgstr "最長連續放置"
+
+msgid "Runs played"
+msgstr "遊玩次數"
+
+msgid "Average pile"
+msgstr "平均疊放數"
+
+msgid "Kinu landed"
+msgstr "放上的小絹"
+
+msgid "Kinu tumbled"
+msgstr "掉落的小絹"
+
+msgid "Box spins"
+msgstr "旋轉盒子次數"
+
+msgid "Lucky Kinu caught"
+msgstr "接到的幸運小絹"
+
+msgid "Heart Kinu caught"
+msgstr "接到的愛心小絹"
+
+msgid "Flavours found"
+msgstr "找到的口味"
+
+msgid "Daily missions finished"
+msgstr "完成的每日任務"
+
+msgid "Beans earned"
+msgstr "賺到的豆豆"
+
+msgid "Recent Runs"
+msgstr "最近幾局"
+
+msgid "Longest run"
+msgstr "最長的一局"
+
+msgid "Most days in a row"
+msgstr "最長連續遊玩天數"
+
+msgid "Play time"
+msgstr "遊玩時間"
+
+msgid "Days in a row"
+msgstr "連續遊玩天數"
+
+msgid "Favourite shape"
+msgstr "最愛的形狀"
+
+msgid "Shoyu"
+msgstr "醬油"
+
+msgid "Squirts used"
+msgstr "用掉的醬油"
+
+msgid "Kinu glazed"
+msgstr "淋上醬油的小絹"
+
+msgid "Bonus beans won"
+msgstr "獎勵獲得的豆豆"
+
+msgid "Items collected"
+msgstr "收集的物品"
+
+msgid "Beans spent"
+msgstr "花掉的豆豆"
+
+msgid "Best Pile By Room"
+msgstr "各場景最佳紀錄"
+
+msgid "Best Pile By Outfit"
+msgstr "各布偶裝最佳紀錄"
+
+msgid "Favourite Kinu"
+msgstr "最愛的小絹"
+
+msgid "Landed 1 time"
+msgstr "放上 1 次"
+
+msgid "Landed %s times"
+msgstr "放上 %s 次"
+
+msgid "Play a run to meet your favourite Kinu!"
+msgstr "玩一局，找到你最愛的小絹吧！"
+
+msgid "Stacking since %s"
+msgstr "從 %s 開始遊玩"
+
+msgid "%dh %dm"
+msgstr "%d 小時 %d 分"
+
+msgid "%dm %ds"
+msgstr "%d 分 %d 秒"
+
+msgid "%s beans added!"
+msgstr "已加入 %s 顆豆豆！"
+
+msgid "Ads removed. Thank you!"
+msgstr "已移除廣告，謝謝支持！"
+
+msgid "Apple couldn't verify a purchase. Please try again later."
+msgstr "Apple 無法驗證這筆購買，請稍後再試。"
+
+msgid "Bean Jar"
+msgstr "豆豆罐"
+
+msgid "Bean Pantry"
+msgstr "豆豆倉庫"
+
+msgid "Bean Pouch"
+msgstr "豆豆袋"
+
+msgid "Little Bean Bag"
+msgstr "小豆豆包"
+
+msgid "Confirm your purchase with Apple."
+msgstr "請透過 Apple 確認購買。"
+
+msgid "Connecting to the App Store…"
+msgstr "正在連線到 App Store…"
+
+msgid "Loading…"
+msgstr "載入中…"
+
+msgid "Unavailable"
+msgstr "無法使用"
+
+msgid "Purchase cancelled."
+msgstr "已取消購買。"
+
+msgid "Purchase couldn't be completed. Please try again."
+msgstr "無法完成購買，請再試一次。"
+
+msgid "Purchases are available in the iPhone app."
+msgstr "可在 iPhone App 中購買。"
+
+msgid "Restore couldn't be completed. Please try again."
+msgstr "無法完成恢復，請再試一次。"
+
+msgid "Restore requested. Eligible purchases will appear shortly."
+msgstr "已要求恢復，符合資格的購買項目稍後就會出現。"
+
+msgid "Restoring purchases…"
+msgstr "正在恢復購買…"
+
+msgid "Some purchases aren't available right now. Please try again."
+msgstr "目前有些購買項目無法使用，請再試一次。"
+
+msgid "The App Store is taking a while. Please try again."
+msgstr "App Store 回應較慢，請再試一次。"
+
+msgid "Waiting for approval. Your purchase will arrive when Apple approves it."
+msgstr "等待核准中。Apple 核准後就會收到購買項目。"
+
+msgid "We couldn't confirm that purchase. Please try again."
+msgstr "無法確認這筆購買，請再試一次。"
+
+msgid "We couldn't confirm the purchase receipt. Please try Restore Purchases."
+msgstr "無法確認購買收據，請試試「恢復購買」。"
+
+msgid "Your purchase couldn't be saved. Free some storage and tap Retry."
+msgstr "無法儲存購買項目。請釋放一些儲存空間，再點「重試」。"
+
+msgid "Your refunded purchase has been updated."
+msgstr "已更新退款的購買項目。"
+
+msgid "Waiting…"
+msgstr "請稍候…"
+
+msgid "Coming soon"
+msgstr "即將推出"
+
+msgid "Each room plays its own music."
+msgstr "每個場景都有自己的音樂。"
+
+msgid "Play %d days in a row"
+msgstr "連續遊玩 %d 天"
+
+msgid "Glaze %d Kinu with shoyu"
+msgstr "為 %d 個小絹淋上醬油"
+
+msgid "Play a run in an outfit"
+msgstr "穿著布偶裝玩一局"
+
+msgid "Play %d runs in an outfit"
+msgstr "穿著布偶裝玩 %d 局"

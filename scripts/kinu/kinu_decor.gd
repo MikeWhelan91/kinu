@@ -10,3 +10,9 @@ extends Resource
 @export var palette: Dictionary = {}
 ## Boxes: "" or "shiny"/"petals". Rooms: ambient effect "steam", "snow", "petals" or "fireflies".
 @export var effect: String = ""
+## Rooms: "" (the tofu shop interior), "grove", "onsen", "festival", "rooftop" or "veranda".
+@export var layout: String = ""
+## Earned in the Kinu Book instead of bought: "best", "total", "runs", "flavours", "clean", "lucky",
+## "height" (cm) or "missions". Empty means it is sold in the shop.
+@export var goal: String = ""
+@export var goal_amount: int = 0

@@ -4,6 +4,8 @@ extends Control
 ## scene change instead of a freeze. Call finish() to fade it out.
 
 var font: Font = NestTheme.font
+var message: String = "Tidying the shop..."
+var detail: String = ""
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -29,13 +31,21 @@ func _draw() -> void:
 	for side in [-1.0, 1.0]:
 		draw_circle(tofu.get_center()+Vector2(side*13, 2), 4.5, NestTheme.INK)
 		draw_circle(tofu.get_center()+Vector2(side*22, 12), 6, Color("ff9fb0"))
-	var text := "Tidying the shop..."
+	var text := NestTheme.t(message)
 	var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 26).x
 	var at := center+Vector2(-width*.5, 30)
 	draw_string_outline(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, 26, 8, NestTheme.INK)
 	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, 26, NestTheme.CREAM)
+	if detail != "":
+		var detail_text := NestTheme.t(detail)
+		var detail_width := font.get_string_size(detail_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 18).x
+		var detail_at := center+Vector2(-detail_width*.5, 68)
+		draw_string_outline(font, detail_at, detail_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, 6, NestTheme.INK)
+		draw_string(font, detail_at, detail_text, HORIZONTAL_ALIGNMENT_LEFT, -1, 18, NestTheme.SUN)
 
 func finish() -> void:
+	# Taps go through while it fades, so the new page responds straight away.
+	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var fade := create_tween()
 	fade.tween_property(self, "modulate:a", 0.0, .25)
 	fade.tween_callback(queue_free)

@@ -1,8 +1,8 @@
 Renderer: Compatibility / Apple M4 desktop (not an iPhone benchmark)
 Initial rigid bodies: 60
 Bodies during measurement: 60–60
-Measured frames: 961
-Mean frame time: 8.33 ms
-95th percentile frame time: 9.38 ms
-Mean physics time: 0.52 ms
-Peak draw calls: 275
+Measured frames: 908
+Mean frame time: 8.81 ms
+95th percentile frame time: 10.25 ms
+Mean physics time: 0.84 ms
+Peak draw calls: 284

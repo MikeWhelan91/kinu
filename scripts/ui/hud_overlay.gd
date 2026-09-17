@@ -16,10 +16,14 @@ func _process(_delta: float) -> void:
 func _draw() -> void:
 	if run == null:
 		return
-	if run.control_scheme() == "classic":
-		_draw_spin_strip()
-	elif is_instance_valid(hint) and hint.visible and run.orbit.camera.is_inside_tree():
-		_draw_spin_arrows(run.orbit.camera.unproject_position(Vector3(0, TofuBox.RIM_HEIGHT*.5, 0)))
+	match run.control_scheme():
+		"classic":
+			_draw_spin_strip()
+		"claw":
+			pass # The joysticks and drop button draw their own state; nothing to overlay here.
+		_:
+			if is_instance_valid(hint) and hint.visible and run.orbit.camera.is_inside_tree():
+				_draw_spin_arrows(run.orbit.camera.unproject_position(Vector3(0, TofuBox.RIM_HEIGHT*.5, 0)))
 
 func _draw_spin_strip() -> void:
 	var strip := run.spin_strip_rect()
@@ -35,7 +39,7 @@ func _draw_spin_strip() -> void:
 		var tip := center+Vector2(side*(strip.size.x*.38+wobble), 0)
 		draw_colored_polygon(PackedVector2Array([tip, tip+Vector2(-side*22, -18), tip+Vector2(-side*22, 18)]), NestTheme.INK)
 		draw_colored_polygon(PackedVector2Array([tip+Vector2(-side*6, 0), tip+Vector2(-side*19, -10), tip+Vector2(-side*19, 10)]), NestTheme.CREAM)
-	var text := "SWIPE TO SPIN"
+	var text := tr("Swipe To Spin")
 	var font_size := 24
 	var width := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 	var baseline := center+Vector2(-width*.5, font_size*.36)

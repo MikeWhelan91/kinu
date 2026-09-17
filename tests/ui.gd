@@ -10,7 +10,7 @@ func check(value: bool, text: String) -> void:
 		print("FAIL ",text)
 
 func find_button(text: String, node: Node) -> Button:
-	if node is Button and node.text == text:
+	if node is Button and (node.text == text or node.name == text):
 		return node
 	for child in node.get_children():
 		var found := find_button(text,child)
@@ -23,6 +23,13 @@ func click(text: String) -> void:
 	check(button != null,"button present: "+text)
 	if not button:
 		return
+	var parent := button.get_parent()
+	while parent:
+		if parent is ScrollContainer:
+			parent.ensure_control_visible(button)
+			await get_tree().process_frame
+			break
+		parent = parent.get_parent()
 	var point := button.get_global_rect().get_center()
 	var event := InputEventMouseButton.new()
 	event.position = point
@@ -43,6 +50,24 @@ func _ready() -> void:
 	add_child(app)
 	await get_tree().process_frame
 	await get_tree().process_frame
+	check(find_button("Daily", app.screen) != null,"daily missions are available on the home screen from the start")
+	check(app.run.bodies.size() == 9,"home box contains a fuller nine-Kinu tableau")
+	Save.data.outfit = "ghost"
+	app._home()
+	check(app.run.bodies.size() == 9 and app.run.bodies.all(func(body: KinuBody) -> bool: return body.outfit != null and body.outfit.id == "ghost"),"every home Kinu previews the equipped outfit")
+	Save.data.outfit = ""
+	app._home()
+	await click("BeanWallet")
+	check(app.page == "beans", "home wallet opens bean purchases")
+	check(find_button("Bag", app.screen).disabled, "desktop never permits a fake real-money purchase")
+	await click("‹")
+	check(app.page == "home", "wallet purchase screen returns home")
+	await click("Shop")
+	await click("GetBeans")
+	check(app.page == "beans", "shop has a separate bean purchase destination")
+	await click("‹")
+	check(app.page == "shop", "purchase screen returns to the originating shop")
+	await click("‹")
 	await click("Play")
 	check(app.page=="play" and app.tutorial_step==0,"pointer click starts tutorial")
 	for i in 4:
@@ -82,31 +107,78 @@ func _ready() -> void:
 		await get_tree().physics_frame
 		if run.state=="aim":
 			break
-	check(app.tutorial_step==4 and run.placed==1,"tutorial reaches final tip after landing")
-	await click("Let’s stack!")
+	check(app.tutorial_step==4 and run.placed==1,"tutorial reaches the shoyu bottle step after landing")
+	await click("×1")
+	check(run.aim_mode=="bottle","pointer taps the shoyu bottle")
+	run.drop()
+	for i in 120:
+		await get_tree().physics_frame
+		if run.state=="aim":
+			break
+	check(app.tutorial_step==5,"squirting reaches the final tip")
+	await click("Let’s Stack!")
 	check(Save.data.tutorial and app.tutorial_step == -1,"tutorial finishes through button")
 	await click("II")
 	check(get_tree().paused,"pointer pause works")
-	await click("Keep playing")
+	await click("Resume")
 	check(not get_tree().paused,"pointer resume works while tree paused")
 	await click("II")
-	await click("Return home")
+	await click("Restart")
+	check(app.page=="play" and not get_tree().paused and app.run.score==0,"pause restart begins a fresh unpaused run")
+	await click("II")
+	await click("Main Menu")
 	check(app.page=="home","pointer returns home")
 	await click("Settings")
 	check(app.page=="settings","pointer opens settings")
-	await click("Haptics   On")
+	await click("Off")
 	check(not Save.data.haptics,"pointer toggles setting")
-	await click("Controls   Grab")
+	await click("Classic")
 	check(Save.data.controls=="classic","pointer switches control scheme")
-	await click("Credits & licences")
+	await click("Credits & Licences")
 	check(app.page=="credits","pointer opens licences")
 	await click("‹")
 	await click("‹")
 	await click("Shop")
 	check(app.page=="shop","pointer opens shop")
 	await click("‹")
+	await click("Wardrobe")
+	check(app.page=="wardrobe","pointer opens wardrobe")
+	await click("‹")
 	await click("Kinu Book")
 	check(app.page=="collection","pointer opens book")
+	Save.mark_fresh("outfit:leaf")
+	app.book_tab = "collection"
+	app._collection()
+	check(app.screen.find_child("CollectionLoading",true,false) != null,"collection navigation paints immediately before previews load")
+	for i in 4:
+		await get_tree().process_frame
+	var shop_item: KinuOutfit = app.run.catalog.outfit("tanuki")
+	KinuBookScreen._collection_tapped(app, "outfit", shop_item)
+	await get_tree().process_frame
+	check(app.page == "collection" and app.canvas.find_child("BookToShopTransition", false, false) != null,"a labelled curtain bridges the Kinu Book and Shop")
+	for i in 48:
+		await get_tree().process_frame
+	check(app.page == "shop" and app.shop_tab == "outfit" and is_instance_valid(app.modal),"the transition lands on the matching Shop shelf and opens the item")
+	await click("Okay")
+	await click("‹")
+	for i in 4:
+		await get_tree().process_frame
+	check(app.page == "collection" and app.book_tab == "collection","Shop back returns to the Kinu Book collection")
+	Save.data.owned.append("outfit:tanuki")
+	KinuBookScreen._collection_tapped(app, "outfit", shop_item)
+	await get_tree().process_frame
+	check(app.page == "collection" and app.canvas.find_child("BookToWardrobeTransition", false, false) != null,"a labelled curtain bridges the Kinu Book and Wardrobe")
+	# Frames run faster than real time headless; wait for the curtain's timer to open the page.
+	await get_tree().create_timer(.5).timeout
+	check(app.page == "wardrobe" and app.wardrobe_tab == "outfit","the transition lands on the matching Wardrobe shelf")
+	await click("‹")
+	for i in 4:
+		await get_tree().process_frame
+	check(app.page == "collection" and app.book_tab == "collection","Wardrobe back returns to the Kinu Book collection")
+	await click("‹")
+	check(Save.fresh_count() == 0,"leaving the Kinu Book marks all badges read")
+	app.book_tab = "flavours"
+	await click("Kinu Book")
 	for i in 3:
 		await get_tree().process_frame
 	var list: DragScroll = app.screen.find_children("*","DragScroll",true,false)[0]

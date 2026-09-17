@@ -4,7 +4,7 @@ extends Resource
 @export var shapes: Array[KinuShape] = []
 @export var flavours: Array[KinuFlavour] = []
 @export var outfits: Array[KinuOutfit] = []
-## Costume finishes (gold, crystal...) that restyle every Kinu when worn.
+## Special looks (gold, crystal...) worn through pattern outfits; Lucky Kinu are always gold.
 @export var finishes: Array[KinuFlavour] = []
 @export var decor: Array[KinuDecor] = []
 
@@ -32,3 +32,8 @@ func outfit(id: String) -> KinuOutfit:
 		if item.id == id:
 			return item
 	return null
+
+## The look a pattern outfit gives some Kinu, or null for costumes and no outfit.
+func pattern(outfit_id: String) -> KinuFlavour:
+	var item := outfit(outfit_id)
+	return item.finish if item else null

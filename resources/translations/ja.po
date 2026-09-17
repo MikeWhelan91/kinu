@@ -1,0 +1,1114 @@
+msgid ""
+msgstr ""
+"Language: ja\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+msgid "Play"
+msgstr "あそぶ"
+
+msgid "Shop"
+msgstr "ショップ"
+
+msgid "Kinu Book"
+msgstr "きぬ図鑑"
+
+msgid "Settings"
+msgstr "設定"
+
+msgid "Daily"
+msgstr "デイリー"
+
+
+msgid "Kinu"
+msgstr "きぬ"
+
+msgid "Tumble"
+msgstr "タンブル"
+
+msgid "Tidying the shop..."
+msgstr "お店をととのえ中…"
+
+msgid "Okay"
+msgstr "OK"
+
+msgid "Close"
+msgstr "とじる"
+
+msgid "Lovely"
+msgstr "すてき！"
+
+msgid "Not Yet"
+msgstr "やめておく"
+
+msgid "Main Menu"
+msgstr "メニューへ"
+
+msgid "Next"
+msgstr "つぎ"
+
+msgid "Best %s"
+msgstr "ベスト %s"
+
+msgid "Swipe To Spin"
+msgstr "スワイプで回転"
+
+msgid "Drag to move  ·  let go to drop"
+msgstr "ドラッグで移動・はなして落とす"
+
+msgid "Drag Kinu to move  ·  swipe to spin"
+msgstr "きぬをドラッグ・スワイプで回転"
+
+msgid "TALLEST"
+msgstr "最高記録"
+
+msgid "Timber!"
+msgstr "たおれる〜！"
+
+msgid "Oh no! That's three tumbles!"
+msgstr "あちゃー！3回落ちちゃった！"
+
+msgid "Kinu tumbled off! %d tumbles left"
+msgstr "きぬが落ちた！のこり%d回"
+
+msgid "Kinu tumbled off! 1 tumble left"
+msgstr "きぬが落ちた！のこり1回"
+
+msgid "%d Kinu! Amazing!"
+msgstr "%d個！すごい！"
+
+msgid "New flavour: %s!"
+msgstr "新しい味：%s！"
+
+msgid "Lucky Kinu! +%d beans"
+msgstr "ラッキーきぬ！まめ+%d"
+
+msgid "Heart Kinu! A tumble came back"
+msgstr "ハートきぬ！ミスが1回もどった"
+
+msgid "Heart Kinu! +5 beans"
+msgstr "ハートきぬ！まめ+5"
+
+msgid "Lucky Kinu! Land it for bonus beans"
+msgstr "ラッキーきぬ！のせるとまめボーナス"
+
+msgid "Heart Kinu! Land it to win back a tumble"
+msgstr "ハートきぬ！のせるとミスが1回もどる"
+
+msgid "Tiny Kinu! Squeeze it into a gap"
+msgstr "ちびきぬ！すきまにぴったり"
+
+
+msgid "Skip Guide"
+msgstr "ガイドをとばす"
+
+msgid "Let’s Stack!"
+msgstr "積んでみよう！"
+
+msgid "Grab Kinu"
+msgstr "きぬをつかむ"
+
+msgid "Press on Kinu and drag to move it. The shadow shows where it lands."
+msgstr "きぬを押してドラッグで移動。影が落ちる場所だよ。"
+
+msgid "Drag To Aim"
+msgstr "ドラッグでねらう"
+
+msgid "Drag anywhere to move Kinu. The shadow shows where it lands."
+msgstr "どこでもドラッグしてきぬを移動。影が落ちる場所だよ。"
+
+msgid "Let Go To Drop"
+msgstr "はなして落とす"
+
+msgid "Lift your finger and watch Kinu plop into the box."
+msgstr "指をはなすと、きぬが箱にぽとん。"
+
+msgid "Spin The Box"
+msgstr "箱を回そう"
+
+msgid "Swipe anywhere else to turn the box. Swipe up or down to tilt the view."
+msgstr "ほかの場所をスワイプで箱が回るよ。上下スワイプで視点を傾けられる。"
+
+msgid "Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view."
+msgstr "下の帯を左右にスワイプで箱が回るよ。上下スワイプで視点を傾けられる。"
+
+msgid "Pile Them Up"
+msgstr "どんどん積もう"
+
+
+msgid "Careful!"
+msgstr "気をつけて！"
+
+msgid "Kinu that tumble onto the counter don't count. Three tumbles and the run is over."
+msgstr "台に落ちたきぬは数えないよ。3回落ちたらおしまい。"
+
+msgid "Paused"
+msgstr "一時停止"
+
+msgid "Resume"
+msgstr "つづける"
+
+msgid "Restart"
+msgstr "やりなおす"
+
+msgid "Kinu Piled"
+msgstr "積んだきぬ"
+
+msgid "%s Tall"
+msgstr "高さ %s"
+
+msgid "%d Tumbles Left"
+msgstr "のこり%d回"
+
+msgid "1 Tumble Left"
+msgstr "のこり1回"
+
+msgid "New Best!"
+msgstr "ベスト更新！"
+
+msgid "Tumble!"
+msgstr "タンブル！"
+
+msgid "+%d beans"
+msgstr "まめ+%d"
+
+msgid "Play Again"
+msgstr "もう一回"
+
+msgid "New flavour: %s"
+msgstr "新しい味：%s"
+
+msgid "Earned: %s"
+msgstr "ゲット：%s"
+
+msgid "Daily mission done!"
+msgstr "デイリーミッション達成！"
+
+msgid "%d daily missions done!"
+msgstr "デイリーミッション%d個達成！"
+
+msgid " & "
+msgstr "・"
+
+msgid "Flavours"
+msgstr "味"
+
+msgid "All"
+msgstr "すべて"
+
+msgid "Found"
+msgstr "発見"
+
+msgid "Missing"
+msgstr "未発見"
+
+msgid "%d / %d flavours found"
+msgstr "%d / %d 種類発見"
+
+msgid "Every flavour found. Amazing!"
+msgstr "全部の味を発見！すごい！"
+
+msgid "Pile %d Kinu"
+msgstr "%d個積む"
+
+msgid "Not found yet"
+msgstr "まだ見つけてない"
+
+msgid "Not in the mix"
+msgstr "出現オフ"
+
+msgid "Common"
+msgstr "ふつう"
+
+msgid "Uncommon"
+msgstr "ちょっとレア"
+
+msgid "Rare"
+msgstr "レア"
+
+msgid "Unlocked at %d Kinu"
+msgstr "%d個で解放"
+
+msgid "%s Kinu"
+msgstr "%sきぬ"
+
+msgid "A Flavour To Find"
+msgstr "まだ見ぬ味"
+
+msgid "Pile %d Kinu in one run to unlock this flavour."
+msgstr "1回で%d個積むとこの味が解放されるよ。"
+
+msgid "Keep piling. This flavour turns up now and then."
+msgstr "積みつづけてね。ときどき出てくるよ。"
+
+msgid "In The Mix: %s"
+msgstr "出現：%s"
+
+msgid "On"
+msgstr "オン"
+
+msgid "Off"
+msgstr "オフ"
+
+msgid "Switched off flavours won't appear while you stack."
+msgstr "オフにした味はプレイ中に出てこないよ。"
+
+msgid "Keep at least one flavour in the mix."
+msgstr "少なくとも1つはオンにしてね。"
+
+msgid "Outfits"
+msgstr "きぐるみ"
+
+msgid "Boxes"
+msgstr "箱"
+
+msgid "Rooms"
+msgstr "おへや"
+
+msgid "Wearing"
+msgstr "着ている"
+
+msgid "In Use"
+msgstr "使用中"
+
+msgid "Tap To Wear"
+msgstr "タップで着る"
+
+msgid "Tap To Use"
+msgstr "タップで使う"
+
+msgid "%s to earn this."
+msgstr "%sでゲット。"
+
+msgid "Pile %d Kinu in one run"
+msgstr "1回で%d個積む"
+
+msgid "Land %d Kinu in total"
+msgstr "合計%d個のせる"
+
+msgid "Play %d runs"
+msgstr "%d回あそぶ"
+
+msgid "Find %d flavours"
+msgstr "%d種類の味を見つける"
+
+msgid "Pile %d Kinu without a tumble"
+msgstr "1回も落とさず%d個積む"
+
+msgid "Catch %d Lucky Kinu"
+msgstr "ラッキーきぬを%d個キャッチ"
+
+msgid "Build a tower %s tall"
+msgstr "高さ%sまで積む"
+
+msgid "Finish %d daily missions"
+msgstr "デイリーミッションを%d個達成"
+
+msgid "Kinu Shop"
+msgstr "きぬショップ"
+
+msgid "%s beans"
+msgstr "まめ %s"
+
+msgid "%d beans"
+msgstr "まめ %d"
+
+msgid "No Outfit"
+msgstr "きぐるみなし"
+
+msgid "Same size box, fresh new look."
+msgstr "同じ大きさで、新しい見た目。"
+
+msgid "Change where Kinu lives."
+msgstr "きぬのおうちを変えよう。"
+
+msgid "Buy & Wear"
+msgstr "買って着る"
+
+msgid "Buy & Use"
+msgstr "買って使う"
+
+msgid "You need %d more beans.\nPile more Kinu and finish daily missions to earn them!"
+msgstr "まめがあと%d足りないよ。\nたくさん積んで、デイリーミッションでためよう！"
+
+msgid "Daily Missions"
+msgstr "デイリーミッション"
+
+msgid "Collect"
+msgstr "受けとる"
+
+msgid "Collected"
+msgstr "受けとり済み"
+
+msgid "New missions arrive every day."
+msgstr "ミッションは毎日かわるよ。"
+
+msgid "Land %d Kinu"
+msgstr "%d個のせる"
+
+msgid "Catch a Lucky Kinu"
+msgstr "ラッキーきぬをキャッチ"
+
+msgid "Catch a Heart Kinu"
+msgstr "ハートきぬをキャッチ"
+
+msgid "Catch %d Heart Kinu"
+msgstr "ハートきぬを%d個キャッチ"
+
+msgid "Land %d %s Kinu"
+msgstr "%d個の%sきぬをのせる"
+
+msgid "Land %d Kinu in a row without a tumble"
+msgstr "落とさずに%d個連続でのせる"
+
+msgid "Spin the box %d full turns"
+msgstr "箱を%d回転させる"
+
+msgid "Pile %d Kinu in %d different runs"
+msgstr "%d個積むのを%d回"
+
+msgid "Find a new flavour"
+msgstr "新しい味を見つける"
+
+msgid "Play a run with a new box or room"
+msgstr "新しい箱かおへやで1回あそぶ"
+
+msgid "Play %d runs with a new box or room"
+msgstr "新しい箱かおへやで%d回あそぶ"
+
+msgid "Sound"
+msgstr "サウンド"
+
+msgid "Music"
+msgstr "BGM"
+
+msgid "Sound Effects"
+msgstr "効果音"
+
+msgid "%s   %d%%"
+msgstr "%s　%d%%"
+
+msgid "Haptics"
+msgstr "振動"
+
+msgid "Controls"
+msgstr "操作"
+
+msgid "Classic"
+msgstr "クラシック"
+
+msgid "Grab"
+msgstr "つかむ"
+
+msgid "Classic: drag anywhere to move, swipe the bottom strip to spin.\nGrab: press on Kinu to move it, swipe anywhere else to spin."
+msgstr "クラシック：どこでもドラッグで移動、下の帯をスワイプで回転。\nつかむ：きぬを押して移動、ほかの場所をスワイプで回転。"
+
+msgid "More"
+msgstr "その他"
+
+msgid "Language"
+msgstr "言語"
+
+msgid "Auto"
+msgstr "自動"
+
+msgid "Replay The Tutorial"
+msgstr "チュートリアルをもう一度"
+
+msgid "Credits & Licences"
+msgstr "クレジット・ライセンス"
+
+msgid "Credits"
+msgstr "クレジット"
+
+msgid "Debug · Unlock Everything: %s"
+msgstr "デバッグ・全部解放：%s"
+
+msgid "Your nest saves automatically.\nKINU TUMBLE  ·  1.0"
+msgstr "データは自動で保存されます。\nきぬタンブル・1.0"
+
+msgid "Silken"
+msgstr "絹ごし"
+
+msgid "Fried"
+msgstr "揚げ"
+
+msgid "Sesame"
+msgstr "ごま"
+
+msgid "Matcha"
+msgstr "抹茶"
+
+msgid "Sakura"
+msgstr "桜"
+
+msgid "Tamago"
+msgstr "玉子"
+
+msgid "Kinako"
+msgstr "きなこ"
+
+msgid "Yuzu"
+msgstr "ゆず"
+
+msgid "Ume"
+msgstr "梅"
+
+msgid "Mango"
+msgstr "マンゴー"
+
+msgid "Hojicha"
+msgstr "ほうじ茶"
+
+msgid "Blueberry"
+msgstr "ブルーベリー"
+
+msgid "Wasabi"
+msgstr "わさび"
+
+msgid "Mint"
+msgstr "ミント"
+
+msgid "Onigiri"
+msgstr "おにぎり"
+
+msgid "Ube"
+msgstr "紅いも"
+
+msgid "Azuki"
+msgstr "あずき"
+
+msgid "Chocolate"
+msgstr "チョコ"
+
+msgid "Kabocha"
+msgstr "かぼちゃ"
+
+msgid "Jelly"
+msgstr "ゼリー"
+
+msgid "Ramune"
+msgstr "ラムネ"
+
+msgid "Hanabi"
+msgstr "花火"
+
+msgid "Smooth, soft and a little shy. The original Kinu."
+msgstr "なめらかでやわらか、ちょっと恥ずかしがり。元祖きぬ。"
+
+msgid "Golden and crisp outside, still soft inside."
+msgstr "外はこんがりサクサク、中はふんわり。"
+
+msgid "Speckled with toasty black sesame."
+msgstr "香ばしい黒ごまがぽつぽつ。"
+
+msgid "Calm and green, like a quiet tea house."
+msgstr "静かな茶屋みたいに、おだやかな緑。"
+
+msgid "Only blooms for a little while."
+msgstr "咲くのはほんのひととき。"
+
+msgid "Sunny, sweet egg tofu."
+msgstr "お日さま色のあまい玉子どうふ。"
+
+msgid "Rolled in toasty roasted soybean flour."
+msgstr "香ばしいきなこをまぶして。"
+
+msgid "Zesty and bright, like a winter citrus."
+msgstr "冬の柑橘みたいに、さわやか。"
+
+msgid "Sweet and sour, like a pickled plum."
+msgstr "梅干しみたいに、あまずっぱい。"
+
+msgid "Sweet, sunny and a little bit tropical."
+msgstr "あまくて明るい、ちょっとトロピカル。"
+
+msgid "Roasted green tea, warm and nutty."
+msgstr "焙じたお茶の、あたたかい香ばしさ。"
+
+msgid "A cool little berry blue."
+msgstr "ひんやりかわいいベリーブルー。"
+
+msgid "A little bit spicy. Handle with care."
+msgstr "ちょっとピリッと。取りあつかい注意。"
+
+msgid "Fresh as a spring breeze."
+msgstr "春風みたいにすっきり。"
+
+msgid "Fluffy rice with a crisp nori wrap."
+msgstr "ふっくらごはんにパリッとのり。"
+
+msgid "Purple yam, soft and dreamy."
+msgstr "むらさきのお芋、やさしい夢見ごこち。"
+
+msgid "Sweet red bean, with whole beans inside."
+msgstr "つぶつぶ入りのあまいあずき。"
+
+msgid "Rich, smooth and irresistible."
+msgstr "濃厚でなめらか、やみつき。"
+
+msgid "Sweet pumpkin, best in autumn."
+msgstr "あまいかぼちゃ、秋がいちばん。"
+
+msgid "Wobbly, see-through strawberry jelly."
+msgstr "ぷるぷる透きとおる、いちごゼリー。"
+
+msgid "Fizzy soda pop. The marble is extra."
+msgstr "しゅわしゅわラムネ。ビー玉はおまけ。"
+
+msgid "Summer fireworks over the river."
+msgstr "川の上に咲く夏の花火。"
+
+msgid "Wood"
+msgstr "木目"
+
+msgid "Marble"
+msgstr "大理石"
+
+msgid "Gold"
+msgstr "金"
+
+msgid "Crystal"
+msgstr "クリスタル"
+
+msgid "Galaxy"
+msgstr "ギャラクシー"
+
+msgid "Carved from hinoki by a very patient woodworker."
+msgstr "とても辛抱強い職人がひのきから彫りました。"
+
+msgid "Cool, polished and very fancy."
+msgstr "ひんやりつやつや、とっても高級。"
+
+msgid "Solid gold. Priceless. Still shy."
+msgstr "純金。お値段つけられない。でも恥ずかしがり。"
+
+msgid "Glittering and clear as ice."
+msgstr "氷のようにきらきら透明。"
+
+msgid "A whole night sky in one little tofu."
+msgstr "小さなとうふに夜空まるごと。"
+
+msgid "Little Leaf"
+msgstr "はっぱ"
+
+msgid "Frog"
+msgstr "カエル"
+
+msgid "Bunny"
+msgstr "うさぎ"
+
+msgid "Fox"
+msgstr "きつね"
+
+msgid "Tanuki"
+msgstr "たぬき"
+
+msgid "Bat"
+msgstr "コウモリ"
+
+msgid "Strawberry"
+msgstr "いちご"
+
+msgid "Panda"
+msgstr "パンダ"
+
+msgid "Ghost"
+msgstr "おばけ"
+
+msgid "Ninja"
+msgstr "忍者"
+
+msgid "Dino"
+msgstr "きょうりゅう"
+
+msgid "Tiger"
+msgstr "トラ"
+
+msgid "Pirate"
+msgstr "海賊"
+
+msgid "Dragon"
+msgstr "ドラゴン"
+
+msgid "Shark"
+msgstr "サメ"
+
+msgid "Astronaut"
+msgstr "宇宙飛行士"
+
+msgid "Just Hatched"
+msgstr "うまれたて"
+
+msgid "Parcel"
+msgstr "おとどけもの"
+
+msgid "Onsen Day"
+msgstr "温泉びより"
+
+msgid "Salmon Nigiri"
+msgstr "サーモンにぎり"
+
+msgid "Bee"
+msgstr "ミツバチ"
+
+msgid "Daruma"
+msgstr "だるま"
+
+msgid "Tako"
+msgstr "タコ"
+
+msgid "Kappa"
+msgstr "カッパ"
+
+msgid "Hinoki"
+msgstr "ひのき"
+
+msgid "Bamboo Steamer"
+msgstr "せいろ"
+
+msgid "Red Lacquer"
+msgstr "朱塗り"
+
+msgid "Stone"
+msgstr "石"
+
+msgid "Wicker"
+msgstr "かご"
+
+msgid "Candy Stripe"
+msgstr "キャンディ"
+
+msgid "Gift Box"
+msgstr "ギフトボックス"
+
+msgid "Jubako"
+msgstr "重箱"
+
+msgid "Ice"
+msgstr "氷"
+
+msgid "Neon"
+msgstr "ネオン"
+
+msgid "Tofu Shop"
+msgstr "とうふ屋"
+
+msgid "Night Market"
+msgstr "夜市"
+
+msgid "Winter"
+msgstr "冬景色"
+
+msgid "Sakura Street"
+msgstr "桜並木"
+
+msgid "Bamboo Grove"
+msgstr "竹林"
+
+msgid "Autumn Temple"
+msgstr "秋のお寺"
+
+msgid "Onsen"
+msgstr "温泉"
+
+msgid "Summer Festival"
+msgstr "夏祭り"
+
+msgid "Moon Viewing"
+msgstr "お月見"
+
+msgid "Neon Rooftop"
+msgstr "ネオンの屋上"
+
+msgid "Block"
+msgstr "ブロック"
+
+msgid "Slab"
+msgstr "ひらべったい"
+
+msgid "Long"
+msgstr "ながーい"
+
+msgid "Tall"
+msgstr "のっぽ"
+
+msgid "Ball"
+msgstr "まんまる"
+
+msgid "Wardrobe"
+msgstr "衣装だな"
+
+msgid "Collection"
+msgstr "コレクション"
+
+msgid "Patterns"
+msgstr "もよう"
+
+msgid "No Pattern"
+msgstr "もようなし"
+
+msgid "Owned"
+msgstr "持っている"
+
+msgid "%d / %d collected"
+msgstr "%d / %d 集めた"
+
+msgid "Shop · %s"
+msgstr "ショップ・%s"
+
+msgid "Earn rewards by playing, or buy them in the Shop."
+msgstr "あそんでゲットするか、ショップで買おう。"
+
+msgid "Nothing here yet."
+msgstr "まだなにもないよ。"
+
+msgid "Get More In The Shop"
+msgstr "ショップでもっと見る"
+
+msgid "Earn even more by playing. See the Kinu Book."
+msgstr "あそぶともっともらえるよ。きぬ図鑑を見てね。"
+
+msgid "Outfits dress every Kinu you stack."
+msgstr "きぐるみは積むきぬ全員が着るよ。"
+
+msgid "Patterns appear on some of your Kinu."
+msgstr "もようは一部のきぬに出てくるよ。"
+
+msgid "Play a run in an outfit or pattern"
+msgstr "きぐるみかもようで1回あそぶ"
+
+msgid "Play %d runs in an outfit or pattern"
+msgstr "きぐるみかもようで%d回あそぶ"
+
+msgid "Lucky Kinu"
+msgstr "ラッキーきぬ"
+
+msgid "Heart Kinu"
+msgstr "ハートきぬ"
+
+msgid "Tiny Kinu"
+msgstr "ちびきぬ"
+
+msgid "Tap the shoyu bottle to glue Kinu together!"
+msgstr "しょうゆボトルをタップして、きぬをくっつけよう！"
+
+msgid "Glued! Drop a Kinu on it"
+msgstr "しょうゆをかけた！上にのせるとくっつくよ"
+
+msgid "Splat! Missed"
+msgstr "べちゃっ！はずれ"
+
+msgid "%d Kinu! +1 shoyu squirt"
+msgstr "%d個！しょうゆ+1"
+
+msgid "Shoyu Bottle"
+msgstr "しょうゆボトル"
+
+msgid "Tap the bottle, aim it over a Kinu and let go. Kinu that land on the glaze stick! You get another squirt every 20 Kinu."
+msgstr "ボトルをタップして、きぬの上でねらってはなそう。しょうゆの上にのったきぬはくっつくよ！20個積むごとにもう1回使えるよ。"
+
+msgid "Pile in as many Kinu as you can!"
+msgstr "できるだけたくさんきぬを積もう！"
+
+msgid "Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full."
+msgstr "スコアは高さじゃなくて、積んだきぬの数だよ。まず箱をうめて、いっぱいになったら上に積もう。"
+
+msgid "Leaderboards"
+msgstr "ランキング"
+
+msgid "Drop"
+msgstr "落とす"
+
+msgid "Squirt"
+msgstr "しぼる"
+
+msgid "Move"
+msgstr "移動"
+
+msgid "Spin"
+msgstr "回転"
+
+msgid "Claw"
+msgstr "爪持ち"
+
+msgid "Sticks"
+msgstr "スティック"
+
+msgid "Right Hand"
+msgstr "右手"
+
+msgid "Left Hand"
+msgstr "左手"
+
+msgid "Classic: drag anywhere to move, swipe the bottom strip to spin.\nGrab: press on Kinu to move it, swipe anywhere else to spin.\nClaw: a move stick and a spin stick with a Drop button between them, down one side of the screen."
+msgstr "クラシック：どこでもドラッグで移動、下の帯をスワイプで回転。\nつかむ：きぬを押して移動、ほかの場所をスワイプで回転。\n爪持ち：画面の片側に移動スティックと回転スティック、間に落とすボタンが並ぶ。"
+
+msgid "Left Stick Aims"
+msgstr "左スティックでねらう"
+
+msgid "Push the left stick to move Kinu. The shadow shows where it lands."
+msgstr "左スティックできぬを動かそう。影が落ちる場所だよ。"
+
+msgid "Push the right stick to turn the box."
+msgstr "右スティックで箱を回そう。"
+
+msgid "Tap Drop"
+msgstr "タップして落とす"
+
+msgid "Tap the Drop button and watch Kinu plop into the box."
+msgstr "落とすボタンをタップすると、きぬが箱にぽとん。"
+
+msgid "Move, spin, then tap Drop"
+msgstr "移動・回転・落とす"
+
+msgid "Get Beans"
+msgstr "まめを手に入れる"
+
+msgid "Get Beans & Extras  +"
+msgstr "まめ・その他を見る  +"
+
+msgid "Change where Kinu lives, with its own music."
+msgstr "きぬの部屋を変えよう。音楽も一緒に変わるよ。"
+
+msgid "Beans & Extras"
+msgstr "まめ・その他"
+
+msgid "A little extra for your favourite looks."
+msgstr "お気に入りの見た目に、ちょっとしたプラスを。"
+
+msgid "Extras"
+msgstr "その他"
+
+msgid "Includes %s bonus"
+msgstr "%s のボーナス付き"
+
+msgid "One purchase. Permanently ad-free."
+msgstr "一度の購入で、広告が永久に消えます。"
+
+msgid "Available when ads arrive."
+msgstr "広告が導入されたら使えます。"
+
+msgid "Remove Ads"
+msgstr "広告を削除"
+
+msgid "Restore Purchases"
+msgstr "購入を復元"
+
+msgid "Retry"
+msgstr "再試行"
+
+msgid "Beans can also be earned by playing.\nRestore Purchases recovers Remove Ads; spent beans aren't restored."
+msgstr "まめはプレイでも手に入るよ。\n「購入を復元」で広告削除は元に戻せるけど、使ったまめは戻らないよ。"
+
+msgid "Opening collection…"
+msgstr "図鑑を開いています…"
+
+msgid "Records"
+msgstr "きろく"
+
+msgid "Best Runs"
+msgstr "ベストきろく"
+
+msgid "All Time"
+msgstr "これまで"
+
+msgid "Treasures"
+msgstr "たからもの"
+
+msgid "Biggest pile"
+msgstr "いちばん多く積んだ数"
+
+msgid "Tallest tower"
+msgstr "いちばん高いタワー"
+
+msgid "Biggest pile without a tumble"
+msgstr "落とさずに積んだ最多数"
+
+msgid "Longest landing streak"
+msgstr "連続でのせた最多数"
+
+msgid "Runs played"
+msgstr "あそんだ回数"
+
+msgid "Average pile"
+msgstr "平均で積んだ数"
+
+msgid "Kinu landed"
+msgstr "のせたきぬ"
+
+msgid "Kinu tumbled"
+msgstr "落ちたきぬ"
+
+msgid "Box spins"
+msgstr "箱を回した回数"
+
+msgid "Lucky Kinu caught"
+msgstr "つかまえたラッキーきぬ"
+
+msgid "Heart Kinu caught"
+msgstr "つかまえたハートきぬ"
+
+msgid "Flavours found"
+msgstr "見つけた味"
+
+msgid "Daily missions finished"
+msgstr "クリアしたデイリーミッション"
+
+msgid "Beans earned"
+msgstr "かせいだまめ"
+
+msgid "Recent Runs"
+msgstr "さいきんのプレイ"
+
+msgid "Longest run"
+msgstr "いちばん長いプレイ"
+
+msgid "Most days in a row"
+msgstr "最長の連続プレイ日数"
+
+msgid "Play time"
+msgstr "プレイ時間"
+
+msgid "Days in a row"
+msgstr "連続プレイ日数"
+
+msgid "Favourite shape"
+msgstr "お気に入りの形"
+
+msgid "Shoyu"
+msgstr "しょうゆ"
+
+msgid "Squirts used"
+msgstr "使ったしょうゆ"
+
+msgid "Kinu glazed"
+msgstr "しょうゆをかけたきぬ"
+
+msgid "Bonus beans won"
+msgstr "ボーナスでもらったまめ"
+
+msgid "Items collected"
+msgstr "集めたアイテム"
+
+msgid "Beans spent"
+msgstr "使ったまめ"
+
+msgid "Best Pile By Room"
+msgstr "おへやごとのベスト"
+
+msgid "Best Pile By Outfit"
+msgstr "きぐるみごとのベスト"
+
+msgid "Favourite Kinu"
+msgstr "お気に入りのきぬ"
+
+msgid "Landed 1 time"
+msgstr "1回のせた"
+
+msgid "Landed %s times"
+msgstr "%s回のせた"
+
+msgid "Play a run to meet your favourite Kinu!"
+msgstr "あそんでお気に入りのきぬを見つけよう！"
+
+msgid "Stacking since %s"
+msgstr "%sからプレイ中"
+
+msgid "%dh %dm"
+msgstr "%d時間%d分"
+
+msgid "%dm %ds"
+msgstr "%d分%d秒"
+
+msgid "%s beans added!"
+msgstr "まめ %s を追加しました！"
+
+msgid "Ads removed. Thank you!"
+msgstr "広告を削除しました。ありがとう！"
+
+msgid "Apple couldn't verify a purchase. Please try again later."
+msgstr "Appleで購入を確認できませんでした。しばらくしてからもう一度お試しください。"
+
+msgid "Bean Jar"
+msgstr "まめのびん"
+
+msgid "Bean Pantry"
+msgstr "まめの食料庫"
+
+msgid "Bean Pouch"
+msgstr "まめのきんちゃく"
+
+msgid "Little Bean Bag"
+msgstr "まめの小袋"
+
+msgid "Confirm your purchase with Apple."
+msgstr "Appleで購入を確認してください。"
+
+msgid "Connecting to the App Store…"
+msgstr "App Storeに接続中…"
+
+msgid "Loading…"
+msgstr "読み込み中…"
+
+msgid "Unavailable"
+msgstr "利用できません"
+
+msgid "Purchase cancelled."
+msgstr "購入をキャンセルしました。"
+
+msgid "Purchase couldn't be completed. Please try again."
+msgstr "購入を完了できませんでした。もう一度お試しください。"
+
+msgid "Purchases are available in the iPhone app."
+msgstr "購入はiPhoneアプリで利用できます。"
+
+msgid "Restore couldn't be completed. Please try again."
+msgstr "復元を完了できませんでした。もう一度お試しください。"
+
+msgid "Restore requested. Eligible purchases will appear shortly."
+msgstr "復元をリクエストしました。対象の購入はまもなく反映されます。"
+
+msgid "Restoring purchases…"
+msgstr "購入を復元中…"
+
+msgid "Some purchases aren't available right now. Please try again."
+msgstr "いま利用できない購入があります。もう一度お試しください。"
+
+msgid "The App Store is taking a while. Please try again."
+msgstr "App Storeの応答に時間がかかっています。もう一度お試しください。"
+
+msgid "Waiting for approval. Your purchase will arrive when Apple approves it."
+msgstr "承認待ちです。Appleが承認すると購入が反映されます。"
+
+msgid "We couldn't confirm that purchase. Please try again."
+msgstr "その購入を確認できませんでした。もう一度お試しください。"
+
+msgid "We couldn't confirm the purchase receipt. Please try Restore Purchases."
+msgstr "購入レシートを確認できませんでした。「購入を復元」をお試しください。"
+
+msgid "Your purchase couldn't be saved. Free some storage and tap Retry."
+msgstr "購入を保存できませんでした。空き容量を増やして「再試行」をタップしてください。"
+
+msgid "Your refunded purchase has been updated."
+msgstr "返金された購入を反映しました。"
+
+msgid "Waiting…"
+msgstr "お待ちください…"
+
+msgid "Coming soon"
+msgstr "近日公開"
+
+msgid "Each room plays its own music."
+msgstr "おへやごとに音楽が変わります。"
+
+msgid "Play %d days in a row"
+msgstr "%d日連続であそぶ"
+
+msgid "Glaze %d Kinu with shoyu"
+msgstr "しょうゆを%d個のきぬにかける"
+
+msgid "Play a run in an outfit"
+msgstr "きぐるみで1回あそぶ"
+
+msgid "Play %d runs in an outfit"
+msgstr "きぐるみで%d回あそぶ"

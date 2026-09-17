@@ -1,0 +1,123 @@
+{
+ "_note": "Store copy for the Kinu Tumble set, one entry per screen: [headline, line under it]. Screen 1's second line is the byline; the rest are ribbon captions. After changing any of it, run: python3 scripts/kinu_fonts.py (re-subsets the CJK fonts and re-fits every size).",
+ "en": [
+  [
+   "How Many\nWill Fit?",
+   "Drop them in, nudge them together,\nand see how many you can pack"
+  ],
+  [
+   "Drag, Spin,\nDrop",
+   "Drag to aim. Swipe to turn the box.\nLet go and Kinu plops in."
+  ],
+  [
+   "Squeeze\nThem In",
+   "Tiny ones slot into the gaps.\nBut three tumbles ends the run"
+  ],
+  [
+   "Find Every\nFlavour",
+   "Matcha, ube, ramune, kabocha.\nPile more in one run to unlock more"
+  ],
+  [
+   "Dress Them\nUp",
+   "Bunny hoods, fox ears, ninja suits\nand plenty more to try on"
+  ],
+  [
+   "Make It\nYour Own",
+   "Swap in new boxes and rooms,\neach room with its own music"
+  ],
+  [
+   "Catch a\nLucky Kinu",
+   "Lucky ones pay out in beans.\nHeart ones win a tumble back."
+  ]
+ ],
+ "ja": [
+  [
+   "いくつ\n入るかな？",
+   "箱にぽとんと落として、\nぎゅっとつめこもう"
+  ],
+  [
+   "ねらって\n回して、ぽとん",
+   "ドラッグでねらって、スワイプで箱を回す。\nはなすと、きぬがぽとん"
+  ],
+  [
+   "すきまに\nぎゅっ！",
+   "ちびきぬはすきまにぴったり。\nでも3回落ちたらおしまい"
+  ],
+  [
+   "いろんな味を\n見つけよう",
+   "抹茶、紅いも、ラムネ、かぼちゃ…\nたくさん積むと新しい味に出会えるよ"
+  ],
+  [
+   "きぐるみで\nおめかし",
+   "うさぎ、きつね、忍者など\nかわいいきぐるみがいっぱい"
+  ],
+  [
+   "箱もおへやも\nきせかえ",
+   "新しい箱やおへやに変えてみよう。\nおへやごとに音楽も変わるよ"
+  ],
+  [
+   "ラッキーきぬを\nつかまえよう",
+   "ラッキーきぬでまめがもらえる。\nハートきぬでミスが1回もどる"
+  ]
+ ],
+ "ko": [
+  [
+   "몇 개나\n들어갈까?",
+   "상자에 쏙쏙 넣고 꾹꾹 채워서\n몇 개나 들어가는지 해 봐요"
+  ],
+  [
+   "조준하고,\n돌리고, 쏙!",
+   "드래그로 조준하고 밀어서 상자를 돌려요.\n손을 떼면 키누가 쏙!"
+  ],
+  [
+   "틈새에\n쏙쏙!",
+   "꼬마 키누는 틈새에 쏙 들어가요.\n하지만 세 번 떨어지면 끝이에요"
+  ],
+  [
+   "모든 맛을\n찾아봐요",
+   "말차, 자색고구마, 라무네, 단호박…\n많이 쌓을수록 새로운 맛이 열려요"
+  ],
+  [
+   "귀여운 옷\n입혀 봐요",
+   "토끼, 여우, 닌자까지\n귀여운 옷이 가득해요"
+  ],
+  [
+   "나만의\n스타일로",
+   "상자와 배경을 바꿔 보세요.\n배경마다 음악도 달라져요"
+  ],
+  [
+   "행운 키누를\n잡아라!",
+   "행운 키누는 콩을 줘요.\n하트 키누는 기회를 1번 돌려줘요"
+  ]
+ ],
+ "zh_TW": [
+  [
+   "能塞進\n幾個呢？",
+   "把小絹放進盒子裡擠一擠，\n看看最多能裝幾個"
+  ],
+  [
+   "瞄準、旋轉\n放開！",
+   "拖曳瞄準，滑動旋轉盒子，\n放開小絹就會落下"
+  ],
+  [
+   "塞進\n縫隙裡！",
+   "迷你小絹剛好塞進縫隙，\n但掉了三次這局就結束"
+  ],
+  [
+   "收集\n各種口味",
+   "抹茶、紫薯、彈珠汽水、南瓜…\n疊得越多，解鎖越多口味"
+  ],
+  [
+   "換上\n可愛布偶裝",
+   "兔兔、狐狸、忍者…\n各種可愛布偶裝等你來換"
+  ],
+  [
+   "打造\n專屬風格",
+   "換上新的盒子和場景，\n每個場景都有自己的音樂"
+  ],
+  [
+   "抓住\n幸運小絹！",
+   "幸運小絹能拿到豆豆，\n愛心小絹能找回一次機會"
+  ]
+ ]
+}

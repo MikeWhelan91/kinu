@@ -1,0 +1,45 @@
+ERROR: No GDExtension library found for current OS and architecture (macos.arm64) in configuration file: res://addons/GodotApplePluginsStoreKit/godot_apple_plugins_storekit.gdextension
+   at: parse_gdextension_file (core/extension/gdextension_library_loader.cpp:369)
+ERROR: GDExtension dynamic library not found: 'res://addons/GodotApplePluginsStoreKit/godot_apple_plugins_storekit.gdextension'.
+   at: open_library (core/extension/gdextension.cpp:810)
+ERROR: Error loading extension: 'res://addons/GodotApplePluginsStoreKit/godot_apple_plugins_storekit.gdextension'.
+   at: load_extensions (core/extension/gdextension_manager.cpp:333)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+  perfect run 1: placed=31 height=82 cm tumbles=3 turns=37 ended=tumbled out
+  perfect run 2: placed=31 height=96 cm tumbles=3 turns=38 ended=tumbled out
+  perfect run 3: placed=22 height=91 cm tumbles=3 turns=27 ended=tumbled out
+  perfect run 4: placed=20 height=158 cm tumbles=3 turns=24 ended=tumbled out
+  perfect run 5: placed=36 height=85 cm tumbles=3 turns=40 ended=tumbled out
+  perfect run 6: placed=11 height=174 cm tumbles=3 turns=15 ended=tumbled out
+  skilled run 1: placed=31 height=71 cm tumbles=3 turns=34 ended=tumbled out
+  skilled run 2: placed=38 height=69 cm tumbles=3 turns=44 ended=tumbled out
+  skilled run 3: placed=22 height=151 cm tumbles=3 turns=26 ended=tumbled out
+  skilled run 4: placed=22 height=54 cm tumbles=3 turns=25 ended=tumbled out
+  skilled run 5: placed=15 height=75 cm tumbles=3 turns=18 ended=tumbled out
+  skilled run 6: placed=22 height=60 cm tumbles=3 turns=25 ended=tumbled out
+  shaky run 1: placed=31 height=61 cm tumbles=3 turns=38 ended=tumbled out
+  shaky run 2: placed=26 height=68 cm tumbles=3 turns=29 ended=tumbled out
+  shaky run 3: placed=28 height=91 cm tumbles=3 turns=31 ended=tumbled out
+  shaky run 4: placed=22 height=49 cm tumbles=3 turns=25 ended=tumbled out
+  shaky run 5: placed=27 height=81 cm tumbles=3 turns=30 ended=tumbled out
+  shaky run 6: placed=22 height=54 cm tumbles=3 turns=28 ended=tumbled out
+BOX  inner half 1.980  wall 0.264  rim height 1.210  |  KINU scale 0.80
+
+PERFECT  avg  25.2 Kinu  best  36  best height 174 cm  (6/6 runs ended by tumbling, not the turn cap)
+SKILLED  avg  25.0 Kinu  best  38  best height 151 cm  (6/6 runs ended by tumbling, not the turn cap)
+SHAKY    avg  26.0 Kinu  best  31  best height 91 cm  (6/6 runs ended by tumbling, not the turn cap)
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneDummy21GeometryInstanceDummyE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: 16 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 6 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)
+ERROR: 2 RID allocations of type 'N13RendererDummy15MaterialStorage13DummyMaterialE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N13RendererDummy15MaterialStorage11DummyShaderE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N13RendererDummy9DummyMeshE' were leaked at exit.
+ERROR: 2 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.

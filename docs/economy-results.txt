@@ -1,0 +1,198 @@
+CATALOG  22 flavours (last at 70 Kinu) · 19 earned rewards · 30 shop items costing 28050 beans in total
+
+==== PERFECT  (pile 30 on run 1, +10.0 a run, max 160, 0 tumbles, 5 runs a day)
+  run   1 · day   1 ·    2 min   unlocked flavour kinako (pile 6)
+  run   1 · day   1 ·    2 min   unlocked flavour yuzu (pile 10)
+  run   1 · day   1 ·    2 min   unlocked flavour ume (pile 14)
+  run   1 · day   1 ·    2 min   unlocked flavour mango (pile 19)
+  run   1 · day   1 ·    2 min   unlocked flavour hojicha (pile 23)
+  run   1 · day   1 ·    2 min   unlocked flavour blueberry (pile 27)
+  run   1 · day   1 ·    2 min   earned outfit:leaf
+  run   1 · day   1 ·    2 min   earned outfit:parcel
+  run   2 · day   1 ·    6 min   unlocked flavour wasabi (pile 31)
+  run   2 · day   1 ·    6 min   unlocked flavour mint (pile 35)
+  run   2 · day   1 ·    6 min   unlocked flavour onigiri (pile 39)
+  run   2 · day   1 ·    6 min   earned outfit:ghost
+  run   2 · day   1 ·    6 min   earned outfit:astronaut
+  run   2 · day   1 ·    6 min   earned outfit:daruma
+  run   3 · day   1 ·   10 min   unlocked flavour ube (pile 43)
+  run   3 · day   1 ·   10 min   unlocked flavour azuki (pile 47)
+  run   3 · day   1 ·   10 min   earned outfit:hatchling
+  run   4 · day   1 ·   15 min   unlocked flavour chocolate (pile 51)
+  run   4 · day   1 ·   15 min   unlocked flavour kabocha (pile 56)
+  run   4 · day   1 ·   15 min   unlocked flavour jelly (pile 60)
+  run   4 · day   1 ·   15 min   earned box:ice
+  run   4 · day   1 ·   15 min   bought outfit:frog for 250
+  run   5 · day   1 ·   21 min   unlocked flavour ramune (pile 64)
+  run   5 · day   1 ·   21 min   unlocked flavour hanabi (pile 70)
+  run   5 · day   1 ·   21 min   earned outfit:dragon
+  run   5 · day   1 ·   21 min   earned outfit:wood
+  run   5 · day   1 ·   21 min   earned room:moon_viewing
+  run   6 · day   2 ·   28 min   earned outfit:marble
+  run   6 · day   2 ·   28 min   earned box:bamboo
+  run   6 · day   2 ·   28 min   bought outfit:strawberry for 300
+  run   9 · day   2 ·   52 min   earned box:wicker
+  run   9 · day   2 ·   52 min   bought outfit:bunny for 350
+  run  11 · day   3 ·   73 min   bought outfit:panda for 350
+  run  13 · day   3 ·   98 min   earned outfit:crystal
+  run  13 · day   3 ·   98 min   bought outfit:nigiri for 350
+  run  15 · day   3 ·  124 min   bought outfit:ninja for 400
+  run  16 · day   4 ·  138 min   bought outfit:bee for 400
+  run  18 · day   4 ·  164 min   bought outfit:fox for 450
+  run  20 · day   4 ·  191 min   bought outfit:dino for 450
+  run  22 · day   5 ·  218 min   bought outfit:tiger for 450
+  run  25 · day   5 ·  258 min   earned outfit:onsen
+  run  25 · day   5 ·  258 min   bought outfit:pirate for 500
+  run  26 · day   6 ·  271 min   earned room:sakura_street
+  run  27 · day   6 ·  284 min   bought outfit:shark for 500
+  run  30 · day   6 ·  324 min   bought outfit:tako for 550
+  run  31 · day   7 ·  338 min   earned outfit:galaxy
+  run  32 · day   7 ·  351 min   bought outfit:kappa for 600
+  run  35 · day   7 ·  391 min   bought outfit:tanuki for 600
+  run  38 · day   8 ·  431 min   bought box:candy for 700
+  run  42 · day   9 ·  484 min   bought outfit:bat for 750
+  run  45 · day   9 ·  524 min   bought box:gift for 800
+  run  50 · day  10 ·  591 min   earned room:winter
+  run  50 · day  10 ·  591 min   bought box:lacquer for 900
+  run  54 · day  11 ·  644 min   bought room:bamboo_grove for 1000
+  run  59 · day  12 ·  711 min   bought box:sakura for 1100
+  run  65 · day  13 ·  791 min   bought room:night for 1200
+  run  71 · day  15 ·  871 min   bought box:stone for 1300
+  run  73 · day  15 ·  898 min   earned outfit:gold
+  run  77 · day  16 ·  951 min   bought room:autumn_temple for 1400
+  run  85 · day  17 · 1058 min   bought box:jubako for 1600
+  run  92 · day  19 · 1151 min   bought room:onsen for 1600
+  run 101 · day  21 · 1271 min   bought room:festival for 2000
+  run 111 · day  23 · 1404 min   bought box:neon for 2200
+  run 123 · day  25 · 1564 min   bought box:goldbox for 2500
+  run 134 · day  27 · 1711 min   bought room:neon_alley for 2500
+  every flavour found    run 6 · day 2 · 0.5 hours
+  every earned reward    run 73 · day 15 · 15.0 hours
+  whole shop bought      run 134 · day 27 · 28.5 hours
+  beans over 400 runs: 86038 (runs 88% · lucky 4% · missions 7%), 215 a run, 13.1 min a run
+
+==== SKILLED  (pile 12 on run 1, +1.5 a run, max 80, 3 tumbles, 5 runs a day)
+  run   1 · day   1 ·    1 min   unlocked flavour kinako (pile 6)
+  run   1 · day   1 ·    1 min   unlocked flavour yuzu (pile 10)
+  run   1 · day   1 ·    1 min   earned outfit:leaf
+  run   3 · day   1 ·    4 min   unlocked flavour ume (pile 14)
+  run   5 · day   1 ·    7 min   unlocked flavour mango (pile 19)
+  run   6 · day   2 ·    9 min   earned outfit:hatchling
+  run   7 · day   2 ·   11 min   unlocked flavour hojicha (pile 23)
+  run   7 · day   2 ·   11 min   earned outfit:ghost
+  run   8 · day   2 ·   13 min   earned outfit:parcel
+  run   8 · day   2 ·   13 min   bought outfit:frog for 250
+  run  11 · day   3 ·   20 min   unlocked flavour blueberry (pile 27)
+  run  11 · day   3 ·   20 min   unlocked flavour wasabi (pile 31)
+  run  11 · day   3 ·   20 min   earned outfit:astronaut
+  run  11 · day   3 ·   20 min   earned box:bamboo
+  run  12 · day   3 ·   24 min   earned outfit:wood
+  run  13 · day   3 ·   26 min   bought outfit:strawberry for 300
+  run  16 · day   4 ·   35 min   unlocked flavour mint (pile 35)
+  run  16 · day   4 ·   35 min   unlocked flavour onigiri (pile 39)
+  run  18 · day   4 ·   41 min   unlocked flavour ube (pile 43)
+  run  19 · day   4 ·   45 min   bought outfit:bunny for 350
+  run  20 · day   4 ·   49 min   unlocked flavour azuki (pile 47)
+  run  21 · day   5 ·   54 min   earned box:wicker
+  run  25 · day   5 ·   71 min   unlocked flavour chocolate (pile 51)
+  run  25 · day   5 ·   71 min   earned outfit:onsen
+  run  25 · day   5 ·   71 min   bought outfit:panda for 350
+  run  29 · day   6 ·   88 min   unlocked flavour kabocha (pile 56)
+  run  29 · day   6 ·   88 min   unlocked flavour jelly (pile 60)
+  run  29 · day   6 ·   88 min   earned outfit:dragon
+  run  29 · day   6 ·   88 min   earned outfit:crystal
+  run  29 · day   6 ·   88 min   earned box:ice
+  run  29 · day   6 ·   88 min   bought outfit:nigiri for 350
+  run  31 · day   7 ·   97 min   earned outfit:galaxy
+  run  32 · day   7 ·  103 min   unlocked flavour ramune (pile 64)
+  run  32 · day   7 ·  103 min   unlocked flavour hanabi (pile 70)
+  run  32 · day   7 ·  103 min   earned room:moon_viewing
+  run  33 · day   7 ·  109 min   earned outfit:marble
+  run  34 · day   7 ·  114 min   bought outfit:ninja for 400
+  run  36 · day   8 ·  124 min   earned room:sakura_street
+  run  38 · day   8 ·  136 min   bought outfit:bee for 400
+  run  42 · day   9 ·  161 min   bought outfit:fox for 450
+  run  46 · day  10 ·  187 min   bought outfit:dino for 450
+  run  50 · day  10 ·  213 min   earned room:winter
+  run  50 · day  10 ·  213 min   bought outfit:tiger for 450
+  run  55 · day  11 ·  246 min   bought outfit:pirate for 500
+  run  59 · day  12 ·  272 min   bought outfit:shark for 500
+  run  64 · day  13 ·  305 min   bought outfit:tako for 550
+  run  70 · day  14 ·  344 min   bought outfit:kappa for 600
+  run  75 · day  15 ·  377 min   bought outfit:tanuki for 600
+  run  81 · day  17 ·  417 min   bought box:candy for 700
+  run  86 · day  18 ·  451 min   earned outfit:gold
+  run  88 · day  18 ·  465 min   bought outfit:bat for 750
+  run  94 · day  19 ·  505 min   bought box:gift for 800
+  run 102 · day  21 ·  558 min   bought box:lacquer for 900
+  run 112 · day  23 ·  621 min   bought room:bamboo_grove for 1000
+  run 121 · day  25 ·  678 min   bought box:sakura for 1100
+  run 133 · day  27 ·  757 min   bought room:night for 1200
+  run 144 · day  29 ·  827 min   bought box:stone for 1300
+  run 157 · day  32 ·  910 min   bought room:autumn_temple for 1400
+  run 171 · day  35 · 1000 min   bought box:jubako for 1600
+  run 186 · day  38 · 1099 min   bought room:onsen for 1600
+  run 205 · day  41 · 1222 min   bought room:festival for 2000
+  run 224 · day  45 · 1348 min   bought box:neon for 2200
+  run 246 · day  50 · 1492 min   bought box:goldbox for 2500
+  run 269 · day  54 · 1638 min   bought room:neon_alley for 2500
+  every flavour found    run 33 · day 7 · 1.8 hours
+  every earned reward    never (in 400 runs)
+  whole shop bought      run 269 · day 54 · 27.3 hours
+  beans over 400 runs: 42775 (runs 80% · lucky 7% · missions 12%), 107 a run, 6.2 min a run
+
+==== CASUAL  (pile 6 on run 1, +0.4 a run, max 35, 3 tumbles, 3 runs a day)
+  run   1 · day   1 ·    1 min   earned outfit:leaf
+  run   3 · day   1 ·    2 min   unlocked flavour kinako (pile 6)
+  run   7 · day   3 ·    6 min   unlocked flavour yuzu (pile 10)
+  run  10 · day   4 ·    9 min   earned outfit:hatchling
+  run  13 · day   5 ·   13 min   bought outfit:frog for 250
+  run  14 · day   5 ·   14 min   earned box:bamboo
+  run  15 · day   5 ·   14 min   earned outfit:wood
+  run  17 · day   6 ·   17 min   unlocked flavour ume (pile 14)
+  run  19 · day   7 ·   20 min   earned outfit:galaxy
+  run  23 · day   8 ·   26 min   unlocked flavour mango (pile 19)
+  run  23 · day   8 ·   26 min   bought outfit:strawberry for 300
+  run  24 · day   8 ·   28 min   earned outfit:ghost
+  run  25 · day   9 ·   30 min   earned outfit:onsen
+  run  29 · day  10 ·   37 min   unlocked flavour hojicha (pile 23)
+  run  34 · day  12 ·   47 min   bought outfit:bunny for 350
+  run  35 · day  12 ·   49 min   earned room:sakura_street
+  run  36 · day  12 ·   50 min   earned box:wicker
+  run  40 · day  14 ·   58 min   earned outfit:parcel
+  run  41 · day  14 ·   60 min   unlocked flavour blueberry (pile 27)
+  run  41 · day  14 ·   60 min   bought outfit:panda for 350
+  run  48 · day  16 ·   77 min   bought outfit:nigiri for 350
+  run  49 · day  17 ·   80 min   unlocked flavour wasabi (pile 31)
+  run  49 · day  17 ·   80 min   earned outfit:astronaut
+  run  50 · day  17 ·   83 min   earned room:winter
+  run  52 · day  18 ·   86 min   earned outfit:crystal
+  run  57 · day  19 ·   97 min   bought outfit:ninja for 400
+  run  58 · day  20 ·  100 min   unlocked flavour mint (pile 35)
+  run  65 · day  22 ·  120 min   bought outfit:bee for 400
+  run  74 · day  25 ·  144 min   earned outfit:gold
+  run  74 · day  25 ·  144 min   bought outfit:fox for 450
+  run  83 · day  28 ·  171 min   bought outfit:dino for 450
+  run  91 · day  31 ·  193 min   bought outfit:tiger for 450
+  run 100 · day  34 ·  220 min   bought outfit:pirate for 500
+  run 109 · day  37 ·  245 min   bought outfit:shark for 500
+  run 118 · day  40 ·  268 min   bought outfit:tako for 550
+  run 128 · day  43 ·  298 min   bought outfit:kappa for 600
+  run 140 · day  47 ·  332 min   bought outfit:tanuki for 600
+  run 154 · day  52 ·  372 min   bought box:candy for 700
+  run 165 · day  55 ·  405 min   bought outfit:bat for 750
+  run 180 · day  60 ·  450 min   bought box:gift for 800
+  run 196 · day  66 ·  496 min   bought box:lacquer for 900
+  run 213 · day  71 ·  544 min   bought room:bamboo_grove for 1000
+  run 232 · day  78 ·  600 min   bought box:sakura for 1100
+  run 252 · day  84 ·  661 min   bought room:night for 1200
+  run 272 · day  91 ·  718 min   bought box:stone for 1300
+  run 298 · day 100 ·  790 min   bought room:autumn_temple for 1400
+  run 325 · day 109 ·  871 min   bought box:jubako for 1600
+  run 354 · day 118 ·  953 min   bought room:onsen for 1600
+  run 386 · day 129 · 1051 min   bought room:festival for 2000
+  every flavour found    never (in 400 runs)
+  every earned reward    never (in 400 runs)
+  whole shop bought      never (in 400 runs)
+  beans over 400 runs: 21808 (runs 64% · lucky 9% · missions 26%), 55 a run, 2.7 min a run
+

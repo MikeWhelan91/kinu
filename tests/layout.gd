@@ -24,8 +24,18 @@ func _ready() -> void:
 		app.content.offset_bottom = -48
 		await get_tree().process_frame
 		var rect := get_viewport().get_visible_rect()
-		for label in [app.score_label,app.height_label]:
+		for label in [app.score_label,app.best_label,app.height_label]:
 			check(rect.encloses(label.get_global_rect()),"HUD text visible "+str(dimensions))
+		app.safe_top = 90
+		app.safe_bottom = 48
+		app._pause()
+		for i in 3:
+			await get_tree().process_frame
+		for button in app.modal.find_children("*","Button",true,false):
+			var bounds: Rect2 = button.get_global_rect()
+			check(rect.encloses(bounds) and bounds.position.y >= 90 and bounds.end.y <= rect.size.y-48,"pause action inside safe area: "+button.text+" "+str(dimensions))
+		app._close_modal()
+		get_tree().paused = false
 		var run: NestRun = app.run
 		for height in [0.5,3.0,7.0]:
 			run.orbit.tower_top = height

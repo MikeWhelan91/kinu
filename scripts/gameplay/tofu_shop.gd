@@ -61,9 +61,11 @@ func _ready() -> void:
 		environment.environment.ambient_light_energy = float(decor.palette.get("ambient_energy", .1))
 	add_child(sun)
 	add_child(_counter())
-	add_child(_room())
+	var layout := decor.layout if decor else ""
+	add_child(_room() if layout == "" else RoomScenery.build(self, layout))
 	_counter_collision()
-	_build_steam()
+	if layout == "":
+		_build_steam()
 	_build_particles(decor.effect if decor else "")
 
 func _counter() -> Node3D:
@@ -81,8 +83,8 @@ func _counter() -> Node3D:
 			var x := -COUNTER_HALF+.6+i*(span-1.2)/6.0
 			kit.add_rounded_box(basis*Vector3(x, -1.8, COUNTER_HALF-.18), Vector3(.12, COUNTER_HEIGHT-.9, .06), _c("post", POST), Vector3(0, side*PI*.5, 0), false, 10.0)
 	# Tenugui cloth under the tofu box: white border, indigo middle.
-	kit.add_rounded_box(Vector3(0, .02, 0), Vector3(5.0, .04, 5.0), _c("paper", PAPER), Vector3.ZERO, false, 10.0)
-	kit.add_rounded_box(Vector3(0, .04, 0), Vector3(4.5, .06, 4.5), _c("noren", INDIGO), Vector3.ZERO, false, 10.0)
+	kit.add_rounded_box(Vector3(0, .02, 0), Vector3(5.6, .04, 5.6), _c("paper", PAPER), Vector3.ZERO, false, 10.0)
+	kit.add_rounded_box(Vector3(0, .04, 0), Vector3(5.1, .06, 5.1), _c("noren", INDIGO), Vector3.ZERO, false, 10.0)
 	return kit.build(.045)
 
 func _counter_collision() -> void:
@@ -135,7 +137,7 @@ func _room() -> Node3D:
 		var a := TAU*i/8.0+.2
 		_lantern(lanterns, Vector3(sin(a)*9.5, 5.5+(i % 3)*.9, cos(a)*9.5))
 	var lantern_node := lanterns.build(.06, false)
-	if decor and decor.effect == "fireflies":
+	if decor and (decor.effect == "fireflies" or decor.palette.get("lantern_glow", false)):
 		var glow := ShaderMaterial.new()
 		glow.shader = MeshKit.TOON
 		glow.set_shader_parameter("glow", .55)
@@ -209,28 +211,44 @@ func _build_steam() -> void:
 		add_child(puff)
 		steam.append(puff)
 
-## Ambient drifting particles for the room theme: snowflakes, sakura petals or fireflies.
+const PARTICLE_COLORS := {
+	"snow": [Color(1, 1, 1, .95)],
+	"petals": [Color("ffb3c8")],
+	"fireflies": [Color(1, .9, .45, .9)],
+	"leaves": [Color("e8552f"), Color("f28b2c"), Color("f6c343")],
+	"rain": [Color(.75, .85, 1.0, .55)],
+	"mist": [Color(1, 1, 1, .14)],
+	"sparks": [Color(1, .8, .35, .95), Color(1, .5, .45, .95)],
+	"stars": [Color(1, .97, .8, .95)],
+}
+const PARTICLE_COUNTS := {"snow": 70, "petals": 45, "fireflies": 30, "leaves": 40, "rain": 120, "mist": 16, "sparks": 45, "stars": 60}
+const PARTICLE_SCALES := {"snow": Vector3.ONE*.12, "petals": Vector3(.2, .04, .14), "fireflies": Vector3.ONE*.1, "leaves": Vector3(.28, .04, .22), "rain": Vector3(.03, .55, .03), "mist": Vector3(3.2, 1.6, 3.2), "sparks": Vector3.ONE*.09, "stars": Vector3.ONE*.14}
+
+## Ambient particles for the room theme. A palette "particles" array recolours them.
 func _build_particles(effect: String) -> void:
-	if effect in ["", "steam"]:
+	if not PARTICLE_COUNTS.has(effect):
 		return
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	var mesh := SphereMesh.new()
-	mesh.radial_segments = 8
-	mesh.rings = 4
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.albedo_color = {"snow": Color(1, 1, 1, .95), "petals": Color("ffb3c8"), "fireflies": Color(1, .9, .45, .9)}[effect]
-	var count: int = {"snow": 70, "petals": 45, "fireflies": 30}[effect]
-	for i in count:
+	mesh.radial_segments = 24 if effect == "mist" else 8
+	mesh.rings = 12 if effect == "mist" else 4
+	var materials: Array[StandardMaterial3D] = []
+	for color in decor.palette.get("particles", PARTICLE_COLORS[effect]):
+		var material := StandardMaterial3D.new()
+		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		material.albedo_color = color
+		materials.append(material)
+	for i in PARTICLE_COUNTS[effect]:
 		var dot := MeshInstance3D.new()
 		dot.mesh = mesh
-		dot.material_override = material
+		dot.material_override = materials[i % materials.size()]
 		dot.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		dot.scale = {"snow": Vector3.ONE*.12, "petals": Vector3(.2, .04, .14), "fireflies": Vector3.ONE*.1}[effect]
+		dot.scale = PARTICLE_SCALES[effect]
 		add_child(dot)
-		particles.append({"node": dot, "effect": effect, "angle": rng.randf()*TAU, "radius": rng.randf_range(3.5, 12.5), "phase": rng.randf(), "speed": rng.randf_range(.7, 1.3)})
+		var radius := rng.randf_range(3.5, 12.5) if effect != "mist" else rng.randf_range(5.5, 11.0)
+		particles.append({"node": dot, "effect": effect, "angle": rng.randf()*TAU, "radius": radius, "phase": rng.randf(), "speed": rng.randf_range(.7, 1.3)})
 
 func _process(_delta: float) -> void:
 	var now := Time.get_ticks_msec()*.001
@@ -248,6 +266,21 @@ func _process(_delta: float) -> void:
 			"fireflies":
 				height = 1.5+sin(t*.8)*2.0+float(item.phase)*5.0
 				angle += t*.05
+			"leaves":
+				height = 16.0-fmod(t*.8, 19.0)
+				node.rotation = Vector3(t*1.3, t*.9, sin(t)*1.2)
+				angle += sin(t*.6)*.15
+			"rain":
+				height = 16.0-fmod(t*9.0, 19.0)
+			"mist":
+				height = -COUNTER_HEIGHT+.9+sin(t*.25)*.4
+				angle += t*.02
+			"sparks":
+				height = -COUNTER_HEIGHT+fmod(t*1.4, 20.0)
+				angle += sin(t*2.0)*.05
+			"stars":
+				height = 11.0+float(item.phase)*14.0
+				node.scale = Vector3.ONE*(.08+.08*absf(sin(t*1.5)))
 		node.position = Vector3(sin(angle), 0, cos(angle))*float(item.radius)+Vector3(sin(t)*.4, height, cos(t*.9)*.4)
 	var clock := Time.get_ticks_msec()*.00025
 	for puff in steam:

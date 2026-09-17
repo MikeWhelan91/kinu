@@ -1,3 +1,3 @@
 Pointer/touch events routed through viewport GUI
-Checks: 34
+Checks: 70
 Failures: 0

@@ -1,0 +1,10 @@
+[configuration]
+
+entry_symbol = "godot_apple_plugins_storekit_start"
+compatibility_minimum = 4.2
+
+[libraries]
+ios = "res://addons/GodotApplePluginsStoreKit/bin/GodotApplePluginsStoreKit.xcframework"
+
+[dependencies]
+ios = { "res://addons/GodotApplePluginsRuntime/bin/SwiftGodotRuntime.xcframework": "" }

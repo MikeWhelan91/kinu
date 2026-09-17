@@ -68,6 +68,9 @@ static func primitive(kind: String) -> Array:
 				mesh.height = 1.0
 				mesh.radial_segments = 24
 				mesh.rings = 1
+			"block":
+				mesh = BoxMesh.new()
+				mesh.size = Vector3.ONE
 			"torus":
 				mesh = TorusMesh.new()
 				mesh.inner_radius = .4

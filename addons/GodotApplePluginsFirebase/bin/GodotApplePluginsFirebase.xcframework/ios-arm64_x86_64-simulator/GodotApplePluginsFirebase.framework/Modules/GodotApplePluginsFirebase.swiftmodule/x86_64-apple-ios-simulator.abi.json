@@ -1,0 +1,103 @@
+{
+  "ABIRoot": {
+    "kind": "Root",
+    "name": "GodotApplePluginsFirebase",
+    "printedName": "GodotApplePluginsFirebase",
+    "children": [
+      {
+        "kind": "Import",
+        "name": "SwiftGodotRuntime",
+        "printedName": "SwiftGodotRuntime",
+        "declKind": "Import",
+        "moduleName": "GodotApplePluginsFirebase"
+      },
+      {
+        "kind": "Import",
+        "name": "FirebaseCore",
+        "printedName": "FirebaseCore",
+        "declKind": "Import",
+        "moduleName": "GodotApplePluginsFirebase"
+      },
+      {
+        "kind": "Import",
+        "name": "FirebaseAnalytics",
+        "printedName": "FirebaseAnalytics",
+        "declKind": "Import",
+        "moduleName": "GodotApplePluginsFirebase"
+      },
+      {
+        "kind": "Import",
+        "name": "FirebaseCrashlytics",
+        "printedName": "FirebaseCrashlytics",
+        "declKind": "Import",
+        "moduleName": "GodotApplePluginsFirebase"
+      },
+      {
+        "kind": "Function",
+        "name": "godot_apple_plugins_firebase_start",
+        "printedName": "godot_apple_plugins_firebase_start(_:_:_:)",
+        "children": [
+          {
+            "kind": "TypeNominal",
+            "name": "UInt8",
+            "printedName": "Swift.UInt8",
+            "usr": "s:s5UInt8V"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Optional",
+            "printedName": "Swift.UnsafeMutableRawPointer?",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UnsafeMutableRawPointer",
+                "printedName": "Swift.UnsafeMutableRawPointer",
+                "usr": "s:Sv"
+              }
+            ],
+            "usr": "s:Sq"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Optional",
+            "printedName": "Swift.UnsafeMutableRawPointer?",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UnsafeMutableRawPointer",
+                "printedName": "Swift.UnsafeMutableRawPointer",
+                "usr": "s:Sv"
+              }
+            ],
+            "usr": "s:Sq"
+          },
+          {
+            "kind": "TypeNominal",
+            "name": "Optional",
+            "printedName": "Swift.UnsafeMutableRawPointer?",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "UnsafeMutableRawPointer",
+                "printedName": "Swift.UnsafeMutableRawPointer",
+                "usr": "s:Sv"
+              }
+            ],
+            "usr": "s:Sq"
+          }
+        ],
+        "declKind": "Func",
+        "usr": "c:(cm)godot_apple_plugins_firebase_start:::",
+        "mangledName": "$s25GodotApplePluginsFirebase34godot_apple_plugins_firebase_startys5UInt8VSvSg_A2EtF",
+        "moduleName": "GodotApplePluginsFirebase",
+        "declAttributes": [
+          "AccessControl",
+          "CDecl"
+        ],
+        "funcSelfKind": "NonMutating"
+      }
+    ],
+    "json_format_version": 8
+  },
+  "ConstValues": []
+}

@@ -106,7 +106,9 @@ func build(app: Node) -> void:
 	var sparkles := Sparkles.new()
 	sparkles.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(sparkles)
-	var scroll := ScrollContainer.new()
+	# Use the shared touch-aware scroller: touch-to-mouse emulation is disabled for gameplay, so
+	# Godot's stock ScrollContainer cannot reliably receive phone drags here.
+	var scroll := DragScroll.new()
 	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scroll.offset_left = 20
 	scroll.offset_right = -20

@@ -20,7 +20,10 @@ func _input(event: InputEvent) -> void:
 		return
 	# A detail sheet may be visually above this list, but _input receives pointer events globally.
 	# Its preview and buttons remain interactive while the shop/book grid stays completely still.
-	if get_tree().get_first_node_in_group("modal_input_lock") != null:
+	# A list *inside* that modal must still receive its own drag events (for example, the Odds
+	# sheet). The lock only blocks lists behind the modal.
+	var modal_lock := get_tree().get_first_node_in_group("modal_input_lock") as Control
+	if modal_lock != null and not modal_lock.is_ancestor_of(self):
 		return
 	var pressed := false
 	var released := false

@@ -195,9 +195,6 @@ static func _daily_countdown(holder: Node2D) -> void:
 	var update := func() -> void:
 		label.text = "TREAT READY!" if DailyCalendar.ready() else DailyCalendar.countdown_text().trim_prefix("Next treat in ")
 	update.call()
-	var pop := chip.create_tween().set_loops()
-	pop.tween_property(chip, "scale", Vector2(1.055, 1.055), .62).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	pop.tween_property(chip, "scale", Vector2.ONE, .62).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	var timer := Timer.new()
 	timer.wait_time = 1.0
 	timer.timeout.connect(update)

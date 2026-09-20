@@ -129,6 +129,30 @@ func size() -> Vector3:
 	return shape.size*body_scale
 
 ## Shoyu from the bottle: coats this Kinu and glues it in place; anything landing on it sticks.
+## Lit while a sauce is aimed at this Kinu, so you can see what a squirt will catch before you
+## spend it. A box aura rather than an outline: it reads through a crowded pile from any angle.
+var sauce_aura: MeshInstance3D
+
+func set_sauce_target(on: bool, tint: Color = Color("8fd3ff")) -> void:
+	if on == is_instance_valid(sauce_aura):
+		return
+	if not on:
+		sauce_aura.queue_free()
+		sauce_aura = null
+		return
+	sauce_aura = MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = size()*1.16
+	sauce_aura.mesh = box
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color(tint.r, tint.g, tint.b, .42)
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	sauce_aura.material_override = material
+	sauce_aura.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	add_child(sauce_aura)
+
 ## Sauces resize a Kinu that is already packed. Body, mass, hitbox and centre of mass all move
 ## together; the drawn size follows body_scale through _jiggle, so nothing else needs telling.
 ## Returns false when the Kinu is already at the limit, so the sauce can report a wasted squirt.

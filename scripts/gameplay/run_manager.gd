@@ -22,12 +22,14 @@ var lucky_caught: int = 0
 ## The tutorial asks for a particular next item so its lessons arrive in order instead of waiting
 ## on a dice roll. Each is cleared the moment it is honoured.
 var forced_special: String = ""
-var forced_sauce: String = ""
 ## Where the last squirt landed, so a sauce that falls down a crevice still finds the pile.
 var sauce_point: Vector3 = Vector3.INF
-## The sauce queued next, "" for a Kinu; and the one being aimed this turn.
-var next_sauce: String = ""
-var active_sauce: String = ""
+## The Kinu lit up under the aimed bottle. The squirt applies to exactly this list, so the
+## preview cannot drift out of step with what actually changes.
+var sauce_targets: Array[KinuBody] = []
+## Squirts left this run, and how many of the unlock thresholds have been passed.
+var squirts: int = SQUIRTS_START
+var squirt_unlocks: int = 0
 ## "kinu" while aiming a Kinu, "bottle" while aiming the shoyu bottle.
 var aim_mode: String = "kinu"
 var bottle: ShoyuBottle
@@ -149,20 +151,23 @@ const TINY_CHANCE := .08
 const NEW_FLAVOUR_FIRST_DROP := 5
 const NEW_FLAVOUR_CHANCE := .20
 const NEW_FLAVOUR_GAP := 5
-## Sauce bottles ride in the queue in place of a Kinu, so reaching for one costs you a drop.
-## Shoyu's glue is gone — Sticky Kinu cover that job — and the bottle is now the dispenser.
+## The bottle is a charge you spend, not a queue slot: you start with one and earn more as the
+## pile grows, so a squirt is something you save for the moment it is worth most.
+## Shoyu's glue is gone — Sticky Kinu cover that job — and the bottle now holds Nigari.
+const SQUIRTS_START := 1
+## Pile sizes that hand you another squirt. The gaps widen, so later ones have to be earned.
+const SQUIRT_UNLOCKS := [20, 35, 50]
+## The sauce the bottle carries. Kept as a table so a second one can be slotted in later.
+const BOTTLE_SAUCE := "nigari"
 ## Both names are real parts of making tofu: nigari is the coagulant that firms it, koji the
 ## culture that makes it swell.
-## Koji, which swelled a Kinu instead of firming it, is parked rather than deleted: most sauces
+## Koji, which made a Kinu bigger instead of smaller, is parked rather than deleted: most sauces
 ## handed to you should improve your situation, and a coin flip between help and harm read as the
 ## game being mean. Put its row back to bring it in.
 ##	"koji": {"label": "Koji", "hint": "Koji! Swells a Kinu bigger", "factor": 1.32, "targets": 1, "low": 1.0, "high": 1.45, "tint": "f5c14e"},
 const SAUCES := {
-	"nigari": {"label": "Nigari", "hint": "Nigari! Firms Kinu down a size", "factor": .74, "targets": 3, "low": .55, "high": 1.0, "tint": "8fd3ff"},
+	"nigari": {"label": "Nigari", "hint": "Nigari! Makes crowded Kinu smaller", "factor": .74, "targets": 3, "low": .55, "high": 1.0, "tint": "8fd3ff"},
 }
-## A sauce only shows up once there is a pile worth changing, and never twice in a row.
-const SAUCE_CHANCE := .16
-const SAUCE_MIN_PLACED := 6
 ## How far from the splash a Kinu can be and still catch the sauce.
 const SAUCE_REACH := 1.35
 const TINY_SCALE := .62
@@ -417,6 +422,8 @@ func begin() -> void:
 	streak = 0
 	best_streak = 0
 	run_time = 0.0
+	squirts = SQUIRTS_START
+	squirt_unlocks = 0
 	squirts_used = 0
 	glazed = 0
 	new_flavours = 0
@@ -464,18 +471,9 @@ func choose_next() -> void:
 	last_shape = next_shape.id
 	next_flavour = _choose_flavour()
 	next_special = ""
-	# A sauce takes the whole queue slot: the Kinu behind it waits its turn.
-	next_sauce = ""
-	if forced_sauce != "":
-		next_sauce = forced_sauce
-		forced_sauce = ""
-		return
 	if forced_special != "":
 		next_special = forced_special
 		forced_special = ""
-		return
-	if mode == "classic" and not menu_mode and active_sauce == "" and placed >= SAUCE_MIN_PLACED and rng.randf() < SAUCE_CHANCE:
-		next_sauce = str(SAUCES.keys()[rng.randi_range(0, SAUCES.size()-1)])
 		return
 	var drop_number := placed+2 if is_instance_valid(active) else placed+1
 	if mode == "classic" and not menu_mode and drop_number >= next_sticky_drop:
@@ -589,12 +587,11 @@ func _bento_pan_position() -> Vector3:
 func _spawn() -> void:
 	if state in ["over", "falling"]:
 		return
-	active_sauce = next_sauce
 	active = make_body(next_shape, next_flavour, next_special)
-	if active_sauce != "" and not Save.data.seen_specials.has("sauce:"+active_sauce):
-		Save.data.seen_specials.append("sauce:"+active_sauce)
+	if placed >= 2 and squirts > 0 and not Save.data.seen_specials.has("bottle"):
+		Save.data.seen_specials.append("bottle")
 		Save.persist()
-		message.emit(tr(str(SAUCES[active_sauce].hint)), Color(str(SAUCES[active_sauce].tint)).darkened(.3))
+		message.emit(tr("Tap the bottle to shrink crowded Kinu!"), Color("5a8fb5"))
 	elif active.special != "" and not Save.data.seen_specials.has(active.special):
 		Save.data.seen_specials.append(active.special)
 		Save.persist()
@@ -626,12 +623,12 @@ func _spawn() -> void:
 		pan.rotation.y = orbit.angle
 	active.position = _bento_pan_position()+Vector3.UP*.20 if bento_flip() else orbit.drop_position(drop_height)
 	state = "aim"
-	if active_sauce != "":
-		_take_bottle()
 	_rebuild_landing_ghost()
 	beam.show()
 	marker.show()
 	updated.emit()
+	if is_instance_valid(active) and active.special == "sticky":
+		action_done.emit("sticky_ready")
 
 func drop() -> void:
 	if state != "aim" or active == null:
@@ -846,21 +843,33 @@ func _tip() -> void:
 		Haptics.pulse(40, .6)
 		message.emit(tr("Timber!"), Color("ff8a1f"))
 
-## A sauce turn puts the bottle in your hand instead of a Kinu. The Kinu underneath is only an
-## anchor for the aim and is thrown away once the sauce is spent, which is what makes reaching
-## for a sauce cost you a drop.
-func _take_bottle() -> void:
-	if not is_instance_valid(active):
+## Swaps the held Kinu for the bottle, or puts the bottle away again. The Kinu is only hidden,
+## so a squirt spends a charge rather than a turn.
+func toggle_bottle() -> void:
+	if state != "aim" or active == null:
 		return
-	aim_mode = "bottle"
-	bottle = ShoyuBottle.new()
-	bottle.tint = Color(str(SAUCES[active_sauce].tint)).darkened(.25)
-	add_child(bottle)
-	bottle.position = active.position+Vector3.UP*.3
-	active.visible = false
+	if aim_mode == "bottle":
+		aim_mode = "kinu"
+		_clear_sauce_targets()
+		if is_instance_valid(bottle):
+			bottle.queue_free()
+		bottle = null
+		active.visible = true
+	elif squirts > 0:
+		aim_mode = "bottle"
+		bottle = ShoyuBottle.new()
+		bottle.tint = Color(str(SAUCES[BOTTLE_SAUCE].tint)).darkened(.25)
+		add_child(bottle)
+		bottle.position = active.position+Vector3.UP*.3
+		active.visible = false
+		Sound.play("tap")
+	_rebuild_landing_ghost()
+	_update_guide()
+	updated.emit()
 
 func _squirt() -> void:
 	state = "squirting"
+	squirts -= 1
 	squirts_used += 1
 	beam.hide()
 	marker.hide()
@@ -883,15 +892,15 @@ func _squirt() -> void:
 func _squirted(target: KinuBody) -> void:
 	bottle = null
 	aim_mode = "kinu"
-	var sauce := active_sauce
-	active_sauce = ""
-	var recipe: Dictionary = SAUCES.get(sauce, {})
+	var recipe: Dictionary = SAUCES.get(BOTTLE_SAUCE, {})
 	var touched := 0
-	# A ray straight down can slip between two Kinu and hit the box floor. The sauce still
-	# splashed on the pile, so fall back to whatever is nearest where it landed.
-	var hit := target if is_instance_valid(target) and not target.fallen else _nearest_to(sauce_point)
-	if not recipe.is_empty() and is_instance_valid(hit):
-		touched = _apply_sauce(hit, recipe)
+	# Whatever was lit under the bottle is what gets sauced, so the preview is the promise.
+	var chosen := sauce_targets.duplicate()
+	_clear_sauce_targets()
+	if not recipe.is_empty() and chosen.is_empty() and is_instance_valid(target):
+		chosen = sauce_reach(target, int(recipe.targets))
+	if not recipe.is_empty():
+		touched = _apply_sauce(chosen, recipe)
 	if touched > 0:
 		glazed += touched
 		message.emit(tr("%s! %d Kinu")%[str(recipe.label), touched], Color(str(recipe.tint)).darkened(.3))
@@ -902,13 +911,13 @@ func _squirted(target: KinuBody) -> void:
 	action_done.emit("squirt")
 	if state != "squirting":
 		return
-	# The sauce spent this turn, so the Kinu it was riding on goes back in the crate.
+	# The charge is gone but the turn is not: the Kinu that was waiting comes back out.
+	state = "aim"
 	if is_instance_valid(active):
-		bodies.erase(active)
-		active.queue_free()
-		active = null
-	state = "ready"
-	_spawn()
+		active.visible = true
+		_rebuild_landing_ghost()
+		beam.show()
+		marker.show()
 	updated.emit()
 
 ## The packed Kinu closest to a point, within the sauce's reach.
@@ -926,19 +935,52 @@ func _nearest_to(point: Vector3) -> KinuBody:
 			best = body
 	return best
 
-## Sauces reach the Kinu they land on plus its closest neighbours, up to the bottle's limit. The
-## pile is let go afterwards so it settles into the room the sauce just made or took away.
-func _apply_sauce(target: KinuBody, recipe: Dictionary) -> int:
+## The Kinu a squirt centred on `target` would catch, nearest first. The aiming preview and the
+## squirt itself both read this, so what you see lit is what changes.
+func sauce_reach(target: KinuBody, limit: int) -> Array[KinuBody]:
 	var reachable: Array[KinuBody] = []
+	if not is_instance_valid(target):
+		return reachable
 	for body in bodies:
 		if is_instance_valid(body) and body.scored and not body.fallen and body != active:
 			if body == target or body.position.distance_to(target.position) <= SAUCE_REACH:
 				reachable.append(body)
 	reachable.sort_custom(func(a: KinuBody, b: KinuBody) -> bool:
 		return a.position.distance_to(target.position) < b.position.distance_to(target.position))
+	return reachable.slice(0, limit)
+
+## The Kinu directly under the bottle, or the nearest one to where the sauce would land if the
+## ray slipped between two of them.
+func sauce_aim(hit: Dictionary) -> KinuBody:
+	if hit.is_empty():
+		return null
+	if hit.collider is KinuBody and hit.collider.scored and not hit.collider.fallen:
+		return hit.collider
+	return _nearest_to(hit.position)
+
+## Lights the Kinu a squirt would catch, and puts out any that have fallen out of reach.
+func _show_sauce_targets(aimed: KinuBody) -> void:
+	var recipe: Dictionary = SAUCES.get(BOTTLE_SAUCE, {})
+	var wanted: Array[KinuBody] = [] if recipe.is_empty() else sauce_reach(aimed, int(recipe.targets))
+	for body in sauce_targets:
+		if is_instance_valid(body) and not wanted.has(body):
+			body.set_sauce_target(false)
+	for body in wanted:
+		if is_instance_valid(body):
+			body.set_sauce_target(true, Color(str(recipe.tint)))
+	sauce_targets = wanted
+
+func _clear_sauce_targets() -> void:
+	for body in sauce_targets:
+		if is_instance_valid(body):
+			body.set_sauce_target(false)
+	sauce_targets.clear()
+
+## Resizes exactly the Kinu that were lit, then lets the pile settle into the room it made.
+func _apply_sauce(chosen: Array[KinuBody], recipe: Dictionary) -> int:
 	var touched := 0
-	for body in reachable.slice(0, int(recipe.targets)):
-		if body.rescale(float(recipe.factor), float(recipe.low), float(recipe.high)):
+	for body in chosen:
+		if is_instance_valid(body) and body.rescale(float(recipe.factor), float(recipe.low), float(recipe.high)):
 			touched += 1
 	if touched > 0:
 		for body in bodies:
@@ -963,6 +1005,7 @@ func _update_guide() -> void:
 		var query := PhysicsRayQueryParameters3D.create(bottle.position, bottle.position-Vector3.UP*30, 3)
 		query.exclude = [active.get_rid()]
 		var hit := get_world_3d().direct_space_state.intersect_ray(query)
+		_show_sauce_targets(sauce_aim(hit))
 		marker.visible = not hit.is_empty()
 		if not hit.is_empty():
 			var normal: Vector3 = hit.normal
@@ -1217,6 +1260,12 @@ func _settle() -> void:
 	var milestone := score >= next_milestone and mode == "classic"
 	if milestone:
 		next_milestone = (score/MILESTONE_STEP+1)*MILESTONE_STEP
+	# Squirts are earned at set pile sizes with widening gaps, so each one costs more than the last.
+	var earned_squirt := false
+	while mode == "classic" and squirt_unlocks < SQUIRT_UNLOCKS.size() and score >= int(SQUIRT_UNLOCKS[squirt_unlocks]):
+		squirt_unlocks += 1
+		squirts += 1
+		earned_squirt = true
 	var special := pending.special
 	pending.mark_special("")
 	if special == "lucky":
@@ -1238,6 +1287,12 @@ func _settle() -> void:
 			message.emit(tr("Heart Kinu! +5 beans"), Color("ff5d8f"))
 		Sound.play("special", 1.2)
 		Haptics.pulse(35, .55)
+	elif earned_squirt:
+		# 35 is not a round number, so an earned squirt announces itself rather than riding on a
+		# milestone it would otherwise miss.
+		message.emit(tr("%d Kinu! +1 Nigari squirt")%score, Color("5a8fb5"))
+		Sound.play("special")
+		Haptics.pulse(35, .55)
 	elif milestone:
 		var reached := score/MILESTONE_STEP*MILESTONE_STEP
 		message.emit(tr("%d Kinu! Amazing!")%reached, Color("ff8a1f"))
@@ -1248,8 +1303,6 @@ func _settle() -> void:
 		Sound.play("special", 1.2)
 	pending = null
 	action_done.emit("settle")
-	if special == "sticky":
-		action_done.emit("sticky")
 	if bento_flip() and pile_count() >= RUSH_BOX_TARGET:
 		_ship()
 		return

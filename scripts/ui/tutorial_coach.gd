@@ -155,10 +155,22 @@ class TutorialHand extends Control:
 				else:
 					tip.y -= (phase-.45)*90
 					alpha *= 1.0-(phase-.45)/.55
-			4, 5:
-				# Sticky and Nigari are both aimed and released; the card explains which is which.
-				var phase := fmod(t, 1.6)/1.6
+			4:
+				# The Sticky lesson is an ordinary drop; the badge on the Kinu does the explaining.
+				var sticky_phase := fmod(t, 1.6)/1.6
 				tip = held+Vector2(0, 50)
+				if sticky_phase < .45:
+					press = sin(sticky_phase/.45*PI)
+				else:
+					alpha *= 1.0-(sticky_phase-.45)/.55
+			5:
+				var phase := fmod(t, 1.6)/1.6
+				if run.aim_mode == "kinu" and is_instance_valid(coach.app.bottle_button):
+					# Tap the bottle icon first...
+					tip = coach.app.bottle_button.get_global_rect().get_center()+Vector2(-10, 14)
+				else:
+					# ...then let go over a crowded part of the pile.
+					tip = held+Vector2(0, 50)
 				if phase < .45:
 					press = sin(phase/.45*PI)
 				else:

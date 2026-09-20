@@ -61,6 +61,7 @@ static func home(app: Node) -> void:
 		var daily_badge := NestTheme.count_badge(daily_ready)
 		daily_badge.position = Vector2(15, -48)
 		daily_curtain.add_child(daily_badge)
+	_daily_countdown(daily_curtain)
 	# The bottom controls sit together on a quiet lacquered control tray. The shop is already
 	# visually busy, so this deliberately uses fine pinstriping rather than the thick, toy-block
 	# outlines used elsewhere in the game. Reading order down the tray is mode, Play, prizes.
@@ -171,6 +172,29 @@ static func _curtain_button(front: ShopFront, title: String, icon: String, callb
 	holder.add_child(art)
 	front._layout_navigation()
 	return holder
+
+## The Daily curtain has enough quiet cloth above its calendar emblem for one tiny, always-useful
+## status line. Keep the label to the timer itself—no "next treat" preamble competing with it.
+static func _daily_countdown(holder: Node2D) -> void:
+	var label := NestTheme.label("", 13, NestTheme.CREAM)
+	label.name = "DailyCountdown"
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.custom_minimum_size = Vector2(94, 24)
+	label.size = Vector2(94, 24)
+	label.position = Vector2(-47, -170)
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.add_theme_color_override("font_outline_color", NestTheme.INK)
+	label.add_theme_constant_override("outline_size", 4)
+	holder.add_child(label)
+	var update := func() -> void:
+		label.text = "TREAT READY!" if DailyCalendar.ready() else DailyCalendar.countdown_text().trim_prefix("Next treat in ")
+	update.call()
+	var timer := Timer.new()
+	timer.wait_time = 1.0
+	timer.timeout.connect(update)
+	holder.add_child(timer)
+	timer.start()
 
 ## A round wooden button with a drawn icon and, optionally, a carved label underneath.
 ## The button is named after its label so it can be found by name.

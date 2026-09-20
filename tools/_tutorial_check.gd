@@ -27,17 +27,36 @@ func _ready() -> void:
 	assert(main.tutorial_step == 0, "the guide did not start")
 	var guard := 0
 	var seen: Array[int] = []
+	var squirts_at_lesson := 0
 	while main.tutorial_step >= 0 and main.tutorial_step < 6 and guard < 80:
 		guard += 1
 		var step: int = main.tutorial_step
+		if not await _aim():
+			break
 		if not seen.has(step):
 			seen.append(step)
 			await _rest()
 			await _shot("step%d" % step)
-			print("[tut] step %d — next: %s%s" % [step, run.next_sauce if run.next_sauce != "" else run.next_special if run.next_special != "" else "kinu", "" if run.next_sauce == "" else " (sauce)"])
-		if not await _aim():
-			break
+			var in_hand := "bottle" if run.aim_mode == "bottle" else (run.active.special if run.active.special != "" else "kinu")
+			print("[tut] step %d — in hand: %-8s squirts %d  next: %s" % [step, in_hand, run.squirts, run.next_special if run.next_special != "" else "kinu"])
+			# The whole point of the fix: a card about a thing only shows once you hold that thing.
+			if step == 4:
+				assert(run.active.special == "sticky", "the Sticky card showed while holding %s" % in_hand)
+			if step == 5:
+				assert(run.squirts > 0, "the Nigari card showed with no squirt to spend")
+				squirts_at_lesson = run.squirts
 		match step:
+			5:
+				# The lesson is the tap: pick the bottle up, aim it at the pile, let go.
+				run.toggle_bottle()
+				await get_tree().process_frame
+				assert(run.aim_mode == "bottle", "tapping the bottle did not pick it up")
+				run.orbit.lateral = 0.0
+				run.orbit.depth = 0.0
+				await get_tree().process_frame
+				run.drop()
+				await _settled()
+				continue
 			2:
 				# The spin lesson wants the box turned, not another Kinu dropped.
 				run.orbit.target_angle += 1.2
@@ -56,6 +75,8 @@ func _ready() -> void:
 	await _shot("final")
 	var reached: int = main.tutorial_step
 	print("[tut] reached step %d after %d turns; steps seen %s" % [reached, guard, str(seen)])
+	print("[tut] squirts at the lesson %d, after it %d" % [squirts_at_lesson, run.squirts])
+	assert(run.squirts >= squirts_at_lesson, "the practice squirt cost a real charge")
 	assert(seen.has(4), "the Sticky Kinu lesson never came up")
 	assert(seen.has(5), "the Nigari lesson never came up")
 	print("TUTORIAL CHECK DONE")

@@ -18,6 +18,7 @@ var best_label: Label
 var tumble_meter: TumbleMeter
 ## Lid prototype: offers to close and send out the box once it holds enough.
 var ship_button: Button
+var bottle_button: Button
 var score_title: Label
 var timer_pill: PanelContainer
 var box_pill: PanelContainer
@@ -241,6 +242,22 @@ func _build_hud() -> void:
 	next_card.offset_left = -124
 	next_card.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	content.add_child(next_card)
+	# The bottle waits under the Next card; its count is the squirts left this run.
+	bottle_button = NestTheme.button("×1",func() -> void: run.toggle_bottle())
+	bottle_button.name = "ShoyuBottle"
+	bottle_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	bottle_button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	bottle_button.offset_left = -124
+	bottle_button.offset_top = 158
+	bottle_button.custom_minimum_size = Vector2(124,62)
+	bottle_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	bottle_button.add_theme_font_size_override("font_size",24)
+	var bottle_icon := ShoyuBottle.Icon.new()
+	bottle_icon.tint = Color(str(NestRun.SAUCES[NestRun.BOTTLE_SAUCE].tint)).darkened(.25)
+	bottle_icon.position = Vector2(16,8)
+	bottle_icon.size = Vector2(30,40)
+	bottle_button.add_child(bottle_icon)
+	content.add_child(bottle_button)
 	# Sits under the bottle and only appears once the box is worth closing, so the choice to ship
 	# now or keep packing is the player's.
 	ship_button = NestTheme.button(tr("Close Lid"),func() -> void: run.ship_box(),true)
@@ -364,6 +381,10 @@ func _hud_update() -> void:
 			score_label.text = _number(run.score)
 			best_label.text = tr("Best %s")%_number(Save.data.best)
 	tumble_meter.used = run.tumbles
+	if is_instance_valid(bottle_button):
+		bottle_button.text = "×%d"%run.squirts
+		bottle_button.disabled = run.state != "aim" or (run.squirts == 0 and run.aim_mode != "bottle")
+		NestTheme.set_primary(bottle_button,run.aim_mode == "bottle")
 	if is_instance_valid(drop_button):
 		drop_button.text = tr("Squirt") if run.aim_mode == "bottle" else tr("Drop")
 		drop_button.disabled = run.state != "aim"
@@ -385,24 +406,7 @@ func _hud_update() -> void:
 		next_slot.remove_child(child)
 		child.queue_free()
 	_center_label(next_slot,"Next",15,NestTheme.MUTED)
-	if run.next_sauce != "":
-		# A sauce owns the whole queue slot, so the card shows the bottle rather than a Kinu.
-		var recipe: Dictionary = NestRun.SAUCES[run.next_sauce]
-		var tint := Color(str(recipe.tint))
-		var jar := PanelContainer.new()
-		jar.custom_minimum_size = Vector2(100,76)
-		jar.add_theme_stylebox_override("panel",NestTheme.box(tint.lightened(.55),16,tint.darkened(.35),4))
-		next_slot.add_child(jar)
-		var art := CenterContainer.new()
-		jar.add_child(art)
-		var icon := ShoyuBottle.Icon.new()
-		icon.custom_minimum_size = Vector2(34,48)
-		icon.tint = tint
-		art.add_child(icon)
-		var sauce_label := _center_label(next_slot,tr(str(recipe.label)),14,tint.darkened(.45))
-		sauce_label.clip_text = true
-		sauce_label.custom_minimum_size.x = 100
-	elif run.next_shape:
+	if run.next_shape:
 		var finish: KinuFlavour = run.pattern_for(run.next_flavour)
 		var outfit: KinuOutfit = run.catalog.outfit(str(Save.data.outfit))
 		var preview := KinuPreview.new()
@@ -630,8 +634,8 @@ func _tutorial_steps() -> Array:
 			else ["Spin The Box","Swipe anywhere else to turn the box. Swipe up or down to tilt the view."] if grab \
 			else ["Spin The Box","Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view."],
 		["Pile Them Up","Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full."],
-		["Sticky Kinu","This one has a syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."],
-		["Nigari","A sauce is up next instead of a Kinu. Aim the bottle over a crowded spot and let go — Nigari firms up to three Kinu a size smaller and frees up room."],
+		["Sticky Kinu","You're holding one — see the syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."],
+		["Nigari","Tap the bottle icon to pick it up, aim it over a crowded spot and let go. Nigari makes up to three Kinu smaller and frees up room. You earn another at 20, 35 and 50 Kinu."],
 		["Careful!","Kinu that tumble onto the counter don't count. Six tumbles and the run is over."]]
 
 func _build_tutorial() -> void:
@@ -643,19 +647,22 @@ func _build_tutorial() -> void:
 func _tutorial_refresh() -> void:
 	if is_instance_valid(tutorial_panel):
 		tutorial_panel.refresh(tutorial_step,_tutorial_steps())
-	# The last two lessons need their subject in hand, so the run is asked for one rather than
-	# left waiting on the odds. Each is queued as the step it teaches is reached.
+	# The queue always runs a turn ahead, so each subject is ordered one step before the card that
+	# explains it. The card itself only turns over once that subject is actually in hand.
 	if is_instance_valid(run):
-		if tutorial_step == 4 and run.next_special != "sticky":
+		if tutorial_step == 3 and run.next_special != "sticky":
 			run.forced_special = "sticky"
-		elif tutorial_step == 5 and run.next_sauce == "":
-			run.forced_sauce = "nigari"
+
 
 func _tutorial_action(action: String) -> void:
 	if tutorial_step<0 or page!="play":
 		return
-	var expected := ["aim","drop","spin","settle","sticky","squirt"]
+	var expected := ["aim","drop","spin","sticky_ready","settle","squirt"]
 	if tutorial_step<expected.size() and action==expected[tutorial_step]:
+		if action=="squirt":
+			# The practice squirt is on the house: the guide shouldn't cost a real charge.
+			run.squirts += 1
+			run.updated.emit()
 		tutorial_step += 1
 		_tutorial_refresh()
 

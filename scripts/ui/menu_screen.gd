@@ -173,23 +173,31 @@ static func _curtain_button(front: ShopFront, title: String, icon: String, callb
 	front._layout_navigation()
 	return holder
 
-## The Daily curtain has enough quiet cloth above its calendar emblem for one tiny, always-useful
-## status line. Keep the label to the timer itself—no "next treat" preamble competing with it.
+## A small status chip rides immediately above the calendar emblem. The pink, gently popping
+## treatment makes the timer feel like a reward worth returning for, without adding extra copy.
 static func _daily_countdown(holder: Node2D) -> void:
-	var label := NestTheme.label("", 13, NestTheme.CREAM)
+	var chip := Panel.new()
+	chip.name = "DailyCountdown"
+	chip.position = Vector2(-58, -94)
+	chip.size = Vector2(116, 32)
+	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	chip.add_theme_stylebox_override("panel", NestTheme.box(NestTheme.BERRY, 16, NestTheme.INK, 3))
+	holder.add_child(chip)
+	var label := NestTheme.label("", 14, NestTheme.CREAM)
 	label.name = "DailyCountdown"
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.custom_minimum_size = Vector2(94, 24)
-	label.size = Vector2(94, 24)
-	label.position = Vector2(-47, -170)
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.add_theme_color_override("font_outline_color", NestTheme.INK)
-	label.add_theme_constant_override("outline_size", 4)
-	holder.add_child(label)
+	label.add_theme_constant_override("outline_size", 2)
+	chip.add_child(label)
 	var update := func() -> void:
 		label.text = "TREAT READY!" if DailyCalendar.ready() else DailyCalendar.countdown_text().trim_prefix("Next treat in ")
 	update.call()
+	var pop := chip.create_tween().set_loops()
+	pop.tween_property(chip, "scale", Vector2(1.055, 1.055), .62).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	pop.tween_property(chip, "scale", Vector2.ONE, .62).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	var timer := Timer.new()
 	timer.wait_time = 1.0
 	timer.timeout.connect(update)

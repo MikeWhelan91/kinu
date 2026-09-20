@@ -173,13 +173,13 @@ static func _curtain_button(front: ShopFront, title: String, icon: String, callb
 	front._layout_navigation()
 	return holder
 
-## A small status chip rides immediately above the calendar emblem. The pink, gently popping
-## treatment makes the timer feel like a reward worth returning for, without adding extra copy.
+## A small status chip rides immediately above the calendar emblem. Because it belongs to the
+## curtain's holder, it follows that panel's sway and opening animation exactly.
 static func _daily_countdown(holder: Node2D) -> void:
 	var chip := Panel.new()
 	chip.name = "DailyCountdown"
-	chip.position = Vector2(-58, -94)
-	chip.size = Vector2(116, 32)
+	chip.position = Vector2(-45, -64)
+	chip.size = Vector2(90, 28)
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chip.add_theme_stylebox_override("panel", NestTheme.box(NestTheme.BERRY, 16, NestTheme.INK, 3))
 	holder.add_child(chip)

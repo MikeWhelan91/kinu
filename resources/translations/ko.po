@@ -1112,3 +1112,520 @@ msgstr "옷을 입고 1판 플레이"
 
 msgid "Play %d runs in an outfit"
 msgstr "옷을 입고 %d판 플레이"
+
+# Kinu Catcher, new items and modes
+msgid "Claw Machine"
+msgstr "키누 인형뽑기"
+
+msgid "KINU CATCHER"
+msgstr "키누 인형뽑기"
+
+msgid "Catcher"
+msgstr "캐처"
+
+msgid "FREE"
+msgstr "무료"
+
+msgid "Odds"
+msgstr "확률"
+
+msgid "Pick Any Prize!"
+msgstr "원하는 경품 고르기!"
+
+msgid "Drop!"
+msgstr "내려!"
+
+msgid "Catching…"
+msgstr "잡는 중…"
+
+msgid "Free Play!"
+msgstr "무료 플레이!"
+
+msgid "Play  ·  %d beans"
+msgstr "플레이 · 콩 %d개"
+
+msgid "Get Beans To Play"
+msgstr "콩 받으러 가기"
+
+msgid "Drag the machine to move the claw"
+msgstr "드래그해서 집게를 움직여요"
+
+msgid "Every capsule holds a prize"
+msgstr "모든 캡슐에 경품이 들어 있어요"
+
+msgid "One free play every day"
+msgstr "매일 1회 무료"
+
+msgid "Your free play is ready!"
+msgstr "오늘의 무료 플레이 준비 완료!"
+
+msgid "Lucky meter: an item within %d plays"
+msgstr "행운 게이지: %d회 안에 아이템"
+
+msgid "Lucky meter: the next play wins an item!"
+msgstr "행운 게이지: 다음 판은 아이템 확정!"
+
+msgid "Pick meter: %d / %d plays"
+msgstr "선택 게이지: %d / %d회"
+
+msgid "You've won every item! The machine is all beans now."
+msgstr "아이템을 전부 모았어요! 이제 콩만 나와요."
+
+msgid "Every play wins exactly one prize."
+msgstr "한 번 플레이하면 경품을 반드시 하나 받아요."
+
+msgid "Items you already own leave the machine, so every item you win is new. The chances below are for you, right now."
+msgstr "이미 가진 아이템은 나오지 않아서 얻는 아이템은 항상 새것이에요. 아래 확률은 지금 당신의 확률이에요."
+
+msgid "Lucky meter: after %d plays in a row without an item, the next play is always an item."
+msgstr "행운 게이지: 아이템 없이 %d회 연속이면 다음 판은 반드시 아이템."
+
+msgid "Pick meter: every %d plays, choose any item still in the machine."
+msgstr "선택 게이지: %d회마다 남은 아이템 중 원하는 걸 고를 수 있어요."
+
+msgid "One free play every day."
+msgstr "매일 한 번 무료로 플레이할 수 있어요."
+
+msgid "Beans"
+msgstr "콩"
+
+msgid "Catcher only"
+msgstr "캐처 한정"
+
+msgid "Pick A Prize"
+msgstr "경품 고르기"
+
+msgid "Your pick meter is full. Choose any item left in the machine."
+msgstr "선택 게이지가 가득 찼어요. 남은 아이템 중 하나를 고르세요."
+
+msgid "PRIZE"
+msgstr "경품"
+
+msgid "Kinu Tumble"
+msgstr "키누 텀블"
+
+msgid "Prize Machine"
+msgstr "경품 머신"
+
+msgid "Tap to open!"
+msgstr "탭해서 열어요!"
+
+msgid "Again!"
+msgstr "한 번 더!"
+
+msgid "One more!"
+msgstr "마지막 한 번!"
+
+msgid "LEGENDARY!"
+msgstr "전설!"
+
+msgid "EPIC!"
+msgstr "에픽!"
+
+msgid "RARE!"
+msgstr "레어!"
+
+msgid "A Prize!"
+msgstr "경품 획득!"
+
+msgid "JACKPOT!"
+msgstr "잭팟!"
+
+msgid "Your Pick!"
+msgstr "선택한 경품!"
+
+msgid "New outfit"
+msgstr "새 의상"
+
+msgid "New box"
+msgstr "새 상자"
+
+msgid "New room"
+msgstr "새 방"
+
+msgid "Claw Machine-only outfit"
+msgstr "인형뽑기 한정 의상"
+
+msgid "Claw Machine-only box"
+msgstr "인형뽑기 한정 상자"
+
+msgid "Claw Machine-only room"
+msgstr "인형뽑기 한정 방"
+
+msgid "1 in %s"
+msgstr "%s분의 1"
+
+msgid "The lucky meter paid out!"
+msgstr "행운 게이지 발동!"
+
+msgid "Wear It"
+msgstr "입어 보기"
+
+msgid "Use It"
+msgstr "사용하기"
+
+msgid "Keep Playing"
+msgstr "계속하기"
+
+msgid "Lovely!"
+msgstr "멋져요!"
+
+msgid "Only won in the Kinu Catcher."
+msgstr "키누 캐처에서만 얻을 수 있어요."
+
+msgid "Go To The Catcher"
+msgstr "캐처로 가기"
+
+msgid "Tower"
+msgstr "타워"
+
+msgid "Lunch Rush"
+msgstr "런치 러시"
+
+msgid "Fill the box. Three tumbles and you're out."
+msgstr "상자를 채워요. 세 번 떨어지면 끝."
+
+msgid "No box, just a plate. Build as tall as you can."
+msgstr "상자 없이 접시만. 최대한 높이 쌓아요."
+
+msgid "Pack 10 Kinu to ship a box. Each box adds time."
+msgstr "키누 10개를 담으면 상자 출하. 출하할 때마다 시간이 늘어요."
+
+msgid "Pile %d Kinu in Classic to unlock."
+msgstr "클래식에서 키누 %d개를 쌓으면 해금."
+
+msgid "Tower Height"
+msgstr "타워 높이"
+
+msgid "Kinu Packed"
+msgstr "담은 키누"
+
+msgid "Time's Up!"
+msgstr "시간 종료!"
+
+msgid "Time's up!"
+msgstr "시간 종료!"
+
+msgid "%d Kinu"
+msgstr "키누 %d개"
+
+msgid "1 box shipped"
+msgstr "1상자 출하"
+
+msgid "%d boxes shipped"
+msgstr "%d상자 출하"
+
+msgid "New mode: %s"
+msgstr "새 모드: %s"
+
+msgid "%ds left"
+msgstr "%d초 남음"
+
+msgid "Kinu tumbled off! -%ds"
+msgstr "키누가 떨어졌어요! -%d초"
+
+msgid "Heart Kinu! +3s"
+msgstr "하트 키누! +3초"
+
+msgid "Box shipped! +%ds"
+msgstr "출하 완료! +%d초"
+
+msgid "Box %d  ·  %d / %d"
+msgstr "상자 %d · %d / %d"
+
+msgid "Modes"
+msgstr "모드"
+
+msgid "Tallest Tower"
+msgstr "가장 높은 타워"
+
+msgid "Most Kinu packed in Lunch Rush"
+msgstr "런치 러시 최고 기록"
+
+msgid "Boxes shipped"
+msgstr "출하한 상자"
+
+msgid "Plays"
+msgstr "플레이 횟수"
+
+msgid "Items won"
+msgstr "얻은 아이템"
+
+msgid "Beans won"
+msgstr "얻은 콩"
+
+msgid "Jackpots"
+msgstr "잭팟"
+
+msgid "Kitsune"
+msgstr "키츠네"
+
+msgid "Phoenix"
+msgstr "불사조"
+
+msgid "Unicorn"
+msgstr "유니콘"
+
+msgid "Lucky Cat"
+msgstr "마네키네코"
+
+msgid "Samurai"
+msgstr "사무라이"
+
+msgid "Koi"
+msgstr "비단잉어"
+
+msgid "Axolotl"
+msgstr "우파루파"
+
+msgid "Kimono"
+msgstr "기모노"
+
+msgid "Oni"
+msgstr "오니"
+
+msgid "Yuzu Capybara"
+msgstr "유자 카피바라"
+
+msgid "Kintsugi"
+msgstr "킨츠기"
+
+msgid "Treasure Chest"
+msgstr "보물 상자"
+
+msgid "Amethyst Geode"
+msgstr "자수정 정동"
+
+msgid "Capsule Toy"
+msgstr "캡슐 토이"
+
+msgid "Taiko Drum"
+msgstr "타이코 북"
+
+msgid "Shortcake"
+msgstr "쇼트케이크"
+
+msgid "Starry Night"
+msgstr "별이 빛나는 밤"
+
+msgid "Koi Pond"
+msgstr "잉어 연못"
+
+msgid "Cloud"
+msgstr "구름"
+
+msgid "Mother of Pearl"
+msgstr "자개"
+
+msgid "Game Centre"
+msgstr "오락실"
+
+msgid "Dragon Palace"
+msgstr "용궁"
+
+msgid "Moon Base"
+msgstr "달 기지"
+
+msgid "Sky Shrine"
+msgstr "하늘 신사"
+
+msgid "Fuji Tea Fields"
+msgstr "후지 차밭"
+
+msgid "Wagashi Land"
+msgstr "화과자 랜드"
+
+msgid "Aurora Snowfield"
+msgstr "오로라 설원"
+
+msgid "Summer Beach"
+msgstr "여름 바닷가"
+
+msgid "Lantern River"
+msgstr "등불 강"
+
+msgid "Castle Keep"
+msgstr "성"
+
+msgid "Epic"
+msgstr "에픽"
+
+msgid "Legendary"
+msgstr "전설"
+
+# Kinu Claw rebrand, ticket prizes, the modes sheet and other strings added since the
+# last pass.
+msgid "Kinu Claw"
+msgstr "키누 클로"
+
+msgid "KINU CLAW"
+msgstr "키누 클로"
+
+msgid "Kinu Claw-only outfit"
+msgstr "키누 클로 한정 옷"
+
+msgid "Kinu Claw-only box"
+msgstr "키누 클로 한정 상자"
+
+msgid "Kinu Claw-only room"
+msgstr "키누 클로 한정 방"
+
+msgid "Only in the Kinu Claw"
+msgstr "키누 클로 한정"
+
+msgid "Only won in the Kinu Claw."
+msgstr "키누 클로에서만 얻을 수 있어요."
+
+msgid "One mission each day includes a Kinu Claw ticket."
+msgstr "매일 미션 하나에는 키누 클로 티켓이 포함돼요."
+
+msgid "One ticket gives you one Kinu Claw play."
+msgstr "티켓 한 장으로 키누 클로를 한 번 플레이해요."
+
+msgid "%s Kinu Claw tickets added!"
+msgstr "키누 클로 티켓 %s장이 추가됐어요!"
+
+msgid "1 ticket"
+msgstr "티켓 1장"
+
+msgid "%d tickets"
+msgstr "티켓 %d장"
+
+msgid "%s tickets"
+msgstr "티켓 %s장"
+
+msgid "1 free play"
+msgstr "무료 플레이 1회"
+
+msgid "%d free plays"
+msgstr "무료 플레이 %d회"
+
+msgid "Another go at the machine"
+msgstr "한 번 더 플레이"
+
+msgid "Free Plays"
+msgstr "무료 플레이"
+
+msgid "FREE PLAY"
+msgstr "무료 플레이"
+
+msgid "Tickets are a prize too: %s of plays win another go at the machine."
+msgstr "티켓도 상품이에요: %s 확률로 한 번 더 플레이해요."
+
+msgid "See the Odds"
+msgstr "확률 보기"
+
+msgid "Beans & Tickets"
+msgstr "콩과 티켓"
+
+msgid "Tickets spent"
+msgstr "사용한 티켓"
+
+msgid "Move the claw, then Drop!"
+msgstr "집게를 옮기고 떨궈요!"
+
+msgid "Turn"
+msgstr "돌리기"
+
+msgid "Free\nPlay"
+msgstr "무료\n플레이"
+
+msgid "Get\nTickets"
+msgstr "티켓\n구매"
+
+msgid "Play\n1 Ticket"
+msgstr "플레이\n티켓 1장"
+
+msgid "Base cosmetic chance: %s. Rarity is rolled only after an item win."
+msgstr "기본 아이템 확률: %s. 등급은 아이템에 당첨된 뒤에 정해져요."
+
+msgid "One free play every day. Free plays don't stack."
+msgstr "매일 무료 플레이 1회. 무료 플레이는 쌓이지 않아요."
+
+msgid "One of today's three missions awards a ticket; all three still award beans."
+msgstr "오늘의 미션 세 개 중 하나는 티켓을 줘요. 세 개 모두 콩도 줘요."
+
+msgid "Beans are also earned by playing. One free Kinu Claw play arrives daily, and one daily mission awards a ticket.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "콩은 플레이로도 얻을 수 있어요. 키누 클로는 매일 무료 1회, 데일리 미션 하나에서 티켓을 줘요.\n구매 복원은 광고 제거에만 적용되며, 사용한 소모품은 복원되지 않아요."
+
+msgid "Playing"
+msgstr "플레이 중"
+
+msgid "Locked"
+msgstr "잠김"
+
+msgid "Play This"
+msgstr "이걸로 플레이"
+
+msgid "Best pile"
+msgstr "최고 더미"
+
+msgid "Best packed"
+msgstr "최고 포장 수"
+
+msgid "Stack them as high as you dare!"
+msgstr "겁 없이 높이 쌓아요!"
+
+msgid "Pack the boxes before the clock runs out!"
+msgstr "시간 안에 상자를 채워요!"
+
+msgid "Land Kinu in the tofu box. Anything that bounces out onto the counter is a tumble, and three tumbles end the run. You score the pile you keep."
+msgstr "키누를 두부 상자에 넣어요. 카운터로 튀어나가면 실패로 치고, 세 번이면 끝. 남은 더미가 점수예요."
+
+msgid "A narrow lacquer plate, no walls to catch a bad drop. Stack carefully: you score how tall it stands when it finally comes down."
+msgstr "좁은 옻칠 접시뿐, 막아 줄 벽은 없어요. 신중하게 쌓아요. 무너질 때의 높이가 점수예요."
+
+msgid "Pack ten Kinu to ship a box and win more time. Boxes keep coming until the clock runs out."
+msgstr "키누 10개를 담으면 상자를 보내고 시간이 늘어나요. 시간이 끝날 때까지 상자가 계속 와요."
+
+msgid "Sold in the Shop for %d beans."
+msgstr "상점에서 콩 %d개에 팔아요."
+
+msgid "Drag to spin"
+msgstr "드래그해서 돌리기"
+
+msgid "Tap a card for a closer look."
+msgstr "카드를 탭하면 자세히 볼 수 있어요."
+
+msgid "Unowned"
+msgstr "미보유"
+
+msgid "Buy for %s beans"
+msgstr "콩 %s개로 구매"
+
+msgid "Open Wardrobe"
+msgstr "옷장 열기"
+
+msgid "Wear"
+msgstr "입히기"
+
+msgid "Use"
+msgstr "사용"
+
+msgid "Glaze 50 Kinu with shoyu"
+msgstr "키누 50개에 간장 뿌리기"
+
+msgid "New flavour"
+msgstr "새로운 맛"
+
+msgid "This identifier lets us show you ads relevant to you."
+msgstr "이 식별자는 회원님에게 맞는 광고를 보여주는 데 사용돼요."
+
+# Ticket pack names, matching the App Store Connect listings.
+msgid "Ticket Trio"
+msgstr "티켓 3장"
+
+msgid "Ticket Bundle"
+msgstr "티켓 10장"
+
+msgid "Ticket Stack"
+msgstr "티켓 25장"
+
+msgid "Ticket Roll"
+msgstr "티켓 60장"
+
+msgid "New best height!"
+msgstr "최고 기록 경신!"
+
+msgid "Tickets won"
+msgstr "획득한 티켓"

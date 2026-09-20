@@ -11,7 +11,7 @@ func _ready() -> void:
 	load_data()
 
 func defaults() -> Dictionary:
-	return {"version": 3, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0}, "daily": {}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": []}
+	return {"version": 3, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": []}
 
 func load_data() -> void:
 	data = defaults()
@@ -26,7 +26,7 @@ func load_data() -> void:
 				continue
 			var value: Variant = loaded[key]
 			match key:
-				"best", "runs", "beans":
+				"best", "runs", "beans", "tickets":
 					if (value is float or value is int) and is_finite(float(value)):
 						data[key] = clampi(int(value), 0, 2147483647)
 				"best_height":
@@ -40,6 +40,9 @@ func load_data() -> void:
 						data[key] = value
 				"language":
 					if value in ["", "en", "ja", "ko", "zh_TW"]:
+						data[key] = value
+				"backend_session":
+					if value is Dictionary and value.get("access_token", "") is String and value.get("refresh_token", "") is String:
 						data[key] = value
 				"outfit":
 					if value is String:
@@ -91,6 +94,36 @@ func load_data() -> void:
 				"daily":
 					if value is Dictionary and value.get("day") is String and value.get("missions") is Array:
 						data.daily = value
+				"weekly":
+					if value is Dictionary and value.get("week") is String and value.get("mission") is Dictionary:
+						data.weekly = value
+				"daily_calendar":
+					if value is Dictionary and value.get("last_day", "") is String:
+						data.daily_calendar.last_day = value.last_day
+						var streak: Variant = value.get("streak", 0)
+						if streak is float or streak is int:
+							data.daily_calendar.streak = clampi(int(streak), 0, 7)
+				"mode":
+					if value in NestRun.MODES:
+						data[key] = value
+				"mode_best":
+					if value is Dictionary:
+						for mode in value:
+							var best: Variant = value[mode]
+							if mode in NestRun.MODES and (best is float or best is int) and is_finite(float(best)):
+								data.mode_best[mode] = clampi(int(best), 0, 2147483647)
+				"crane":
+					if value is Dictionary:
+						for counter in ["since_item"]:
+							var number: Variant = value.get(counter, 0)
+							if (number is float or number is int) and is_finite(float(number)):
+								data.crane[counter] = clampi(int(number), 0, 1000)
+						if value.get("free_day") is String:
+							data.crane.free_day = value.free_day
+						if value.get("history") is Array:
+							for entry in value.history.slice(-KinuCatcher.HISTORY):
+								if entry is Dictionary and entry.get("kind") is String:
+									data.crane.history.append(entry)
 				"discovered":
 					if value is Array:
 						for item in value:
@@ -138,9 +171,9 @@ func persist() -> bool:
 		changed.emit()
 	return error == OK
 
-## Atomically save both the balance and delivery receipt before acknowledging Apple.
+## Atomically save currency balances and the delivery receipt before acknowledging Apple.
 ## Returns -1 on save failure, 0 for a replay, and 1 for a newly applied transaction.
-func apply_store_transaction(id: String, product: String, beans: int, revoked: bool, date: float, remove_ads: bool) -> int:
+func apply_store_transaction(id: String, product: String, beans: int, tickets: int, revoked: bool, date: float, remove_ads: bool) -> int:
 	if id.is_empty() or product.is_empty():
 		return -1
 	var before := data.duplicate(true)
@@ -151,9 +184,11 @@ func apply_store_transaction(id: String, product: String, beans: int, revoked: b
 	if revoked:
 		if not previous.is_empty():
 			data.beans = maxi(0, int(data.beans)-int(previous.get("beans", 0)))
+			data.tickets = maxi(0, int(data.tickets)-int(previous.get("tickets", 0)))
 	else:
 		data.beans = int(data.beans)+beans
-	receipts[id] = {"product": product, "beans": beans, "revoked": revoked}
+		data.tickets = int(data.tickets)+tickets
+	receipts[id] = {"product": product, "beans": beans, "tickets": tickets, "revoked": revoked}
 	data["purchases"] = receipts
 	if remove_ads and date >= float(data.get("ads_entitlement_date", 0.0)):
 		data["ads_removed"] = not revoked
@@ -204,7 +239,7 @@ func clear_all_fresh() -> void:
 	persist()
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls", "claw_hand", "outfit", "box", "room", "debug_unlocked", "language"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "controls", "claw_hand", "outfit", "box", "room", "debug_unlocked", "language", "mode"]:
 		data[key] = value
 		persist()
 
@@ -217,12 +252,18 @@ func add_earned_beans(amount: int) -> void:
 	data.stats.beans_earned = int(data.stats.beans_earned)+maxi(0, amount)
 	add_beans(amount)
 
+func add_tickets(amount: int) -> void:
+	data.tickets = maxi(0, int(data.tickets)+amount)
+	persist()
+
 ## kind is "outfit", "box" or "room". Free items (price 0 or no outfit) are always owned.
 func owns(kind: String, id: String, price: int = 1) -> bool:
 	if debug_unlocked() or id == "":
 		return true
 	if KinuProgress.is_earned_item(kind, id):
 		return KinuProgress.met(KinuProgress.goals[kind+":"+id])
+	if KinuProgress.is_crane_only(kind, id):
+		return data.owned.has(kind+":"+id)
 	return price <= 0 or data.owned.has(kind+":"+id)
 
 ## Test switch for development builds only: everything counts as unlocked, found and owned.
@@ -248,7 +289,7 @@ func set_flavour_in_mix(id: String, included: bool) -> void:
 
 ## Spends soybeans on a shop item and equips it where that makes sense. False if unaffordable.
 func buy(kind: String, id: String, price: int) -> bool:
-	if KinuProgress.is_earned_item(kind, id) and not owns(kind, id, price):
+	if (KinuProgress.is_earned_item(kind, id) or KinuProgress.is_crane_only(kind, id)) and not owns(kind, id, price):
 		return false
 	if not owns(kind, id, price):
 		if int(data.beans) < price:
@@ -266,14 +307,22 @@ func buy(kind: String, id: String, price: int) -> bool:
 ## Records a finished run: best pile and height, lifetime stats and daily mission progress.
 func finish_run(summary: Dictionary) -> bool:
 	var score := int(summary.get("score", 0))
+	var mode := str(summary.get("mode", "classic"))
+	# Kinu on the pile at the end, which is the score itself in Classic.
+	var pile := int(summary.get("pile", score))
 	var earned_before := KinuProgress.earned_keys()
 	var record := score > int(data.best)
-	data.best = maxi(score, int(data.best))
+	if mode == "classic":
+		data.best = maxi(score, int(data.best))
+	else:
+		record = score > int(data.mode_best.get(mode, 0))
+		data.mode_best[mode] = maxi(score, int(data.mode_best.get(mode, 0)))
+		data.stats.boxes_shipped = int(data.stats.boxes_shipped)+int(summary.get("boxes", 0))
 	data.best_height = maxf(float(summary.get("height", 0.0)), float(data.best_height))
 	data.runs = int(data.runs) + 1
 	data.stats.total = int(data.stats.total)+int(summary.get("placed", 0))
 	data.stats.lucky = int(data.stats.lucky)+int(summary.get("lucky", 0))
-	data.stats.piled = int(data.stats.piled)+score
+	data.stats.piled = int(data.stats.piled)+pile
 	data.stats.tumbles = int(data.stats.tumbles)+int(summary.get("tumbles", 0))
 	data.stats.hearts = int(data.stats.hearts)+int(summary.get("hearts", 0))
 	data.stats.spins = int(data.stats.spins)+int(summary.get("turns", 0))
@@ -286,13 +335,14 @@ func finish_run(summary: Dictionary) -> bool:
 	data.stats.longest_time = maxi(int(data.stats.longest_time), seconds)
 	_add_counts(data.flavour_counts, summary.get("flavours", {}))
 	_add_counts(data.shape_counts, summary.get("shapes", {}))
-	data.outfit_best[str(data.outfit)] = maxi(int(data.outfit_best.get(str(data.outfit), 0)), score)
-	data.room_best[str(data.room)] = maxi(int(data.room_best.get(str(data.room), 0)), score)
-	data.recent.append(score)
-	data.recent = data.recent.slice(-RECENT_RUNS)
+	if mode == "classic":
+		data.outfit_best[str(data.outfit)] = maxi(int(data.outfit_best.get(str(data.outfit), 0)), score)
+		data.room_best[str(data.room)] = maxi(int(data.room_best.get(str(data.room), 0)), score)
+		data.recent.append(score)
+		data.recent = data.recent.slice(-RECENT_RUNS)
 	_record_day()
 	if int(summary.get("tumbles", 0)) == 0:
-		data.stats.clean = maxi(int(data.stats.clean), score)
+		data.stats.clean = maxi(int(data.stats.clean), pile)
 	KinuProgress.record_run(summary)
 	if not debug_unlocked():
 		for key in KinuProgress.earned_keys():

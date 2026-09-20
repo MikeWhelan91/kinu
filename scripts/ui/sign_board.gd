@@ -8,6 +8,7 @@ var rope_length: float = 400.0
 var mounted: bool = false
 ## Menu boards sit on the page instead of hanging from ropes.
 var ropes: bool = true
+var grain_color := GRAIN
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -24,10 +25,19 @@ func _ready() -> void:
 	add_theme_stylebox_override("panel", board)
 	resized.connect(queue_redraw)
 
+## Collection detail boards borrow the item's rarity colour. This remains an instance-level
+## override, so the rest of the game's wooden signs keep their original material.
+func set_tint(color: Color) -> void:
+	var board := (get_theme_stylebox("panel") as StyleBoxFlat).duplicate() as StyleBoxFlat
+	board.bg_color = color
+	add_theme_stylebox_override("panel", board)
+	grain_color = color.darkened(.26)
+	queue_redraw()
+
 func _draw() -> void:
 	for i in 4:
 		var y := 24.0+i*(size.y-40)/3.0
-		draw_line(Vector2(26, y), Vector2(size.x-26, y+sin(i*1.9)*6), GRAIN, 3, true)
+		draw_line(Vector2(26, y), Vector2(size.x-26, y+sin(i*1.9)*6), grain_color, 3, true)
 	if mounted:
 		var rail := NestTheme.box(WOOD.darkened(.12),8,NestTheme.INK,5)
 		draw_style_box(rail,Rect2(34,-44,size.x-68,18))

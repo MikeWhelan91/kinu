@@ -8,6 +8,9 @@ func _initialize() -> void:
 		var plain := KinuModel.build(shape, catalog.flavours[0])
 		var plain_face: Mesh = plain.get_node("Face").mesh
 		for outfit in catalog.outfits:
+			# Pattern outfits restyle the body instead of building a costume.
+			if outfit.finish:
+				continue
 			var model := KinuModel.build(shape, catalog.flavours[0], outfit)
 			assert(model.get_node("Costume").mesh.get_surface_count() > 0)
 			var costume_mesh: Mesh = model.get_node("Costume").mesh

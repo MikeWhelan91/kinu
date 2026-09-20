@@ -4,11 +4,18 @@ signal changed
 signal notice(text: String)
 
 const REMOVE_ADS := "com.kinutumble.app.removeads"
-const PACKS := [
+const BEAN_PACKS := [
 	{"id": "com.kinutumble.app.beans.bag", "title": "Little Bean Bag", "beans": 300, "bonus": 0},
 	{"id": "com.kinutumble.app.beans.pouch", "title": "Bean Pouch", "beans": 1000, "bonus": 100},
 	{"id": "com.kinutumble.app.beans.jar", "title": "Bean Jar", "beans": 2400, "bonus": 400},
 	{"id": "com.kinutumble.app.beans.pantry", "title": "Bean Pantry", "beans": 6500, "bonus": 1500},
+]
+## Consumable products to create in App Store Connect. Prices are always supplied by StoreKit.
+const TICKET_PACKS := [
+	{"id": "com.kinutumble.app.tickets.trio", "title": "Ticket Trio", "tickets": 3},
+	{"id": "com.kinutumble.app.tickets.bundle", "title": "Ticket Bundle", "tickets": 10},
+	{"id": "com.kinutumble.app.tickets.stack", "title": "Ticket Stack", "tickets": 25},
+	{"id": "com.kinutumble.app.tickets.roll", "title": "Ticket Roll", "tickets": 60},
 ]
 const ADS_ENABLED := true
 
@@ -40,12 +47,12 @@ func _ready() -> void:
 
 func all_ids() -> PackedStringArray:
 	var ids := PackedStringArray([REMOVE_ADS])
-	for pack in PACKS:
+	for pack in BEAN_PACKS+TICKET_PACKS:
 		ids.append(pack.id)
 	return ids
 
 func pack_for(id: String) -> Dictionary:
-	for pack in PACKS:
+	for pack in BEAN_PACKS+TICKET_PACKS:
 		if pack.id == id:
 			return pack
 	return {}
@@ -144,7 +151,7 @@ func _deliver(transaction: Object) -> void:
 		status = "We couldn't confirm the purchase receipt. Please try Restore Purchases."
 		changed.emit()
 		return
-	var applied := Save.apply_store_transaction(id, product, int(pack.get("beans", 0)), revoked_at > 0, date, product == REMOVE_ADS)
+	var applied := Save.apply_store_transaction(id, product, int(pack.get("beans", 0)), int(pack.get("tickets", 0)), revoked_at > 0, date, product == REMOVE_ADS)
 	if applied < 0:
 		_retry_transactions[id] = transaction
 		status = "Your purchase couldn't be saved. Free some storage and tap Retry."
@@ -156,6 +163,9 @@ func _deliver(transaction: Object) -> void:
 				status = "Your refunded purchase has been updated."
 			elif product == REMOVE_ADS:
 				status = "Ads removed. Thank you!"
+			elif int(pack.get("tickets", 0)) > 0:
+				status = "%s Kinu Claw tickets added!" % str(pack.tickets)
+				Sound.play("cashregister")
 			else:
 				status = NestTheme.t("%s beans added!") % str(pack.beans)
 				Sound.play("cashregister")

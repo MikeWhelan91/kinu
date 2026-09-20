@@ -18,6 +18,14 @@ func find_button(text: String, node: Node) -> Button:
 			return found
 	return null
 
+func has_label(text: String, node: Node) -> bool:
+	if node is Label and str(node.text).contains(text):
+		return true
+	for child in node.get_children():
+		if has_label(text, child):
+			return true
+	return false
+
 func click(text: String) -> void:
 	var button := find_button(text,app.screen)
 	check(button != null,"button present: "+text)
@@ -51,6 +59,18 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	check(find_button("Daily", app.screen) != null,"daily missions are available on the home screen from the start")
+	var trophy := find_button("Leaderboards",app.screen)
+	check(trophy != null and trophy.tooltip_text.begins_with("Classic"),"home trophy initially targets the Classic leaderboard")
+	Save.data.best = 999
+	app._home()
+	var tower_mode := find_button("ModeTower",app.screen)
+	check(tower_mode != null and not tower_mode.disabled,"unlocked Tower mode is selectable from home")
+	tower_mode.pressed.emit()
+	await get_tree().process_frame
+	trophy = find_button("Leaderboards",app.screen)
+	check(NestRun.chosen_mode() == "tower" and trophy.tooltip_text.begins_with("Tower"),"home trophy follows the selected Tower mode")
+	Save.setting("mode","classic")
+	app._home()
 	check(app.run.bodies.size() == 9,"home box contains a fuller nine-Kinu tableau")
 	Save.data.outfit = "ghost"
 	app._home()
@@ -60,6 +80,9 @@ func _ready() -> void:
 	await click("BeanWallet")
 	check(app.page == "beans", "home wallet opens bean purchases")
 	check(find_button("Bag", app.screen).disabled, "desktop never permits a fake real-money purchase")
+	await click("TicketsTab")
+	check(find_button("Trio", app.screen).disabled, "ticket tab lists StoreKit products without fake desktop purchases")
+	await click("BeansTab")
 	await click("‹")
 	check(app.page == "home", "wallet purchase screen returns home")
 	await click("Shop")
@@ -68,6 +91,16 @@ func _ready() -> void:
 	await click("‹")
 	check(app.page == "shop", "purchase screen returns to the originating shop")
 	await click("‹")
+	Save.data.crane.free_day = Time.get_date_string_from_system()
+	Save.data.tickets = 0
+	KinuCatcherScreen.show(app)
+	await get_tree().process_frame
+	await click("CatcherAction")
+	check(app.page == "beans" and find_button("Trio", app.screen).is_visible_in_tree(), "an empty catcher wallet opens the ticket store directly")
+	await click("‹")
+	check(app.page == "catcher", "ticket store returns to the catcher")
+	await click("‹")
+	check(app.page == "home", "catcher returns home after visiting the ticket store")
 	await click("Play")
 	check(app.page=="play" and app.tutorial_step==0,"pointer click starts tutorial")
 	for i in 4:
@@ -153,28 +186,16 @@ func _ready() -> void:
 	for i in 4:
 		await get_tree().process_frame
 	var shop_item: KinuOutfit = app.run.catalog.outfit("tanuki")
-	KinuBookScreen._collection_tapped(app, "outfit", shop_item)
-	await get_tree().process_frame
-	check(app.page == "collection" and app.canvas.find_child("BookToShopTransition", false, false) != null,"a labelled curtain bridges the Kinu Book and Shop")
-	for i in 48:
-		await get_tree().process_frame
-	check(app.page == "shop" and app.shop_tab == "outfit" and is_instance_valid(app.modal),"the transition lands on the matching Shop shelf and opens the item")
+	KinuBookScreen._item_detail(app, "outfit", shop_item)
+	check(app.page == "collection" and is_instance_valid(app.modal),"tapping a Collection card opens an info panel without leaving the Kinu Book")
+	check(has_label(shop_item.description, app.modal),"the info panel shows the item's cosy descriptor")
 	await click("Okay")
-	await click("‹")
-	for i in 4:
-		await get_tree().process_frame
-	check(app.page == "collection" and app.book_tab == "collection","Shop back returns to the Kinu Book collection")
+	check(app.page == "collection" and app.book_tab == "collection" and not is_instance_valid(app.modal),"closing the info panel leaves the Kinu Book exactly where it was")
 	Save.data.owned.append("outfit:tanuki")
-	KinuBookScreen._collection_tapped(app, "outfit", shop_item)
-	await get_tree().process_frame
-	check(app.page == "collection" and app.canvas.find_child("BookToWardrobeTransition", false, false) != null,"a labelled curtain bridges the Kinu Book and Wardrobe")
-	# Frames run faster than real time headless; wait for the curtain's timer to open the page.
-	await get_tree().create_timer(.5).timeout
-	check(app.page == "wardrobe" and app.wardrobe_tab == "outfit","the transition lands on the matching Wardrobe shelf")
-	await click("‹")
-	for i in 4:
-		await get_tree().process_frame
-	check(app.page == "collection" and app.book_tab == "collection","Wardrobe back returns to the Kinu Book collection")
+	KinuBookScreen._item_detail(app, "outfit", shop_item)
+	check(app.page == "collection" and is_instance_valid(app.modal),"tapping an owned Collection card also stays on the info panel, not the Wardrobe")
+	await click("Lovely")
+	check(app.page == "collection" and app.book_tab == "collection","closing an owned item's info panel returns to the Kinu Book collection")
 	await click("‹")
 	check(Save.fresh_count() == 0,"leaving the Kinu Book marks all badges read")
 	app.book_tab = "flavours"

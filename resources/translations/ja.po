@@ -1112,3 +1112,520 @@ msgstr "きぐるみで1回あそぶ"
 
 msgid "Play %d runs in an outfit"
 msgstr "きぐるみで%d回あそぶ"
+
+# Kinu Catcher, new items and modes
+msgid "Claw Machine"
+msgstr "きぬキャッチャー"
+
+msgid "KINU CATCHER"
+msgstr "きぬキャッチャー"
+
+msgid "Catcher"
+msgstr "キャッチャー"
+
+msgid "FREE"
+msgstr "無料"
+
+msgid "Odds"
+msgstr "確率"
+
+msgid "Pick Any Prize!"
+msgstr "好きな景品をえらぶ！"
+
+msgid "Drop!"
+msgstr "おろす！"
+
+msgid "Catching…"
+msgstr "キャッチ中…"
+
+msgid "Free Play!"
+msgstr "無料でプレイ！"
+
+msgid "Play  ·  %d beans"
+msgstr "プレイ ・ %d まめ"
+
+msgid "Get Beans To Play"
+msgstr "まめを手に入れる"
+
+msgid "Drag the machine to move the claw"
+msgstr "ドラッグしてアームを動かそう"
+
+msgid "Every capsule holds a prize"
+msgstr "どのカプセルにも景品入り"
+
+msgid "One free play every day"
+msgstr "毎日1回無料"
+
+msgid "Your free play is ready!"
+msgstr "今日の無料プレイができます！"
+
+msgid "Lucky meter: an item within %d plays"
+msgstr "ラッキーメーター：%d回以内にアイテム"
+
+msgid "Lucky meter: the next play wins an item!"
+msgstr "ラッキーメーター：次はアイテム確定！"
+
+msgid "Pick meter: %d / %d plays"
+msgstr "えらべるメーター：%d / %d 回"
+
+msgid "You've won every item! The machine is all beans now."
+msgstr "アイテムをぜんぶゲット！いまはまめだけが出ます。"
+
+msgid "Every play wins exactly one prize."
+msgstr "1回のプレイで、かならず景品が1つもらえます。"
+
+msgid "Items you already own leave the machine, so every item you win is new. The chances below are for you, right now."
+msgstr "持っているアイテムは出てこないので、手に入るアイテムはいつも新しいもの。下の確率はいまのあなた専用です。"
+
+msgid "Lucky meter: after %d plays in a row without an item, the next play is always an item."
+msgstr "ラッキーメーター：アイテムなしが%d回つづくと、次はかならずアイテム。"
+
+msgid "Pick meter: every %d plays, choose any item still in the machine."
+msgstr "えらべるメーター：%d回ごとに、残っているアイテムから好きなものをえらべます。"
+
+msgid "One free play every day."
+msgstr "毎日1回無料でプレイできます。"
+
+msgid "Beans"
+msgstr "まめ"
+
+msgid "Catcher only"
+msgstr "キャッチャー限定"
+
+msgid "Pick A Prize"
+msgstr "景品をえらぶ"
+
+msgid "Your pick meter is full. Choose any item left in the machine."
+msgstr "えらべるメーターがいっぱい！残っているアイテムから好きなものをえらんでね。"
+
+msgid "PRIZE"
+msgstr "景品"
+
+msgid "Kinu Tumble"
+msgstr "きぬタンブル"
+
+msgid "Prize Machine"
+msgstr "プライズマシン"
+
+msgid "Tap to open!"
+msgstr "タップしてあけよう！"
+
+msgid "Again!"
+msgstr "もう一回！"
+
+msgid "One more!"
+msgstr "あと一回！"
+
+msgid "LEGENDARY!"
+msgstr "レジェンド！"
+
+msgid "EPIC!"
+msgstr "エピック！"
+
+msgid "RARE!"
+msgstr "レア！"
+
+msgid "A Prize!"
+msgstr "景品ゲット！"
+
+msgid "JACKPOT!"
+msgstr "ジャックポット！"
+
+msgid "Your Pick!"
+msgstr "えらんだ景品！"
+
+msgid "New outfit"
+msgstr "新しい衣装"
+
+msgid "New box"
+msgstr "新しい箱"
+
+msgid "New room"
+msgstr "新しい部屋"
+
+msgid "Claw Machine-only outfit"
+msgstr "キャッチャー限定の衣装"
+
+msgid "Claw Machine-only box"
+msgstr "キャッチャー限定の箱"
+
+msgid "Claw Machine-only room"
+msgstr "キャッチャー限定の部屋"
+
+msgid "1 in %s"
+msgstr "%s分の1"
+
+msgid "The lucky meter paid out!"
+msgstr "ラッキーメーター発動！"
+
+msgid "Wear It"
+msgstr "着てみる"
+
+msgid "Use It"
+msgstr "使ってみる"
+
+msgid "Keep Playing"
+msgstr "つづける"
+
+msgid "Lovely!"
+msgstr "すてき！"
+
+msgid "Only won in the Kinu Catcher."
+msgstr "きぬキャッチャーでしか手に入りません。"
+
+msgid "Go To The Catcher"
+msgstr "キャッチャーへ"
+
+msgid "Tower"
+msgstr "タワー"
+
+msgid "Lunch Rush"
+msgstr "ランチラッシュ"
+
+msgid "Fill the box. Three tumbles and you're out."
+msgstr "箱をうめよう。3回こぼれたらおしまい。"
+
+msgid "No box, just a plate. Build as tall as you can."
+msgstr "箱はなし、お皿だけ。できるだけ高くつもう。"
+
+msgid "Pack 10 Kinu to ship a box. Each box adds time."
+msgstr "きぬを10こつめて箱を出荷。出荷するたびに時間がふえます。"
+
+msgid "Pile %d Kinu in Classic to unlock."
+msgstr "クラシックできぬを%dこつむと解放。"
+
+msgid "Tower Height"
+msgstr "タワーの高さ"
+
+msgid "Kinu Packed"
+msgstr "つめたきぬ"
+
+msgid "Time's Up!"
+msgstr "タイムアップ！"
+
+msgid "Time's up!"
+msgstr "タイムアップ！"
+
+msgid "%d Kinu"
+msgstr "きぬ %d こ"
+
+msgid "1 box shipped"
+msgstr "1箱出荷"
+
+msgid "%d boxes shipped"
+msgstr "%d箱出荷"
+
+msgid "New mode: %s"
+msgstr "新モード：%s"
+
+msgid "%ds left"
+msgstr "のこり%d秒"
+
+msgid "Kinu tumbled off! -%ds"
+msgstr "きぬがこぼれた！-%d秒"
+
+msgid "Heart Kinu! +3s"
+msgstr "ハートきぬ！+3秒"
+
+msgid "Box shipped! +%ds"
+msgstr "出荷！+%d秒"
+
+msgid "Box %d  ·  %d / %d"
+msgstr "箱 %d ・ %d / %d"
+
+msgid "Modes"
+msgstr "モード"
+
+msgid "Tallest Tower"
+msgstr "いちばん高いタワー"
+
+msgid "Most Kinu packed in Lunch Rush"
+msgstr "ランチラッシュの最高記録"
+
+msgid "Boxes shipped"
+msgstr "出荷した箱"
+
+msgid "Plays"
+msgstr "プレイ回数"
+
+msgid "Items won"
+msgstr "ゲットしたアイテム"
+
+msgid "Beans won"
+msgstr "ゲットしたまめ"
+
+msgid "Jackpots"
+msgstr "ジャックポット"
+
+msgid "Kitsune"
+msgstr "きつね"
+
+msgid "Phoenix"
+msgstr "鳳凰"
+
+msgid "Unicorn"
+msgstr "ユニコーン"
+
+msgid "Lucky Cat"
+msgstr "まねきねこ"
+
+msgid "Samurai"
+msgstr "さむらい"
+
+msgid "Koi"
+msgstr "こい"
+
+msgid "Axolotl"
+msgstr "ウーパールーパー"
+
+msgid "Kimono"
+msgstr "着物"
+
+msgid "Oni"
+msgstr "おに"
+
+msgid "Yuzu Capybara"
+msgstr "ゆずカピバラ"
+
+msgid "Kintsugi"
+msgstr "金継ぎ"
+
+msgid "Treasure Chest"
+msgstr "宝箱"
+
+msgid "Amethyst Geode"
+msgstr "アメジスト"
+
+msgid "Capsule Toy"
+msgstr "ガチャガチャ"
+
+msgid "Taiko Drum"
+msgstr "和太鼓"
+
+msgid "Shortcake"
+msgstr "ショートケーキ"
+
+msgid "Starry Night"
+msgstr "星空"
+
+msgid "Koi Pond"
+msgstr "こいの池"
+
+msgid "Cloud"
+msgstr "くも"
+
+msgid "Mother of Pearl"
+msgstr "螺鈿"
+
+msgid "Game Centre"
+msgstr "ゲームセンター"
+
+msgid "Dragon Palace"
+msgstr "竜宮城"
+
+msgid "Moon Base"
+msgstr "月面基地"
+
+msgid "Sky Shrine"
+msgstr "天空の神社"
+
+msgid "Fuji Tea Fields"
+msgstr "富士の茶畑"
+
+msgid "Wagashi Land"
+msgstr "和菓子ランド"
+
+msgid "Aurora Snowfield"
+msgstr "オーロラの雪原"
+
+msgid "Summer Beach"
+msgstr "夏のビーチ"
+
+msgid "Lantern River"
+msgstr "灯ろう流し"
+
+msgid "Castle Keep"
+msgstr "お城"
+
+msgid "Epic"
+msgstr "エピック"
+
+msgid "Legendary"
+msgstr "レジェンド"
+
+# Kinu Claw rebrand, ticket prizes, the modes sheet and other strings added since the
+# last pass.
+msgid "Kinu Claw"
+msgstr "きぬクロー"
+
+msgid "KINU CLAW"
+msgstr "きぬクロー"
+
+msgid "Kinu Claw-only outfit"
+msgstr "きぬクロー限定の服"
+
+msgid "Kinu Claw-only box"
+msgstr "きぬクロー限定の箱"
+
+msgid "Kinu Claw-only room"
+msgstr "きぬクロー限定の部屋"
+
+msgid "Only in the Kinu Claw"
+msgstr "きぬクロー限定"
+
+msgid "Only won in the Kinu Claw."
+msgstr "きぬクローでしか手に入りません。"
+
+msgid "One mission each day includes a Kinu Claw ticket."
+msgstr "毎日ひとつのミッションにきぬクローのチケットがつきます。"
+
+msgid "One ticket gives you one Kinu Claw play."
+msgstr "チケット1枚できぬクローが1回遊べます。"
+
+msgid "%s Kinu Claw tickets added!"
+msgstr "きぬクローのチケットを%s枚追加しました！"
+
+msgid "1 ticket"
+msgstr "チケット1枚"
+
+msgid "%d tickets"
+msgstr "チケット%d枚"
+
+msgid "%s tickets"
+msgstr "チケット%s枚"
+
+msgid "1 free play"
+msgstr "無料プレイ1回"
+
+msgid "%d free plays"
+msgstr "無料プレイ%d回"
+
+msgid "Another go at the machine"
+msgstr "もう1回遊べる"
+
+msgid "Free Plays"
+msgstr "無料プレイ"
+
+msgid "FREE PLAY"
+msgstr "無料プレイ"
+
+msgid "Tickets are a prize too: %s of plays win another go at the machine."
+msgstr "チケットも景品です：%sの確率でもう1回遊べます。"
+
+msgid "See the Odds"
+msgstr "確率を見る"
+
+msgid "Beans & Tickets"
+msgstr "まめとチケット"
+
+msgid "Tickets spent"
+msgstr "使ったチケット"
+
+msgid "Move the claw, then Drop!"
+msgstr "クローを動かして落とそう！"
+
+msgid "Turn"
+msgstr "まわす"
+
+msgid "Free\nPlay"
+msgstr "無料\nプレイ"
+
+msgid "Get\nTickets"
+msgstr "チケット\nを買う"
+
+msgid "Play\n1 Ticket"
+msgstr "プレイ\nチケット1枚"
+
+msgid "Base cosmetic chance: %s. Rarity is rolled only after an item win."
+msgstr "基本の景品確率：%s。レアリティはアイテムが当たったあとに決まります。"
+
+msgid "One free play every day. Free plays don't stack."
+msgstr "毎日1回無料で遊べます。無料プレイは持ちこせません。"
+
+msgid "One of today's three missions awards a ticket; all three still award beans."
+msgstr "今日の3つのミッションのうち1つはチケットがもらえます。3つともまめももらえます。"
+
+msgid "Beans are also earned by playing. One free Kinu Claw play arrives daily, and one daily mission awards a ticket.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "まめは遊んでも手に入ります。きぬクローは毎日1回無料で遊べ、デイリーミッションのひとつでチケットがもらえます。\n「購入を復元」は広告削除にのみ使えます。使用済みのアイテムは復元されません。"
+
+msgid "Playing"
+msgstr "プレイ中"
+
+msgid "Locked"
+msgstr "ロック中"
+
+msgid "Play This"
+msgstr "これで遊ぶ"
+
+msgid "Best pile"
+msgstr "最高の山"
+
+msgid "Best packed"
+msgstr "最高のつめた数"
+
+msgid "Stack them as high as you dare!"
+msgstr "できるだけ高く積みあげよう！"
+
+msgid "Pack the boxes before the clock runs out!"
+msgstr "時間内に箱をつめよう！"
+
+msgid "Land Kinu in the tofu box. Anything that bounces out onto the counter is a tumble, and three tumbles end the run. You score the pile you keep."
+msgstr "きぬを豆腐の箱に入れよう。台にこぼれたら1回ぶんのミスで、3回でおしまい。残った山がスコアです。"
+
+msgid "A narrow lacquer plate, no walls to catch a bad drop. Stack carefully: you score how tall it stands when it finally comes down."
+msgstr "細い漆のお皿だけで、受けとめる壁はありません。慎重に積もう。崩れたときの高さがスコアです。"
+
+msgid "Pack ten Kinu to ship a box and win more time. Boxes keep coming until the clock runs out."
+msgstr "きぬを10個つめると箱を出荷して時間がふえます。時間切れまで箱はつぎつぎ来ます。"
+
+msgid "Sold in the Shop for %d beans."
+msgstr "ショップでまめ%d個で売っています。"
+
+msgid "Drag to spin"
+msgstr "ドラッグで回す"
+
+msgid "Tap a card for a closer look."
+msgstr "カードをタップでくわしく見られます。"
+
+msgid "Unowned"
+msgstr "未入手"
+
+msgid "Buy for %s beans"
+msgstr "まめ%s個で買う"
+
+msgid "Open Wardrobe"
+msgstr "クローゼットを開く"
+
+msgid "Wear"
+msgstr "きせる"
+
+msgid "Use"
+msgstr "つかう"
+
+msgid "Glaze 50 Kinu with shoyu"
+msgstr "しょうゆを50個のきぬにかける"
+
+msgid "New flavour"
+msgstr "新しい味"
+
+msgid "This identifier lets us show you ads relevant to you."
+msgstr "この識別子は、あなたに合った広告を表示するために使われます。"
+
+# Ticket pack names, matching the App Store Connect listings.
+msgid "Ticket Trio"
+msgstr "チケット3枚"
+
+msgid "Ticket Bundle"
+msgstr "チケット10枚"
+
+msgid "Ticket Stack"
+msgstr "チケット25枚"
+
+msgid "Ticket Roll"
+msgstr "チケット60枚"
+
+msgid "New best height!"
+msgstr "自己ベスト更新！"
+
+msgid "Tickets won"
+msgstr "獲得したチケット"

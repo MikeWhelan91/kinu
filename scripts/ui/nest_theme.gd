@@ -119,6 +119,21 @@ static func bean_pill(text: String, size: int = 18) -> PanelContainer:
 	panel.add_child(row)
 	return panel
 
+## A small ticket icon before text, for Kinu Catcher balances and rewards.
+static func ticket_pill(text: String, size: int = 18) -> PanelContainer:
+	var panel := pill("", size)
+	var text_label: Label = panel.get_child(0)
+	panel.remove_child(text_label)
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 6)
+	row.add_child(TicketIcon.new(size*1.15))
+	text_label.text = text
+	row.add_child(text_label)
+	panel.add_child(row)
+	return panel
+
 ## Gives a button the highlighted sun-yellow style, or returns it to the plain theme style.
 static func set_primary(node: Button, primary: bool) -> void:
 	if not primary:
@@ -131,13 +146,19 @@ static func set_primary(node: Button, primary: bool) -> void:
 	pressed.content_margin_top = 14
 	node.add_theme_stylebox_override("pressed", pressed)
 
-## Wooden tile style for tappable cards: "plain", "active" (sun yellow) or "locked" (faded wood).
+## Catalogue tiles are deliberately borderless. The framed artwork, title and status are the
+## interface; a hover/pressed wash preserves a generous touch target without reintroducing a box.
 static func style_card(node: Button, state: String) -> void:
-	var base: Color = {"plain": WOOD, "active": SUN, "locked": Color("b39477")}[state]
-	node.add_theme_stylebox_override("normal", box(base, 22, INK, 8))
-	node.add_theme_stylebox_override("hover", box(base.lightened(.08), 22, INK, 8))
-	var pressed := box(base.darkened(.06), 22, INK, 4)
-	pressed.content_margin_top = 14
+	# Ownership/equipped state is communicated by its pill, never by a large translucent wash
+	# behind the card. It was visually leaking the selected colour around the artwork.
+	node.add_theme_stylebox_override("normal", StyleBoxEmpty.new())
+	var hover := StyleBoxFlat.new()
+	hover.bg_color = Color(1, 1, 1, .34)
+	hover.set_corner_radius_all(18)
+	node.add_theme_stylebox_override("hover", hover)
+	var pressed := StyleBoxFlat.new()
+	pressed.bg_color = Color(1, 1, 1, .5)
+	pressed.set_corner_radius_all(18)
 	node.add_theme_stylebox_override("pressed", pressed)
 
 ## Cream text with an ink outline on a button, for buttons that sit on wood.

@@ -220,9 +220,14 @@ const PARTICLE_COLORS := {
 	"mist": [Color(1, 1, 1, .14)],
 	"sparks": [Color(1, .8, .35, .95), Color(1, .5, .45, .95)],
 	"stars": [Color(1, .97, .8, .95)],
+	"bubbles": [Color(.85, .97, 1.0, .5)],
+	"fireworks": [Color("ffd166"), Color("ff7aa2"), Color("8ce0ff"), Color("b5ff8c")],
+	"confetti": [Color("ff8fb1"), Color("7fd4e8"), Color("ffd84d"), Color("9ccc5a"), Color("b99cf2")],
 }
-const PARTICLE_COUNTS := {"snow": 70, "petals": 45, "fireflies": 30, "leaves": 40, "rain": 120, "mist": 16, "sparks": 45, "stars": 60}
-const PARTICLE_SCALES := {"snow": Vector3.ONE*.12, "petals": Vector3(.2, .04, .14), "fireflies": Vector3.ONE*.1, "leaves": Vector3(.28, .04, .22), "rain": Vector3(.03, .55, .03), "mist": Vector3(3.2, 1.6, 3.2), "sparks": Vector3.ONE*.09, "stars": Vector3.ONE*.14}
+const PARTICLE_COUNTS := {"snow": 70, "petals": 45, "fireflies": 30, "leaves": 40, "rain": 120, "mist": 16, "sparks": 45, "stars": 60, "bubbles": 50, "fireworks": 96, "confetti": 60}
+const PARTICLE_SCALES := {"snow": Vector3.ONE*.12, "petals": Vector3(.2, .04, .14), "fireflies": Vector3.ONE*.1, "leaves": Vector3(.28, .04, .22), "rain": Vector3(.03, .55, .03), "mist": Vector3(3.2, 1.6, 3.2), "sparks": Vector3.ONE*.09, "stars": Vector3.ONE*.14, "bubbles": Vector3.ONE*.16, "fireworks": Vector3.ONE*.35, "confetti": Vector3(.18, .02, .12)}
+## Fireworks go off in bursts of this many sparks.
+const BURST := 16
 
 ## Ambient particles for the room theme. A palette "particles" array recolours them.
 func _build_particles(effect: String) -> void:
@@ -248,7 +253,20 @@ func _build_particles(effect: String) -> void:
 		dot.scale = PARTICLE_SCALES[effect]
 		add_child(dot)
 		var radius := rng.randf_range(3.5, 12.5) if effect != "mist" else rng.randf_range(5.5, 11.0)
-		particles.append({"node": dot, "effect": effect, "angle": rng.randf()*TAU, "radius": radius, "phase": rng.randf(), "speed": rng.randf_range(.7, 1.3)})
+		var item := {"node": dot, "effect": effect, "angle": rng.randf()*TAU, "radius": radius, "phase": rng.randf(), "speed": rng.randf_range(.7, 1.3)}
+		if effect == "fireworks":
+			# Sparks share their burst's centre and timing, and fly out along their own direction.
+			var burst: int = int(i)/BURST
+			var burst_rng := RandomNumberGenerator.new()
+			burst_rng.seed = burst*31+5
+			var around := burst_rng.randf_range(-1.1, 1.1)+RoomScenery.MENU_FACING
+			item.center = Vector3(sin(around)*30.0, burst_rng.randf_range(14.0, 24.0), cos(around)*30.0)
+			item.phase = burst*.37
+			item.speed = 1.0
+			var a: float = TAU*(int(i) % BURST)/BURST
+			item.direction = Vector3(cos(a), sin(a), sin(a*2.0)*.4).normalized()
+			dot.material_override = materials[burst % materials.size()]
+		particles.append(item)
 
 func _process(_delta: float) -> void:
 	var now := Time.get_ticks_msec()*.001
@@ -281,6 +299,20 @@ func _process(_delta: float) -> void:
 			"stars":
 				height = 11.0+float(item.phase)*14.0
 				node.scale = Vector3.ONE*(.08+.08*absf(sin(t*1.5)))
+			"bubbles":
+				height = -COUNTER_HEIGHT+fmod(t*1.6, 22.0)
+				angle += sin(t*1.8)*.03
+			"confetti":
+				height = 16.0-fmod(t*1.2, 19.0)
+				node.rotation = Vector3(t*3.1, t*2.3, t*1.7)
+			"fireworks":
+				# Each burst blooms, drifts down and fades, then waits its turn to go off again.
+				var cycle := fmod(now*.45+float(item.phase), 3.0)
+				var bloom := clampf(cycle/1.4, 0, 1)
+				node.visible = cycle < 1.8
+				node.position = item.center+item.direction*(1.0-pow(1.0-bloom, 3.0))*5.5-Vector3.UP*cycle*cycle*.6
+				node.scale = PARTICLE_SCALES.fireworks*(1.0-clampf((cycle-1.0)/.8, 0, 1))
+				continue
 		node.position = Vector3(sin(angle), 0, cos(angle))*float(item.radius)+Vector3(sin(t)*.4, height, cos(t*.9)*.4)
 	var clock := Time.get_ticks_msec()*.00025
 	for puff in steam:

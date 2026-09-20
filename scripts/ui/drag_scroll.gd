@@ -12,10 +12,15 @@ var velocity: float = 0.0
 
 func _init() -> void:
 	horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 func _input(event: InputEvent) -> void:
 	if not is_visible_in_tree():
+		return
+	# A detail sheet may be visually above this list, but _input receives pointer events globally.
+	# Its preview and buttons remain interactive while the shop/book grid stays completely still.
+	if get_tree().get_first_node_in_group("modal_input_lock") != null:
 		return
 	var pressed := false
 	var released := false

@@ -10,6 +10,8 @@ const SIGN_HEIGHT := 164.0
 ## Shortest the strips may hang below the rail, so labels clear the sign's bottom edge.
 const MIN_DROP := 256.0
 const EMBLEM_RADIUS := 32.0
+## The tagline on the sign's paper strip. Big enough to read at a glance on a phone.
+const TAGLINE_SIZE := 16
 const WOOD := Color("c9894c")
 const WOOD_LIGHT := Color("dda56a")
 const WOOD_GRAIN := Color("a86d3a")
@@ -18,6 +20,9 @@ var top_margin: float = 20.0
 ## The equipped room, so the curtain matches the scene behind it.
 var decor: KinuDecor
 var parting: bool = false
+## The line on the sign's paper strip. Follows the chosen mode, so the home screen says what
+## the Play button is about to start.
+var tagline: String = "Pile in as many Kinu as you can!"
 var progress: float = 0.0
 var font: Font = NestTheme.font
 var _frame_time: float = 0.0
@@ -140,14 +145,17 @@ func _draw_sign(center: Vector2, rail_y: float) -> void:
 	draw_style_box(inset, rect.grow_individual(-12, -10, -12, -38))
 	_text("Kinu", Vector2(center.x, rect.position.y+62), 50, NestTheme.CREAM, 12)
 	_text("Tumble", Vector2(center.x, rect.position.y+104), 36, NestTheme.BERRY, 10)
-	var tag := Rect2(Vector2(center.x-120, rect.end.y-32), Vector2(240, 26))
+	# The strip is cut to the line it carries, so a longer tagline does not overrun the paper.
+	var tag_text := tr(tagline)
+	var tag_width := maxf(240.0, font.get_string_size(tag_text, HORIZONTAL_ALIGNMENT_LEFT, -1, TAGLINE_SIZE).x+30.0)
+	var tag := Rect2(Vector2(center.x-tag_width*.5, rect.end.y-35), Vector2(tag_width, 31))
 	var paper := StyleBoxFlat.new()
 	paper.bg_color = TofuShop.PAPER
 	paper.border_color = NestTheme.INK
 	paper.set_border_width_all(3)
 	paper.set_corner_radius_all(10)
 	draw_style_box(paper, tag)
-	_text("Pile in as many Kinu as you can!", tag.get_center()+Vector2(0, 5), 13, NestTheme.INK, 0)
+	_text(tagline, tag.get_center()+Vector2(0, 6), TAGLINE_SIZE, NestTheme.INK, 0)
 
 func _text(text: String, baseline_center: Vector2, font_size: int, color: Color, outline: int) -> void:
 	text = tr(text)

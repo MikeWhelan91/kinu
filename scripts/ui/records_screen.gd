@@ -58,6 +58,19 @@ static func show(app: Node, layout: VBoxContainer) -> void:
 			["Beans earned", app._number(stats.beans_earned)],
 			["Bonus beans won", app._number(stats.bonus_beans)],
 		]],
+		["Modes", [
+			["Tallest Tower", KinuFlavour.height_text(NestRun.best_for("tower"))],
+			["Most bentos packed in Bento Flip", app._number(NestRun.best_for("rush"))],
+			["Boxes shipped", app._number(stats.boxes_shipped)],
+		]],
+		["Kinu Claw", [
+			["Plays", app._number(stats.crane_plays)],
+			["Items won", app._number(stats.crane_items)],
+			["Beans won", app._number(stats.crane_beans_won)],
+			["Jackpots", app._number(stats.crane_jackpots)],
+			["Tickets won", app._number(stats.get("crane_tickets_won", 0))],
+			["Tickets spent", app._number(stats.crane_tickets_spent)],
+		]],
 		["Shop", [
 			["Items collected", "%d / %d"%[owned, total]],
 			["Beans spent", app._number(stats.beans_spent)],

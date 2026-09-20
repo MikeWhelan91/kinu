@@ -1,5 +1,8 @@
 extends Node
 var music: AudioStreamPlayer
+## The claw machine's motor, held on while its controls are worked. Its own player because it
+## loops for as long as the player keeps hold, rather than firing once like the other sounds.
+var motor: AudioStreamPlayer
 var voices: Array[AudioStreamPlayer] = []
 var sounds: Dictionary = {}
 var room_music: Dictionary = {}
@@ -12,6 +15,8 @@ var landing_index: int = 0
 const SOUND_FILES := {
 	"homeplay": "homeplay.mp3", "gameover": "newgameover.mp3",
 	"highscore": "highscore.mp3", "special": "possibleforspecialdropormilestoneingame.mp3",
+	# The cheer, for the two moments worth cheering: a new best, and a prize out of the claw.
+	"yay": "yay.mp3",
 	"cashregister": "cashregister.mp3", "wardrobe": "wardrobe.mp3", "book": "book.mp3",
 	"mistake": "mistake.mp3", "drop": "drop.mp3", "sauce": "sauce.mp3",
 }
@@ -19,12 +24,19 @@ const SOUND_FILES := {
 ## Per-category trim on top of the usual sfx volume, for clips mixed louder than the rest.
 const VOLUME_TRIM := {"gameover": -6.0}
 
-## Each room's ambient loop, keyed by its KinuDecor id. Rooms left out fall back to the
-## default tofu shop track.
+## Each room's ambient loop, keyed by its KinuDecor id. Every room has its own; anything left
+## out falls back to the default tofu shop track, which is the Tofu Shop's own music.
 const ROOM_MUSIC_FILES := {
 	"night": "nightmarket.mp3", "winter": "winter.mp3", "bamboo_grove": "bamboo.mp3",
 	"autumn_temple": "autumn.mp3", "onsen": "onsen.mp3", "festival": "summer.mp3",
 	"moon_viewing": "moon.mp3", "neon_alley": "neon.mp3", "sakura_street": "sakura.mp3",
+	"arcade": "game.mp3", "dragon_palace": "dragonpalace.mp3", "tea_fields": "fuji.mp3",
+	"sweets": "wagashi.mp3", "aurora": "aurora.mp3", "moon_base": "moonbase.mp3",
+	"sky_shrine": "skyshrine.mp3", "beach": "summerbeach.mp3", "lantern_river": "lantern.mp3",
+	"castle": "castle.mp3",
+	# Not a room you can equip: the Claw Machine page, which has a loop of its own rather than
+	# borrowing the Game Centre's.
+	"catcher": "clawmachinemusic.mp3",
 }
 
 func _ready() -> void:
@@ -41,6 +53,13 @@ func _ready() -> void:
 		voices.append(player)
 	music = AudioStreamPlayer.new()
 	add_child(music)
+	motor = AudioStreamPlayer.new()
+	var claw := load("res://assets/audio/clawmachine.mp3") as AudioStreamMP3
+	if claw:
+		# Held longer than the clip runs, the motor simply keeps going.
+		claw.loop = true
+		motor.stream = claw
+	add_child(motor)
 	apply_settings()
 
 ## Loads and caches the looping track for a room, falling back to the default shop theme.
@@ -86,7 +105,24 @@ func play(category: String, pitch: float = 1.0) -> void:
 	player.pitch_scale = pitch
 	player.play()
 
+## Runs the claw motor while its controls are being worked, and cuts it the moment they are let
+## go. Safe to call every frame: it only starts or stops on an actual change.
+func claw_motor(on: bool) -> void:
+	if not is_instance_valid(motor) or motor.stream == null:
+		return
+	if float(Save.data.sfx) < 0.001:
+		on = false
+	if on == motor.playing:
+		return
+	if on:
+		motor.volume_db = linear_to_db(float(Save.data.sfx)) - 9.0
+		motor.play()
+	else:
+		motor.stop()
+
 func shutdown() -> void:
+	if is_instance_valid(motor):
+		motor.stop()
 	if is_instance_valid(music):
 		music.stop()
 		music.stream = null

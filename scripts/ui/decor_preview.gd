@@ -2,6 +2,11 @@ class_name DecorPreview
 extends SubViewportContainer
 ## Shop thumbnail for a box skin (a small 3D render) or a room theme (an illustrated swatch).
 
+var box_model: Node3D
+var spin_enabled := false
+var _pointer := -99
+var _spin_velocity := 0.0
+
 func setup_box(decor: KinuDecor, pixels: Vector2i) -> void:
 	custom_minimum_size = Vector2(pixels)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -21,38 +26,88 @@ func setup_box(decor: KinuDecor, pixels: Vector2i) -> void:
 	var sun := TofuShop.make_sun()
 	sun.shadow_enabled = false
 	viewport.add_child(sun)
-	var box := TofuBox.new()
-	box.decor = decor
-	box.with_collision = false
-	box.rotation.y = .5
-	viewport.add_child(box)
+	box_model = TofuBox.new()
+	box_model.decor = decor
+	box_model.with_collision = false
+	box_model.rotation.y = .5
+	viewport.add_child(box_model)
 	var camera := Camera3D.new()
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.keep_aspect = Camera3D.KEEP_WIDTH
-	camera.size = 5.6
+	# A box is roughly 4.5 units across once its rim and special trims are included. Leave a
+	# generous frame around it in the feature view so no corner or ribbon disappears at the edge.
+	camera.size = 7.0
 	camera.position = Vector3(0, 4.2, 5.2)
 	camera.rotation.x = -atan2(3.7, 5.2)
 	viewport.add_child(camera)
 
+## Boxes get the same inspection gesture as Kinu. Room swatches are illustrated rather than 3D,
+## so they intentionally stay still.
+func enable_spin() -> void:
+	if box_model == null:
+		return
+	spin_enabled = true
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_default_cursor_shape = Control.CURSOR_DRAG
+	tooltip_text = "Drag to spin"
+	var viewport: SubViewport = get_child(0)
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+
+func _gui_input(event: InputEvent) -> void:
+	if not spin_enabled:
+		return
+	var motion := Vector2.ZERO
+	if event is InputEventScreenTouch:
+		_pointer = event.index if event.pressed else -99
+	elif event is InputEventScreenDrag and event.index == _pointer:
+		motion = event.relative
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		_pointer = -2 if event.pressed else -99
+	elif event is InputEventMouseMotion and _pointer == -2 and event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+		motion = event.relative
+	if motion == Vector2.ZERO:
+		return
+	_spin_velocity = -motion.x*.018
+	box_model.rotate_y(_spin_velocity)
+	accept_event()
+
+func _process(delta: float) -> void:
+	if not spin_enabled or absf(_spin_velocity) < .001:
+		return
+	box_model.rotate_y(_spin_velocity*delta*36.0)
+	_spin_velocity = move_toward(_spin_velocity, 0.0, delta*.65)
+
 func setup_room(decor: KinuDecor, pixels: Vector2i) -> void:
 	custom_minimum_size = Vector2(pixels)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var swatch := RoomSwatch.new()
-	swatch.decor = decor
+	var swatch := room_swatch(decor, pixels)
 	swatch.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(swatch)
 
+## A room is flat UI artwork, not a SubViewport. Returning the drawing control directly avoids
+## SubViewportContainer's child sizing rules, which were narrowing room previews in wide stages.
+static func room_swatch(decor: KinuDecor, pixels: Vector2i) -> RoomSwatch:
+	var swatch := RoomSwatch.new()
+	swatch.decor = decor
+	swatch.custom_minimum_size = Vector2(pixels)
+	return swatch
+
 class RoomSwatch extends Control:
+	const STONE_SWATCH := Color("b3ada2")
 	var decor: KinuDecor
 
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		# Scenery is drawn to fill the swatch, and some of it reaches past — Sky Shrine's rainbow
+		# arcs well above the horizon — so the swatch is clipped to its own frame.
+		clip_contents = true
 
 	func _c(key: String, fallback: Color) -> Color:
 		return decor.palette.get(key, fallback)
 
 	func _draw() -> void:
-		var area := Rect2(Vector2(8, 4), size-Vector2(16, 8))
+		# The complete artwork for a room, drawn to fill whatever size the swatch is given.
+		var area := Rect2(Vector2.ZERO, size)
 		var frame := StyleBoxFlat.new()
 		frame.bg_color = _c("plaster", TofuShop.PLASTER)
 		frame.set_corner_radius_all(14)
@@ -147,6 +202,96 @@ class RoomSwatch extends Control:
 					draw_rect(rect, _c("plaster", Color("2a2442")).lightened(.1))
 					for w in 5:
 						draw_rect(Rect2(rect.position+Vector2(5+fmod(w*7.0, rect.size.x-12), 6+w*9), Vector2(5, 5)), windows[(i+w) % windows.size()])
+			"arcade":
+				for i in 4:
+					var left: Vector2 = at.call(.06+i*.235, .3)
+					draw_rect(Rect2(left, Vector2(area.size.x*.18, area.size.y*.42)), [Color("e2445c"), Color("3a7bd5"), Color("ffb62e"), Color("7a4fd0")][i])
+					draw_rect(Rect2(left+Vector2(4, 6), Vector2(area.size.x*.18-8, area.size.y*.14)), [Color("7fd4e8"), Color("ff8fb1"), Color("9ccc5a"), Color("ffd84d")][i])
+				for i in 12:
+					draw_circle(at.call(.05+i*.082, .14), 3, [Color("ff4fb0"), Color("37e0ff"), Color("ffe24f")][i % 3])
+			"dragon_palace":
+				var palace: Vector2 = at.call(.5, .64)
+				for tier in 3:
+					var width := area.size.x*(.44-tier*.1)
+					var y := palace.y-tier*area.size.y*.17
+					draw_rect(Rect2(Vector2(palace.x-width*.5, y-area.size.y*.12), Vector2(width, area.size.y*.12)), Color("fff4e0"))
+					draw_colored_polygon(PackedVector2Array([Vector2(palace.x-width*.62, y-area.size.y*.1), Vector2(palace.x+width*.62, y-area.size.y*.1), Vector2(palace.x, y-area.size.y*.2)]), Color("2f9a8a"))
+				for i in 5:
+					var base: Vector2 = at.call(.08+i*.2, .72)
+					draw_line(base, base-Vector2(sin(i)*6, 26), [Color("ff7a8a"), Color("ffb35c"), Color("c77dff")][i % 3], 5)
+				for i in 8:
+					draw_arc(at.call(fmod(i*.37, 1.0), .15+fmod(i*.29, .4)), 3.5, 0, TAU, 10, Color(1, 1, 1, .8), 1.5)
+			"moon_base":
+				draw_circle(at.call(.76, .22), 17, Color("3f86e0"))
+				draw_circle(at.call(.72, .18), 6, Color("5fcf6a"))
+				for i in 12:
+					draw_circle(at.call(fmod(i*.41, .95)+.02, fmod(i*.23, .4)+.04), 1.5, Color("fff4d0"))
+				for x in [.22, .5]:
+					var dome: Vector2 = at.call(x, .64)
+					draw_circle(dome, 16, Color("eef0f6"))
+				draw_rect(Rect2(at.call(.86, .38), Vector2(8, area.size.y*.28)), Color("f4f5f9"))
+				draw_colored_polygon(PackedVector2Array([at.call(.86, .38), at.call(.86, .38)+Vector2(8, 0), at.call(.86, .38)+Vector2(4, -10)]), Color("e8434f"))
+			"sky_shrine":
+				for band in 5:
+					draw_arc(at.call(.5, .78), area.size.x*(.46-band*.04), PI, TAU, 24, KinuModel.RAINBOW[band], 4)
+				for i in 6:
+					draw_circle(at.call(.05+i*.18, .68+fmod(i*.3, .1)), 14, Color("fff6f4"))
+				var gate: Vector2 = at.call(.5, .64)
+				for side in [-1.0, 1.0]:
+					draw_line(gate+Vector2(side*12, 0), gate+Vector2(side*12, -34), Color("e2553f"), 4)
+				draw_line(gate+Vector2(-20, -34), gate+Vector2(20, -34), Color("2b1a17"), 5)
+			"tea_fields":
+				draw_colored_polygon(PackedVector2Array([at.call(.12, .62), at.call(.88, .62), at.call(.56, .1), at.call(.44, .1)]), _c("mountain", Color("8fa8d8")))
+				draw_colored_polygon(PackedVector2Array([at.call(.38, .28), at.call(.62, .28), at.call(.56, .1), at.call(.44, .1)]), Color("f8fbff"))
+				for row in 3:
+					draw_rect(Rect2(at.call(.02, .68+row*.09), Vector2(area.size.x*.96, 6)), Color("3f8a43").lightened(row*.08))
+			"sweets":
+				var cake: Vector2 = at.call(.5, .64)
+				for tier in 3:
+					var width := area.size.x*(.36-tier*.09)
+					draw_rect(Rect2(Vector2(cake.x-width*.5, cake.y-(tier+1)*area.size.y*.13), Vector2(width, area.size.y*.13)), Color("fff4e0"))
+					draw_rect(Rect2(Vector2(cake.x-width*.5, cake.y-(tier+1)*area.size.y*.13+6), Vector2(width, 4)), Color("ff9fbf"))
+				for x in [.14, .86]:
+					var stick: Vector2 = at.call(x, .72)
+					draw_line(stick, stick-Vector2(0, 42), Color("e8c48a"), 3)
+					for i in 3:
+						draw_circle(stick-Vector2(0, 14+i*10), 6, [Color("9ccc5a"), Color("fffaf2"), Color("ff9fbf")][i])
+			"aurora":
+				for i in 20:
+					var x: Vector2 = at.call(.05+i*.047, .12+sin(i*.5)*.05)
+					draw_line(x, x+Vector2(0, area.size.y*.22), [Color("5dffb0"), Color("3fe0d0"), Color("b58cff")][i % 3], 5)
+				draw_circle(at.call(.3, .66), 15, Color("fbfdff"))
+				for x in [.7, .85]:
+					var base: Vector2 = at.call(x, .66)
+					draw_colored_polygon(PackedVector2Array([base-Vector2(10, 0), base+Vector2(10, 0), base-Vector2(0, 34)]), Color("2f5a4f"))
+			"beach":
+				draw_rect(Rect2(at.call(0, .5), Vector2(area.size.x, area.size.y*.14)), _c("water", Color("4fc3e0")))
+				var parasol: Vector2 = at.call(.32, .5)
+				draw_line(parasol, parasol+Vector2(0, 30), Color("fbfbf6"), 2)
+				draw_colored_polygon(PackedVector2Array([parasol-Vector2(20, -6), parasol+Vector2(20, 6), parasol-Vector2(0, 8)]), Color("e8434f"))
+				var palm: Vector2 = at.call(.8, .72)
+				draw_line(palm, palm+Vector2(6, -44), Color("a0764a"), 4)
+				for i in 5:
+					draw_line(palm+Vector2(6, -44), palm+Vector2(6, -44)+Vector2(cos(PI+i*.8)*16, sin(PI+i*.8)*8+4), Color("4fa04e"), 4)
+			"lantern_river":
+				draw_rect(Rect2(at.call(0, .66), Vector2(area.size.x, area.size.y*.14)), _c("water", Color("223a62")))
+				for i in 7:
+					draw_rect(Rect2(at.call(.05+i*.13, .68+fmod(i*.3, .06)), Vector2(6, 6)), Color("ffd98a"))
+				for burst in 2:
+					var center: Vector2 = at.call(.3+burst*.4, .22)
+					for ray in 8:
+						var a := TAU*ray/8.0
+						draw_line(center+Vector2(cos(a), sin(a))*4, center+Vector2(cos(a), sin(a))*13, [Color("ffd166"), Color("ff7aa2")][burst], 2)
+			"castle":
+				var keep: Vector2 = at.call(.5, .64)
+				draw_colored_polygon(PackedVector2Array([keep+Vector2(-30, 0), keep+Vector2(30, 0), keep+Vector2(22, -12), keep+Vector2(-22, -12)]), STONE_SWATCH)
+				for tier in 3:
+					var width := 34.0-tier*9.0
+					var y := keep.y-12-tier*14
+					draw_rect(Rect2(Vector2(keep.x-width*.5, y-10), Vector2(width, 10)), Color("fbf8f0"))
+					draw_colored_polygon(PackedVector2Array([Vector2(keep.x-width*.5-6, y-8), Vector2(keep.x+width*.5+6, y-8), Vector2(keep.x, y-16)]), Color("56606e"))
+				for x in [.14, .86]:
+					draw_circle(at.call(x, .56), 13, Color("ffb3c8"))
 			"veranda":
 				draw_circle(at.call(.78, .22), 16, _c("moon", Color("fff4c4")))
 				draw_rect(Rect2(at.call(.04, .36), Vector2(area.size.x*.45, area.size.y*.28)), _c("paper", Color("ffe7a8")))

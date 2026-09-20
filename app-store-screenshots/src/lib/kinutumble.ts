@@ -308,6 +308,32 @@ const roomCard = (room: string, x: number, y: number, rotate: number, size = 36)
   rotate,
 });
 
+/* The wardrobe grid on screen 5. A spread of the wardrobe picked for colour and
+   silhouette so no two neighbours read the same at thumbnail size, laid out in
+   rows that alternate long and short, the short ones sitting between the long
+   so the tiles interlock instead of lining up in columns. Add or drop rows
+   freely — the layout is derived, and the copy deliberately never counts. */
+const OUTFIT_ROWS: string[][] = [
+  ["outfit-bee", "outfit-frog", "outfit-strawberry", "outfit-shark", "outfit-penguin"],
+  ["outfit-tiger", "outfit-dino", "outfit-axolotl", "outfit-calico"],
+  ["outfit-kitsune", "outfit-unicorn", "kinu-fox", "outfit-phoenix", "outfit-maneki"],
+  ["outfit-donut", "outfit-boba", "outfit-taiyaki", "outfit-nigiri"],
+  ["kinu-bunny", "outfit-ninja", "outfit-dragon", "outfit-magical_girl", "kinu-panda"],
+];
+
+const OUTFIT_GRID: Kinu[] = OUTFIT_ROWS.flatMap((row, r) =>
+  row.map((art, c) => ({
+    art,
+    /* Long rows span 16–84, short rows inset half a step so they nest between. */
+    x: row.length === 5 ? 16 + c * 17 : 24.5 + c * 17,
+    y: 30 + r * 11.5,
+    size: 27,
+    /* A fixed wobble per tile, not a random one: the set has to export the same
+       way every time it is opened. */
+    rotate: ((r * 5 + c) % 5) * 4 - 8,
+  })),
+);
+
 /* --------------------------------------------------------------- screens -- */
 
 /* A gameplay capture from tools/capture_play.gd, shot with the HUD in the
@@ -452,29 +478,48 @@ const layouts = (): KinuScreen[] => [
     ],
   },
 
-  /* 5 — the outfits. No count in the copy: the catalogue keeps growing. */
+  /* 5 — the outfits. Four big faces used to stand here, which said "there are
+     outfits" but not "there are eighty of them". A packed grid says the second
+     thing at a glance, which is the one worth paying for. No count in the copy:
+     the catalogue keeps growing. Five rows of five, alternately offset and each
+     piece tipped a little, so it reads as a collection rather than a table. */
   {
     headline: "",
     size: 186,
     poster: true,
     caption: "",
-    sky: [burst(50, 55, 128, WHITE, 28), cloud(89, 26, 22), cloud(11, 31, 19, 82)],
+    sky: [burst(50, 55, 132, WHITE, 26), cloud(89, 24, 20), cloud(11, 29, 17, 82)],
     front: [
-      sparkle(50, 53, 13),
-      sparkle(24, 31, 9),
-      sparkle(77, 68, 10),
-      heart(12, 58, 10, -14),
-      heart(89, 44, 9, 16),
+      sparkle(9, 40, 9),
+      sparkle(92, 63, 9),
+      heart(7, 62, 9, -14),
+      heart(93, 38, 8, 16),
     ],
-    kinu: [
-      { art: "kinu-bunny", x: 27, y: 43, size: 60, rotate: -9 },
-      { art: "kinu-fox", x: 73, y: 38, size: 56, rotate: 11 },
-      { art: "kinu-panda", x: 29, y: 72, size: 56, rotate: 8 },
-      { art: "kinu-tanuki", x: 73, y: 73, size: 60, rotate: -7 },
-    ],
+    kinu: OUTFIT_GRID,
   },
 
-  /* 6 — customisation, shown as what it looks like. No counts in the copy:
+  /* 6 — the Kinu Claw. Every outfit above is won here, so it follows the
+     wardrobe rather than sitting at the end: the grid poses the question and
+     this answers it. A real capture, because the cabinet is the selling point
+     and no amount of decoration beats showing the machine itself. */
+  {
+    headline: "",
+    size: 186,
+    caption: "",
+    image: capture("claw"),
+    phone: { y: 62, scale: 1.02, rotate: -4 },
+    sky: [cloud(86, 22, 24), cloud(12, 50, 18, 82), burst(50, 58, 112, WHITE, 20)],
+    front: [
+      kinuAt("outfit-kitsune", 12, 28, 36, -13),
+      kinuAt("outfit-phoenix", 87, 72, 44, 14),
+      sparkle(88, 34, 10),
+      sparkle(14, 74, 9),
+      bean(8, 46, 10, -16),
+    ],
+    kinu: [],
+  },
+
+  /* 7 — customisation, shown as what it looks like. No counts in the copy:
      rooms and boxes keep being added. Every room in the game, each shot in
      a different box by tools/capture_play.gd (mode=scene) and baked into a card,
      so one collage covers both rooms and boxes. Rows of 3, 4, 3, overlapping and
@@ -500,7 +545,7 @@ const layouts = (): KinuScreen[] => [
     kinu: [],
   },
 
-  /* 7 — the payoff. One gold Kinu, as big as it will go, on a gold burst. */
+  /* 8 — the payoff. One gold Kinu, as big as it will go, on a gold burst. */
   {
     headline: "",
     size: 186,

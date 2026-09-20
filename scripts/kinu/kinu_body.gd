@@ -32,8 +32,8 @@ var special: String = ""
 var special_marker: Node3D
 ## Glazed by the shoyu bottle: sticky for the rest of the run.
 var sticky: bool = false
-## Glued in place by shoyu (its own glaze, or a sticky Kinu it touched). Glued Kinu can't be
-## knocked loose or tipped by the balance check.
+## Glued to a neighbour by shoyu (its own glaze, or a sticky Kinu it touched). The direct glue
+## joint is secure; Kinu built beyond that joint still have to balance normally.
 var stuck: bool = false
 var visual: Node3D
 var mood: String = "calm"
@@ -129,6 +129,23 @@ func size() -> Vector3:
 	return shape.size*body_scale
 
 ## Shoyu from the bottle: coats this Kinu and glues it in place; anything landing on it sticks.
+## Sauces resize a Kinu that is already packed. Body, mass, hitbox and centre of mass all move
+## together; the drawn size follows body_scale through _jiggle, so nothing else needs telling.
+## Returns false when the Kinu is already at the limit, so the sauce can report a wasted squirt.
+func rescale(factor: float, low: float, high: float) -> bool:
+	var wanted := clampf(body_scale*factor, SCALE*low, SCALE*high)
+	if is_equal_approx(wanted, body_scale):
+		return false
+	body_scale = wanted
+	mass = shape.mass*(body_scale/SCALE)
+	for child in get_children():
+		if child is CollisionShape3D:
+			child.shape = hitbox(shape, body_scale)
+	center_of_mass = Vector3(0, -size().y*.08, 0)
+	# Squash going in, stretch coming out, so the change is felt and not just measured.
+	poke(2.2 if factor < 1.0 else -2.2)
+	return true
+
 func glaze() -> void:
 	sticky = true
 	stuck = true
@@ -137,6 +154,26 @@ func glaze() -> void:
 		visual.add_child(KinuModel.glaze(shape, outfit, true))
 	grip()
 	poke(2.5)
+
+## Sticky Kinu are born syrup-coated. They lock only after they meet another Kinu, so the
+## player can still aim and place them normally.
+func make_sticky() -> void:
+	sticky = true
+	if not visual.has_node("StickyCoat"):
+		visual.add_child(KinuModel.sticky_coat(shape, outfit))
+
+func stick() -> void:
+	stuck = true
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+	grip.call_deferred()
+	poke(2.0)
+
+## Glue belongs on the horizontal faces. The generous threshold tolerates the squash of an impact,
+## while keeping a side brush or a leaning collision as normal physics.
+func has_vertical_glue_contact(other: KinuBody) -> bool:
+	var vertical := absf(other.global_position.y-global_position.y)
+	return vertical >= (size().y+other.size().y)*.35
 
 func footprint() -> float:
 	return maxf(size().x, size().z)*.5
@@ -262,14 +299,11 @@ static func is_over_support(com: Vector2, points: PackedVector2Array) -> bool:
 func _contact(other: Node) -> void:
 	if other.is_in_group(TofuShop.GROUND_GROUP):
 		touched_ground = true
-	elif not freeze and not stuck and age > .05 and (sticky or (other is KinuBody and other.sticky)):
-		# Shoyu glues on contact: a glazed Kinu sticks to whatever it touches, and anything
-		# that touches a glazed Kinu sticks to it.
-		stuck = true
-		linear_velocity = Vector3.ZERO
-		angular_velocity = Vector3.ZERO
-		grip.call_deferred()
-		poke(2.0)
+	elif not freeze and not stuck and age > .05 and other is KinuBody and has_vertical_glue_contact(other) and (sticky or other.sticky):
+		# Syrup binds top-to-bottom only. A Sticky Kinu can make a dependable ledge, but side
+		# collisions remain real physics instead of creating accidental floating scaffolds.
+		stick()
+		other.stick()
 	if impact_cooldown > 0 or age < .08 or previous_speed < 1.2:
 		return
 	impact_cooldown = .3

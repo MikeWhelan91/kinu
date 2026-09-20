@@ -44,14 +44,17 @@ func receipt(id: String, product: String) -> Receipt:
 func _ready() -> void:
 	Save.save_path = "user://purchase_test.json"
 	Save.data = Save.defaults()
-	check(Store.PACKS.map(func(p: Dictionary) -> int: return p.beans) == [300,1000,2400,6500], "agreed bean totals include bonuses")
+	check(Store.BEAN_PACKS.map(func(p: Dictionary) -> int: return p.beans) == [300,1000,2400,6500], "agreed bean totals include bonuses")
+	check(Store.TICKET_PACKS.map(func(p: Dictionary) -> int: return p.tickets) == [3,10,25,60], "ticket listings use the agreed pack sizes")
 	var bridge := NativeStore.new()
 	Store.manager = bridge
 	var product := Product.new()
-	product.product_id = Store.PACKS[1].id
-	Store._products_received([product], 0)
+	product.product_id = Store.BEAN_PACKS[1].id
+	var ticket_product := Product.new()
+	ticket_product.product_id = Store.TICKET_PACKS[1].id
+	Store._products_received([product, ticket_product], 0)
 	check(Store.price(product.product_id) == "€2.99", "price comes verbatim from StoreKit")
-	check(not Store.can_buy(Store.PACKS[0].id), "missing products cannot be bought")
+	check(not Store.can_buy(Store.BEAN_PACKS[0].id), "missing products cannot be bought")
 	Store.buy(product.product_id)
 	check(bridge.requested == product and not Store.can_buy(product.product_id), "one purchase at a time")
 	var purchase := receipt("9007199254740993", product.product_id)
@@ -88,6 +91,16 @@ func _ready() -> void:
 	purchase.revocation_date = 0
 	Store._deliver(purchase)
 	check(Save.data.beans == 2000, "stale transaction cannot regrant a refund")
+	var ticket_purchase := receipt("6", ticket_product.product_id)
+	Store._deliver(ticket_purchase)
+	check(Save.data.tickets == 10 and ticket_purchase.finished == 1, "verified ticket purchase grants tickets")
+	Store._deliver(ticket_purchase)
+	check(Save.data.tickets == 10, "ticket transaction cannot grant twice")
+	Save.load_data()
+	check(Save.data.tickets == 10, "purchased tickets persist")
+	ticket_purchase.revocation_date = 200
+	Store._deliver(ticket_purchase)
+	check(Save.data.tickets == 0, "ticket refund reverses the credited pack once")
 	var ad := receipt("5", Store.REMOVE_ADS)
 	Store._deliver(ad)
 	check(Store.ads_removed(), "verified non-consumable grants permanent entitlement")

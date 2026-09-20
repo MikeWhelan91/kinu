@@ -42,6 +42,23 @@ func _draw() -> void:
 			for x in [.32, .68]:
 				draw_line(at.call(x, .16), at.call(x, .3), ink, stroke, true)
 			draw_polyline(PackedVector2Array([at.call(.34, .6), at.call(.46, .72), at.call(.68, .5)]), NestTheme.WOOD.darkened(.3), 6, true)
+		"claw":
+			# A claw lowering over a prize capsule.
+			draw_line(at.call(.5, .02), at.call(.5, .22), ink, stroke, true)
+			_box(Rect2(at.call(.36, .2), Vector2(.28, .14)*s), Color("dfe4ee"), 5)
+			for side in [-1.0, 1.0]:
+				draw_polyline(PackedVector2Array([at.call(.5+side*.1, .33), at.call(.5+side*.26, .5), at.call(.5+side*.15, .64)]), ink, stroke*1.1, true)
+			draw_circle(at.call(.5, .76), s*.19, Color("e8434f"))
+			draw_arc(at.call(.5, .76), s*.19, 0, TAU, 24, ink, stroke, true)
+			draw_colored_polygon(_half_disc(at.call(.5, .76), s*.19), Color("eaf8ff"))
+			draw_line(at.call(.31, .76), at.call(.69, .76), ink, stroke, true)
+		"leaderboards":
+			# A tiny gold cup makes the score destination read before its label does.
+			_shape(PackedVector2Array([at.call(.27, .2), at.call(.73, .2), at.call(.65, .58), at.call(.56, .67), at.call(.44, .67), at.call(.35, .58)]), NestTheme.SUN)
+			for side in [-1.0, 1.0]:
+				draw_arc(at.call(.5+side*.28, .34), s*.16, -PI*.5 if side < 0 else PI*.5, PI*.5 if side < 0 else PI*1.5, 10, ink, stroke, true)
+			draw_line(at.call(.5, .67), at.call(.5, .82), ink, stroke, true)
+			_box(Rect2(at.call(.3, .8), Vector2(.4, .12)*s), NestTheme.CREAM, 3)
 		"settings":
 			var centre: Vector2 = at.call(.5, .5)
 			var teeth := PackedVector2Array()
@@ -53,6 +70,13 @@ func _draw() -> void:
 			draw_polyline(teeth, ink, stroke, true)
 			draw_circle(centre, s*.12, NestTheme.WOOD)
 			draw_arc(centre, s*.12, 0, TAU, 20, ink, stroke, true)
+
+func _half_disc(center: Vector2, radius: float) -> PackedVector2Array:
+	var points := PackedVector2Array()
+	for i in 13:
+		var a := PI+PI*i/12.0
+		points.append(center+Vector2(cos(a), sin(a))*(radius-1.5))
+	return points
 
 func _box(rect: Rect2, fill: Color, radius: int = 4) -> void:
 	var style := StyleBoxFlat.new()

@@ -35,6 +35,32 @@ const CAST := [
 	["kinu-chocolate", "block", "chocolate", "", "calm", .36],
 	["kinu-jelly", "tall", "jelly", "", "happy", -.3],
 	["kinu-ramune", "block", "ramune", "", "content", -.38],
+	## The outfits screen is a grid, so it needs a wide spread of the wardrobe rather than the
+	## four faces the poster used. Shapes are mixed so the silhouettes differ across the grid.
+	["outfit-frog", "block", "silken", "frog", "happy", -.3],
+	["outfit-shark", "tall", "silken", "shark", "happy", .28],
+	["outfit-dino", "block", "silken", "dino", "happy", .34],
+	["outfit-tiger", "block", "silken", "tiger", "calm", -.32],
+	["outfit-bee", "ball", "silken", "bee", "happy", .24],
+	["outfit-penguin", "tall", "silken", "penguin", "happy", -.26],
+	["outfit-shiba", "block", "silken", "shiba", "happy", .3],
+	["outfit-calico", "block", "silken", "calico", "content", -.34],
+	["outfit-red_panda", "block", "silken", "red_panda", "happy", .32],
+	["outfit-axolotl", "ball", "silken", "axolotl", "happy", -.22],
+	["outfit-strawberry", "block", "silken", "strawberry", "happy", .36],
+	["outfit-nigiri", "slab", "silken", "nigiri", "content", -.24],
+	["outfit-taiyaki", "slab", "silken", "taiyaki", "happy", .26],
+	["outfit-boba", "tall", "silken", "boba", "calm", -.3],
+	["outfit-donut", "ball", "silken", "donut", "happy", .2],
+	["outfit-kitsune", "tall", "silken", "kitsune", "happy", -.28],
+	["outfit-phoenix", "block", "silken", "phoenix", "happy", .34],
+	["outfit-unicorn", "block", "silken", "unicorn", "happy", -.36],
+	["outfit-maneki", "block", "silken", "maneki", "happy", .3],
+	["outfit-ninja", "block", "silken", "ninja", "calm", -.32],
+	["outfit-astronaut", "tall", "silken", "astronaut", "happy", .28],
+	["outfit-pirate", "block", "silken", "pirate", "happy", -.3],
+	["outfit-dragon", "tall", "silken", "dragon", "happy", .32],
+	["outfit-magical_girl", "block", "silken", "magical_girl", "happy", -.26],
 ]
 
 var world: SubViewport

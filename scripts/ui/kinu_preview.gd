@@ -3,8 +3,11 @@ extends SubViewportContainer
 var model: Node3D
 var camera: Camera3D
 static var silhouette: ShaderMaterial
+var spin_enabled := false
+var _pointer := -99
+var _spin_velocity := 0.0
 
-func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixels: Vector2i = Vector2i(180,150), mood: String = "calm", outfit: KinuOutfit = null, outfit_framing: bool = false) -> void:
+func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixels: Vector2i = Vector2i(180,150), mood: String = "calm", outfit: KinuOutfit = null, outfit_framing: bool = false, sticky: bool = false) -> void:
 	custom_minimum_size = Vector2(pixels)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stretch = true
@@ -24,6 +27,8 @@ func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixe
 	light.shadow_enabled = false
 	viewport.add_child(light)
 	model = KinuModel.build(shape, flavour, outfit, mood)
+	if sticky:
+		model.add_child(KinuModel.sticky_coat(shape, outfit))
 	if not discovered:
 		if silhouette == null:
 			silhouette = ShaderMaterial.new()
@@ -49,6 +54,40 @@ func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixe
 	# Set the angle directly: look_at needs the node inside the tree, and setup runs before that.
 	camera.rotation.x = -atan2(1.2, 4.0)
 	viewport.add_child(camera)
+
+## Collection and shop feature views are deliberately interactive. Grid thumbnails keep ignoring
+## pointer input so tapping or scrolling their card still behaves like a normal list.
+func enable_spin() -> void:
+	spin_enabled = true
+	mouse_filter = Control.MOUSE_FILTER_STOP
+	mouse_default_cursor_shape = Control.CURSOR_DRAG
+	tooltip_text = "Drag to spin"
+	var viewport: SubViewport = get_child(0)
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+
+func _gui_input(event: InputEvent) -> void:
+	if not spin_enabled:
+		return
+	var motion := Vector2.ZERO
+	if event is InputEventScreenTouch:
+		_pointer = event.index if event.pressed else -99
+	elif event is InputEventScreenDrag and event.index == _pointer:
+		motion = event.relative
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+		_pointer = -2 if event.pressed else -99
+	elif event is InputEventMouseMotion and _pointer == -2 and event.button_mask & MOUSE_BUTTON_MASK_LEFT:
+		motion = event.relative
+	if motion == Vector2.ZERO:
+		return
+	_spin_velocity = -motion.x*.018
+	model.rotate_y(_spin_velocity)
+	accept_event()
+
+func _process(delta: float) -> void:
+	if not spin_enabled or absf(_spin_velocity) < .001:
+		return
+	model.rotate_y(_spin_velocity*delta*36.0)
+	_spin_velocity = move_toward(_spin_velocity, 0.0, delta*.65)
 
 ## Frame the visible costume tightly for a featured portrait, including ears and tails.
 func fit_model(padding: float = 1.18, align_bottom: bool = false) -> void:

@@ -18,9 +18,11 @@ var rng := RandomNumberGenerator.new()
 var turn := 0.0
 
 static func build(owner: TofuShop, layout: String) -> Node3D:
-	var scenery := RoomScenery.new()
+	var scenery: RoomScenery = PremiumScenery.new() if layout in PremiumScenery.LAYOUTS else RoomScenery.new()
 	scenery.shop = owner
 	scenery.rng.seed = 11
+	if scenery is PremiumScenery:
+		(scenery as PremiumScenery).build_layout(layout)
 	match layout:
 		"grove":
 			scenery._grove()

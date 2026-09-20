@@ -1,5 +1,5 @@
 Godot 4.7.2-stable (official)
-Checks: 1271
+Checks: 1989
 Failures: 0
-Best bot tower: 30
-Simulated seconds: 183.283333333333
+Best bot tower: 39
+Simulated seconds: 274.75

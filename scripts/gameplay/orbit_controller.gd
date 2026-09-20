@@ -21,6 +21,9 @@ var lateral: float = 0.0
 var depth: float = 0.0
 var tower_top: float = 0.0
 var focus_height: float = BASE_FOCUS
+## Home screen only: how high the rig looks, so the taller tower set-up is framed whole rather
+## than cropped by the shop sign. Gameplay tracks the real pile instead.
+var menu_focus: float = BASE_FOCUS
 var camera: Camera3D
 var shake: float = 0.0
 var tilt: float = 0.0
@@ -38,7 +41,7 @@ func update(delta: float, menu: bool = false) -> void:
 	angle = lerpf(angle, target_angle, 1.0-exp(-delta*18))
 	if not menu:
 		travelled += absf(angle-previous)
-	var desired := BASE_FOCUS if menu else maxf(BASE_FOCUS, tower_top+.1)
+	var desired := menu_focus if menu else maxf(BASE_FOCUS, tower_top+.1)
 	focus_height = lerpf(focus_height, desired, 1.0-exp(-delta*2.5))
 	var rise := focus_height-BASE_FOCUS
 	var tall := minf(rise, 6.0)
@@ -61,6 +64,7 @@ func toward_camera() -> Vector3:
 
 func drop_position(height: float) -> Vector3:
 	return right()*lateral+toward_camera()*depth+Vector3.UP*height
+
 
 func orbit(pixels: float) -> void:
 	var step := -pixels*.009

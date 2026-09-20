@@ -42,6 +42,7 @@ func _ready() -> void:
 			suffix += "-"+str(Save.data.outfit)
 	match mode:
 		"beans": app._bean_shop()
+		"tickets": app._bean_shop("tickets")
 		"home":
 			await app._home()
 			await get_tree().create_timer(.5).timeout
@@ -168,7 +169,7 @@ func _ready() -> void:
 		"locked_reward":
 			app.book_tab = "collection"
 			app._collection()
-			KinuBookScreen._collection_tapped(app,"room",app.run.catalog.find_decor("room","moon_viewing"))
+			KinuBookScreen._item_detail(app,"room",app.run.catalog.find_decor("room","moon_viewing"))
 		"tutorial_bottle":
 			Save.data.tutorial = false
 			app._start()

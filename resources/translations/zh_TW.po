@@ -1112,3 +1112,520 @@ msgstr "穿著布偶裝玩一局"
 
 msgid "Play %d runs in an outfit"
 msgstr "穿著布偶裝玩 %d 局"
+
+# Kinu Catcher, new items and modes
+msgid "Claw Machine"
+msgstr "小絹夾夾樂"
+
+msgid "KINU CATCHER"
+msgstr "小絹夾夾樂"
+
+msgid "Catcher"
+msgstr "夾夾樂"
+
+msgid "FREE"
+msgstr "免費"
+
+msgid "Odds"
+msgstr "機率"
+
+msgid "Pick Any Prize!"
+msgstr "任選一個獎品！"
+
+msgid "Drop!"
+msgstr "放下！"
+
+msgid "Catching…"
+msgstr "夾取中…"
+
+msgid "Free Play!"
+msgstr "免費玩一次！"
+
+msgid "Play  ·  %d beans"
+msgstr "玩一次 · %d 顆豆"
+
+msgid "Get Beans To Play"
+msgstr "取得豆子來玩"
+
+msgid "Drag the machine to move the claw"
+msgstr "拖曳來移動夾子"
+
+msgid "Every capsule holds a prize"
+msgstr "每顆扭蛋都有獎品"
+
+msgid "One free play every day"
+msgstr "每天免費一次"
+
+msgid "Your free play is ready!"
+msgstr "今天的免費遊玩準備好了！"
+
+msgid "Lucky meter: an item within %d plays"
+msgstr "幸運計量表：%d 次內必得道具"
+
+msgid "Lucky meter: the next play wins an item!"
+msgstr "幸運計量表：下一次必得道具！"
+
+msgid "Pick meter: %d / %d plays"
+msgstr "自選計量表：%d / %d 次"
+
+msgid "You've won every item! The machine is all beans now."
+msgstr "所有道具都到手了！現在只會出豆子。"
+
+msgid "Every play wins exactly one prize."
+msgstr "每玩一次必定得到一個獎品。"
+
+msgid "Items you already own leave the machine, so every item you win is new. The chances below are for you, right now."
+msgstr "已擁有的道具不會再出現，所以抽到的道具一定是新的。下方機率是你目前的專屬機率。"
+
+msgid "Lucky meter: after %d plays in a row without an item, the next play is always an item."
+msgstr "幸運計量表：連續 %d 次沒有道具時，下一次必定是道具。"
+
+msgid "Pick meter: every %d plays, choose any item still in the machine."
+msgstr "自選計量表：每玩 %d 次，可從剩下的道具中任選一個。"
+
+msgid "One free play every day."
+msgstr "每天可以免費玩一次。"
+
+msgid "Beans"
+msgstr "豆子"
+
+msgid "Catcher only"
+msgstr "夾夾樂限定"
+
+msgid "Pick A Prize"
+msgstr "選擇獎品"
+
+msgid "Your pick meter is full. Choose any item left in the machine."
+msgstr "自選計量表滿了！從剩下的道具中挑一個吧。"
+
+msgid "PRIZE"
+msgstr "獎品"
+
+msgid "Kinu Tumble"
+msgstr "小絹疊疊樂"
+
+msgid "Prize Machine"
+msgstr "獎品機"
+
+msgid "Tap to open!"
+msgstr "點一下打開！"
+
+msgid "Again!"
+msgstr "再一次！"
+
+msgid "One more!"
+msgstr "最後一下！"
+
+msgid "LEGENDARY!"
+msgstr "傳說！"
+
+msgid "EPIC!"
+msgstr "史詩！"
+
+msgid "RARE!"
+msgstr "稀有！"
+
+msgid "A Prize!"
+msgstr "得到獎品！"
+
+msgid "JACKPOT!"
+msgstr "大獎！"
+
+msgid "Your Pick!"
+msgstr "你選的獎品！"
+
+msgid "New outfit"
+msgstr "新服裝"
+
+msgid "New box"
+msgstr "新盒子"
+
+msgid "New room"
+msgstr "新房間"
+
+msgid "Claw Machine-only outfit"
+msgstr "夾夾樂限定服裝"
+
+msgid "Claw Machine-only box"
+msgstr "夾夾樂限定盒子"
+
+msgid "Claw Machine-only room"
+msgstr "夾夾樂限定房間"
+
+msgid "1 in %s"
+msgstr "%s 分之 1"
+
+msgid "The lucky meter paid out!"
+msgstr "幸運計量表發威了！"
+
+msgid "Wear It"
+msgstr "穿上"
+
+msgid "Use It"
+msgstr "使用"
+
+msgid "Keep Playing"
+msgstr "繼續玩"
+
+msgid "Lovely!"
+msgstr "好棒！"
+
+msgid "Only won in the Kinu Catcher."
+msgstr "只能在小絹夾夾樂中獲得。"
+
+msgid "Go To The Catcher"
+msgstr "前往夾夾樂"
+
+msgid "Tower"
+msgstr "高塔"
+
+msgid "Lunch Rush"
+msgstr "午餐大作戰"
+
+msgid "Fill the box. Three tumbles and you're out."
+msgstr "把盒子填滿。掉落三次就結束。"
+
+msgid "No box, just a plate. Build as tall as you can."
+msgstr "沒有盒子，只有盤子。盡量疊高吧。"
+
+msgid "Pack 10 Kinu to ship a box. Each box adds time."
+msgstr "裝滿 10 個小絹就出貨。每出貨一箱會增加時間。"
+
+msgid "Pile %d Kinu in Classic to unlock."
+msgstr "在經典模式疊 %d 個小絹即可解鎖。"
+
+msgid "Tower Height"
+msgstr "高塔高度"
+
+msgid "Kinu Packed"
+msgstr "裝箱小絹"
+
+msgid "Time's Up!"
+msgstr "時間到！"
+
+msgid "Time's up!"
+msgstr "時間到！"
+
+msgid "%d Kinu"
+msgstr "%d 個小絹"
+
+msgid "1 box shipped"
+msgstr "出貨 1 箱"
+
+msgid "%d boxes shipped"
+msgstr "出貨 %d 箱"
+
+msgid "New mode: %s"
+msgstr "新模式：%s"
+
+msgid "%ds left"
+msgstr "剩 %d 秒"
+
+msgid "Kinu tumbled off! -%ds"
+msgstr "小絹掉下去了！-%d 秒"
+
+msgid "Heart Kinu! +3s"
+msgstr "愛心小絹！+3 秒"
+
+msgid "Box shipped! +%ds"
+msgstr "出貨！+%d 秒"
+
+msgid "Box %d  ·  %d / %d"
+msgstr "第 %d 箱 · %d / %d"
+
+msgid "Modes"
+msgstr "模式"
+
+msgid "Tallest Tower"
+msgstr "最高的高塔"
+
+msgid "Most Kinu packed in Lunch Rush"
+msgstr "午餐大作戰最高紀錄"
+
+msgid "Boxes shipped"
+msgstr "出貨箱數"
+
+msgid "Plays"
+msgstr "遊玩次數"
+
+msgid "Items won"
+msgstr "獲得道具"
+
+msgid "Beans won"
+msgstr "獲得豆子"
+
+msgid "Jackpots"
+msgstr "大獎次數"
+
+msgid "Kitsune"
+msgstr "狐仙"
+
+msgid "Phoenix"
+msgstr "鳳凰"
+
+msgid "Unicorn"
+msgstr "獨角獸"
+
+msgid "Lucky Cat"
+msgstr "招財貓"
+
+msgid "Samurai"
+msgstr "武士"
+
+msgid "Koi"
+msgstr "錦鯉"
+
+msgid "Axolotl"
+msgstr "六角恐龍"
+
+msgid "Kimono"
+msgstr "和服"
+
+msgid "Oni"
+msgstr "鬼"
+
+msgid "Yuzu Capybara"
+msgstr "柚子水豚"
+
+msgid "Kintsugi"
+msgstr "金繼"
+
+msgid "Treasure Chest"
+msgstr "寶箱"
+
+msgid "Amethyst Geode"
+msgstr "紫水晶洞"
+
+msgid "Capsule Toy"
+msgstr "扭蛋機"
+
+msgid "Taiko Drum"
+msgstr "太鼓"
+
+msgid "Shortcake"
+msgstr "草莓蛋糕"
+
+msgid "Starry Night"
+msgstr "星空"
+
+msgid "Koi Pond"
+msgstr "錦鯉池"
+
+msgid "Cloud"
+msgstr "雲朵"
+
+msgid "Mother of Pearl"
+msgstr "螺鈿"
+
+msgid "Game Centre"
+msgstr "遊樂場"
+
+msgid "Dragon Palace"
+msgstr "龍宮城"
+
+msgid "Moon Base"
+msgstr "月球基地"
+
+msgid "Sky Shrine"
+msgstr "天空神社"
+
+msgid "Fuji Tea Fields"
+msgstr "富士茶園"
+
+msgid "Wagashi Land"
+msgstr "和菓子樂園"
+
+msgid "Aurora Snowfield"
+msgstr "極光雪原"
+
+msgid "Summer Beach"
+msgstr "夏日海灘"
+
+msgid "Lantern River"
+msgstr "燈籠河"
+
+msgid "Castle Keep"
+msgstr "城堡"
+
+msgid "Epic"
+msgstr "史詩"
+
+msgid "Legendary"
+msgstr "傳說"
+
+# Kinu Claw rebrand, ticket prizes, the modes sheet and other strings added since the
+# last pass.
+msgid "Kinu Claw"
+msgstr "小絹夾爪"
+
+msgid "KINU CLAW"
+msgstr "小絹夾爪"
+
+msgid "Kinu Claw-only outfit"
+msgstr "小絹夾爪限定服裝"
+
+msgid "Kinu Claw-only box"
+msgstr "小絹夾爪限定盒子"
+
+msgid "Kinu Claw-only room"
+msgstr "小絹夾爪限定房間"
+
+msgid "Only in the Kinu Claw"
+msgstr "小絹夾爪限定"
+
+msgid "Only won in the Kinu Claw."
+msgstr "只能在小絹夾爪中獲得。"
+
+msgid "One mission each day includes a Kinu Claw ticket."
+msgstr "每天有一個任務會附贈小絹夾爪代幣。"
+
+msgid "One ticket gives you one Kinu Claw play."
+msgstr "一枚代幣可以玩一次小絹夾爪。"
+
+msgid "%s Kinu Claw tickets added!"
+msgstr "已增加 %s 枚小絹夾爪代幣！"
+
+msgid "1 ticket"
+msgstr "1 枚代幣"
+
+msgid "%d tickets"
+msgstr "%d 枚代幣"
+
+msgid "%s tickets"
+msgstr "%s 枚代幣"
+
+msgid "1 free play"
+msgstr "免費遊玩 1 次"
+
+msgid "%d free plays"
+msgstr "免費遊玩 %d 次"
+
+msgid "Another go at the machine"
+msgstr "再玩一次"
+
+msgid "Free Plays"
+msgstr "免費遊玩"
+
+msgid "FREE PLAY"
+msgstr "免費遊玩"
+
+msgid "Tickets are a prize too: %s of plays win another go at the machine."
+msgstr "代幣也是獎品：%s 的機率可以再玩一次。"
+
+msgid "See the Odds"
+msgstr "查看機率"
+
+msgid "Beans & Tickets"
+msgstr "豆子與代幣"
+
+msgid "Tickets spent"
+msgstr "已使用的代幣"
+
+msgid "Move the claw, then Drop!"
+msgstr "移動夾子，然後放下！"
+
+msgid "Turn"
+msgstr "旋轉"
+
+msgid "Free\nPlay"
+msgstr "免費\n遊玩"
+
+msgid "Get\nTickets"
+msgstr "購買\n代幣"
+
+msgid "Play\n1 Ticket"
+msgstr "遊玩\n1 枚代幣"
+
+msgid "Base cosmetic chance: %s. Rarity is rolled only after an item win."
+msgstr "基本裝飾品機率：%s。抽中物品後才決定稀有度。"
+
+msgid "One free play every day. Free plays don't stack."
+msgstr "每天有一次免費遊玩。免費次數不會累積。"
+
+msgid "One of today's three missions awards a ticket; all three still award beans."
+msgstr "今天三個任務中有一個會給代幣，三個都會給豆子。"
+
+msgid "Beans are also earned by playing. One free Kinu Claw play arrives daily, and one daily mission awards a ticket.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "豆子也可以靠遊玩取得。小絹夾爪每天有一次免費遊玩，每日任務其中一個會給代幣。\n「恢復購買」只能恢復移除廣告，已使用的消耗品無法恢復。"
+
+msgid "Playing"
+msgstr "遊玩中"
+
+msgid "Locked"
+msgstr "未解鎖"
+
+msgid "Play This"
+msgstr "玩這個"
+
+msgid "Best pile"
+msgstr "最佳疊數"
+
+msgid "Best packed"
+msgstr "最佳裝箱數"
+
+msgid "Stack them as high as you dare!"
+msgstr "盡量疊高吧！"
+
+msgid "Pack the boxes before the clock runs out!"
+msgstr "在時間內裝滿盒子！"
+
+msgid "Land Kinu in the tofu box. Anything that bounces out onto the counter is a tumble, and three tumbles end the run. You score the pile you keep."
+msgstr "把小絹放進豆腐盒。彈到檯面上就算掉落，掉三次就結束。留下的那一疊就是分數。"
+
+msgid "A narrow lacquer plate, no walls to catch a bad drop. Stack carefully: you score how tall it stands when it finally comes down."
+msgstr "只有窄窄的漆盤，沒有牆可以擋。小心地疊，倒下時的高度就是分數。"
+
+msgid "Pack ten Kinu to ship a box and win more time. Boxes keep coming until the clock runs out."
+msgstr "裝滿十個小絹就能出貨並增加時間。箱子會一直來，直到時間結束。"
+
+msgid "Sold in the Shop for %d beans."
+msgstr "在商店以 %d 顆豆子販售。"
+
+msgid "Drag to spin"
+msgstr "拖曳來旋轉"
+
+msgid "Tap a card for a closer look."
+msgstr "點一下卡片可以看得更清楚。"
+
+msgid "Unowned"
+msgstr "未擁有"
+
+msgid "Buy for %s beans"
+msgstr "用 %s 顆豆子購買"
+
+msgid "Open Wardrobe"
+msgstr "打開衣櫥"
+
+msgid "Wear"
+msgstr "穿上"
+
+msgid "Use"
+msgstr "使用"
+
+msgid "Glaze 50 Kinu with shoyu"
+msgstr "幫 50 個小絹淋上醬油"
+
+msgid "New flavour"
+msgstr "新口味"
+
+msgid "This identifier lets us show you ads relevant to you."
+msgstr "這個識別碼可以讓我們顯示與你相關的廣告。"
+
+# Ticket pack names, matching the App Store Connect listings.
+msgid "Ticket Trio"
+msgstr "代幣3枚"
+
+msgid "Ticket Bundle"
+msgstr "代幣10枚"
+
+msgid "Ticket Stack"
+msgstr "代幣25枚"
+
+msgid "Ticket Roll"
+msgstr "代幣60枚"
+
+msgid "New best height!"
+msgstr "新的最高紀錄！"
+
+msgid "Tickets won"
+msgstr "獲得的代幣"

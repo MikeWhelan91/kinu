@@ -1,22 +1,29 @@
 class_name SpecialBadge
 extends Control
-## Special Kinu badges: gold star (Lucky), pink heart (Heart) and a little tofu (Tiny). Shared by
+## Special Kinu badges: gold star (Lucky), pink heart (Heart), little tofu (Tiny), and syrup drop (Sticky). Shared by
 ## the Next card and the marker floating over the Kinu in play.
 
-const COLORS := {"lucky": Color("ffc93c"), "heart": Color("ff6f91"), "tiny": Color("8fd3ff")}
+const COLORS := {"lucky": Color("ffc93c"), "heart": Color("ff6f91"), "tiny": Color("8fd3ff"), "sticky": Color("f0ad3d")}
 ## Kinds that float a badge above the Kinu in play. Tiny Kinu are obvious enough on their own.
-const MARKED := ["lucky", "heart"]
+const MARKED := ["lucky", "heart", "sticky"]
 const INTRO := {
 	"lucky": "Lucky Kinu! Land it for bonus beans",
 	"heart": "Heart Kinu! Land it to win back a tumble",
 	"tiny": "Tiny Kinu! Squeeze it into a gap",
+	"sticky": "Sticky Kinu! Anything it touches is glued in place",
 }
 
 var kind: String = "lucky"
 
 static func outline(which: String) -> PackedVector2Array:
 	var points := PackedVector2Array()
-	if which == "tiny":
+	if which == "sticky":
+		for i in 20:
+			var a := TAU*i/20.0
+			var radius := .58 if i % 2 == 0 else .52
+			points.append(Vector2(cos(a)*radius, sin(a)*radius*.78-.08))
+		points.append(Vector2(0, -.92))
+	elif which == "tiny":
 		for i in 16:
 			var a := TAU*i/16.0
 			var corner := Vector2(signf(cos(a))*pow(absf(cos(a)), .35), signf(sin(a))*pow(absf(sin(a)), .35))
@@ -64,6 +71,10 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _draw() -> void:
+	# Containers draw a control once before they have sized it, and a zero radius collapses every
+	# point onto the centre — a degenerate polygon the renderer cannot triangulate.
+	if size.x <= 0.0 or size.y <= 0.0:
+		return
 	var shape := outline(kind)
 	var radius := minf(size.x, size.y)*.46
 	for i in shape.size():

@@ -23,10 +23,10 @@ static func show(app: Node) -> void:
 	var catalog: KinuCatalog = app.run.catalog
 	var kind := KinuShopScreen.kind_of(app.wardrobe_tab)
 	if NONE_TITLES.has(kind):
-		_card(app, grid, kind, "", NONE_TITLES[kind], KinuShopScreen.kinu_preview(catalog.flavours[0], null, true))
+		_card(app, grid, kind, "", NONE_TITLES[kind], KinuShopScreen.kinu_preview(catalog.flavours[0], null, true), null)
 	for item in KinuShopScreen.items(catalog, kind):
 		if Save.owns(kind, item.id, item.price):
-			_card(app, grid, kind, item.id, item.display_name, KinuShopScreen.preview(catalog, kind, item))
+			_card(app, grid, kind, item.id, item.display_name, KinuShopScreen.preview(catalog, kind, item), item)
 	if grid.get_child_count() <= 1:
 		app._center_label(list, "Nothing here yet.", 18)
 	var more := NestTheme.button("Get More In The Shop", func() -> void:
@@ -41,14 +41,22 @@ static func show(app: Node) -> void:
 	var note := "Each room plays its own music." if kind == "room" else "Earn even more by playing. See the Kinu Book."
 	app._center_label(layout, note, 15, NestTheme.MUTED)
 
-static func _card(app: Node, grid: GridContainer, kind: String, id: String, title: String, preview: Control) -> void:
+static func _card(app: Node, grid: GridContainer, kind: String, id: String, title: String, preview: Control, item: Resource) -> void:
 	var built := CardGrid.card(grid, preview, title, CardGrid.tint(grid.get_child_count()), func() -> void:
+		if item:
+			KinuShopScreen.showcase(app, kind, item, func() -> void:
+				Save.buy(kind, id, 0)
+				if kind == "room":
+					Sound.play_room_music(id)
+				app._close_modal()
+				for card in cards:
+					_style(card)
+			, "Wear" if kind == "outfit" else "Use")
+			return
 		Save.buy(kind, id, 0)
-		if kind == "room":
-			Sound.play_room_music(id)
 		for card in cards:
 			_style(card)
-	, 246, "wardrobe")
+	, 210, "wardrobe", 200, 19, kind == "room")
 	var card := {"kind": kind, "id": id, "button": built.button, "status": built.status}
 	cards.append(card)
 	_style(card)

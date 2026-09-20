@@ -1,16 +1,19 @@
 class_name ShoyuBottle
 extends Node3D
-## A little soy sauce bottle the player aims like a Kinu. Letting go tips it over and squirts
-## glaze onto the Kinu below, which then glues whatever lands on it.
+## A little sauce bottle the player aims like a Kinu. Letting go tips it over and squirts onto
+## the Kinu below. The glass and the drops take the colour of whichever sauce it is holding, so
+## Nigari and Koji read apart at a glance in the air as well as on the Next card.
 
 signal squirted(target: KinuBody)
 
 const GLAZE := Color("6b3418")
+## Set before the bottle enters the tree; defaults to the old soy brown.
+var tint := Color("3a1a10")
 var tipping: bool = false
 
 func _ready() -> void:
 	var kit := MeshKit.new()
-	var glass := Color("3a1a10")
+	var glass := tint
 	kit.add("cylinder", Vector3(0, .32, 0), Vector3(.42, .5, .42), glass)
 	kit.add("sphere", Vector3(0, .58, 0), Vector3(.42, .22, .42), glass)
 	kit.add("cylinder", Vector3(0, .74, 0), Vector3(.18, .22, .18), glass)
@@ -39,7 +42,7 @@ func squirt(target: KinuBody, hit_point: Vector3) -> void:
 		mesh.height = .18
 		drop.mesh = mesh
 		var material := StandardMaterial3D.new()
-		material.albedo_color = GLAZE
+		material.albedo_color = tint.lightened(.25)
 		drop.material_override = material
 		get_parent().add_child(drop)
 		drop.global_position = nozzle
@@ -53,18 +56,20 @@ func squirt(target: KinuBody, hit_point: Vector3) -> void:
 
 ## The bottle drawn on the HUD button.
 class Icon extends Control:
+	## Matches the bottle in play, so the card and the thing in your hand are the same object.
+	var tint := Color("3a1a10")
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	func _draw() -> void:
 		var ink := NestTheme.INK
 		var body := StyleBoxFlat.new()
-		body.bg_color = Color("3a1a10")
+		body.bg_color = tint
 		body.border_color = ink
 		body.set_border_width_all(3)
 		body.set_corner_radius_all(9)
 		draw_style_box(body, Rect2(Vector2(size.x*.18, size.y*.34), Vector2(size.x*.64, size.y*.64)))
-		draw_rect(Rect2(Vector2(size.x*.36, size.y*.16), Vector2(size.x*.28, size.y*.2)), Color("3a1a10"))
+		draw_rect(Rect2(Vector2(size.x*.36, size.y*.16), Vector2(size.x*.28, size.y*.2)), tint)
 		draw_rect(Rect2(Vector2(size.x*.36, size.y*.16), Vector2(size.x*.28, size.y*.2)), ink, false, 3)
 		var cap := StyleBoxFlat.new()
 		cap.bg_color = Color("d8432f")

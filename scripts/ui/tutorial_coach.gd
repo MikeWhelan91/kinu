@@ -131,7 +131,7 @@ class TutorialHand extends Control:
 	func _process(delta: float) -> void:
 		coach.clock += delta
 		var run: NestRun = coach.app.run
-		var wanted := 1.0 if (coach.step <= 2 or coach.step == 4) and run.gesture == "" and run.state == "aim" else 0.0
+		var wanted := 1.0 if (coach.step <= 2 or coach.step == 4 or coach.step == 5) and run.gesture == "" and run.state == "aim" else 0.0
 		fade = move_toward(fade, wanted, delta*3.0)
 		queue_redraw()
 
@@ -155,14 +155,10 @@ class TutorialHand extends Control:
 				else:
 					tip.y -= (phase-.45)*90
 					alpha *= 1.0-(phase-.45)/.55
-			4:
+			4, 5:
+				# Sticky and Nigari are both aimed and released; the card explains which is which.
 				var phase := fmod(t, 1.6)/1.6
-				if run.aim_mode == "kinu" and is_instance_valid(coach.app.bottle_button):
-					# Tap the bottle button first...
-					tip = coach.app.bottle_button.get_global_rect().get_center()+Vector2(-10, 14)
-				else:
-					# ...then let go over a Kinu.
-					tip = held+Vector2(0, 50)
+				tip = held+Vector2(0, 50)
 				if phase < .45:
 					press = sin(phase/.45*PI)
 				else:

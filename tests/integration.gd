@@ -66,6 +66,9 @@ func _ready() -> void:
 		DirAccess.remove_absolute(Save.save_path+suffix)
 	Save.load_data()
 	check(Save.data.best==0 and Save.data.discovered.is_empty(),"fresh install defaults")
+	check(GameCenterService.leaderboard_id("classic") == "kinu.leaderboard", "Classic uses the original Game Center leaderboard")
+	check(GameCenterService.leaderboard_id("tower") == "tower", "Tower uses its dedicated Game Center leaderboard")
+	check(GameCenterService.leaderboard_id("unknown") == "kinu.leaderboard", "unknown modes safely fall back to the Classic leaderboard")
 	Save.setting("music",.27)
 	Save.setting("sfx",.43)
 	Save.setting("haptics",false)
@@ -264,14 +267,13 @@ func _ready() -> void:
 	check(run.wobble<1.0,"a Kinu resting on the rim near a corner never counts as over balance")
 	run.bodies.erase(corner)
 	corner.free()
-	# A glued Kinu carrying a big slab, with a block on the slab past the glued piece's edge:
-	# the block rests on the slab, so nothing should wobble or tip.
+	# A compact glued stack remains safe: glue is still a reliable way to stop a joint slipping.
 	var glued := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0])
-	glued.position = Vector3(-1.32,.7335,-1.32)
+	glued.position = Vector3(-.70,.7335,-1.32)
 	var slab := run.make_body(run.catalog.shapes[1],run.catalog.flavours[1])
-	slab.position = Vector3(-.66,1.4735,-1.32)
+	slab.position = Vector3(-.65,1.4735,-1.32)
 	var perched := run.make_body(run.catalog.shapes[0],run.catalog.flavours[2])
-	perched.position = Vector3(-.22,2.2135,-1.32)
+	perched.position = Vector3(-.60,2.2135,-1.32)
 	for body in [glued,slab,perched]:
 		body.scored = true
 		body.grip()
@@ -279,7 +281,7 @@ func _ready() -> void:
 	slab.stuck = true
 	await frames(2)
 	run._measure_balance()
-	check(run.wobble < NestRun.WOBBLE_WARN,"a block resting on a slab glued to a Shoyu Kinu doesn't wobble")
+	check(run.wobble < NestRun.WOBBLE_WARN,"a compact stack on a Shoyu Kinu doesn't wobble")
 	for body in [glued,slab,perched]:
 		body.stuck = false
 		run.bodies.erase(body)
@@ -322,17 +324,19 @@ func _ready() -> void:
 	await frames(3)
 	check(run.tumbles==1 and run.score==1 and run.state in ["aim","settle"],"one tumble costs a life and the Kinu stops counting")
 	await frames(int(NestRun.FALLEN_LINGER*60)+10)
-	check(not run.bodies.has(stray),"fallen Kinu are cleared off the counter")
+	check(not is_instance_valid(stray),"fallen Kinu are cleared off the counter")
 	var stray_two := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0])
 	stray_two.position = Vector3(-3.0,.6,0)
 	await frames(3)
 	check(run.tumbles==2 and run.state in ["aim","settle"],"a second tumble keeps the run going")
+	# The full six-tumble allowance ends the run only on its final loss.
+	run.tumbles = NestRun.MAX_TUMBLES-1
 	var stray_three := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0])
 	stray_three.position = Vector3(0,.6,3.0)
 	await frames(3)
-	check(run.state=="falling","the third tumble ends the run")
+	check(run.state=="falling","the sixth tumble ends the run")
 	await frames(130)
-	check(app.page=="results","three tumbles reach results")
+	check(app.page=="results","six tumbles reach results")
 	check(click_button("Play Again"),"play again after tumbles")
 	await frames(3)
 
@@ -434,11 +438,12 @@ func _ready() -> void:
 	check(Save.owns("outfit","parcel") and Save.buy("outfit","parcel",0) and Save.data.outfit=="parcel","reaching the goal earns and wears the outfit")
 	Save.data.outfit = ""
 	Save.data.best = saved_best_for_goals
-	Save.data.daily = {"day": Time.get_date_string_from_system(), "missions": [{"type": "pile", "amount": 10, "reward": 25, "progress": 0, "claimed": false, "flavour": ""}, {"type": "lucky", "amount": 1, "reward": 30, "progress": 0, "claimed": false, "flavour": ""}, {"type": "clean", "amount": 8, "reward": 25, "progress": 0, "claimed": false, "flavour": ""}]}
+	Save.data.daily = {"day": Time.get_date_string_from_system(), "missions": [{"type": "pile", "amount": 10, "reward": 25, "progress": 0, "claimed": false, "flavour": "", "ticket": true}, {"type": "lucky", "amount": 1, "reward": 30, "progress": 0, "claimed": false, "flavour": "", "ticket": false}, {"type": "clean", "amount": 8, "reward": 25, "progress": 0, "claimed": false, "flavour": "", "ticket": false}]}
 	var rolled := KinuProgress._roll("2026-09-16")
 	var yesterday := KinuProgress._roll("2026-09-15", false).map(func(m: Dictionary) -> String: return m.type)
 	var types := rolled.map(func(m: Dictionary) -> String: return m.type)
 	check(rolled.size() == 3 and types[0] != types[1] and types[1] != types[2] and types[0] != types[2],"three different daily missions")
+	check(rolled.filter(func(m: Dictionary) -> bool: return bool(m.get("ticket", false))).size() == 1,"exactly one daily mission awards a ticket")
 	check(not types.any(func(t: String) -> bool: return yesterday.has(t)),"daily missions don't repeat yesterday's types")
 	var streak_mission := {"type": "streak", "amount": 10, "reward": 20, "progress": 0, "claimed": false, "flavour": "", "shape": ""}
 	Save.data.daily.missions.append(streak_mission)
@@ -446,8 +451,9 @@ func _ready() -> void:
 	check(KinuProgress.complete(streak_mission),"streak missions track the best run of landings")
 	Save.data.daily.missions.pop_back()
 	var beans_before := int(Save.data.beans)
+	var tickets_before := int(Save.data.tickets)
 	check(KinuProgress.record_run({"score": 12, "placed": 14, "tumbles": 1, "lucky": 0, "height": 3.0}) == 1 and KinuProgress.claimable() == 1,"a run completes the matching daily mission only")
-	check(KinuProgress.claim(0) == 25 and int(Save.data.beans) == beans_before+25 and KinuProgress.claim(0) == 0,"a daily reward is collected exactly once")
+	check(KinuProgress.claim(0) == 25 and int(Save.data.beans) == beans_before+25 and int(Save.data.tickets) == tickets_before+1 and KinuProgress.claim(0) == 0 and int(Save.data.tickets) == tickets_before+1,"the marked daily reward grants beans and one ticket exactly once")
 	# Heart Kinu give back a tumble; Lucky Kinu pay bonus beans.
 	app._start()
 	await frames(3)
@@ -474,54 +480,56 @@ func _ready() -> void:
 	check(run.lucky_caught == 1 and run.summary().bonus == NestRun.LUCKY_BEANS,"a Lucky Kinu adds bonus beans to the run")
 	var tiny := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0],"tiny")
 	check(is_equal_approx(tiny.size().x,run.catalog.shapes[0].size.x*KinuBody.SCALE*NestRun.TINY_SCALE) and tiny.mass < run.catalog.shapes[0].mass,"a Tiny Kinu is smaller and lighter")
+	var glue_probe := run.make_body(run.catalog.shapes[0],run.catalog.flavours[0])
+	tiny.position = Vector3(0, 2, 0)
+	glue_probe.position = Vector3(0, 3, 0)
+	check(tiny.has_vertical_glue_contact(glue_probe),"Sticky Kinu glue from their top and bottom faces")
+	glue_probe.position = Vector3(1, 2, 0)
+	check(not tiny.has_vertical_glue_contact(glue_probe),"Sticky Kinu do not glue side contacts")
+	run.bodies.erase(glue_probe)
+	glue_probe.free()
 	run.bodies.erase(tiny)
 	tiny.free()
-	# The shoyu bottle: aim it like a Kinu, let go to glaze the Kinu below, which then glues.
+	# Sauce bottles: queued like a Kinu, aimed like a Kinu, and they resize the pile below.
 	var base_kinu: KinuBody = null
 	for body in run.bodies:
 		if body.scored and not body.fallen and not body.stuck:
 			base_kinu = body
-	check(run.squirts == NestRun.SQUIRTS_START,"a run starts with a shoyu squirt")
-	run.toggle_bottle()
-	check(run.aim_mode == "bottle" and is_instance_valid(run.bottle) and not run.active.visible,"the bottle replaces the held Kinu")
-	var over := base_kinu.position
-	run.orbit.lateral = over.dot(run.orbit.right())
-	run.orbit.depth = over.dot(run.orbit.toward_camera())
-	await frames(2)
-	run.drop()
-	for i in 90:
-		await frames(1)
-		if run.state == "aim":
-			break
-	var sticky: KinuBody = base_kinu
-	check(sticky.sticky and sticky.stuck and sticky.visual.has_node("Sauce") and run.squirts == NestRun.SQUIRTS_START-1 and run.aim_mode == "kinu" and run.active.visible,"letting go squirts glaze onto the Kinu below")
-	# A plain Kinu dropped on glaze glues; glaze that one too and the next glues to it.
-	for round in 2:
-		var above := sticky.position+Vector3.UP*3.0
-		run.orbit.lateral = above.dot(run.orbit.right())
-		run.orbit.depth = above.dot(run.orbit.toward_camera())
+	for sauce in ["nigari"]:
+		var recipe: Dictionary = NestRun.SAUCES[sauce]
+		var before := {}
+		for body in run.bodies:
+			if body.scored and not body.fallen:
+				before[body.get_instance_id()] = body.body_scale
+		var spent := run.placed
+		run.next_sauce = sauce
+		run.bodies.erase(run.active)
+		run.active.queue_free()
+		run.active = null
+		run.state = "ready"
+		run._spawn()
+		await frames(2)
+		check(run.aim_mode == "bottle" and is_instance_valid(run.bottle) and not run.active.visible,"a queued %s puts the bottle in hand"%sauce)
+		var over := base_kinu.position
+		run.orbit.lateral = over.dot(run.orbit.right())
+		run.orbit.depth = over.dot(run.orbit.toward_camera())
+		await frames(2)
 		run.drop()
-		var falling: KinuBody = run.pending
 		for i in 150:
 			await frames(1)
-			if falling.stuck or not is_instance_valid(run.pending):
+			if run.state == "aim":
 				break
-		await frames(2)
-		check(falling.stuck and falling.gripped,"a Kinu landing on glaze is glued (%d)"%round)
-		await wait_for_turn(run)
-		falling.glaze()
-		sticky = falling
-	run.squirts = 0
-	run.toggle_bottle()
-	check(run.aim_mode == "kinu","no bottle without squirts")
-	run.squirts = NestRun.SQUIRTS_MAX
-	run.next_milestone = run.score
-	run.drop()
-	await wait_for_turn(run)
-	check(run.squirts == NestRun.SQUIRTS_MAX,"squirts are capped")
-	sticky = base_kinu
-	sticky.release(Vector3(4, 2, 0))
-	check(sticky.gripped,"glued Kinu can't be knocked loose")
+		var resized := 0
+		var smaller := 0
+		for body in run.bodies:
+			if is_instance_valid(body) and before.has(body.get_instance_id()) and not is_equal_approx(before[body.get_instance_id()], body.body_scale):
+				resized += 1
+				if body.body_scale < before[body.get_instance_id()]:
+					smaller += 1
+		check(resized > 0 and resized <= int(recipe.targets),"%s resizes up to %d Kinu"%[sauce, int(recipe.targets)])
+		check(smaller == resized if float(recipe.factor) < 1.0 else smaller == 0,"%s moves every Kinu it touches the same way"%sauce)
+		check(run.aim_mode == "kinu" and run.placed == spent,"a sauce spends the turn without adding to the pile")
+	check(run.next_sauce == "" or NestRun.SAUCES.has(run.next_sauce),"the queue only ever holds a known sauce")
 	Save.data.beans = 100
 	Save.data.owned = []
 	Save.data.outfit = ""

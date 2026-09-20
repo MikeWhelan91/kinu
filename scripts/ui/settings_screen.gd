@@ -15,7 +15,7 @@ static func show(app: Node) -> void:
 		row.add_theme_constant_override("separation", 6)
 		var label := NestTheme.label(NestTheme.t("%s   %d%%")%[NestTheme.t(item[1]), int(float(Save.data[item[0]])*100)], 20)
 		row.add_child(label)
-		var slider := HSlider.new()
+		var slider := TouchSlider.new()
 		slider.min_value = 0
 		slider.max_value = 1
 		slider.step = .01

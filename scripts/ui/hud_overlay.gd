@@ -17,7 +17,7 @@ func _draw() -> void:
 	if run == null:
 		return
 	match run.control_scheme():
-		"classic":
+		"classic", "bento":
 			_draw_spin_strip()
 		"claw":
 			pass # The joysticks and drop button draw their own state; nothing to overlay here.

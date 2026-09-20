@@ -1,0 +1,4 @@
+[gd_scene load_steps=2 format=3]
+[ext_resource type="Script" path="res://tools/capture_ticketodds.gd" id="1"]
+[node name="CaptureTicketOdds" type="Node"]
+script = ExtResource("1")

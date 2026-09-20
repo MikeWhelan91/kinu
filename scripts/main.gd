@@ -7,18 +7,27 @@ var modal: Control
 var toast: Label
 var toast_panel: PanelContainer
 var toast_tween: Tween
+## Stars in the air right now, with the tweens carrying them down, so a burst can be cleared the
+## instant the page changes instead of raining over whatever comes next.
+var confetti_stars: Array[Control] = []
+var confetti_tweens: Array[Tween] = []
 var page: String = ""
 var score_label: Label
 var height_label: Label
 var best_label: Label
 var tumble_meter: TumbleMeter
-var bottle_button: Button
+## Lid prototype: offers to close and send out the box once it holds enough.
+var ship_button: Button
+var score_title: Label
+var timer_pill: PanelContainer
+var box_pill: PanelContainer
 var drop_button: Button
 var hint_pill: PanelContainer
 var next_slot: VBoxContainer
 var tutorial_panel: TutorialCoach
 var tutorial_step: int = -1
 var initial_best: int = 0
+var flavour_filter: String = "All"
 var collection_filter: String = "All"
 var shop_tab: String = "outfit"
 var wardrobe_tab: String = "outfit"
@@ -64,6 +73,13 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_resized)
 	_home()
 	Store.notice.connect(func(message: String) -> void: _toast(message, NestTheme.SUN))
+	if Rewards.configured():
+		_refresh_reward_time()
+
+func _refresh_reward_time() -> void:
+	var status: Dictionary = await Rewards.time_status()
+	KinuProgress.apply_time_status(status)
+	KinuCatcher.apply_time_status(status)
 
 ## "" follows the phone's language; otherwise the player's choice in Settings.
 func apply_language() -> void:
@@ -126,6 +142,8 @@ func _sync_banner() -> void:
 func _new_screen(name_: String, paper: bool = false) -> void:
 	if page == "collection" and name_ != "collection":
 		Save.clear_all_fresh()
+	# A celebration belongs to the page that earned it, not to the one being opened.
+	_clear_confetti()
 	page = name_
 	# A screen swap mid-drag can free the DragScroll before its deferred release clears this,
 	# leaving every button silently ignoring taps until the app restarts.
@@ -188,10 +206,10 @@ func _home() -> void:
 
 func _start() -> void:
 	get_tree().paused = false
-	initial_best = int(Save.data.best)
+	initial_best = NestRun.best_for(NestRun.chosen_mode())
 	_new_screen("play")
 	_build_hud()
-	tutorial_step = -1 if Save.data.tutorial else 0
+	tutorial_step = -1 if Save.data.tutorial or NestRun.chosen_mode() != "classic" else 0
 	run.begin()
 	if tutorial_step == 0:
 		_build_tutorial()
@@ -207,7 +225,8 @@ func _build_hud() -> void:
 	score_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_child(score_card)
 	var column := _vbox(score_card,-6)
-	_center_label(column,"Kinu Piled",15,NestTheme.MUTED)
+	var mode := NestRun.chosen_mode()
+	score_title = _center_label(column,{"classic": "Kinu Piled", "tower": "Tower Height", "rush": "Bentos Packed"}[mode],15,NestTheme.MUTED)
 	score_label = NestTheme.headline("0",40,NestTheme.SUN)
 	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(score_label)
@@ -215,27 +234,25 @@ func _build_hud() -> void:
 	tumble_meter = TumbleMeter.new()
 	tumble_meter.total = NestRun.MAX_TUMBLES
 	column.add_child(tumble_meter)
+	tumble_meter.visible = mode != "rush" or NestRun.PACKING_RUSH
 	var next_card := PanelContainer.new()
 	next_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	next_card.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	next_card.offset_left = -124
 	next_card.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	content.add_child(next_card)
-	# The shoyu bottle waits under the Next card; its count shows squirts left this run.
-	bottle_button = NestTheme.button("×1",func() -> void: run.toggle_bottle())
-	bottle_button.name = "ShoyuBottle"
-	bottle_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	bottle_button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	bottle_button.offset_left = -124
-	bottle_button.offset_top = 158
-	bottle_button.custom_minimum_size = Vector2(124,62)
-	bottle_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	bottle_button.add_theme_font_size_override("font_size",24)
-	var bottle_icon := ShoyuBottle.Icon.new()
-	bottle_icon.position = Vector2(16,8)
-	bottle_icon.size = Vector2(30,40)
-	bottle_button.add_child(bottle_icon)
-	content.add_child(bottle_button)
+	# Sits under the bottle and only appears once the box is worth closing, so the choice to ship
+	# now or keep packing is the player's.
+	ship_button = NestTheme.button(tr("Close Lid"),func() -> void: run.ship_box(),true)
+	ship_button.name = "ShipBox"
+	ship_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	ship_button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	ship_button.offset_left = -124
+	ship_button.offset_top = 228
+	ship_button.custom_minimum_size = Vector2(124,58)
+	ship_button.add_theme_font_size_override("font_size",19)
+	ship_button.hide()
+	content.add_child(ship_button)
 	next_slot = _vbox(next_card,0)
 	var pause_button := NestTheme.button("II",_pause,false,"plop")
 	pause_button.custom_minimum_size = Vector2(70,70)
@@ -250,10 +267,33 @@ func _build_hud() -> void:
 	height_pill.offset_top = 82
 	content.add_child(height_pill)
 	height_label = height_pill.get_child(0)
-	if Save.data.controls == "claw":
+	timer_pill = null
+	box_pill = null
+	if mode == "rush" and not NestRun.PACKING_RUSH:
+		# Bento Flip trades the height readout for the remaining tosses and current bento progress.
+		height_pill.hide()
+		timer_pill = NestTheme.pill("12 tosses",24)
+		timer_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+		timer_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		timer_pill.offset_top = 80
+		content.add_child(timer_pill)
+		box_pill = NestTheme.pill("",17)
+		box_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+		box_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		box_pill.offset_top = 136
+		content.add_child(box_pill)
+		var charge := BentoChargeMeter.new()
+		charge.run = run
+		charge.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
+		charge.grow_horizontal = Control.GROW_DIRECTION_BOTH
+		charge.offset_top = 182
+		charge.offset_bottom = 210
+		content.add_child(charge)
+	if Save.data.controls == "claw" and not (mode == "rush" and not NestRun.PACKING_RUSH):
 		_build_claw_controls()
 	else:
-		hint_pill = NestTheme.pill("Drag Kinu to move  ·  swipe to spin" if Save.data.controls == "grab" else "Drag to move  ·  let go to drop",18)
+		var hint := "Pack the box  ·  close the lid when it's full" if mode == "rush" and NestRun.PACKING_RUSH else "Hold to flip  ·  swipe bottom strip to spin" if mode == "rush" else "Drag Kinu to move  ·  swipe to spin" if Save.data.controls == "grab" else "Drag to move  ·  let go to drop"
+		hint_pill = NestTheme.pill(hint,18)
 		hint_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 		hint_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
 		hint_pill.grow_vertical = Control.GROW_DIRECTION_BEGIN
@@ -312,26 +352,61 @@ func _build_claw_controls() -> void:
 func _hud_update() -> void:
 	if page != "play" or not is_instance_valid(score_label):
 		return
-	score_label.text = _number(run.score)
-	best_label.text = tr("Best %s")%_number(Save.data.best)
+	match run.mode:
+		"tower":
+			score_label.text = KinuFlavour.height_text(run.score)
+			best_label.text = tr("Best %s")%KinuFlavour.height_text(NestRun.best_for("tower"))
+			height_label.text = tr("%d Kinu")%run.pile_count()
+		"rush":
+			score_label.text = _number(run.score)
+			best_label.text = tr("Best %s")%_number(NestRun.best_for("rush"))
+		_:
+			score_label.text = _number(run.score)
+			best_label.text = tr("Best %s")%_number(Save.data.best)
 	tumble_meter.used = run.tumbles
-	bottle_button.text = "×%d"%run.squirts
-	bottle_button.disabled = run.state != "aim" or (run.squirts == 0 and run.aim_mode != "bottle")
-	NestTheme.set_primary(bottle_button,run.aim_mode == "bottle")
 	if is_instance_valid(drop_button):
 		drop_button.text = tr("Squirt") if run.aim_mode == "bottle" else tr("Drop")
 		drop_button.disabled = run.state != "aim"
-	height_label.text = KinuFlavour.height_text(NestRun.height_cm(run.tower_height))
+	if is_instance_valid(ship_button):
+		ship_button.visible = run.can_ship()
+	if run.lid_mode():
+		# What matters while packing is how full this box is, not how tall the pile got.
+		height_label.text = tr("%d / %d packed")%[run.packed_count(),run.pack_target()]
+	elif run.mode == "classic":
+		height_label.text = KinuFlavour.height_text(NestRun.height_cm(run.tower_height))
+	if is_instance_valid(timer_pill):
+		var tosses := int(run.time_left)
+		var toss_label: Label = timer_pill.get_child(0)
+		toss_label.text = tr("%d tosses")%tosses
+		toss_label.add_theme_color_override("font_color",Color("e0463a") if tosses <= 3 else NestTheme.INK)
+		(box_pill.get_child(0) as Label).text = tr("Bento %d  ·  %d / %d")%[run.boxes_shipped+1, mini(run.pile_count(),NestRun.RUSH_BOX_TARGET), NestRun.RUSH_BOX_TARGET]
 	hint_pill.visible = run.placed < 3 and run.state == "aim" and tutorial_step < 0
 	for child in next_slot.get_children():
 		next_slot.remove_child(child)
 		child.queue_free()
 	_center_label(next_slot,"Next",15,NestTheme.MUTED)
-	if run.next_shape:
+	if run.next_sauce != "":
+		# A sauce owns the whole queue slot, so the card shows the bottle rather than a Kinu.
+		var recipe: Dictionary = NestRun.SAUCES[run.next_sauce]
+		var tint := Color(str(recipe.tint))
+		var jar := PanelContainer.new()
+		jar.custom_minimum_size = Vector2(100,76)
+		jar.add_theme_stylebox_override("panel",NestTheme.box(tint.lightened(.55),16,tint.darkened(.35),4))
+		next_slot.add_child(jar)
+		var art := CenterContainer.new()
+		jar.add_child(art)
+		var icon := ShoyuBottle.Icon.new()
+		icon.custom_minimum_size = Vector2(34,48)
+		icon.tint = tint
+		art.add_child(icon)
+		var sauce_label := _center_label(next_slot,tr(str(recipe.label)),14,tint.darkened(.45))
+		sauce_label.clip_text = true
+		sauce_label.custom_minimum_size.x = 100
+	elif run.next_shape:
 		var finish: KinuFlavour = run.pattern_for(run.next_flavour)
 		var outfit: KinuOutfit = run.catalog.outfit(str(Save.data.outfit))
 		var preview := KinuPreview.new()
-		preview.setup(run.next_shape,finish if finish else run.next_flavour,true,Vector2i(100,76),"calm",outfit)
+		preview.setup(run.next_shape,finish if finish else run.next_flavour,true,Vector2i(100,76),"calm",outfit,false,run.next_special == "sticky")
 		preview.fit_model(1.04)
 		next_slot.add_child(preview)
 		if run.next_special != "":
@@ -340,7 +415,7 @@ func _hud_update() -> void:
 			badge.size = Vector2(34,34)
 			badge.position = Vector2(66,-4)
 			preview.add_child(badge)
-		var special_names := {"lucky": "Lucky Kinu", "heart": "Heart Kinu", "tiny": "Tiny Kinu"}
+		var special_names := {"lucky": "Lucky Kinu", "heart": "Heart Kinu", "tiny": "Tiny Kinu", "sticky": "Sticky Kinu"}
 		var next_name := tr(special_names[run.next_special]) if special_names.has(run.next_special) else tr("%s Kinu")%tr(run.next_flavour.display_name)
 		var name_label := _center_label(next_slot,next_name,14,SpecialBadge.COLORS[run.next_special].darkened(.35) if special_names.has(run.next_special) else NestTheme.INK)
 		name_label.clip_text = true
@@ -368,29 +443,56 @@ func _toast(text: String, color: Color) -> void:
 	toast_tween.tween_interval(1.6)
 	toast_tween.tween_property(toast_panel,"modulate:a",0.0,.4)
 
-## Page header: a wooden back button and the title carved on a plank.
+## Page header: one wooden sign contains both navigation and a title centred across the page.
 func _header(title: String, callback: Callable = _home) -> VBoxContainer:
 	var layout := _vbox(content,14)
 	layout.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation",10)
-	layout.add_child(row)
-	var back := NestTheme.button("‹",func() -> void:
+	var plank := PanelContainer.new()
+	plank.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	plank.custom_minimum_size.y = 72
+	plank.add_theme_stylebox_override("panel",NestTheme.box(NestTheme.WOOD,20,NestTheme.INK,8))
+	layout.add_child(plank)
+	# PanelContainer lays out this one canvas; the title and back button then share the same sign
+	# without the back button consuming a column and shifting the title off the page centre.
+	var canvas := Control.new()
+	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	plank.add_child(canvas)
+	var label := NestTheme.headline(title,28)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	canvas.add_child(label)
+	var back := NestTheme.button("",func() -> void:
 		Sound.play("plop")
 		callback.call()
 	)
-	back.custom_minimum_size = Vector2(66,66)
-	NestTheme.style_card(back,"plain")
-	NestTheme.carve(back,40)
-	row.add_child(back)
-	var plank := PanelContainer.new()
-	plank.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	plank.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	plank.add_theme_stylebox_override("panel",NestTheme.box(NestTheme.WOOD,20,NestTheme.INK,8))
-	row.add_child(plank)
-	var label := NestTheme.headline(title,28)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	plank.add_child(label)
+	back.mouse_filter = Control.MOUSE_FILTER_STOP
+	back.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	back.position = Vector2.ZERO
+	back.size = Vector2(58, 54)
+	back.custom_minimum_size = Vector2.ZERO
+	for state in ["normal", "hover", "pressed", "focus"]:
+		back.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	canvas.add_child(back)
+	# Draw the chevron instead of relying on a font glyph. Its point geometry stays centred in
+	# the fixed left-hand hit area at every page width, while the title stays centred in the sign.
+	var chevron_points := PackedVector2Array([Vector2(35, 14), Vector2(22, 27), Vector2(35, 40)])
+	var chevron_outline := Line2D.new()
+	chevron_outline.points = chevron_points
+	chevron_outline.width = 9
+	chevron_outline.default_color = NestTheme.INK
+	chevron_outline.joint_mode = Line2D.LINE_JOINT_ROUND
+	chevron_outline.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	chevron_outline.end_cap_mode = Line2D.LINE_CAP_ROUND
+	back.add_child(chevron_outline)
+	var chevron := Line2D.new()
+	chevron.points = chevron_points
+	chevron.width = 4
+	chevron.default_color = NestTheme.CREAM
+	chevron.joint_mode = Line2D.LINE_JOINT_ROUND
+	chevron.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	chevron.end_cap_mode = Line2D.LINE_CAP_ROUND
+	back.add_child(chevron)
 	return layout
 
 ## Wraps text in a paper strip, for readable copy sitting on wood.
@@ -414,33 +516,15 @@ func _shop() -> void:
 func _show_shop() -> void:
 	KinuShopScreen.show(self)
 
-## Collection cards first cross a clearly labelled curtain, then arrive on the matching Shop
-## shelf. Leaving the Shop returns to the Collection instead of unexpectedly jumping home.
-func _shop_from_book(kind: String, item: Resource) -> void:
-	shop_tab = KinuShopScreen.tab_of(kind)
-	shop_back = _collection
-	var transition := LoadingCurtain.new()
-	transition.name = "BookToShopTransition"
-	transition.message = "%s  →  %s"%[tr("Kinu Book"), tr("Kinu Shop")]
-	transition.detail = tr(item.display_name)
-	canvas.add_child(transition)
+func _bean_shop(section: String = "beans") -> void:
 	Sound.play("cashregister")
-	await get_tree().process_frame
-	await get_tree().create_timer(.38).timeout
-	if not is_instance_valid(transition):
-		return
-	_show_shop()
-	canvas.move_child(transition, -1)
-	transition.finish()
-	# Let the player see the Kinu Shop header and selected shelf before the buy card opens.
-	await get_tree().create_timer(.3).timeout
-	if page == "shop" and is_instance_valid(item):
-		KinuShopScreen.purchase(self, kind, item, _show_shop)
-
-func _bean_shop() -> void:
-	Sound.play("cashregister")
-	bean_shop_back = _show_shop if page == "shop" else _home
-	BeanShop.open(self, bean_shop_back)
+	if page == "shop":
+		bean_shop_back = _show_shop
+	elif page == "catcher":
+		bean_shop_back = func() -> void: KinuCatcherScreen.show(self)
+	else:
+		bean_shop_back = _home
+	BeanShop.open(self, bean_shop_back, section)
 
 func _wardrobe() -> void:
 	wardrobe_back = _home
@@ -449,25 +533,6 @@ func _wardrobe() -> void:
 func _show_wardrobe() -> void:
 	WardrobeScreen.show(self)
 
-## Owned Collection items cross the same clear page-change curtain before opening their matching
-## Wardrobe shelf. Back returns to the Collection so browsing can continue where it started.
-func _wardrobe_from_book(kind: String, item: Resource) -> void:
-	wardrobe_tab = KinuShopScreen.tab_of(kind)
-	wardrobe_back = _collection
-	var transition := LoadingCurtain.new()
-	transition.name = "BookToWardrobeTransition"
-	transition.message = "%s  →  %s"%[tr("Kinu Book"), tr("Wardrobe")]
-	transition.detail = tr(item.display_name)
-	canvas.add_child(transition)
-	Sound.play("wardrobe")
-	await get_tree().process_frame
-	await get_tree().create_timer(.38).timeout
-	if not is_instance_valid(transition):
-		return
-	_show_wardrobe()
-	canvas.move_child(transition, -1)
-	transition.finish()
-
 func _settings() -> void:
 	NestSettingsScreen.show(self)
 
@@ -475,7 +540,7 @@ func _credits() -> void:
 	NestSettingsScreen.credits(self)
 
 func _leaderboards() -> void:
-	game_center.show_leaderboard()
+	game_center.show_leaderboard(NestRun.chosen_mode())
 
 func _modal(title: String) -> VBoxContainer:
 	if is_instance_valid(modal):
@@ -483,6 +548,9 @@ func _modal(title: String) -> VBoxContainer:
 	modal = Control.new()
 	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	modal.process_mode = Node.PROCESS_MODE_ALWAYS
+	# DragScroll listens globally so it can support touch drags; mark this overlay so lists below it
+	# do not react to gestures meant for an item preview or its buttons.
+	modal.add_to_group("modal_input_lock")
 	screen.add_child(modal)
 	var shade := ColorRect.new()
 	shade.color = Color(.12,.07,.05,.55)
@@ -516,7 +584,9 @@ func _pause() -> void:
 	NestMenuScreen.pause(self)
 
 func _results(stats: Dictionary) -> void:
-	game_center.submit_score(int(stats.get("score", 0)))
+	var mode := str(stats.get("mode","classic"))
+	if mode in ["classic", "tower"]:
+		game_center.submit_score(mode, int(stats.get("score", 0)))
 	NestMenuScreen.results(self, stats)
 	show_ad_after_run()
 
@@ -531,6 +601,21 @@ func _confetti() -> void:
 		tween.tween_property(star,"position:y",1100,rng.randf_range(3.5,6)).set_delay(i*.05)
 		tween.tween_property(star,"rotation",rng.randf_range(-3,3),4)
 		tween.chain().tween_callback(star.queue_free)
+		confetti_stars.append(star)
+		confetti_tweens.append(tween)
+
+## Sweeps up a burst still in the air. The tweens are bound to this node rather than to the stars,
+## so they outlive the screen the stars were added to unless they are stopped here.
+func _clear_confetti() -> void:
+	for tween in confetti_tweens:
+		if tween and tween.is_valid():
+			tween.kill()
+	confetti_tweens.clear()
+	for star in confetti_stars:
+		if is_instance_valid(star):
+			star.hide()
+			star.queue_free()
+	confetti_stars.clear()
 
 func _tutorial_steps() -> Array:
 	var grab: bool = Save.data.controls == "grab"
@@ -545,8 +630,9 @@ func _tutorial_steps() -> Array:
 			else ["Spin The Box","Swipe anywhere else to turn the box. Swipe up or down to tilt the view."] if grab \
 			else ["Spin The Box","Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view."],
 		["Pile Them Up","Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full."],
-		["Shoyu Bottle","Tap the bottle, aim it over a Kinu and let go. Kinu that land on the glaze stick! You get another squirt every 20 Kinu."],
-		["Careful!","Kinu that tumble onto the counter don't count. Three tumbles and the run is over."]]
+		["Sticky Kinu","This one has a syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."],
+		["Nigari","A sauce is up next instead of a Kinu. Aim the bottle over a crowded spot and let go — Nigari firms up to three Kinu a size smaller and frees up room."],
+		["Careful!","Kinu that tumble onto the counter don't count. Six tumbles and the run is over."]]
 
 func _build_tutorial() -> void:
 	tutorial_panel = TutorialCoach.new()
@@ -557,19 +643,19 @@ func _build_tutorial() -> void:
 func _tutorial_refresh() -> void:
 	if is_instance_valid(tutorial_panel):
 		tutorial_panel.refresh(tutorial_step,_tutorial_steps())
-	# The tutorial introduces the bottle itself, so the one-off hint isn't needed as well.
-	if tutorial_step == 4 and not Save.data.seen_specials.has("bottle"):
-		Save.data.seen_specials.append("bottle")
+	# The last two lessons need their subject in hand, so the run is asked for one rather than
+	# left waiting on the odds. Each is queued as the step it teaches is reached.
+	if is_instance_valid(run):
+		if tutorial_step == 4 and run.next_special != "sticky":
+			run.forced_special = "sticky"
+		elif tutorial_step == 5 and run.next_sauce == "":
+			run.forced_sauce = "nigari"
 
 func _tutorial_action(action: String) -> void:
 	if tutorial_step<0 or page!="play":
 		return
-	var expected := ["aim","drop","spin","settle","squirt"]
+	var expected := ["aim","drop","spin","settle","sticky","squirt"]
 	if tutorial_step<expected.size() and action==expected[tutorial_step]:
-		if action=="squirt":
-			# The tutorial's practice squirt shouldn't cost the player their real one.
-			run.squirts += 1
-			run.updated.emit()
 		tutorial_step += 1
 		_tutorial_refresh()
 

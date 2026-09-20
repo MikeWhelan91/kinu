@@ -967,7 +967,9 @@ func _show_sauce_targets(aimed: KinuBody) -> void:
 			body.set_sauce_target(false)
 	for body in wanted:
 		if is_instance_valid(body):
-			body.set_sauce_target(true, Color(str(recipe.tint)))
+			# Targeting needs to read over any flavour and the blue pan; it is deliberately brighter
+			# than the sauce itself so the three affected Kinu are unambiguous before spending a squirt.
+			body.set_sauce_target(true, Color("00f5ff"))
 	sauce_targets = wanted
 
 func _clear_sauce_targets() -> void:

@@ -133,7 +133,7 @@ func size() -> Vector3:
 ## spend it. A box aura rather than an outline: it reads through a crowded pile from any angle.
 var sauce_aura: MeshInstance3D
 
-func set_sauce_target(on: bool, tint: Color = Color("8fd3ff")) -> void:
+func set_sauce_target(on: bool, tint: Color = Color("00f5ff")) -> void:
 	if on == is_instance_valid(sauce_aura):
 		return
 	if not on:
@@ -142,13 +142,18 @@ func set_sauce_target(on: bool, tint: Color = Color("8fd3ff")) -> void:
 		return
 	sauce_aura = MeshInstance3D.new()
 	var box := BoxMesh.new()
-	box.size = size()*1.16
+	# Leave enough room around the body that the targeting colour is still visible when Kinu are
+	# packed tightly together.
+	box.size = size()*1.24
 	sauce_aura.mesh = box
 	var material := StandardMaterial3D.new()
-	material.albedo_color = Color(tint.r, tint.g, tint.b, .42)
+	material.albedo_color = Color(tint.r, tint.g, tint.b, .72)
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+	material.emission_enabled = true
+	material.emission = tint
+	material.emission_energy_multiplier = 1.5
 	sauce_aura.material_override = material
 	sauce_aura.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(sauce_aura)

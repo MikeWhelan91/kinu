@@ -1,12 +1,11 @@
 extends Node
-## Small, privacy-conscious Firebase Analytics facade. All event calls are no-ops outside iOS
-## builds where the FirebaseBridge native singleton is present.
+## Firebase is opt-in for production exports. Local runs and test iOS builds never configure it.
 
 var bridge: Object
 var session_started_at := 0
 
 func _ready() -> void:
-	if OS.get_name() != "iOS" or not Engine.has_singleton("FirebaseBridge"):
+	if OS.get_name() != "iOS" or not OS.has_feature("production") or not Engine.has_singleton("FirebaseBridge"):
 		return
 	bridge = Engine.get_singleton("FirebaseBridge")
 	bridge.call("configure")

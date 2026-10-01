@@ -26,6 +26,15 @@ func has_label(text: String, node: Node) -> bool:
 			return true
 	return false
 
+func find_label_exact(text: String, node: Node) -> Label:
+	if node is Label and node.text == text:
+		return node
+	for child in node.get_children():
+		var found := find_label_exact(text, child)
+		if found:
+			return found
+	return null
+
 func click(text: String) -> void:
 	var button := find_button(text,app.screen)
 	check(button != null,"button present: "+text)
@@ -54,6 +63,9 @@ func _ready() -> void:
 	Save.save_path = "user://ui_test.json"
 	Save.data = Save.defaults()
 	Save.data.controls = "grab"
+	# Navigation checks need a quiet home screen, without timed event announcements.
+	Save.data.showcase.announced = KinuShowcase.current_month()
+	Save.data.daily_calendar.last_day = Time.get_date_string_from_system()
 	app = load("res://scenes/main.tscn").instantiate()
 	add_child(app)
 	await get_tree().process_frame
@@ -194,6 +206,15 @@ func _ready() -> void:
 	check(app.screen.find_child("CollectionLoading",true,false) != null,"collection navigation paints immediately before previews load")
 	for i in 4:
 		await get_tree().process_frame
+	var parts_heading := find_label_exact("Parts", app.screen)
+	var parts_grid := parts_heading.get_parent().get_child(parts_heading.get_index()+1) as GridContainer if parts_heading else null
+	check(parts_grid != null and parts_grid.get_child_count() == 120, "all 120 parts are listed in the Kinu Book")
+	var missing_part_thumbs := 0
+	for part in app.run.catalog.parts:
+		if CollectionThumb.part(part) == null:
+			missing_part_thumbs += 1
+	check(missing_part_thumbs == 0, "all Kinu Book part thumbnails load")
+	check(find_label_exact("Mushroom Cap", parts_grid) != null if parts_grid else false, "new goal parts appear in the Kinu Book")
 	var shop_item: KinuOutfit = app.run.catalog.outfit("tanuki")
 	KinuBookScreen._item_detail(app, "outfit", shop_item)
 	check(app.page == "collection" and is_instance_valid(app.modal),"tapping a Collection card opens an info panel without leaving the Kinu Book")

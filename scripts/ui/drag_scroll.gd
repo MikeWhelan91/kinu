@@ -9,6 +9,7 @@ var tracking: bool = false
 var dragging: bool = false
 var travelled: float = 0.0
 var velocity: float = 0.0
+var drag_exclusion: Control
 
 func _init() -> void:
 	horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -41,6 +42,10 @@ func _input(event: InputEvent) -> void:
 		motion = event.relative.y
 	elif event is InputEventMouseMotion and tracking:
 		motion = event.relative.y
+	if pressed and is_instance_valid(drag_exclusion) and drag_exclusion.get_global_rect().has_point(point):
+		tracking = false
+		velocity = 0.0
+		return
 	if pressed and get_global_rect().has_point(point):
 		tracking = true
 		dragging = false

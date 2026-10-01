@@ -102,7 +102,7 @@ static func _item_entries(catalog: KinuCatalog, available_only: bool) -> Array:
 				entries.append(entry)
 	# My Kinu parts sold in the shop or only won here. Starters, level rewards and goals stay out.
 	for item in catalog.parts:
-		if item.available and item.goal == "" and item.level == 0 and not item.starter and (int(item.price) > 0 or item.crane_only):
+		if item.available and item.goal == "" and item.level == 0 and not item.starter and (int(item.price) > 0 or item.crane_only) and (not available_only or MyKinu.slot_unlocked(item.slot)):
 			var entry := {"kind": "part", "id": item.id, "rarity": item.rarity}
 			if not available_only or not owned(catalog, entry):
 				entries.append(entry)

@@ -13,7 +13,7 @@ func _supports_platform(platform: EditorExportPlatform) -> bool:
 
 
 func _export_begin(features: PackedStringArray, _is_debug: bool, _path: String, _flags: int) -> void:
-	if not features.has("ios"):
+	if not features.has("ios") or not features.has("production"):
 		return
 	if not FileAccess.file_exists(PLIST_RES_PATH):
 		push_warning("GodotApplePluginsFirebase: %s not found - Firebase will not be configured in this export. Drop your GoogleService-Info.plist there." % PLIST_RES_PATH)

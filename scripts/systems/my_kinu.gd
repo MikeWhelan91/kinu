@@ -24,7 +24,7 @@ const SPARE_TICKETS := 2
 const BADGES := [[50, "rainbow"], [40, "sakura"], [30, "gold"], [20, "silver"], [10, "bronze"]]
 
 static func defaults() -> Dictionary:
-	return {"xp": 0, "flavour": "silken", "equipped": {"body": "comfy_tee", "hat": "", "arms": "", "glasses": ""}, "last_run": "", "seen_level": 1, "intro_seen": false}
+	return {"xp": 0, "home_seen_xp": 0, "flavour": "silken", "equipped": {"body": "comfy_tee", "hat": "", "arms": "", "glasses": ""}, "last_run": "", "seen_level": 1, "intro_seen": false}
 
 # ---------- Levels ----------
 

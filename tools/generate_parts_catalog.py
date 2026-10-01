@@ -7,11 +7,12 @@ adding or renaming a part, then apply the migration before shipping the client t
 
 import pathlib
 import re
+import argparse
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 PARTS = ROOT / "scripts/kinu/kinu_parts.gd"
-OUTPUT = ROOT / "supabase/migrations/20261001010000_my_kinu_parts.sql"
+OUTPUT = ROOT / "supabase/migrations/20261001020000_more_my_kinu_parts.sql"
 KEY = "^(outfit|part|box|room):[a-z0-9_]+$"
 
 
@@ -20,6 +21,10 @@ def sql(value: str) -> str:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=pathlib.Path, default=OUTPUT)
+    parser.add_argument("--sync-limit", type=int, default=1024)
+    args = parser.parse_args()
     rows = []
     pattern = r'\["([a-z0-9_]+)", "(body|hat|arms|glasses)", "([^"]+)", "[a-z_]+", "[0-9a-f]+", "[0-9a-f]+", "([a-z:]+)", -?\d+\]'
     for item_id, _slot, name, source in re.findall(pattern, PARTS.read_text()):
@@ -71,7 +76,7 @@ begin
   if player_id is null then
     raise exception 'Authentication required' using errcode = '28000';
   end if;
-  if p_items is null or cardinality(p_items) > 256 or exists (
+  if p_items is null or cardinality(p_items) > {args.sync_limit} or exists (
     select 1 from unnest(p_items) as owned(item_key)
     where item_key is null or item_key !~ '{KEY}'
   ) then
@@ -93,8 +98,8 @@ $$;
 revoke all on function public.record_owned_items(text[]) from public, anon;
 grant execute on function public.record_owned_items(text[]) to authenticated;
 """
-    OUTPUT.write_text(migration)
-    print(f"Wrote {len(rows)} parts to {OUTPUT}")
+    args.output.write_text(migration)
+    print(f"Wrote {len(rows)} parts to {args.output}")
 
 
 if __name__ == "__main__":

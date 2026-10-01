@@ -7,7 +7,7 @@ extends RefCounted
 const TABS := [["outfit", "Outfits", "outfit"], ["part", "Parts", "part"], ["box", "Boxes", "box"], ["room", "Rooms", "room"]]
 ## The Wardrobe has no Parts tab: My Kinu has its own dressing screen.
 const WARDROBE_TABS := [["outfit", "Outfits", "outfit"], ["box", "Boxes", "box"], ["room", "Rooms", "room"]]
-const HINTS := {"outfit": "Outfits dress every Kinu you stack.", "part": "Parts dress My Kinu. Wear them once their slot opens.", "box": "Same size box, fresh new look.", "room": "Change where Kinu lives, with its own music."}
+const HINTS := {"outfit": "Outfits dress every Kinu you stack.", "part": "Level up My Kinu to open each part slot.", "box": "Same size box, fresh new look.", "room": "Change where Kinu lives, with its own music."}
 ## Which slot the Parts tab is showing.
 static var part_slot := "body"
 
@@ -176,10 +176,12 @@ static func showcase(app: Node, kind: String, item: Resource, action: Callable, 
 		stack.add_child(hint)
 	if item.description != "":
 		app._paper_text(stack, item.description, 18)
-	if item is KinuPart and not MyKinu.slot_unlocked(item.slot):
-		app._center_label(stack, NestTheme.t("Wear it from My Kinu level %d.")%MyKinu.slot_level(item.slot), 16, NestTheme.MUTED)
-	stack.add_child(NestTheme.button(action_label, action, true, "book"))
-	stack.add_child(NestTheme.button("Not Yet", app._close_modal, false, "book"))
+	var locked_part := item is KinuPart and not MyKinu.slot_unlocked(item.slot)
+	if locked_part:
+		app._center_label(stack, NestTheme.t("Unlock the %s slot at My Kinu level %d first.")%[NestTheme.t(MyKinu.SLOT_NAMES[item.slot]), MyKinu.slot_level(item.slot)], 16, NestTheme.MUTED)
+	else:
+		stack.add_child(NestTheme.button(action_label, action, true, "book"))
+	stack.add_child(NestTheme.button("Okay" if locked_part else "Not Yet", app._close_modal, locked_part, "book"))
 
 static func _style_card(card: Dictionary) -> void:
 	var item: Resource = card.item
@@ -195,6 +197,8 @@ static func _style_card(card: Dictionary) -> void:
 		row.add_child(tier)
 	if Save.owns(card.kind, item.id, item.price):
 		row.add_child(NestTheme.pill("Owned", 15, NestTheme.MUTED))
+	elif card.kind == "part" and not MyKinu.slot_unlocked(item.slot):
+		row.add_child(NestTheme.pill(NestTheme.t("Lv %d")%MyKinu.slot_level(item.slot), 15, NestTheme.MUTED))
 	else:
 		row.add_child(NestTheme.bean_pill(str(item.price), 16))
 
@@ -218,6 +222,9 @@ static func _refresh(app: Node) -> void:
 	label.text = NestTheme.t("%s beans")%app._number(Save.data.beans)
 
 static func _choose(app: Node, kind: String, item: Resource) -> void:
+	if kind == "part" and not MyKinu.slot_unlocked(item.slot):
+		showcase(app, kind, item, app._close_modal, "Okay")
+		return
 	if Save.owns(kind, item.id, item.price):
 		if kind == "part":
 			showcase(app, kind, item, func() -> void:
@@ -238,6 +245,10 @@ static func _choose(app: Node, kind: String, item: Resource) -> void:
 ## The buy popup, also opened from the Kinu Book's collection.
 static func purchase(app: Node, kind: String, item: Resource, done: Callable) -> void:
 	var stack = app._modal(NestTheme.t(item.display_name))
+	if kind == "part" and not MyKinu.slot_unlocked(item.slot):
+		app._paper_text(stack, NestTheme.t("Unlock the %s slot at My Kinu level %d first.")%[NestTheme.t(MyKinu.SLOT_NAMES[item.slot]), MyKinu.slot_level(item.slot)], 18)
+		stack.add_child(NestTheme.button("Okay", app._close_modal, true))
+		return
 	var short: int = int(item.price)-int(Save.data.beans)
 	if short > 0:
 		app._paper_text(stack, NestTheme.t("You need %d more beans.\nPile more Kinu and finish daily missions to earn them!")%short, 19)

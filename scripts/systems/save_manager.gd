@@ -76,6 +76,12 @@ func load_data(source: Variant = null) -> void:
 						var xp: Variant = value.get("xp", 0)
 						if (xp is float or xp is int) and is_finite(float(xp)):
 							data.my_kinu.xp = clampi(int(xp), 0, 2147483647)
+						# Existing v6 saves already displayed their XP on results. Start the new
+						# home recap from their current total instead of replaying old runs.
+						data.my_kinu.home_seen_xp = data.my_kinu.xp
+						var home_seen: Variant = value.get("home_seen_xp")
+						if (home_seen is float or home_seen is int) and is_finite(float(home_seen)):
+							data.my_kinu.home_seen_xp = clampi(int(home_seen), 0, int(data.my_kinu.xp))
 						var seen: Variant = value.get("seen_level", 1)
 						if (seen is float or seen is int) and is_finite(float(seen)):
 							data.my_kinu.seen_level = clampi(int(seen), 1, 100000)
@@ -234,6 +240,7 @@ func load_data(source: Variant = null) -> void:
 		# Their outfit, ownership and selected look are left exactly as they were.
 		if int(loaded.get("version", 1)) < 6 and not loaded.has("my_kinu"):
 			data.my_kinu.xp = mini(int(data.stats.total), MyKinu.RETRO_XP_CAP)
+			data.my_kinu.home_seen_xp = data.my_kinu.xp
 			var level := MyKinu.level_for(int(data.my_kinu.xp))
 			data.my_kinu.seen_level = level
 			for slot in MyKinu.SLOTS:
@@ -444,15 +451,18 @@ func add_tickets(amount: int) -> void:
 	data.tickets = maxi(0, int(data.tickets)+amount)
 	persist()
 
-## kind is "outfit", "box" or "room". Free items (price 0 or no outfit) are always owned.
+## Free starters are owned once their equipment slot opens; paid and earned parts
+## also wait for that slot before appearing as owned or wearable.
 func owns(kind: String, id: String, price: int = 1) -> bool:
 	if debug_unlocked() or id == "":
 		return true
-	# My Kinu level rewards are free but only owned once that level is reached.
 	if kind == "part":
 		var part := KinuParts.find(id)
+		if part and not MyKinu.slot_unlocked(part.slot):
+			return false
+		# My Kinu level rewards are free but only owned once that level is reached.
 		if part and part.level > 0:
-			return data.owned.has(kind+":"+id)
+			return MyKinu.level() >= part.level and data.owned.has(kind+":"+id)
 	if KinuProgress.is_earned_item(kind, id):
 		return data.owned.has(kind+":"+id) or KinuProgress.met(KinuProgress.goals[kind+":"+id])
 	if KinuProgress.is_crane_only(kind, id) or KinuProgress.is_showcase(kind, id) or KinuProgress.is_event(kind, id):
@@ -482,6 +492,10 @@ func set_flavour_in_mix(id: String, included: bool) -> void:
 
 ## Spends soybeans on a shop item and equips it where that makes sense. False if unaffordable.
 func buy(kind: String, id: String, price: int) -> bool:
+	if kind == "part":
+		var part := KinuParts.find(id)
+		if part == null or not MyKinu.slot_unlocked(part.slot):
+			return false
 	if (KinuProgress.is_earned_item(kind, id) or KinuProgress.is_crane_only(kind, id) or KinuProgress.is_showcase(kind, id) or KinuProgress.is_event(kind, id)) and not owns(kind, id, price):
 		return false
 	if not owns(kind, id, price):
@@ -556,9 +570,10 @@ func finish_run(summary: Dictionary) -> bool:
 func _grant_run_xp(summary: Dictionary, record: bool) -> void:
 	var run_id := str(summary.get("run_id", ""))
 	if run_id != "" and run_id == str(data.my_kinu.last_run):
-		summary["my_kinu"] = {"xp": 0, "level_before": MyKinu.level(), "level_after": MyKinu.level(), "rewards": {"beans": 0, "tickets": 0, "parts": [], "slots": []}}
+		summary["my_kinu"] = {"xp": 0, "xp_before": MyKinu.xp(), "xp_after": MyKinu.xp(), "level_before": MyKinu.level(), "level_after": MyKinu.level(), "rewards": {"beans": 0, "tickets": 0, "parts": [], "slots": []}}
 		return
 	data.my_kinu.last_run = run_id
+	var xp_before := MyKinu.xp()
 	var before := MyKinu.level()
 	var gained := MyKinu.run_xp(summary, record)
 	data.my_kinu.xp = mini(int(data.my_kinu.xp)+gained, 2147483647)
@@ -566,7 +581,14 @@ func _grant_run_xp(summary: Dictionary, record: bool) -> void:
 	var rewards := MyKinu.grant_levels(before, after)
 	if MyKinu.active() and KinuProgress.catalog:
 		MyKinu.sync_discovered(KinuProgress.catalog)
-	summary["my_kinu"] = {"xp": gained, "level_before": before, "level_after": after, "rewards": rewards}
+	summary["my_kinu"] = {"xp": gained, "xp_before": xp_before, "xp_after": MyKinu.xp(), "level_before": before, "level_after": after, "rewards": rewards}
+
+## The home celebration is acknowledged only when the player closes it or opens My Kinu. XP
+## earned across Play Again runs remains pending through app restarts until then.
+func acknowledge_kinu_progress() -> void:
+	data.my_kinu.home_seen_xp = MyKinu.xp()
+	data.my_kinu.intro_seen = true
+	persist()
 
 static func _add_counts(into: Dictionary, counts: Variant) -> void:
 	if counts is Dictionary:

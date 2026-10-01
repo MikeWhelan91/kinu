@@ -37,6 +37,10 @@ func _ready() -> void:
 	var sun := TofuShop.make_sun()
 	sun.shadow_enabled = false
 	viewport.add_child(sun)
+	if OS.get_cmdline_user_args().has("audit_shapes"):
+		await _audit_part_shapes(viewport,catalog)
+		get_tree().quit()
+		return
 
 	# Pass 1: measure every outfit's on-screen extent to find the one shared camera size that
 	# fits all of them, instead of each one cropping to its own bounds independently.
@@ -105,6 +109,30 @@ func _ready() -> void:
 		print("baked ", count, " ", item.id)
 	print("Baked ", count, " collection thumbnails to ", OUT_DIR)
 	get_tree().quit()
+
+## Temporary visual QA output: every part on all five silhouettes, not only the Block thumbnail.
+func _audit_part_shapes(viewport: SubViewport, catalog: KinuCatalog) -> void:
+	var folder := "/tmp/kinu-part-fit-audit"
+	DirAccess.make_dir_recursive_absolute(folder)
+	for part in catalog.parts:
+		for shape in catalog.shapes:
+			var before := viewport.get_children()
+			var model := KinuModel.build(shape,catalog.flavours[0],null,"calm",[part])
+			model.rotation_degrees.y = -22
+			viewport.add_child(model)
+			var camera := _base_outfit_camera(catalog)
+			camera.size = maxf(shape.size.x*1.9,shape.size.y*2.5)*1.45
+			var bounds := _bounds(camera,model)
+			camera.position += camera.basis*Vector3(bounds.center.x,bounds.center.y,0)
+			viewport.add_child(camera)
+			await get_tree().process_frame
+			await get_tree().process_frame
+			viewport.get_texture().get_image().save_png(folder.path_join("%s_%s.png"%[part.id,shape.id]))
+			for child in viewport.get_children():
+				if child not in before:
+					viewport.remove_child(child)
+					child.queue_free()
+	print("Audited ",catalog.parts.size()*catalog.shapes.size()," part and shape combinations in ",folder)
 
 ## Mirrors KinuShopScreen.preview's outfit case: a finish (pattern) outfit shows the plain shape in
 ## that flavour, not a costume, exactly as the Shop and Wardrobe already render it.

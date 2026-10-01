@@ -23,6 +23,7 @@ func _ready() -> void:
 	_fresh_save()
 	_migration()
 	_run_xp()
+	_home_progress()
 	_ownership()
 	_appearance()
 	_physics()
@@ -53,12 +54,19 @@ func _parts_catalogue() -> void:
 	var ids := {}
 	var shop := {"common": 0, "rare": 0, "epic": 0}
 	var crane := 0
+	var goals := 0
+	var slots := {"body": 0, "hat": 0, "arms": 0, "glasses": 0}
 	for part in catalog.parts:
 		check(not ids.has(part.id), "part id %s is unique" % part.id)
 		ids[part.id] = true
 		check(part.slot in MyKinu.SLOTS, "%s has a real slot" % part.id)
 		check(not catalog.outfit(part.id), "%s does not share an outfit id" % part.id)
 		check(RegEx.create_from_string("^[a-z0-9_]+$").search(part.id) != null, "%s fits the Supabase item key pattern" % part.id)
+		check(part.description != "" and not part.description.contains("every Kinu you drop") and not part.description.contains("My Kinu's flavour"), "%s has an item description" % part.id)
+		slots[part.slot] += 1
+		if part.goal != "":
+			goals += 1
+			check(KinuProgress.GOAL_TEXT.has(part.goal), "%s has a supported goal" % part.id)
 		if part.price > 0:
 			shop[part.rarity] += 1
 			var band: Array = KinuParts.PRICES[part.rarity]
@@ -67,8 +75,10 @@ func _parts_catalogue() -> void:
 			crane += 1
 	for slot in MyKinu.SLOTS:
 		check(MyKinu.starter(slot) != null, "%s has a free starter part" % slot)
-	check(shop.common == 16 and shop.rare == 10 and shop.epic == 6, "32 shop parts: 16 common, 10 rare, 6 epic")
-	check(crane == 8, "8 Catcher-only parts")
+		check(slots[slot] >= 30, "%s has at least 30 parts" % slot)
+	check(goals >= 30, "at least 30 parts can be earned through goals")
+	check(shop.common == 24 and shop.rare == 19 and shop.epic == 10, "53 shop parts: 24 common, 19 rare, 10 epic")
+	check(crane == 18, "18 Catcher-only parts")
 	for level in range(5, 55, 5):
 		check(MyKinu.level_part(level) != null, "level %d has an exclusive part" % level)
 
@@ -120,6 +130,7 @@ func _run_xp() -> void:
 	Save.finish_run(summary)
 	check(int(Save.data.my_kinu.xp) == 24+MyKinu.RECORD_BONUS, "a finished run grants its XP (first run is a new best)")
 	check(summary.my_kinu.xp == 24+MyKinu.RECORD_BONUS and summary.my_kinu.level_before == 1, "the results screen gets what was granted")
+	check(summary.my_kinu.xp_before == 0 and summary.my_kinu.xp_after == int(Save.data.my_kinu.xp), "results can replay XP from the saved before and after values")
 	var xp := int(Save.data.my_kinu.xp)
 	Save.finish_run(summary.duplicate(true))
 	check(int(Save.data.my_kinu.xp) == xp, "the same run can never pay out twice")
@@ -131,30 +142,62 @@ func _run_xp() -> void:
 	Save.finish_run({"mode": "classic", "score": 1, "pile": 1, "placed": 1, "run_id": "run-c"})
 	check(MyKinu.level() == 4 and int(Save.data.beans)-beans == MyKinu.level_beans(4), "levelling up pays its beans")
 	check(Save.data.my_kinu.equipped.arms == "little_arms", "a slot that opens puts its starter on")
-	Save.data.my_kinu.xp = 0
 	var tickets := int(Save.data.tickets)
+	Save.data.my_kinu.xp = 360
 	var rewards := MyKinu.grant_levels(4, 5)
 	check(rewards.parts.size() == 1 and Save.owns("part", "bunny_band", 0), "level 5 grants its exclusive part")
 	rewards = MyKinu.grant_levels(54, 55)
 	check(rewards.tickets == MyKinu.SPARE_TICKETS and int(Save.data.tickets) == tickets+MyKinu.SPARE_TICKETS, "levels past the exclusive parts grant tickets")
 
+func _home_progress() -> void:
+	Save.load_data({})
+	Save.finish_run({"mode": "classic", "score": 10, "pile": 10, "placed": 10, "run_id": "home-a"})
+	Save.finish_run({"mode": "classic", "score": 8, "pile": 8, "placed": 8, "run_id": "home-b"})
+	var earned := MyKinu.xp()
+	check(earned == 48 and int(Save.data.my_kinu.home_seen_xp) == 0, "Play Again runs accumulate XP for one home celebration")
+	var saved: Dictionary = Save.data.duplicate(true)
+	Save.load_data(saved)
+	check(MyKinu.xp() == earned and int(Save.data.my_kinu.home_seen_xp) == 0, "unseen home XP survives a save reload")
+	Save.acknowledge_kinu_progress()
+	check(int(Save.data.my_kinu.home_seen_xp) == earned and Save.data.my_kinu.intro_seen, "closing the home celebration marks only that XP as seen")
+	Save.finish_run({"mode": "classic", "score": 12, "pile": 12, "placed": 12, "run_id": "home-c"})
+	var recap := NestMenuScreen._kinu_rewards_between(MyKinu.level_for(earned),MyKinu.level())
+	check(MyKinu.xp() == 80 and int(Save.data.my_kinu.home_seen_xp) == earned, "the next run starts a fresh pending home celebration")
+	check(recap.slots == ["hat"] and int(recap.beans) == MyKinu.level_beans(2), "home recap shows the rewards already granted by the new level")
+	var old_v6: Dictionary = Save.data.duplicate(true)
+	old_v6.my_kinu.erase("home_seen_xp")
+	Save.load_data(old_v6)
+	check(int(Save.data.my_kinu.home_seen_xp) == MyKinu.xp(), "older v6 saves do not replay previously shown XP")
+
 func _ownership() -> void:
 	Save.load_data({})
-	check(Save.owns("part", "comfy_tee", 0) and Save.owns("part", "round_specs", 0), "starter parts are owned by everyone")
+	check(Save.owns("part", "comfy_tee", 0), "the body starter is owned at level 1")
+	check(not Save.owns("part", "little_beanie", 0) and not Save.owns("part", "little_arms", 0) and not Save.owns("part", "round_specs", 0), "locked slot starters are not owned yet")
 	check(not Save.owns("part", "golden_specs", 0), "a level part is not owned before its level")
 	check(not Save.owns("part", "top_hat", 1300), "a shop part is not owned before it is bought")
 	check(not Save.owns("part", "royal_crown", 0), "a Catcher part is not owned before it is won")
 	check(not Save.owns("part", "club_jersey", 0), "a goal part is not owned before its goal")
 	Save.data.runs = 10
 	check(Save.owns("part", "club_jersey", 0), "a goal part is owned once its goal is met")
+	Save.data.owned.append("part:planner_glasses")
+	check(not Save.owns("part", "planner_glasses", 0), "a goal glass stays locked before its slot opens")
 	check(not MyKinu.can_equip(catalog, "hat", "little_beanie"), "a locked slot cannot be worn")
 	Save.data.beans = 5000
-	check(Save.buy("part", "cool_shades", 1150) and Save.owns("part", "cool_shades", 1150), "a part for a locked slot can be bought")
-	check(int(Save.data.beans) == 5000-1150, "buying a part spends its price")
+	check(not Save.buy("part", "cool_shades", 1300) and not Save.owns("part", "cool_shades", 1300), "glasses cannot be bought before level 6")
+	check(int(Save.data.beans) == 5000, "a blocked purchase spends no beans")
 	check(Save.data.outfit == "" and Save.data.look == "outfit", "buying a part never changes the outfit")
-	check(not MyKinu.equip(catalog, "glasses", "cool_shades"), "a bought part waits for its slot")
+	Save.data.owned.append("part:round_specs")
+	check(not Save.owns("part", "round_specs", 0), "a previously recorded glass stays locked before level 6")
 	Save.data.my_kinu.xp = 500
+	check(Save.owns("part", "little_beanie", 0) and Save.owns("part", "little_arms", 0) and Save.owns("part", "round_specs", 0), "starter parts become owned when their slots open")
+	check(Save.owns("part", "planner_glasses", 0), "an earlier goal glass becomes owned at level 6")
+	check(Save.buy("part", "cool_shades", 1300) and Save.owns("part", "cool_shades", 1300), "glasses can be bought once the slot opens")
+	check(int(Save.data.beans) == 5000-1300, "buying an open slot part spends its price")
 	check(MyKinu.equip(catalog, "glasses", "cool_shades"), "a bought part is worn once its slot opens")
+	Save.data.owned.append("part:golden_specs")
+	check(not Save.owns("part", "golden_specs", 0), "a level 10 reward stays locked at level 6")
+	Save.data.my_kinu.xp = 1260
+	check(Save.owns("part", "golden_specs", 0), "a level reward becomes owned at its level")
 	check(not MyKinu.equip(catalog, "hat", "top_hat"), "an unowned part cannot be worn")
 	check(not MyKinu.equip(catalog, "hat", "cool_shades"), "a part only fits its own slot")
 	check(MyKinu.equip(catalog, "hat", ""), "a slot can be emptied")
@@ -282,11 +325,14 @@ func _catcher() -> void:
 			parts_in += 1
 			var part := catalog.part(str(entry.id))
 			check(part != null and part.level == 0 and part.goal == "" and not part.starter, "%s belongs in the Catcher" % entry.id)
-	check(parts_in == 40, "every shop and Catcher-only part is in the Catcher")
+	check(parts_in == 71, "every shop and Catcher-only part is in the Catcher")
 	var total := 0.0
 	for entry in KinuCatcher.table(catalog):
 		total += float(entry.odds)
 	check(absf(total-100.0) < .001, "Catcher odds still add up to 100")
+	for entry in KinuCatcher.pool(catalog, true):
+		if entry.kind == "part":
+			check(catalog.part(str(entry.id)).slot == "body", "level 1 Catcher only offers body parts")
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 7
 	Save.data.tickets = 400
@@ -297,3 +343,5 @@ func _catcher() -> void:
 			won += 1
 			check(Save.owns("part", str(prize.id), 1), "a part won in the Catcher is owned")
 	check(won > 0, "parts can be won in the Catcher")
+	Save.data.my_kinu.xp = 500
+	check(KinuCatcher.pool(catalog, true).any(func(entry: Dictionary) -> bool: return entry.kind == "part" and catalog.part(str(entry.id)).slot == "glasses"), "glasses join the Catcher at level 6")

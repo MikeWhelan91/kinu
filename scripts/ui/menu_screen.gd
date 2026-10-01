@@ -94,11 +94,16 @@ static func home(app: Node) -> void:
 	play.custom_minimum_size.y = 86
 	play.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	play_stack.add_child(play)
-	# The claw machine is the game's prize counter, so it gets a near-full-width button of its
-	# own instead of sharing a cramped row; leaderboards drop to an icon beside it.
+	# My Kinu is the player's progression hub, so it sits beside the prize counter on Home.
 	var secondary := HBoxContainer.new()
 	secondary.add_theme_constant_override("separation",8)
 	play_stack.add_child(secondary)
+	var my_kinu := _home_action_button("My Kinu",Color("8069bb"),func() -> void:
+		MyKinuScreen.show(app,app._home)
+	,68,"wardrobe",false,"wardrobe")
+	my_kinu.name = "MyKinuHome"
+	my_kinu.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	secondary.add_child(my_kinu)
 	var catcher := _home_action_button("Kinu Claw", Color("ef5e97"), func() -> void:
 		KinuCatcherScreen.show(app)
 	,68,"claw",false,"cashregister")
@@ -106,13 +111,6 @@ static func home(app: Node) -> void:
 	catcher.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_dress_prize_button(catcher)
 	secondary.add_child(catcher)
-	var leaderboards := _home_action_button("", Color("4b5da8"), func() -> void:
-		app._leaderboards()
-	,68,"leaderboards")
-	leaderboards.name = "Leaderboards"
-	leaderboards.custom_minimum_size.x = 68
-	_update_leaderboard_button(leaderboards,NestRun.chosen_mode())
-	secondary.add_child(leaderboards)
 	# The event rail stands on the left edge halfway between the curtains' hems and the tray, where
 	# live games keep their event buttons: clear of both, and in easy reach.
 	var rail := EventRail.build(app)
@@ -121,7 +119,6 @@ static func home(app: Node) -> void:
 	rail.offset_left = -14
 	app.content.add_child(rail)
 	_seat_rail(rail,front,console)
-	GrandOpening.prompt(app)
 	# Keep currency together at top-left; Settings occupies the matching top-right shortcut.
 	var purse := VBoxContainer.new()
 	purse.alignment = BoxContainer.ALIGNMENT_BEGIN
@@ -158,12 +155,240 @@ static func home(app: Node) -> void:
 	free_clock.timeout.connect(update_free_reset)
 	purse.add_child(free_clock)
 	free_clock.start()
-	var settings := _icon_button(app.content, "Settings", "settings", app._settings, 64, false)
-	settings.get_parent().set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	settings.get_parent().grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	var top_actions := HBoxContainer.new()
+	top_actions.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	top_actions.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	top_actions.add_theme_constant_override("separation",6)
+	top_actions.offset_left = -136
+	app.content.add_child(top_actions)
+	var leaderboards := _icon_button(top_actions, "Leaderboards", "leaderboards", app._leaderboards, 64, false, Color("4b5da8"))
+	_update_leaderboard_button(leaderboards,NestRun.chosen_mode())
+	_icon_button(top_actions, "Settings", "settings", app._settings, 64, false)
 	var settings_lift := 0.0 if app.banner_showing() else -24.0
-	settings.get_parent().offset_top = settings_lift
-	settings.get_parent().offset_bottom = settings_lift
+	top_actions.offset_top = settings_lift
+	top_actions.offset_bottom = settings_lift
+	if not _show_kinu_home_progress(app):
+		GrandOpening.prompt(app)
+
+## Finished runs bank XP immediately, but the reveal waits until the player comes home. A chain
+## of Play Again runs therefore becomes one short celebration instead of lengthening each result.
+static func _show_kinu_home_progress(app: Node) -> bool:
+	var to_xp := MyKinu.xp()
+	var from_xp := clampi(int(Save.data.my_kinu.get("home_seen_xp",to_xp)),0,to_xp)
+	var intro := int(Save.data.runs) > 0 and not bool(Save.data.my_kinu.intro_seen)
+	if to_xp == from_xp and not intro:
+		return false
+	var before_level := MyKinu.level_for(from_xp)
+	var after_level := MyKinu.level_for(to_xp)
+	var rewards := _kinu_rewards_between(before_level,after_level)
+	# A single rounded celebration floats over home instead of the usual wooden sign and
+	# a second reward card. All runs since the last visit share this one reveal.
+	if is_instance_valid(app.modal):
+		app.modal.queue_free()
+	var overlay := Control.new()
+	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.process_mode = Node.PROCESS_MODE_ALWAYS
+	overlay.add_to_group("modal_input_lock")
+	app.modal = overlay
+	app.screen.add_child(overlay)
+	var shade := ColorRect.new()
+	shade.color = Color(.14,.07,.16,.68)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.add_child(shade)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	overlay.add_child(center)
+	var card := PanelContainer.new()
+	card.name = "MyKinuHomeProgress"
+	card.custom_minimum_size.x = minf(442,app.get_viewport().get_visible_rect().size.x-36)
+	var card_style := NestTheme.box(Color("fff2ba"),38,Color("653452"),4)
+	card_style.set_border_width_all(5)
+	card_style.content_margin_left = 22
+	card_style.content_margin_right = 22
+	card_style.content_margin_top = 18
+	card_style.content_margin_bottom = 19
+	card_style.shadow_color = Color(.23,.06,.21,.7)
+	card_style.shadow_size = 20
+	card.add_theme_stylebox_override("panel",card_style)
+	center.add_child(card)
+	var stack: VBoxContainer = app._vbox(card,5)
+	var heading := HBoxContainer.new()
+	heading.alignment = BoxContainer.ALIGNMENT_CENTER
+	heading.add_theme_constant_override("separation",8)
+	stack.add_child(heading)
+	heading.add_child(NestTheme.headline("✦",23,NestTheme.SUN))
+	var title := NestTheme.headline(NestTheme.t("My Kinu").to_upper(),23,NestTheme.CREAM)
+	heading.add_child(title)
+	heading.add_child(NestTheme.headline("✦",23,NestTheme.SUN))
+	var hero := HBoxContainer.new()
+	hero.alignment = BoxContainer.ALIGNMENT_CENTER
+	hero.add_theme_constant_override("separation",2)
+	stack.add_child(hero)
+	var preview_holder := CenterContainer.new()
+	preview_holder.custom_minimum_size = Vector2(150,110)
+	hero.add_child(preview_holder)
+	var halo := PanelContainer.new()
+	halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	halo.custom_minimum_size = Vector2(103,103)
+	var halo_style := NestTheme.box(Color("ffe682"),55,Color("fffdf0"),0)
+	halo_style.set_border_width_all(3)
+	halo_style.set_content_margin_all(0)
+	halo_style.shadow_color = Color("ef9c43a0")
+	halo_style.shadow_size = 11
+	halo.add_theme_stylebox_override("panel",halo_style)
+	preview_holder.add_child(halo)
+	var preview := KinuPreview.new()
+	var shown_parts: Array[KinuPart] = MyKinu.equipped(app.run.catalog)
+	if not rewards.parts.is_empty():
+		shown_parts.clear()
+		shown_parts.append(rewards.parts[0] as KinuPart)
+	preview.setup(app.run.catalog.shapes[0],MyKinu.base(app.run.catalog),true,Vector2i(138,102),"happy",null,true,false,shown_parts)
+	preview.fit_model(1.12)
+	preview_holder.add_child(preview)
+	var hero_text := VBoxContainer.new()
+	hero_text.add_theme_constant_override("separation",0)
+	hero.add_child(hero_text)
+	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,29,NestTheme.BERRY)
+	level_label.name = "MyKinuHomeLevel"
+	level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	level_label.custom_minimum_size.x = 155
+	hero_text.add_child(level_label)
+	var earned_label := NestTheme.headline(NestTheme.t("+0 XP"),36,Color("fff76c"))
+	earned_label.name = "MyKinuHomeXP"
+	earned_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	earned_label.custom_minimum_size.x = 155
+	hero_text.add_child(earned_label)
+	earned_label.resized.connect(func() -> void: earned_label.pivot_offset = earned_label.size*.5)
+	var xp_pulse := earned_label.create_tween().set_loops()
+	xp_pulse.tween_property(earned_label,"scale",Vector2(1.08,1.08),.8).set_trans(Tween.TRANS_SINE)
+	xp_pulse.tween_property(earned_label,"scale",Vector2.ONE,.8).set_trans(Tween.TRANS_SINE)
+	var before_progress := MyKinu.progress_for(from_xp)
+	var xp_track := PanelContainer.new()
+	xp_track.name = "MyKinuHomeTrack"
+	xp_track.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	xp_track.custom_minimum_size.y = 26
+	var track_style := NestTheme.box(Color("fffbee"),14,Color("8d5c65"),0)
+	track_style.set_border_width_all(2)
+	track_style.set_content_margin_all(3)
+	xp_track.add_theme_stylebox_override("panel",track_style)
+	stack.add_child(xp_track)
+	var xp_bar := NestTheme.progress(before_progress[0],before_progress[1])
+	xp_bar.name = "MyKinuHomeBar"
+	xp_bar.custom_minimum_size.y = 20
+	xp_bar.clip_contents = true
+	var bar_back := NestTheme.box(Color("fffbee"),10,Color.TRANSPARENT,0)
+	bar_back.set_border_width_all(0)
+	bar_back.set_content_margin_all(0)
+	var bar_fill := NestTheme.box(Color("ffd343"),10,Color.TRANSPARENT,0)
+	bar_fill.set_border_width_all(0)
+	bar_fill.set_content_margin_all(0)
+	xp_bar.add_theme_stylebox_override("background",bar_back)
+	xp_bar.add_theme_stylebox_override("fill",bar_fill)
+	xp_track.add_child(xp_bar)
+	var final_progress := MyKinu.progress_for(to_xp)
+	var next_label: Label = app._center_label(stack,NestTheme.t("%d / %d XP · Next: %s")%[final_progress[0],final_progress[1],MyKinuScreen.next_reward(after_level+1)],14,NestTheme.MUTED)
+	next_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if after_level > before_level:
+		var slot_names: Array[String] = []
+		for slot in rewards.slots:
+			slot_names.append(MyKinu.SLOT_NAMES[slot])
+		if not slot_names.is_empty():
+			var slot_label: Label = app._center_label(stack,"✦  "+NestTheme.t("New slot: %s")%NestTheme.t_join(slot_names),18,NestTheme.PURPLE)
+			slot_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		var part_names: Array[String] = []
+		for part in rewards.parts:
+			part_names.append(part.display_name)
+		if not part_names.is_empty():
+			var shown_names: Array[String] = part_names.slice(0,2)
+			var part_text := NestTheme.t_join(shown_names) + (" …" if part_names.size() > 2 else "")
+			var part_label: Label = app._center_label(stack,"✦  "+NestTheme.t("New part: %s")%part_text,18,NestTheme.PURPLE)
+			part_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		if int(rewards.tickets) > 0:
+			app._center_label(stack,"✦  "+NestTheme.t("+%d Catcher tickets")%int(rewards.tickets),18,NestTheme.PURPLE)
+		app._center_label(stack,"✦  "+NestTheme.t("+%d level-up beans")%int(rewards.beans),18,NestTheme.PURPLE)
+	elif intro:
+		var hello: Label = app._center_label(stack,NestTheme.t("Meet My Kinu! Dress it up in the Wardrobe."),16,NestTheme.PURPLE)
+		hello.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation",8)
+	stack.add_child(actions)
+	var done := NestTheme.button(NestTheme.t("Done"),func() -> void:
+		Save.acknowledge_kinu_progress()
+		app._close_modal()
+		GrandOpening.prompt(app)
+	,false,"tap")
+	done.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	done.custom_minimum_size.y = 53
+	done.add_theme_font_size_override("font_size",16)
+	_kinu_celebration_button(done,Color("fffaf0"),NestTheme.MUTED)
+	actions.add_child(done)
+	var dress := NestTheme.button(NestTheme.t("Dress My Kinu"),func() -> void:
+		Save.acknowledge_kinu_progress()
+		app._close_modal()
+		MyKinuScreen.show(app,app._home)
+	,true,"wardrobe")
+	dress.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	dress.custom_minimum_size.y = 53
+	dress.add_theme_font_size_override("font_size",16)
+	_kinu_celebration_button(dress,NestTheme.BERRY,Color("d64273"))
+	actions.add_child(dress)
+	card.scale = Vector2.ONE
+	card.modulate.a = 0
+	var entrance := card.create_tween()
+	entrance.tween_property(card,"modulate:a",1.0,.22)
+	var finished_at := _animate_kinu_xp(app,xp_bar,level_label,earned_label,from_xp,to_xp,.25)
+	if after_level > before_level:
+		var progress_modal: Control = app.modal
+		var celebration := progress_modal.create_tween()
+		celebration.tween_interval(finished_at)
+		celebration.tween_callback(func() -> void:
+			if is_instance_valid(app) and app.page == "home" and is_instance_valid(progress_modal) and app.modal == progress_modal:
+				_kinu_reward_burst(progress_modal,card))
+	return true
+
+static func _kinu_reward_burst(overlay: Control, card: Control) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.randomize()
+	var origin := card.get_global_rect().get_center()
+	for i in 16:
+		var sparkle := NestTheme.headline("✦",rng.randi_range(18,31),[NestTheme.SUN,NestTheme.BERRY,NestTheme.CREAM,NestTheme.PURPLE][i%4])
+		var angle := TAU*float(i)/16.0+rng.randf_range(-.18,.18)
+		var direction := Vector2.RIGHT.rotated(angle)
+		sparkle.position = origin+direction*160.0-Vector2(18,18)
+		overlay.add_child(sparkle)
+		overlay.move_child(sparkle,1)
+		var distance := rng.randf_range(250,315)
+		var flight := sparkle.create_tween().set_parallel(true)
+		flight.tween_property(sparkle,"position",origin+direction*distance-Vector2(18,18),.75).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		flight.tween_property(sparkle,"rotation",rng.randf_range(-2.5,2.5),.75)
+		flight.tween_property(sparkle,"modulate:a",0.0,.75).set_delay(.13)
+		flight.chain().tween_callback(sparkle.queue_free)
+
+static func _kinu_celebration_button(button: Button, color: Color, border: Color) -> void:
+	for state in ["normal","hover","pressed"]:
+		var style := NestTheme.box(color.lightened(.07) if state == "hover" else color,25,border,3)
+		style.set_border_width_all(2)
+		style.content_margin_left = 9
+		style.content_margin_right = 9
+		style.content_margin_top = 6
+		style.content_margin_bottom = 8
+		button.add_theme_stylebox_override(state,style)
+
+## Read-only recap: the actual items and currency were already granted by finish_run.
+static func _kinu_rewards_between(before_level: int, after_level: int) -> Dictionary:
+	var rewards := {"beans": 0, "tickets": 0, "parts": [], "slots": []}
+	for reached in range(before_level+1,after_level+1):
+		rewards.beans += MyKinu.level_beans(reached)
+		for slot in MyKinu.SLOTS:
+			if MyKinu.slot_level(slot) == reached:
+				rewards.slots.append(slot)
+		if reached % MyKinu.LEVEL_PART_EVERY == 0:
+			var part := MyKinu.level_part(reached)
+			if part:
+				rewards.parts.append(part)
+			else:
+				rewards.tickets += MyKinu.SPARE_TICKETS
+	return rewards
 
 ## A labelled icon centred over one of the four decorative medallions woven into the noren.
 static func _curtain_button(front: ShopFront, title: String, icon: String, callback: Callable, index: int, sound: String = "plop") -> Node2D:
@@ -424,37 +649,7 @@ static func results(app: Node, stats: Dictionary) -> void:
 	var bean_label := bean_pill.find_children("*","Label",true,false)
 	if not bean_label.is_empty():
 		_count_up(app,bean_label[0],earned,beat,func(value: int) -> String: return NestTheme.t("+%d beans")%value)
-	# My Kinu's XP from this run, then what any new level brought.
-	var growth: Dictionary = stats.get("my_kinu", {})
-	if not growth.is_empty():
-		var xp_box: VBoxContainer = app._vbox(column,2)
-		xp_box.name = "MyKinuXP"
-		var after := int(growth.level_after)
-		var progress := MyKinu.progress_for(MyKinu.xp())
-		app._center_label(xp_box,NestTheme.t("My Kinu +%d XP · Level %d")%[int(growth.xp),after],15,NestTheme.MUTED)
-		xp_box.add_child(NestTheme.progress(progress[0],progress[1]))
-		beat += .24
-		_reveal(app,xp_box,beat)
 	var news: Array[String] = []
-	if not growth.is_empty() and int(growth.level_after) > int(growth.level_before):
-		news.append(NestTheme.t("My Kinu reached level %d!")%int(growth.level_after))
-		var gifts: Dictionary = growth.rewards
-		for slot in gifts.slots:
-			news.append(NestTheme.t("New slot: %s")%NestTheme.t(MyKinu.SLOT_NAMES[slot]))
-		var names: Array[String] = []
-		for part in gifts.parts:
-			names.append(part.display_name)
-		if not names.is_empty():
-			news.append(NestTheme.t("New part: %s")%NestTheme.t_join(names))
-		if int(gifts.tickets) > 0:
-			news.append(NestTheme.t("+%d Catcher tickets")%int(gifts.tickets))
-		if int(gifts.beans) > 0:
-			news.append(NestTheme.t("+%d level-up beans")%int(gifts.beans))
-	# My Kinu is introduced once, on the results of the first run that has it.
-	if not bool(Save.data.my_kinu.intro_seen):
-		Save.data.my_kinu.intro_seen = true
-		Save.persist()
-		news.append(NestTheme.t("Meet My Kinu! Dress it up in the Wardrobe."))
 	if not unlocked.is_empty():
 		news.append(NestTheme.t("New My Kinu flavour: %s")%NestTheme.t_join(unlocked) if MyKinu.active() else NestTheme.t("New flavour: %s")%NestTheme.t_join(unlocked))
 	if not rewards.is_empty():
@@ -567,7 +762,7 @@ static func _next_flavour(app: Node, mode: String) -> Dictionary:
 ## revealed in order, so the screen reads as a sequence of small wins rather than a wall of numbers.
 static func _reveal(app: Node, node: Control, delay: float, sound: String = "") -> void:
 	node.modulate.a = 0.0
-	var tween := app.create_tween()
+	var tween := node.create_tween()
 	tween.tween_interval(maxf(delay,0.001))
 	tween.tween_callback(func() -> void:
 		if sound != "" and is_instance_valid(node):
@@ -580,12 +775,54 @@ static func _count_up(app: Node, label: Label, to: int, delay: float, text_for: 
 	if to <= 0:
 		return
 	label.text = text_for.call(0)
-	var tween := app.create_tween()
+	var tween := label.create_tween()
 	tween.tween_interval(maxf(delay,0.001))
 	tween.tween_method(func(value: float) -> void:
 		if is_instance_valid(label):
 			label.text = text_for.call(int(round(value)))
 	,0.0,float(to),clampf(to*.015,.4,1.1)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+## Fill each level separately so the bar holds at full before the next level starts. The track and
+## panel stay visible throughout; the level boundary is a beat rather than a one-frame reset.
+static func _animate_kinu_xp(app: Node, bar: ProgressBar, level_label: Label, earned_label: Label, from_xp: int, to_xp: int, delay: float) -> float:
+	var gained := maxi(0,to_xp-from_xp)
+	var duration := clampf(float(gained)*.025,.6,1.6) if gained > 0 else .2
+	var tween := bar.create_tween()
+	tween.tween_interval(delay)
+	var cursor := from_xp
+	var elapsed := delay
+	while cursor < to_xp:
+		var level := MyKinu.level_for(cursor)
+		var progress := MyKinu.progress_for(cursor)
+		var boundary := cursor+progress[1]-progress[0]
+		var target := mini(to_xp,boundary)
+		var segment_time := maxf(.08,duration*float(target-cursor)/float(gained))
+		var segment_start := cursor
+		var segment_level := level
+		var segment_target := target
+		tween.tween_method(func(value: float) -> void:
+			if not is_instance_valid(bar) or not is_instance_valid(earned_label):
+				return
+			var total := int(round(value))
+			bar.max_value = MyKinu.xp_to_next(segment_level)
+			bar.value = MyKinu.progress_for(segment_start)[0]+total-segment_start
+			earned_label.text = NestTheme.t("+%d XP")%maxi(0,total-from_xp)
+		, float(cursor),float(target),segment_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		elapsed += segment_time
+		if target == boundary:
+			tween.tween_interval(.28)
+			elapsed += .28
+			tween.tween_callback(func() -> void:
+				if not is_instance_valid(bar) or not is_instance_valid(level_label):
+					return
+				var next_level := MyKinu.level_for(segment_target)
+				bar.max_value = MyKinu.xp_to_next(next_level)
+				bar.value = 0
+				level_label.text = NestTheme.t("Level %d")%next_level
+				Sound.play("special")
+				Haptics.pulse(40,.7))
+		cursor = target
+	return elapsed
 
 static func _score_title(mode: String) -> String:
 	return {"classic": "Kinu Piled", "tower": "Tower Height", "toss": "Score"}.get(mode, "Kinu Piled")
@@ -783,7 +1020,7 @@ static func _home_action_button(title: String, tone: Color, callback: Callable, 
 		row.add_child(art)
 	# An empty label still takes part in the row's centring, pushing a lone icon off-centre.
 	if title != "":
-		var label := NestTheme.label(title, 30 if primary else 17, NestTheme.INK if primary else NestTheme.CREAM)
+		var label := NestTheme.label(title, 30 if primary else 15 if title in ["My Kinu","Kinu Claw"] else 17, NestTheme.INK if primary else NestTheme.CREAM)
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.add_child(label)
 	return button

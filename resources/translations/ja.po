@@ -3438,3 +3438,177 @@ msgstr "金のめがね"
 
 msgid "Star Shades"
 msgstr "星のサングラス"
+
+msgid "+%d XP"
+msgstr "+%d XP"
+
+msgid "Dress My Kinu"
+msgstr "マイきぬを着せかえる"
+
+msgid "Next slot: %s at level %d"
+msgstr "次のスロット：%s（レベル%d）"
+
+msgid "Finish runs to earn XP. Every Kinu landed counts."
+msgstr "プレイを最後まで続けてXPを獲得。着地したきぬが1体ずつ加算されます。"
+
+msgid "Rainy Day Coat"
+msgstr "雨の日コート"
+
+msgid "Strawberry Cardigan"
+msgstr "いちごカーディガン"
+
+msgid "Matcha Patchwork"
+msgstr "抹茶パッチワーク"
+
+msgid "Midnight Haori"
+msgstr "真夜中の羽織"
+
+msgid "Cloud Pajamas"
+msgstr "雲のパジャマ"
+
+msgid "Honey Waistcoat"
+msgstr "はちみつベスト"
+
+msgid "Picnic Overalls"
+msgstr "ピクニックサロペット"
+
+msgid "Citrus Windbreaker"
+msgstr "シトラスウィンドブレーカー"
+
+msgid "Lilac Quilt"
+msgstr "ライラックキルト"
+
+msgid "Tea Shop Vest"
+msgstr "茶屋ベスト"
+
+msgid "Aurora Raincoat"
+msgstr "オーロラレインコート"
+
+msgid "Moonlit Cape"
+msgstr "月明かりのケープ"
+
+msgid "Festival Confetti"
+msgstr "お祭り紙吹雪"
+
+msgid "Rainbow Headphones"
+msgstr "虹色ヘッドホン"
+
+msgid "Fox Ears"
+msgstr "キツネ耳"
+
+msgid "Night Market Beret"
+msgstr "夜市のベレー帽"
+
+msgid "Peach Blossom Crown"
+msgstr "桃の花冠"
+
+msgid "Stargazer Cap"
+msgstr "星見の帽子"
+
+msgid "Tofu Mushroom"
+msgstr "豆腐きのこ"
+
+msgid "Mint Headphones"
+msgstr "ミントヘッドホン"
+
+msgid "Sunset Bucket"
+msgstr "夕焼けバケットハット"
+
+msgid "Plum Mushroom"
+msgstr "プラムきのこ"
+
+msgid "Comet Headphones"
+msgstr "彗星ヘッドホン"
+
+msgid "Peach Lollipop"
+msgstr "ももキャンディ"
+
+msgid "Parade Maracas"
+msgstr "パレードマラカス"
+
+msgid "Baker Mitts"
+msgstr "パン屋のミトン"
+
+msgid "Rainbow Flags"
+msgstr "虹色の旗"
+
+msgid "Plum Wings"
+msgstr "プラムの翼"
+
+msgid "Mint Pom-poms"
+msgstr "ミントポンポン"
+
+msgid "Sky Balloon"
+msgstr "空色の風船"
+
+msgid "Lemon Lollipop"
+msgstr "レモンキャンディ"
+
+msgid "Lucky Lantern"
+msgstr "幸運のちょうちん"
+
+msgid "Cocoa Maracas"
+msgstr "ココアマラカス"
+
+msgid "Violet Boxing Gloves"
+msgstr "すみれ色のボクシンググローブ"
+
+msgid "Sunburst Wings"
+msgstr "朝日の翼"
+
+msgid "Moon Lantern"
+msgstr "月のちょうちん"
+
+msgid "Firefly Maracas"
+msgstr "ホタルマラカス"
+
+msgid "Heart Lollipop"
+msgstr "ハートキャンディ"
+
+msgid "Pixel Specs"
+msgstr "ピクセルメガネ"
+
+msgid "Honey Butterfly"
+msgstr "はちみつ蝶メガネ"
+
+msgid "Festival Visor"
+msgstr "お祭りバイザー"
+
+msgid "Plum Cat Eyes"
+msgstr "プラム猫目メガネ"
+
+msgid "Starlight Specs"
+msgstr "星明かりのメガネ"
+
+msgid "Sea Glass Goggles"
+msgstr "シーグラスゴーグル"
+
+msgid "Cocoa Rounds"
+msgstr "ココア丸メガネ"
+
+msgid "Mint Pixel"
+msgstr "ミントピクセル"
+
+msgid "Rose Butterfly"
+msgstr "バラ色の蝶メガネ"
+
+msgid "Amber Visor"
+msgstr "琥珀バイザー"
+
+msgid "Lilac Lenses"
+msgstr "ライラックレンズ"
+
+msgid "Sky Butterfly"
+msgstr "空色の蝶メガネ"
+
+msgid "Sunrise Visor"
+msgstr "日の出バイザー"
+
+msgid "Midnight Pixel"
+msgstr "真夜中のピクセル"
+
+msgid "Aurora Butterfly"
+msgstr "オーロラ蝶メガネ"
+
+msgid "Golden Visor"
+msgstr "黄金バイザー"

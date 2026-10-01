@@ -6,8 +6,9 @@ const repo = "/Users/mike/Dev/Apps/critternest";
 const outputDir = path.join(repo, "outputs", "kinu_content_inventory");
 const outputPath = path.join(outputDir, "kinu_content_inventory.xlsx");
 const catalogPath = path.join(repo, "resources/kinu/catalog.tres");
+const partsPath = path.join(repo, "scripts/kinu/kinu_parts.gd");
 const thumbDir = path.join(repo, "resources/kinu/thumbs");
-const sourceUrl = "resources/kinu/catalog.tres";
+const sourceUrl = "resources/kinu/catalog.tres + scripts/kinu/kinu_parts.gd";
 const seasonalItems = new Map([
   ["pumpkin", { availability: "Seasonal", collectionSet: "Harvest", notes: "Shop item for the autumn window." }],
   ["pumpkin_patch", { availability: "Seasonal", collectionSet: "Harvest", notes: "Shop item for the autumn window." }],
@@ -53,15 +54,13 @@ function extract(block, expression, fallback = "") {
 
 function parseCatalog(text) {
   const items = [];
-  const resources = text.matchAll(/\[sub_resource[^\n]*\n([\s\S]*?)(?=\[sub_resource|$)/g);
+  const resources = text.matchAll(/\[sub_resource type="Resource" id="((?:outfit|box|room)_[^"]+)"\]\n([\s\S]*?)(?=\[sub_resource|$)/g);
   for (const match of resources) {
-    const block = match[1];
+    const block = match[2];
     const id = extract(block, /^id = "([^"]+)"/m);
     const name = extract(block, /^display_name = "([^"]+)"/m);
     if (!id || !name) continue;
-    let type = extract(block, /^kind = "([^"]+)"/m);
-    if (!type && block.includes("hood_color")) type = "outfit";
-    if (!type || !["outfit", "box", "room"].includes(type)) continue;
+    const type = match[1].split("_", 1)[0];
     const price = Number(extract(block, /^price = (\d+)/m, "0"));
     const goal = extract(block, /^goal = "([^"]+)"/m);
     const goalAmount = Number(extract(block, /^goal_amount = (\d+)/m, "0"));
@@ -115,6 +114,31 @@ function parseCatalog(text) {
   return items.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
 }
 
+function parseParts(text) {
+  const prices = { common: [600, 700, 800], rare: [1150, 1300, 1400], epic: [1700, 1900, 2000] };
+  const parts = [];
+  const row = /^\s*\["([a-z0-9_]+)", "(body|hat|arms|glasses)", "([^"]+)", "[^"]+", "[a-f0-9]+", "[a-f0-9]+", "([^"]+)", (\d+)\],/gm;
+  for (const match of text.matchAll(row)) {
+    const [, id, slot, name, source, extraText] = match;
+    const extra = Number(extraText);
+    const shopEligible = Object.hasOwn(prices, source);
+    const craneOnly = source.startsWith("crane:");
+    const catcherEligible = shopEligible || craneOnly;
+    const price = shopEligible ? prices[source][extra] : 0;
+    const thumbnail = path.join(thumbDir, `part_${id}.png`);
+    const acquisition = source === "starter" ? "Starter / free" : source === "level" ? "Level reward" : craneOnly ? "Catcher" : shopEligible ? "Shop + Catcher" : "Goal";
+    parts.push({ type: "Part", id, name, rarity: (craneOnly ? source.split(":")[1] : shopEligible ? source : source === "starter" ? "starter" : "exclusive").replace(/^./, c => c.toUpperCase()),
+      price, goal: !shopEligible && !craneOnly && source !== "starter" ? source : "",
+      goalAmount: source === "level" ? extra : !shopEligible && !craneOnly ? extra : 0,
+      craneOnly, catcherEligible, shopEligible, available: true, thumbnail, showcase: "", event: "",
+      thumbnailState: awaitFile(thumbnail) ? "PNG linked" : "Needs PNG", acquisition,
+      proposedDay7: craneOnly ? "Eligible" : "Not eligible", availability: "Permanent", collectionSet: "My Kinu",
+      status: "Live", release: "Current", notes: `Slot: ${slot}. ${source === "level" ? `Unlocks at level ${extra}.` : source === "starter" ? "Included when slot opens." : source === "goal" ? `Earned by ${extra} ${source}.` : ""}` });
+  }
+  if (parts.length !== 120 || new Set(parts.map(part => part.id)).size !== 120) throw new Error(`Expected 120 unique My Kinu parts, found ${parts.length}`);
+  return parts;
+}
+
 function awaitFile(file) {
   try { return requireStat(file); } catch { return false; }
 }
@@ -146,7 +170,7 @@ function setSection(range) {
 }
 
 const catalogText = await fs.readFile(catalogPath, "utf8");
-const items = parseCatalog(catalogText);
+const items = [...parseCatalog(catalogText), ...parseParts(await fs.readFile(partsPath, "utf8"))].sort((a,b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name));
 const workbook = Workbook.create();
 const dashboard = workbook.worksheets.add("Overview");
 const inventory = workbook.worksheets.add("Inventory");
@@ -170,14 +194,20 @@ dashboard.getRange("A3").format = { font: { italic: true, color: "#52616B", name
 dashboard.getRange("A5:B5").values = [["Live inventory", "Count"]];
 setHeader(dashboard.getRange("A5:B5"));
 dashboard.getRange("A6:A13").values = [["All collectibles"], ["Outfits"], ["Boxes"], ["Rooms"], ["Machine eligible"], ["Claw-only"], ["Monthly Showcase"], ["Grand Opening"]];
-dashboard.getRange("B6:B13").formulas = [["=COUNTA(Inventory!$C$7:$C$200)"], ["=COUNTIF(Inventory!$A$7:$A$200,\"Outfit\")"], ["=COUNTIF(Inventory!$A$7:$A$200,\"Box\")"], ["=COUNTIF(Inventory!$A$7:$A$200,\"Room\")"], ["=COUNTIF(Inventory!$J$7:$J$200,\"Yes\")"], ["=COUNTIF(Inventory!$I$7:$I$200,\"Yes\")"], ["=COUNTIF(Inventory!$L$7:$L$200,\"Monthly Showcase\")"], ["=COUNTIF(Inventory!$L$7:$L$200,\"Grand Opening\")"]];
+dashboard.getRange("B6:B13").formulas = [["=COUNTA(Inventory!$C$7:$C$300)"], ["=COUNTIF(Inventory!$A$7:$A$300,\"Outfit\")"], ["=COUNTIF(Inventory!$A$7:$A$300,\"Box\")"], ["=COUNTIF(Inventory!$A$7:$A$300,\"Room\")"], ["=COUNTIF(Inventory!$J$7:$J$300,\"Yes\")"], ["=COUNTIF(Inventory!$I$7:$I$300,\"Yes\")"], ["=COUNTIF(Inventory!$L$7:$L$300,\"Monthly Showcase\")"], ["=COUNTIF(Inventory!$L$7:$L$300,\"Grand Opening\")"]];
+dashboard.getRange("G5:H5").values = [["My Kinu parts", "Count"]];
+setHeader(dashboard.getRange("G5:H5"));
+dashboard.getRange("G6:G7").values = [["All parts"], ["Shop parts"]];
+dashboard.getRange("H6:H7").formulas = [["=COUNTIF(Inventory!$A$7:$A$300,\"Part\")"], ["=COUNTIFS(Inventory!$A$7:$A$300,\"Part\",Inventory!$F$7:$F$300,\">0\")"]];
 dashboard.getRange("A6:B13").format = { font: { name: "Arial", size: 10 }, borders: { preset: "inside", style: "thin", color: "#D9E2EA" } };
 dashboard.getRange("B6:B13").format.horizontalAlignment = "right";
 
 dashboard.getRange("D5:E5").values = [["Shop economy", "Beans"]];
 setHeader(dashboard.getRange("D5:E5"));
 dashboard.getRange("D6:D10").values = [["Shop total"], ["Outfits"], ["Boxes"], ["Rooms"], ["Common items"]];
-dashboard.getRange("E6:E10").formulas = [["=SUM(Inventory!$F$7:$F$200)"], ["=SUMIF(Inventory!$A$7:$A$200,\"Outfit\",Inventory!$F$7:$F$200)"], ["=SUMIF(Inventory!$A$7:$A$200,\"Box\",Inventory!$F$7:$F$200)"], ["=SUMIF(Inventory!$A$7:$A$200,\"Room\",Inventory!$F$7:$F$200)"], ["=SUMIF(Inventory!$E$7:$E$200,\"Common\",Inventory!$F$7:$F$200)"]];
+dashboard.getRange("E6:E10").formulas = [["=SUM(Inventory!$F$7:$F$300)"], ["=SUMIF(Inventory!$A$7:$A$300,\"Outfit\",Inventory!$F$7:$F$300)"], ["=SUMIF(Inventory!$A$7:$A$300,\"Box\",Inventory!$F$7:$F$300)"], ["=SUMIF(Inventory!$A$7:$A$300,\"Room\",Inventory!$F$7:$F$300)"], ["=SUMIF(Inventory!$E$7:$E$300,\"Common\",Inventory!$F$7:$F$300)"]];
+dashboard.getRange("D11").values = [["Parts"]];
+dashboard.getRange("E11").formulas = [["=SUMIF(Inventory!$A$7:$A$300,\"Part\",Inventory!$F$7:$F$300)"]];
 dashboard.getRange("D6:E10").format = { font: { name: "Arial", size: 10 }, borders: { preset: "inside", style: "thin", color: "#D9E2EA" } };
 dashboard.getRange("E6:E10").format.numberFormat = "#,##0";
 
@@ -345,7 +375,7 @@ const showcaseWidths = [16, 11, 13, 16, 18, 14, 11, 15, 22, 22, 12, 26, 24, 40];
 for (let col = 0; col < showcaseWidths.length; col++) showcaseSheet.getRangeByIndexes(0, col, 1, 1).format.columnWidth = showcaseWidths[col];
 showcaseSheet.freezePanes.freezeRows(6);
 
-// Claw odds with the six rewards taken out. Cosmetic hits are a fixed 10% of plays split by tier,
+// Claw odds with the six rewards taken out. Cosmetic hits are a fixed 15% of plays split by tier,
 // so removing items only raises each remaining item's share within its tier.
 const oddsTop = showcaseLast + 3;
 showcaseSheet.getRange(`A${oddsTop}:G${oddsTop}`).merge();
@@ -364,7 +394,7 @@ const tierRows = Object.entries(tierWeights).map(([tier, weight], index) => {
 });
 for (const { row, values } of tierRows) {
   showcaseSheet.getRange(`A${row}:G${row}`).values = [values];
-  showcaseSheet.getRange(`C${row}`).formulas = [[`=0.1*B${row}`]];
+  showcaseSheet.getRange(`C${row}`).formulas = [[`=0.15*B${row}`]];
   showcaseSheet.getRange(`F${row}`).formulas = [[`=IF(D${row}=0,0,C${row}/D${row})`]];
   showcaseSheet.getRange(`G${row}`).formulas = [[`=IF(E${row}=0,0,C${row}/E${row})`]];
 }
@@ -454,6 +484,7 @@ console.log(errors.ndjson);
 for (const [sheetName, range, filename] of [
   ["Overview", "A1:H20", "overview_preview.png"],
   ["Inventory", "A1:R18", "inventory_preview.png"],
+  ["Inventory", "A145:R153", "parts_preview.png"],
   ["Monthly Showcase", "A1:N23", "showcase_preview.png"],
   ["Grand Opening", "A1:J18", "grand_opening_preview.png"],
   ["Lists", "A1:D10", "lists_preview.png"]

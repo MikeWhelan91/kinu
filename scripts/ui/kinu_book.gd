@@ -274,6 +274,8 @@ static func _item_detail(app: Node, kind: String, item: Resource) -> void:
 		pills.add_child(NestTheme.bean_pill(str(int(item.price)), 15))
 	stack.add_child(status_row)
 	# Every tile says how it is come by, so tapping one always answers "how do I get this?".
+	if item is KinuPart and not MyKinu.slot_unlocked(item.slot):
+		app._paper_text(stack, NestTheme.t("Unlock the %s slot at My Kinu level %d first.")%[NestTheme.t(MyKinu.SLOT_NAMES[item.slot]), MyKinu.slot_level(item.slot)], 16)
 	if item is KinuPart and item.level > 0:
 		app._paper_text(stack, NestTheme.t("Reach My Kinu level %d to earn this.")%item.level, 16)
 	elif item is KinuPart and item.starter:

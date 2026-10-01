@@ -225,7 +225,7 @@ func _ready() -> void:
 			Save.data.box = "bamboo"
 			app.shop_tab = {"shop": "outfit", "shop_outfit": "outfit", "shop_box": "box", "shop_room": "room"}[mode]
 			app._shop()
-		"my_kinu", "my_kinu_hat", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results":
+		"my_kinu", "my_kinu_hat", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results", "my_kinu_home_progress":
 			Save.data.best = 30
 			Save.data.beans = 2400
 			Save.data.my_kinu.xp = 520
@@ -267,6 +267,17 @@ func _ready() -> void:
 					app.initial_best = 30
 					app.run.run_id = "visual"
 					app._results({"score":24,"pile":24,"placed":26,"height":6.4,"run_id":"visual"})
+				"my_kinu_home_progress":
+					Save.data.my_kinu.xp = 1250
+					Save.data.my_kinu.home_seen_xp = 1250
+					app._start()
+					app.initial_best = 30
+					app.run.run_id = "visual-home"
+					app._results({"score":24,"pile":24,"placed":26,"height":6.4,"run_id":"visual-home"})
+					app._start()
+					app.run.run_id = "visual-home-again"
+					app._results({"score":15,"pile":15,"placed":15,"height":4.2,"run_id":"visual-home-again"})
+					app._home()
 		"night", "winter":
 			Save.data.room = "night" if mode == "night" else "winter"
 			Save.data.box = "lacquer" if mode == "night" else "goldbox"
@@ -274,7 +285,7 @@ func _ready() -> void:
 		"results":
 			app.initial_best = 0
 			app._results({"score":12,"placed":14,"height":6.4})
-	await get_tree().create_timer(1).timeout
+	await get_tree().create_timer(2 if mode == "my_kinu_home_progress" else 1).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://docs/"+mode+suffix+".png")
 	print("CAPTURE ",mode," ",get_viewport().get_visible_rect())

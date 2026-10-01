@@ -3438,3 +3438,177 @@ msgstr "金框眼鏡"
 
 msgid "Star Shades"
 msgstr "星星墨鏡"
+
+msgid "+%d XP"
+msgstr "+%d XP"
+
+msgid "Dress My Kinu"
+msgstr "打扮我的小絹"
+
+msgid "Next slot: %s at level %d"
+msgstr "下一個欄位：%s（等級 %d）"
+
+msgid "Finish runs to earn XP. Every Kinu landed counts."
+msgstr "完成一局就能獲得 XP。每個成功落地的小絹都算數。"
+
+msgid "Rainy Day Coat"
+msgstr "雨天外套"
+
+msgid "Strawberry Cardigan"
+msgstr "草莓開襟衫"
+
+msgid "Matcha Patchwork"
+msgstr "抹茶拼布"
+
+msgid "Midnight Haori"
+msgstr "午夜羽織"
+
+msgid "Cloud Pajamas"
+msgstr "雲朵睡衣"
+
+msgid "Honey Waistcoat"
+msgstr "蜂蜜背心"
+
+msgid "Picnic Overalls"
+msgstr "野餐吊帶褲"
+
+msgid "Citrus Windbreaker"
+msgstr "柑橘風衣"
+
+msgid "Lilac Quilt"
+msgstr "丁香拼布衣"
+
+msgid "Tea Shop Vest"
+msgstr "茶屋背心"
+
+msgid "Aurora Raincoat"
+msgstr "極光雨衣"
+
+msgid "Moonlit Cape"
+msgstr "月光披肩"
+
+msgid "Festival Confetti"
+msgstr "祭典彩紙"
+
+msgid "Rainbow Headphones"
+msgstr "彩虹耳機"
+
+msgid "Fox Ears"
+msgstr "狐狸耳朵"
+
+msgid "Night Market Beret"
+msgstr "夜市貝雷帽"
+
+msgid "Peach Blossom Crown"
+msgstr "桃花冠"
+
+msgid "Stargazer Cap"
+msgstr "觀星帽"
+
+msgid "Tofu Mushroom"
+msgstr "豆腐蘑菇"
+
+msgid "Mint Headphones"
+msgstr "薄荷耳機"
+
+msgid "Sunset Bucket"
+msgstr "夕陽漁夫帽"
+
+msgid "Plum Mushroom"
+msgstr "梅紫蘑菇"
+
+msgid "Comet Headphones"
+msgstr "彗星耳機"
+
+msgid "Peach Lollipop"
+msgstr "蜜桃棒棒糖"
+
+msgid "Parade Maracas"
+msgstr "遊行沙鈴"
+
+msgid "Baker Mitts"
+msgstr "烘焙手套"
+
+msgid "Rainbow Flags"
+msgstr "彩虹旗"
+
+msgid "Plum Wings"
+msgstr "梅紫翅膀"
+
+msgid "Mint Pom-poms"
+msgstr "薄荷彩球"
+
+msgid "Sky Balloon"
+msgstr "天空氣球"
+
+msgid "Lemon Lollipop"
+msgstr "檸檬棒棒糖"
+
+msgid "Lucky Lantern"
+msgstr "幸運燈籠"
+
+msgid "Cocoa Maracas"
+msgstr "可可沙鈴"
+
+msgid "Violet Boxing Gloves"
+msgstr "紫羅蘭拳擊手套"
+
+msgid "Sunburst Wings"
+msgstr "旭日翅膀"
+
+msgid "Moon Lantern"
+msgstr "月亮燈籠"
+
+msgid "Firefly Maracas"
+msgstr "螢火蟲沙鈴"
+
+msgid "Heart Lollipop"
+msgstr "愛心棒棒糖"
+
+msgid "Pixel Specs"
+msgstr "像素眼鏡"
+
+msgid "Honey Butterfly"
+msgstr "蜂蜜蝴蝶眼鏡"
+
+msgid "Festival Visor"
+msgstr "祭典護目鏡"
+
+msgid "Plum Cat Eyes"
+msgstr "梅紫貓眼鏡"
+
+msgid "Starlight Specs"
+msgstr "星光眼鏡"
+
+msgid "Sea Glass Goggles"
+msgstr "海玻璃護目鏡"
+
+msgid "Cocoa Rounds"
+msgstr "可可圓框眼鏡"
+
+msgid "Mint Pixel"
+msgstr "薄荷像素眼鏡"
+
+msgid "Rose Butterfly"
+msgstr "玫瑰蝴蝶眼鏡"
+
+msgid "Amber Visor"
+msgstr "琥珀護目鏡"
+
+msgid "Lilac Lenses"
+msgstr "丁香鏡片"
+
+msgid "Sky Butterfly"
+msgstr "天空蝴蝶眼鏡"
+
+msgid "Sunrise Visor"
+msgstr "日出護目鏡"
+
+msgid "Midnight Pixel"
+msgstr "午夜像素眼鏡"
+
+msgid "Aurora Butterfly"
+msgstr "極光蝴蝶眼鏡"
+
+msgid "Golden Visor"
+msgstr "黃金護目鏡"

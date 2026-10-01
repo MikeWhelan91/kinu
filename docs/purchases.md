@@ -38,11 +38,12 @@ ticket per day.
 - After 9 consecutive plays without an item, play 10 is guaranteed to be an
   unowned item (previously play 15).
 - Owned cosmetics leave the pool. The pool holds shop and Catcher-only outfits,
-  boxes and rooms, plus the 32 shop My Kinu parts and 8 Catcher-only parts. Part
+  boxes and rooms, plus the 53 shop My Kinu parts and 18 Catcher-only parts. Part
   starters, level rewards and goal parts are never in the machine.
-- With these settings `tools/simulate_claw_economy.py` (two free plays a day)
-  puts the median time to collect the whole pool, parts included, at 243 days,
-  against 259 days for the smaller pool at the old 10% / play-15 settings.
+- With these settings `tools/simulate_claw_economy.py --trials 200` (two free
+  plays a day, weekly and attendance tickets, no shop purchases) puts the median
+  time to collect the whole pool at 287 days, and the Claw-only subset at 217 days.
+  These are simulated play patterns, not guaranteed rewards.
 
 Remove Ads is wired for delivery, refund handling, and restoration, but sales
 are disabled with `Store.ADS_ENABLED` until a real ad integration is present.

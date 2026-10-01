@@ -3438,3 +3438,177 @@ msgstr "황금 안경"
 
 msgid "Star Shades"
 msgstr "별 선글라스"
+
+msgid "+%d XP"
+msgstr "+%d XP"
+
+msgid "Dress My Kinu"
+msgstr "마이 키누 꾸미기"
+
+msgid "Next slot: %s at level %d"
+msgstr "다음 슬롯: %s (레벨 %d)"
+
+msgid "Finish runs to earn XP. Every Kinu landed counts."
+msgstr "플레이를 끝내면 XP를 얻어요. 착지한 키누마다 XP가 쌓여요."
+
+msgid "Rainy Day Coat"
+msgstr "비 오는 날 코트"
+
+msgid "Strawberry Cardigan"
+msgstr "딸기 카디건"
+
+msgid "Matcha Patchwork"
+msgstr "말차 패치워크"
+
+msgid "Midnight Haori"
+msgstr "한밤중 하오리"
+
+msgid "Cloud Pajamas"
+msgstr "구름 잠옷"
+
+msgid "Honey Waistcoat"
+msgstr "꿀 조끼"
+
+msgid "Picnic Overalls"
+msgstr "피크닉 멜빵바지"
+
+msgid "Citrus Windbreaker"
+msgstr "시트러스 바람막이"
+
+msgid "Lilac Quilt"
+msgstr "라일락 퀼트"
+
+msgid "Tea Shop Vest"
+msgstr "찻집 조끼"
+
+msgid "Aurora Raincoat"
+msgstr "오로라 우비"
+
+msgid "Moonlit Cape"
+msgstr "달빛 케이프"
+
+msgid "Festival Confetti"
+msgstr "축제 색종이"
+
+msgid "Rainbow Headphones"
+msgstr "무지개 헤드폰"
+
+msgid "Fox Ears"
+msgstr "여우 귀"
+
+msgid "Night Market Beret"
+msgstr "야시장 베레모"
+
+msgid "Peach Blossom Crown"
+msgstr "복숭아꽃 화관"
+
+msgid "Stargazer Cap"
+msgstr "별구경 모자"
+
+msgid "Tofu Mushroom"
+msgstr "두부 버섯"
+
+msgid "Mint Headphones"
+msgstr "민트 헤드폰"
+
+msgid "Sunset Bucket"
+msgstr "노을 버킷햇"
+
+msgid "Plum Mushroom"
+msgstr "자두 버섯"
+
+msgid "Comet Headphones"
+msgstr "혜성 헤드폰"
+
+msgid "Peach Lollipop"
+msgstr "복숭아 막대사탕"
+
+msgid "Parade Maracas"
+msgstr "퍼레이드 마라카스"
+
+msgid "Baker Mitts"
+msgstr "제빵사 장갑"
+
+msgid "Rainbow Flags"
+msgstr "무지개 깃발"
+
+msgid "Plum Wings"
+msgstr "자두 날개"
+
+msgid "Mint Pom-poms"
+msgstr "민트 폼폼"
+
+msgid "Sky Balloon"
+msgstr "하늘색 풍선"
+
+msgid "Lemon Lollipop"
+msgstr "레몬 막대사탕"
+
+msgid "Lucky Lantern"
+msgstr "행운의 등불"
+
+msgid "Cocoa Maracas"
+msgstr "코코아 마라카스"
+
+msgid "Violet Boxing Gloves"
+msgstr "보라색 권투 글러브"
+
+msgid "Sunburst Wings"
+msgstr "햇살 날개"
+
+msgid "Moon Lantern"
+msgstr "달빛 등불"
+
+msgid "Firefly Maracas"
+msgstr "반딧불 마라카스"
+
+msgid "Heart Lollipop"
+msgstr "하트 막대사탕"
+
+msgid "Pixel Specs"
+msgstr "픽셀 안경"
+
+msgid "Honey Butterfly"
+msgstr "꿀빛 나비 안경"
+
+msgid "Festival Visor"
+msgstr "축제 바이저"
+
+msgid "Plum Cat Eyes"
+msgstr "자두 캣아이 안경"
+
+msgid "Starlight Specs"
+msgstr "별빛 안경"
+
+msgid "Sea Glass Goggles"
+msgstr "바다 유리 고글"
+
+msgid "Cocoa Rounds"
+msgstr "코코아 둥근 안경"
+
+msgid "Mint Pixel"
+msgstr "민트 픽셀"
+
+msgid "Rose Butterfly"
+msgstr "장미빛 나비 안경"
+
+msgid "Amber Visor"
+msgstr "호박색 바이저"
+
+msgid "Lilac Lenses"
+msgstr "라일락 렌즈"
+
+msgid "Sky Butterfly"
+msgstr "하늘빛 나비 안경"
+
+msgid "Sunrise Visor"
+msgstr "일출 바이저"
+
+msgid "Midnight Pixel"
+msgstr "한밤중 픽셀"
+
+msgid "Aurora Butterfly"
+msgstr "오로라 나비 안경"
+
+msgid "Golden Visor"
+msgstr "황금 바이저"

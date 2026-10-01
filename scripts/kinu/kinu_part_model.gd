@@ -11,7 +11,7 @@ const INK := Color("2b1a17")
 const LEAF := Color("6cc94c")
 
 ## Styles whose arms take the Kinu's own colour; their meshes are cached per flavour too.
-const BASE_COLOURED := ["nubs", "mittens", "gloves", "wave", "balloon", "boxing", "pompoms", "wand", "sparkler", "flag"]
+const BASE_COLOURED := ["nubs", "mittens", "gloves", "wave", "balloon", "boxing", "pompoms", "wand", "sparkler", "flag", "lantern", "lollipop", "maracas"]
 
 static func uses_base_colour(parts: Array) -> bool:
 	for part in parts:
@@ -53,21 +53,24 @@ static func _spow(value: float, exponent: float) -> float:
 ## A strip of the body's own superellipsoid, grown by `grow`, from `bottom` up to `top` (body-local
 ## heights). Leaving bottom at -INF closes it underneath. It follows every shape's curve, so a
 ## garment wraps a ball as snugly as a block.
-static func _band(kit: MeshKit, shape: KinuShape, top: float, grow: float, color: Color, bottom: float = -INF, outline: bool = true) -> void:
+static func _band(kit: MeshKit, shape: KinuShape, top: float, grow: float, color: Color, bottom: float = -INF, outline: bool = true, shoulder_lift: float = 0.0, lift_bottom: bool = false) -> void:
 	var a := shape.size*.5*grow
 	var k := shape.roundness
-	var phi_top := asin(clampf(_spow(clampf(top/a.y, -1, 1), k*.5), -1, 1))
-	var phi_bottom := -PI*.5 if bottom == -INF else asin(clampf(_spow(clampf(bottom/a.y, -1, 1), k*.5), -1, 1))
 	var rows := 10
 	var segments := 40
 	var points: Array[PackedVector3Array] = []
 	var normals: Array[PackedVector3Array] = []
 	for j in rows+1:
-		var phi := lerpf(phi_bottom, phi_top, float(j)/rows)
 		var ring := PackedVector3Array()
 		var ring_normals := PackedVector3Array()
 		for i in segments:
 			var t := TAU*i/segments
+			# A low neckline at the face rises over the sides and back like clothing
+			# resting on shoulders. A level top makes Kinu look planted in a bowl.
+			var lift := shoulder_lift*pow((1.0-sin(t))*.5, .7)
+			var phi_top := asin(clampf(_spow(clampf((top+lift)/a.y, -1, 1), k*.5), -1, 1))
+			var phi_bottom := -PI*.5 if bottom == -INF else asin(clampf(_spow(clampf((bottom+(lift if lift_bottom else 0.0))/a.y, -1, 1), k*.5), -1, 1))
+			var phi := lerpf(phi_bottom, phi_top, float(j)/rows)
 			var u := Vector3(cos(phi)*cos(t), sin(phi), cos(phi)*sin(t))
 			var p := Vector3(_spow(u.x, 2.0/k), _spow(u.y, 2.0/k), _spow(u.z, 2.0/k))
 			ring.append(p*a)
@@ -97,8 +100,8 @@ static func _triangle(kit: MeshKit, corners: Array, corner_normals: Array, color
 			kit.hull.add_vertex(corners[index])
 
 ## A thin cuff round the body at height y.
-static func _ring(kit: MeshKit, shape: KinuShape, y: float, thickness: float, grow: float, color: Color) -> void:
-	_band(kit, shape, y+thickness*.5, grow, color, y-thickness*.5)
+static func _ring(kit: MeshKit, shape: KinuShape, y: float, thickness: float, grow: float, color: Color, shoulder_lift: float = 0.0) -> void:
+	_band(kit, shape, y+thickness*.5, grow, color, y-thickness*.5, true, shoulder_lift, true)
 
 ## The front surface point and its outward normal at (x, y) on the body grown by `grow`.
 static func _front(shape: KinuShape, x: float, y: float, grow: float = 1.0) -> Array[Vector3]:
@@ -117,17 +120,55 @@ static func _body(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 	var h := shape.size*.5
 	var waist := _waist(shape)
 	var hem := -h.y
+	var short_hem := hem+minf(.09, (waist-hem)*.25)
+	var shoulders := minf(h.y*.6, .32)
 	var face := KinuModel.Face.new(kit, shape.size*1.05, shape.roundness)
 	var c := part.color
 	var accent := part.accent
 	match part.style:
-		"tee", "stripes":
-			_band(kit, shape, waist, 1.05, c)
-			_ring(kit, shape, waist, .045, 1.075, accent if part.style == "tee" else c.darkened(.08))
+		"tee", "stripes", "raincoat", "varsity", "patchwork":
+			var garment_hem := hem if part.style == "raincoat" else short_hem
+			_band(kit, shape, waist, 1.035, c, garment_hem, true, shoulders)
+			_ring(kit, shape, waist, .055, 1.055, accent if part.style in ["tee", "varsity", "raincoat"] else c.darkened(.08), shoulders)
+			if part.style == "tee":
+				_ring(kit, shape, garment_hem+.015, .045, 1.055, accent)
+				# A small chest pocket makes the starter shirt read as clothing on every shape.
+				var pocket_y := lerpf(garment_hem, waist, .48)
+				var pocket := _front(shape, -minf(h.x*.34, .21), pocket_y, 1.065)
+				kit.add_rounded_box(pocket[0]+pocket[1]*.025, Vector3(.11, minf(.1,(waist-garment_hem)*.34), .018), c.lightened(.13), Basis.looking_at(-pocket[1],Vector3.UP).get_euler(), false, 3)
 			if part.style == "stripes":
 				for i in 3:
-					_ring(kit, shape, lerpf(hem*.82, waist, (i+1)/4.0), .04, 1.065, accent)
+					_ring(kit, shape, lerpf(garment_hem+.035, waist, (i+1)/4.0), .04, 1.055, accent)
+				_ring(kit, shape, garment_hem+.015, .04, 1.055, accent)
+			if part.style == "raincoat":
+				_ring(kit, shape, hem*.9, .06, 1.08, accent)
+				var seam := _front(shape, 0, lerpf(hem, waist, .52), 1.07)
+				kit.add_rounded_box(seam[0]+seam[1]*.028, Vector3(.025, (waist-hem)*.82, .015), accent, Basis.looking_at(-seam[1], Vector3.UP).get_euler(), false, 3)
+				for i in 2:
+					var button_at := _front(shape, .065, lerpf(hem, waist, .3+i*.32), 1.08)
+					kit.add("bead", button_at[0]+button_at[1]*.025, Vector3.ONE*.045, accent, Vector3.ZERO, false)
+			if part.style == "varsity":
+				_ring(kit, shape, garment_hem+.015, .045, 1.055, accent)
+				var patch := _front(shape, -minf(h.x*.3,.16), lerpf(garment_hem,waist,.52), 1.07)
+				kit.add("bead", patch[0]+patch[1]*.03, Vector3(.105,.105,.025), accent, Vector3.ZERO, false)
+			if part.style == "patchwork":
+				for side in [-1.0,1.0]:
+					var patch_y := lerpf(garment_hem,waist,.35 if side < 0 else .65)
+					var patch := _front(shape,side*minf(h.x*.35,.21),patch_y,1.07)
+					kit.add_rounded_box(patch[0]+patch[1]*.025, Vector3(.14,minf(.14,(waist-garment_hem)*.3),.018), accent if side < 0 else c.lightened(.2), Basis.looking_at(-patch[1],Vector3.UP).get_euler(), false, 3)
 			_sleeves(kit, shape, c)
+		"vest":
+			_band(kit, shape, waist, 1.035, c, short_hem, true, shoulders)
+			_ring(kit, shape, waist, .04, 1.055, accent, shoulders)
+			_ring(kit, shape, short_hem+.015, .045, 1.055, accent)
+			_arm_loops(kit, shape, waist, c)
+			# Cream V lapels, a centre opening and buttons distinguish this
+			# sleeveless waistcoat from the sleeved varsity cardigan.
+			for side in [-1.0, 1.0]:
+				face.mark(side*minf(h.x*.31,.16), waist-.055, Vector2(minf(.24,h.x*.35), .05), accent, side*-.72, .03)
+			face.mark(0, lerpf(short_hem, waist, .52), Vector2(.025, waist-short_hem), c.darkened(.22), 0, .03)
+			for i in 2:
+				face.mark(.055, lerpf(short_hem, waist, .3+i*.3), Vector2(.045,.045), accent, 0, .04)
 		"scarf":
 			_ring(kit, shape, waist+.02, .1, 1.1, c)
 			_ring(kit, shape, waist+.02, .025, 1.13, accent)
@@ -137,7 +178,8 @@ static func _body(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 			for i in 3:
 				kit.add_rounded_box(at[0]+at[1]*.035+Vector3(-.04+i*.04, -tail.y*.5-.02, 0), Vector3(.025, .05, .03), accent, Vector3.ZERO, false, 3)
 		"bowtie":
-			var at := _front(shape, 0, waist+.02, 1.02)
+			# The mouth sits just above the waist line; keep the bow below it on every shape.
+			var at := _front(shape, 0, maxf(waist-.12,-h.y*.82), 1.04)
 			var knot := at[0]+at[1]*.04
 			for side in [-1.0, 1.0]:
 				kit.add("sphere", knot+Vector3(side*.085, 0, -.01), Vector3(.16, .12, .07), c, Vector3(0, 0, side*.35))
@@ -154,42 +196,46 @@ static func _body(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 			for side in [-1.0, 1.0]:
 				kit.add("sphere", back+Vector3(side*.07, 0, 0), Vector3(.13, .08, .05), accent, Vector3(0, 0, side*.4))
 		"hoodie":
-			_band(kit, shape, waist, 1.05, c)
-			_ring(kit, shape, waist+.01, .1, 1.1, c.lightened(.08))
-			face.mark(0, (waist+hem)*.5-.02, Vector2(minf(shape.size.x*.42, .42), (waist-hem)*.38), accent, 0, .03)
+			_band(kit, shape, waist, 1.035, c, short_hem, true, shoulders)
+			_ring(kit, shape, waist+.01, .1, 1.065, c.lightened(.08), shoulders)
+			_ring(kit, shape, short_hem+.015, .05, 1.055, accent)
+			face.mark(0, (waist+short_hem)*.5-.02, Vector2(minf(shape.size.x*.42, .42), (waist-short_hem)*.38), accent, 0, .03)
 			var at := _front(shape, 0, waist-.04, 1.1)
 			for side in [-1.0, 1.0]:
 				kit.add("cylinder", at[0]+at[1]*.02+Vector3(side*.07, -.06, 0), Vector3(.022, .13, .022), CREAM, Vector3.ZERO, false)
 			_sleeves(kit, shape, c)
 		"dungarees":
-			_band(kit, shape, waist, 1.05, c)
-			_ring(kit, shape, waist, .055, 1.08, c.darkened(.15))
+			_band(kit, shape, waist, 1.035, c, -INF, true, shoulders)
+			_ring(kit, shape, waist, .055, 1.055, c.darkened(.15), shoulders)
+			_arm_loops(kit, shape, waist, c)
 			face.mark(0, (waist+hem)*.5, Vector2(minf(shape.size.x*.3, .3), (waist-hem)*.42), c.darkened(.12), 0, .03)
 			for side in [-1.0, 1.0]:
-				var x: float = side*minf(h.x*.6, .36)
-				face.mark(x, waist+.05, Vector2(.07, .12), c, 0, .01)
-				face.mark(x, waist+.0, Vector2(.055, .055), accent, 0, .03)
+				var x: float = side*(minf(h.x*.7, .7) if shape.id == "long" else minf(h.x*.82, .43))
+				var strap_height := minf(.24, shape.size.y*.2)
+				face.mark(x, waist+strap_height*.35, Vector2(.085, strap_height), c, 0, .01)
+				face.mark(x, waist+.015, Vector2(.055, .055), accent, 0, .03)
 		"kimono":
-			_band(kit, shape, waist, 1.05, c)
+			_band(kit, shape, waist, 1.035, c, -INF, true, shoulders)
+			_ring(kit, shape, waist, .045, 1.055, accent, shoulders)
 			for side in [-1.0, 1.0]:
 				face.mark(side*.07, waist-.07, Vector2(minf(.34, shape.size.x*.3), .05), accent, side*-.75, .025)
 			_ring(kit, shape, lerpf(hem, waist, .42), minf(.14, (waist-hem)*.4), 1.08, accent)
 			kit.add("sphere", Vector3(0, lerpf(hem, waist, .42), -_reach(shape, lerpf(hem, waist, .42)).y*1.08-.05), Vector3(.22, .14, .1), accent)
 			_sleeves(kit, shape, c)
 		"sweater":
-			_band(kit, shape, waist, 1.05, c)
-			_ring(kit, shape, waist, .06, 1.08, accent)
-			_ring(kit, shape, hem*.86, .05, 1.07, accent)
-			var row := lerpf(hem, waist, .55)
+			_band(kit, shape, waist, 1.035, c, short_hem, true, shoulders)
+			_ring(kit, shape, waist, .06, 1.055, accent, shoulders)
+			_ring(kit, shape, short_hem+.015, .05, 1.055, accent)
+			var row := lerpf(short_hem, waist, .55)
 			var count := clampi(int(shape.size.x/.12), 5, 13)
 			for i in count:
 				var x := lerpf(-h.x*.75, h.x*.75, float(i)/(count-1))
 				face.mark(x, row, Vector2(.08, .025), accent, .7 if i % 2 else -.7, .02)
 			_sleeves(kit, shape, c)
 		"tutu":
-			_band(kit, shape, waist, 1.04, c.lightened(.1))
-			_ring(kit, shape, waist-.03, .07, 1.32, c)
-			_ring(kit, shape, waist-.07, .07, 1.24, accent)
+			_band(kit, shape, waist, 1.035, c.lightened(.12))
+			_ring(kit, shape, waist-.02, .06, 1.08, accent)
+			_tutu_skirt(kit, shape, waist, c, accent)
 		"swim_ring":
 			var y := lerpf(hem, waist, .7)
 			var reach := _reach(shape, y)+Vector2(.08, .08)
@@ -207,7 +253,66 @@ static func _sleeves(kit: MeshKit, shape: KinuShape, color: Color) -> void:
 		return
 	var h := shape.size*.5
 	for side in [-1.0, 1.0]:
-		kit.add("sphere", Vector3(side*(h.x+.03), -h.y*.06, h.z*.2), Vector3(.18, .14, .2), color, Vector3(0, 0, side*.4))
+		kit.add("sphere", Vector3(side*(h.x+.025), -h.y*.035, h.z*.2), Vector3(.21, .21, .2), color, Vector3(0, 0, side*.4))
+
+## Dungarees need a visible opening around each arm rather than a straight waistband
+## cutting across the arm. The lower half sinks into the garment, leaving a cloth arch.
+static func _arm_loops(kit: MeshKit, shape: KinuShape, waist: float, color: Color) -> void:
+	if shape.id == "long":
+		return
+	var h := shape.size*.5
+	for side in [-1.0, 1.0]:
+		var center := Vector3(side*(h.x+.025), waist+.015, minf(h.z*.2, .12))
+		var across := .17
+		var rise := minf(.17, h.y*.4)
+		var thickness := minf(.045, shape.size.y*.055)
+		var segments := 24
+		var sides := 8
+		for i in segments:
+			var a0 := TAU*float(i)/segments
+			var a1 := TAU*float(i+1)/segments
+			for j in sides:
+				var b0 := TAU*float(j)/sides
+				var b1 := TAU*float(j+1)/sides
+				var corners: Array = []
+				var normals: Array = []
+				for angles in [Vector2(a0,b0), Vector2(a1,b0), Vector2(a1,b1), Vector2(a0,b1)]:
+					var radial := Vector3(0, sin(angles.x), cos(angles.x))
+					var normal := Vector3(cos(angles.y), 0, 0)+radial*sin(angles.y)
+					corners.append(center+Vector3(0, radial.y*rise, radial.z*across)+normal*thickness)
+					normals.append(normal.normalized())
+				_triangle(kit, [corners[0], corners[1], corners[2]], [normals[0], normals[1], normals[2]], color, true)
+				_triangle(kit, [corners[0], corners[2], corners[3]], [normals[0], normals[2], normals[3]], color, true)
+
+## A flared, pleated skirt with a scalloped tulle edge. The shape follows Kinu's
+## waist but opens out from it, so it reads as a tutu rather than a straight band.
+static func _tutu_skirt(kit: MeshKit, shape: KinuShape, waist: float, color: Color, accent: Color) -> void:
+	var reach := _reach(shape, waist)
+	var h := shape.size*.5
+	var outer := minf(1.35, minf((h.x+.31)/maxf(reach.x,.01), (h.z+.24)/maxf(reach.y,.01)))
+	var drop := minf(.17, (waist+shape.size.y*.5)*.75)
+	var segments := 48
+	var rows := 4
+	for j in rows:
+		for i in segments:
+			var corners: Array = []
+			var normals: Array = []
+			for pair: Vector2 in [Vector2(i,j),Vector2(i+1,j),Vector2(i+1,j+1),Vector2(i,j+1)]:
+				var t: float = TAU*pair.x/segments
+				var u: float = pair.y/rows
+				var flare := 1.07+(outer-1.07)*pow(u,.8)
+				var wave: float = sin(t*12.0)*.018*u
+				var radial := Vector3(_spow(cos(t), 2.0/shape.roundness), 0, _spow(sin(t), 2.0/shape.roundness))
+				corners.append(Vector3(radial.x*reach.x*flare, waist-.035-drop*u+wave, radial.z*reach.y*flare))
+				normals.append(Vector3(radial.x,.45,radial.z).normalized())
+			var tone := color.lightened(.12) if int(i/4)%2 == 0 else color
+			_triangle(kit, [corners[0],corners[1],corners[2]], [normals[0],normals[1],normals[2]], tone, true)
+			_triangle(kit, [corners[0],corners[2],corners[3]], [normals[0],normals[2],normals[3]], tone, true)
+	for i in 24:
+		var t := TAU*i/24
+		var radial := Vector3(_spow(cos(t), 2.0/shape.roundness), 0, _spow(sin(t), 2.0/shape.roundness))
+		var edge := Vector3(radial.x*reach.x*outer, waist-.035-drop+sin(t*12.0)*.018, radial.z*reach.y*outer)
+		kit.add("sphere", edge, Vector3(.09,.045,.09), accent if i%2 == 0 else color.lightened(.18), Vector3.ZERO, false)
 
 # ---------- Hats ----------
 
@@ -258,15 +363,17 @@ static func _hat(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 			var top := h.y*.9
 			var reach := _reach(shape, top)*.92
 			var k := shape.roundness
-			var count := clampi(int((reach.x+reach.y)*5), 6, 12)
+			# Multiples of four place blossoms at the centre of both the front
+			# and back, closing the garland instead of leaving two side clusters.
+			var count := clampi(int(ceil((reach.x+reach.y)*2.5))*4, 12, 20)
 			_ring(kit, shape, top, .05, 1.03, c)
 			for i in count:
 				var t := TAU*i/count
 				var at := Vector3(_spow(cos(t), 2.0/k)*reach.x, top+.05, _spow(sin(t), 2.0/k)*reach.y)
 				for p in 5:
 					var petal := TAU*p/5
-					kit.add("bead", at+Vector3(cos(petal)*.065, .02, sin(petal)*.065), Vector3(.11, .06, .11), accent if i % 2 == 0 else Color("fff4df"), Vector3.ZERO, true)
-				kit.add("bead", at+Vector3(0, .05, 0), Vector3.ONE*.07, Color("ffd34f"), Vector3.ZERO, false)
+					kit.add("bead", at+Vector3(cos(petal)*.048, .02, sin(petal)*.048), Vector3(.085, .055, .085), accent if i % 2 == 0 else Color("fff4df"), Vector3.ZERO, true)
+				kit.add("bead", at+Vector3(0, .045, 0), Vector3.ONE*.06, Color("ffd34f"), Vector3.ZERO, false)
 		"straw":
 			kit.add("cylinder", Vector3(0, y+.015, 0), Vector3(w*1.6, .03, w*1.6), c)
 			kit.add("dome", Vector3(0, y+.02, 0), Vector3(w*.8, w*.75, w*.8), c)
@@ -307,6 +414,25 @@ static func _hat(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 			kit.add("cylinder", Vector3(0, y+w*.38, 0), Vector3(.03, .1, .03), INK)
 			for side in [-1.0, 1.0]:
 				kit.add("sphere", Vector3(side*.13, y+w*.38+.05, 0), Vector3(.24, .025, .08), accent if side > 0 else Color("ffe36e"), Vector3(0, .3, 0))
+		"mushroom":
+			kit.add("dome", Vector3(0,y+.04,0), Vector3(w*1.3,.34*s,w*1.3), c)
+			kit.add("cylinder",Vector3(0,y+.01,0),Vector3(w*1.37,.045,w*1.37),c)
+			for i in 5:
+				var a := TAU*i/5
+				kit.add("sphere",Vector3(sin(a)*w*.46,y+.15*s,cos(a)*w*.46),Vector3(.075,.022,.06)*s,accent,Vector3.ZERO,false)
+		"headphones":
+			var ear_y := h.y*.55
+			var ear_x := _reach(shape,ear_y).x
+			var band_y := y+.1
+			var cup_top := ear_y+.23*s*.5
+			kit.add_rounded_box(Vector3(0,band_y,0),Vector3(ear_x*2+.08,.06,.07),c,Vector3.ZERO,true,4)
+			for side in [-1.0,1.0]:
+				# Bridge the headband to each ear cup so the three pieces read as
+				# one pair of headphones from the front and while spinning.
+				kit.add_rounded_box(Vector3(side*(ear_x+.03),(band_y+cup_top)*.5,0),
+					Vector3(.08,band_y-cup_top+.08,.09),c,Vector3.ZERO,true,4)
+				kit.add_rounded_box(Vector3(side*(ear_x+.03),ear_y,0),Vector3(.12,.23,.2)*s,accent,Vector3.ZERO,true,4)
+				kit.add_rounded_box(Vector3(side*(ear_x+.09),ear_y,0),Vector3(.035,.12,.13)*s,c,Vector3.ZERO,false,3)
 
 # ---------- Arms ----------
 
@@ -316,12 +442,25 @@ static func _arms(kit: MeshKit, shape: KinuShape, part: KinuPart, skin: Color) -
 	var c := part.color
 	var accent := part.accent
 	if part.style == "wings":
-		var lift := minf(h.y*.25, .2)
+		var wing_width := clampf(shape.size.x*.72, .54, 1.32)
+		var wing_height := clampf(shape.size.y*.78, .38, .95)
+		var root_x := minf(h.x*.22, .18)
+		var root_y := minf(h.y*.14, .11)
+		var back_z := -_reach(shape, root_y).y*1.04-.045
 		for side in [-1.0, 1.0]:
-			var root := Vector3(side*h.x*.7, lift, -_reach(shape, lift).y*.8)
-			for i in 3:
-				var feather := root+Vector3(side*(.16+i*.1), .12-i*.08, -.06)
-				kit.add("sphere", feather, Vector3(.16, .42-i*.09, .07), c if i < 2 else accent, Vector3(0, side*.5, side*(-1.0+i*.3)))
+			var root := Vector3(side*root_x, root_y, back_z)
+			# The fan grows across the back from a close-set shoulder root.
+			# Only the outer feather tips show when Kinu faces forward.
+			kit.add("sphere", root+Vector3(side*wing_width*.16, wing_height*.08, 0),
+				Vector3(wing_width*.35, wing_height*.28, .13), c, Vector3(0, 0, -side*.35))
+			kit.add("sphere", root+Vector3(side*wing_width*.36, wing_height*.32, -.025),
+				Vector3(wing_width*.36, wing_height*.72, .13), c, Vector3(0, 0, -side*.65))
+			kit.add("sphere", root+Vector3(side*wing_width*.55, wing_height*.12, -.045),
+				Vector3(wing_width*.38, wing_height*.58, .12), c, Vector3(0, 0, -side*1.05))
+			kit.add("sphere", root+Vector3(side*wing_width*.48, -wing_height*.12, -.06),
+				Vector3(wing_width*.32, wing_height*.47, .11), c, Vector3(0, 0, -side*1.35))
+			kit.add("sphere", root+Vector3(side*wing_width*.29, wing_height*.14, -.105),
+				Vector3(wing_width*.12, wing_height*.37, .025), accent, Vector3(0, 0, -side*.68), false)
 		return
 	for side in [-1.0, 1.0]:
 		var raised: bool = (part.style == "wave" and side > 0) or (part.style in ["pompoms", "sparkler"])
@@ -355,9 +494,9 @@ static func _arms(kit: MeshKit, shape: KinuShape, part: KinuPart, skin: Color) -
 					kit.add("cylinder", (hand+balloon)*.5, Vector3(.012, hand.distance_to(balloon), .012), CREAM, Vector3(0, 0, -.23), false)
 					kit.add("sphere", balloon+Vector3(0, .13, 0), Vector3(.26, .3, .26), c)
 					kit.add("cone", balloon-Vector3(0, .02, 0), Vector3(.06, .05, .06), c.darkened(.15), Vector3(PI, 0, 0), false)
-			"wand", "flag", "sparkler":
+			"wand", "flag", "sparkler", "lantern", "lollipop", "maracas":
 				kit.add("sphere", hand, Vector3.ONE*.15, skin)
-				if side > 0 or part.style == "sparkler":
+				if side > 0 or part.style in ["sparkler", "maracas"]:
 					var length := .42 if part.style == "flag" else .3
 					var tip := hand+Vector3(side*.04, length, .05)
 					kit.add("cylinder", (hand+tip)*.5, Vector3(.025, length, .025), accent if part.style != "sparkler" else Color("8a8f99"), Vector3.ZERO, false)
@@ -373,6 +512,16 @@ static func _arms(kit: MeshKit, shape: KinuShape, part: KinuPart, skin: Color) -
 							for ray in 6:
 								var a := TAU*ray/6
 								kit.add("sphere", tip+Vector3(cos(a)*.06, sin(a)*.06, 0), Vector3(.14, .025, .025), c if ray % 2 else accent, Vector3(0, 0, a), false)
+						"lantern":
+							kit.add("sphere",tip+Vector3(0,.09,0),Vector3(.19,.22,.12),c)
+							kit.add("cylinder",tip+Vector3(0,.21,0),Vector3(.13,.035,.1),accent)
+							kit.add("cylinder",tip+Vector3(0,-.03,0),Vector3(.13,.035,.1),accent)
+						"lollipop":
+							kit.add("sphere",tip+Vector3(0,.1,0),Vector3(.22,.22,.09),c)
+							kit.add("torus",tip+Vector3(0,.1,.055),Vector3(.12,.12,.12),accent,Vector3(PI*.5,0,0),false)
+						"maracas":
+							kit.add("sphere",tip+Vector3(0,.08,0),Vector3(.16,.2,.14),c)
+							kit.add("cylinder",tip+Vector3(0,.03,.13),Vector3(.11,.025,.025),accent,Vector3(PI*.5,0,0),false)
 
 # ---------- Glasses ----------
 
@@ -400,9 +549,12 @@ static func _glasses(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 		return
 	for lens in lenses:
 		match part.style:
-			"square", "three_d":
+			"square", "three_d", "pixel":
 				for bar in [[Vector3(0, r, 0), Vector3(r*2.2, tube*1.6, tube*1.6)], [Vector3(0, -r, 0), Vector3(r*2.2, tube*1.6, tube*1.6)], [Vector3(-r*1.05, 0, 0), Vector3(tube*1.6, r*2, tube*1.6)], [Vector3(r*1.05, 0, 0), Vector3(tube*1.6, r*2, tube*1.6)]]:
 					kit.add_transformed("block", Transform3D(lens.basis*Basis.from_scale(bar[1]), lens*(bar[0] as Vector3)), c)
+				if part.style == "pixel":
+					for step in [-1.0,1.0]:
+						kit.add_transformed("block",Transform3D(lens.basis*Basis.from_scale(Vector3(.045,.045,.025)),lens*Vector3(step*r*.8,r*.85,0)),accent,false)
 				if part.style == "three_d":
 					var tint := accent if lens == lenses[0] else Color("4fa3e0")
 					kit.add_transformed("sphere", Transform3D(lens.basis*Basis.from_scale(Vector3(r*2, r*1.9, .015)), lens*Vector3(0, 0, -.005)), tint, false)
@@ -426,6 +578,13 @@ static func _glasses(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 				_hoop(kit, lens, r, tube, c)
 				var outward := 1.0 if lens == lenses[1] else -1.0
 				kit.add_transformed("cone", Transform3D(lens.basis*Basis(Vector3.BACK, -outward*.7)*Basis.from_scale(Vector3(.06, .1, .03)), lens*Vector3(outward*r*.95, r*.75, 0)), accent)
+			"butterfly":
+				_hoop(kit,lens,r*.9,tube,c)
+				var outward := 1.0 if lens == lenses[1] else -1.0
+				kit.add_transformed("sphere",Transform3D(lens.basis*Basis.from_scale(Vector3(.13,.08,.02)),lens*Vector3(outward*r*.75,r*.55,0)),accent,false)
+			"visor":
+				_hoop(kit,lens,r,tube,accent)
+				kit.add_transformed("sphere",Transform3D(lens.basis*Basis.from_scale(Vector3(r*2,r*1.7,.02)),lens*Vector3(0,0,-.004)),c.lightened(.25),false)
 			_:
 				_hoop(kit, lens, r, tube, c)
 	# Bridge, then the temples running back towards the sides.

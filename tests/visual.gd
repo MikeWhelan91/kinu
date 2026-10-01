@@ -235,7 +235,7 @@ func _ready() -> void:
 			Save.data.box = "bamboo"
 			app.shop_tab = {"shop": "outfit", "shop_outfit": "outfit", "shop_box": "box", "shop_room": "room"}[mode]
 			app._shop()
-		"my_kinu", "my_kinu_hat", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results", "my_kinu_home_progress":
+		"my_kinu", "my_kinu_hat", "my_kinu_bunny", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results", "my_kinu_home_progress":
 			Save.data.best = 30
 			Save.data.beans = 2400
 			Save.data.my_kinu.xp = 520
@@ -247,9 +247,15 @@ func _ready() -> void:
 				"my_kinu":
 					MyKinuScreen.tab = "body"
 					MyKinuScreen.show(app, app._home)
+				"my_kinu_bunny":
+					Save.data.owned.append("part:bunny_band")
+					Save.data.my_kinu.equipped.hat = "bunny_band"
+					MyKinuScreen.tab = "hat"
+					MyKinuScreen.shape_index = 0
+					MyKinuScreen.show(app, app._home)
 				"my_kinu_hat":
 					MyKinuScreen.tab = "hat"
-					MyKinuScreen.shape_index = 3
+					MyKinuScreen.shape_index = 0
 					MyKinuScreen.show(app, app._home)
 				"my_kinu_flavour":
 					MyKinuScreen.tab = "flavour"
@@ -295,6 +301,17 @@ func _ready() -> void:
 		"results":
 			app.initial_best = 0
 			app._results({"score":12,"placed":14,"height":6.4})
+		"results_many":
+			# Everything at once: several flavours, two level-ups, Kinu Book items and missions.
+			Save.data.runs = 9
+			Save.data.stats.total = 380
+			Save.data.my_kinu.xp = 230
+			Save.data.my_kinu.home_seen_xp = 230
+			Save.data.my_kinu.intro_seen = true
+			KinuProgress.today()
+			app._start()
+			app.initial_best = 0
+			app._results({"mode":"classic","score":40,"pile":40,"placed":160,"height":5.0,"run_id":"visual-many","tumbles":0})
 		"results_tower":
 			Save.data.mode_best = {"tower": 780}
 			Save.data.mode = "tower"
@@ -318,7 +335,7 @@ func _ready() -> void:
 				for i in tour.steps.size():
 					if tour.steps[i][0][0] == "MyKinuHome":
 						tour._show_step(i, true)
-	await get_tree().create_timer(3 if mode in ["my_kinu_home_progress", "results_tower"] else 1).timeout
+	await get_tree().create_timer(4 if mode in ["my_kinu_home_progress", "results_tower", "results_many"] else 1).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://docs/"+mode+suffix+".png")
 	print("CAPTURE ",mode," ",get_viewport().get_visible_rect())

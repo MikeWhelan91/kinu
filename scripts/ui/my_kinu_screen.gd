@@ -298,7 +298,8 @@ static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 	var height := int(stage_height)-40
 	preview.setup(shape, MyKinu.base(catalog), true, Vector2i(width, height), "happy", null, true, false, MyKinu.equipped(catalog))
 	preview.enable_spin()
-	preview.fit_model(1.16, true)
+	# Framed on the body alone, so the Kinu keeps its size whatever it wears.
+	preview.fit_model(1.5, true, true)
 	preview.size = Vector2(width, height)
 	card.preview = preview
 	card.add_child(preview)
@@ -486,7 +487,7 @@ static func _socket_art(catalog: KinuCatalog, id: String, open: bool) -> Control
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		return empty
 	var mini := part_preview(catalog, part, Vector2i(56, 52))
-	mini.fit_model(1.0)
+	mini.fit_model(1.3, false, true, .14)
 	return mini
 
 ## A small padlock for slots that have not opened yet.
@@ -657,7 +658,7 @@ static func part_preview(catalog: KinuCatalog, part: KinuPart, pixels: Vector2i,
 	node.setup(catalog.shapes[0], MyKinu.base(catalog), true, pixels, "calm", null, true, false, parts)
 	if interactive:
 		node.enable_spin()
-		node.fit_model(1.12)
+		node.fit_model(1.45, false, true, .14)
 	else:
-		node.fit_model(1.04)
+		node.fit_model(1.32, false, true, .14)
 	return node

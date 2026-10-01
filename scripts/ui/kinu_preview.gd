@@ -92,11 +92,16 @@ func _process(delta: float) -> void:
 	_spin_velocity = move_toward(_spin_velocity, 0.0, delta*.65)
 
 ## Frame the visible costume tightly for a featured portrait, including ears and tails.
-func fit_model(padding: float = 1.18, align_bottom: bool = false) -> void:
+## `body_only` frames the Kinu itself and ignores My Kinu parts, so a Kinu stays the same size
+## whatever it wears; `headroom` then lifts the frame by that share of the body's height so hats
+## and ears have space above it.
+func fit_model(padding: float = 1.18, align_bottom: bool = false, body_only: bool = false, headroom: float = 0.0) -> void:
 	var lower := Vector2(INF, INF)
 	var upper := Vector2(-INF, -INF)
 	for child in model.get_children():
 		if not child is MeshInstance3D or not child.visible or child.mesh == null:
+			continue
+		if body_only and child.name in ["Parts", "PartsOutline"]:
 			continue
 		var to_camera: Transform3D = camera.transform.affine_inverse()*model.transform*child.transform
 		# Project the actual silhouette, not the empty corners of a box around fins/tails.
@@ -110,6 +115,7 @@ func fit_model(padding: float = 1.18, align_bottom: bool = false) -> void:
 	var extent := upper-lower
 	var viewport: SubViewport = get_child(0)
 	camera.size = maxf(extent.x, extent.y*float(viewport.size.x)/viewport.size.y)*padding
+	center.y += extent.y*headroom
 	if align_bottom:
 		var view_height := camera.size*float(viewport.size.y)/viewport.size.x
 		center.y = lower.y+view_height*.5-view_height*4.0/viewport.size.y

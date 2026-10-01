@@ -254,7 +254,7 @@ func _build_case() -> void:
 ## on show first, falling back to the Catcher exclusives once most things are won.
 func _build_showcase() -> void:
 	var catalog: KinuCatalog = load("res://resources/kinu/catalog.tres")
-	var picks := {"outfit": [], "box": [], "room": []}
+	var picks := {"outfit": [], "part": [], "box": [], "room": []}
 	var available := KinuCatcher.odds(catalog, true)
 	available.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return float(a.chance) < float(b.chance))
 	var entries := available.map(func(row: Dictionary) -> Dictionary: return row.entry)

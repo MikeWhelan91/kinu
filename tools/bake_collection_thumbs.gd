@@ -1,5 +1,5 @@
 extends Node
-## Bakes every outfit and box in the catalogue to an individual PNG under resources/kinu/thumbs/.
+## Bakes every outfit, My Kinu part and box in the catalogue to an individual PNG under resources/kinu/thumbs/.
 ## Run after any catalogue change that adds, removes or reskins an item:
 ##   godot --path . tools/bake_collection_thumbs.tscn
 ## Add `-- only=opening_day,first_edition` to bake just those ids (every outfit is still measured,
@@ -72,6 +72,25 @@ func _ready() -> void:
 		await get_tree().process_frame
 		await get_tree().process_frame
 		save(viewport, "outfit_%s.png"%item.id, before)
+		count += 1
+		print("baked ", count, " ", item.id)
+	# Parts are framed exactly like outfits, worn on the same plain Kinu, so a hat and a costume
+	# read at the same size side by side in the Kinu Book.
+	for item in catalog.parts:
+		if not only.is_empty() and not only.has(item.id):
+			continue
+		var before := viewport.get_children()
+		var model := KinuModel.build(catalog.shapes[0], catalog.flavours[0], null, "calm", [item])
+		model.rotation_degrees.y = -22
+		viewport.add_child(model)
+		var camera := _base_outfit_camera(catalog)
+		camera.size = shared_size
+		var b := _bounds(camera, model)
+		camera.position += camera.basis*Vector3(b.center.x, b.center.y, 0)
+		viewport.add_child(camera)
+		await get_tree().process_frame
+		await get_tree().process_frame
+		save(viewport, "part_%s.png"%item.id, before)
 		count += 1
 		print("baked ", count, " ", item.id)
 	for item in catalog.decor_of("box"):

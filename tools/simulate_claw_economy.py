@@ -10,6 +10,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "resources/kinu/catalog.tres"
+PARTS = ROOT / "scripts/kinu/kinu_parts.gd"
+# Matches KinuCatcher.COSMETIC_ODDS; tickets keep their own fixed slice of every other play.
+COSMETIC = 0.15
+TICKET_SLICE = 0.09
 TIERS = ("common", "rare", "epic", "legendary")
 WEIGHTS = (55, 25, 13, 7)
 
@@ -34,6 +38,12 @@ def catalog_counts():
             continue
         tier = attrs["rarity"].strip('"')
         counts[tier][int(claw)] += 1
+    # My Kinu parts sold in the shop or only won in the Catcher.
+    for source in re.findall(r'"[0-9a-f]{6}", "[0-9a-f]{6}", "([a-z:]+)", -?\d+\]', PARTS.read_text()):
+        if source in ("common", "rare", "epic"):
+            counts[source][0] += 1
+        elif source.startswith("crane:"):
+            counts[source.split(":", 1)[1]][1] += 1
     return counts
 
 
@@ -84,7 +94,7 @@ def run_player(rng, base, weekly=True, shop_paid=False, daily_free_plays=1,
                 tickets -= 1
             plays += 1
             roll = rng.random()
-            if sum(map(sum, remaining)) and (since_item >= pity_every - 1 or roll < 0.10):
+            if sum(map(sum, remaining)) and (since_item >= pity_every - 1 or roll < COSMETIC):
                 tier = weighted_tier(rng, remaining)
                 paid, claw = remaining[tier]
                 chosen = rng.randrange(paid + claw)
@@ -92,7 +102,7 @@ def run_player(rng, base, weekly=True, shop_paid=False, daily_free_plays=1,
                 since_item = 0
             else:
                 since_item += 1
-                if roll < (0.19 if sum(map(sum, remaining)) else 0.09):
+                if roll < (COSMETIC + TICKET_SLICE if sum(map(sum, remaining)) else TICKET_SLICE):
                     tickets += rng.choices((1, 2, 3), weights=(62, 27, 11))[0]
 
         if claw_day is None and not any(pair[1] for pair in remaining):
@@ -113,7 +123,8 @@ def main():
     for label, weekly, shop, daily_free, pity in (
         ("previous: 1 daily play, pity 15; no shop", True, False, 1, 15),
         ("1 daily play, pity 20; no shop", True, False, 1, 20),
-        ("current: 2 daily plays, pity 15; no shop", True, False, 2, 15),
+        ("previous: 2 daily plays, pity 15; no shop", True, False, 2, 15),
+        ("current: 2 daily plays, pity 10; no shop", True, False, 2, 10),
         ("2 daily plays, pity 20; no shop", True, False, 2, 20),
         ("3 daily plays, pity 20; no shop", True, False, 3, 20),
         ("shop all paid items upfront: 1 daily play, pity 15", True, True, 1, 15),

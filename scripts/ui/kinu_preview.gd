@@ -7,7 +7,7 @@ var spin_enabled := false
 var _pointer := -99
 var _spin_velocity := 0.0
 
-func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixels: Vector2i = Vector2i(180,150), mood: String = "calm", outfit: KinuOutfit = null, outfit_framing: bool = false, sticky: bool = false) -> void:
+func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixels: Vector2i = Vector2i(180,150), mood: String = "calm", outfit: KinuOutfit = null, outfit_framing: bool = false, sticky: bool = false, parts: Array = []) -> void:
 	custom_minimum_size = Vector2(pixels)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stretch = true
@@ -26,7 +26,7 @@ func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixe
 	var light := TofuShop.make_sun()
 	light.shadow_enabled = false
 	viewport.add_child(light)
-	model = KinuModel.build(shape, flavour, outfit, mood)
+	model = KinuModel.build(shape, flavour, outfit, mood, parts)
 	if sticky:
 		model.add_child(KinuModel.sticky_coat(shape, outfit))
 	if not discovered:
@@ -38,6 +38,8 @@ func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixe
 		(model.get_node("Fill") as MeshInstance3D).material_override = silhouette
 		if model.has_node("Costume"):
 			(model.get_node("Costume") as MeshInstance3D).material_override = silhouette
+		if model.has_node("Parts"):
+			(model.get_node("Parts") as MeshInstance3D).material_override = silhouette
 		if model.has_node("ExposedFace"):
 			(model.get_node("ExposedFace") as MeshInstance3D).material_override = silhouette
 		model.get_node("Face").hide()
@@ -48,7 +50,7 @@ func setup(shape: KinuShape, flavour: KinuFlavour, discovered: bool = true, pixe
 	camera.keep_aspect = Camera3D.KEEP_WIDTH
 	# Costumes add ears, wings and tails, so frame a little wider and higher (optionally for plain Kinu too,
 	# so a row of previews all match).
-	var wide := outfit != null or outfit_framing
+	var wide := outfit != null or outfit_framing or not parts.is_empty()
 	camera.size = maxf(shape.size.x*1.9, shape.size.y*2.5)*(1.45 if wide else 1.0)
 	camera.position = Vector3(0, 1.2+(.3 if wide else 0.0), 4)
 	# Set the angle directly: look_at needs the node inside the tree, and setup runs before that.

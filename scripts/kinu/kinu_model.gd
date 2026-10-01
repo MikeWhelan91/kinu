@@ -36,6 +36,8 @@ const GLASS := preload("res://resources/shaders/toon_glass.gdshader")
 static var bodies: Dictionary = {}
 static var faces: Dictionary = {}
 static var costumes: Dictionary = {}
+## My Kinu part sets by shape and loadout, merged into one mesh so they cost one draw call.
+static var part_sets: Dictionary = {}
 static var exposed_faces: Dictionary = {}
 static var materials: Dictionary = {}
 
@@ -65,10 +67,13 @@ static func body_material(flavour: KinuFlavour) -> ShaderMaterial:
 		materials[flavour.material] = mat
 	return materials[flavour.material]
 
-static func build(shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit = null, mood: String = "calm") -> Node3D:
+static func build(shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit = null, mood: String = "calm", parts: Array = []) -> Node3D:
 	# Pattern outfits have no costume; callers pass their look as the flavour where it shows.
 	if outfit and outfit.finish:
 		outfit = null
+	# My Kinu's parts and a complete outfit are alternative looks; an outfit wins if both arrive.
+	if outfit:
+		parts = []
 	var root := Node3D.new()
 	var key := "%s/%s"%[shape.id, flavour.id]
 	if not bodies.has(key):
@@ -119,6 +124,8 @@ static func build(shape: KinuShape, flavour: KinuFlavour, outfit: KinuOutfit = n
 		skin.material_override = MeshKit.toon_material()
 		skin.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(skin)
+	if not parts.is_empty():
+		_add_parts(root, shape, flavour, parts)
 	root.set_meta("outfit_style", outfit.style if outfit else "")
 	var face := MeshInstance3D.new()
 	face.name = "Face"
@@ -141,6 +148,7 @@ static func clear_cache() -> void:
 	bodies.clear()
 	faces.clear()
 	costumes.clear()
+	part_sets.clear()
 	exposed_faces.clear()
 	materials.clear()
 
@@ -357,6 +365,30 @@ static func _face(kit: MeshKit, shape: KinuShape, mood: String, ink: Color = INK
 			face.mark(x, y-.13, Vector2(.06, .04), Color("ff6f86"), 0, .006)
 
 ## Costumes own their silhouette and face treatment; only animal suits share a pattern.
+static func _add_parts(root: Node3D, shape: KinuShape, flavour: KinuFlavour, parts: Array) -> void:
+	var ids: PackedStringArray = []
+	for part in parts:
+		ids.append(part.id)
+	var key := "%s/%s"%[shape.id, ",".join(ids)]
+	if KinuPartModel.uses_base_colour(parts):
+		key += "/"+flavour.id
+	if not part_sets.has(key):
+		var kit := MeshKit.new()
+		KinuPartModel.build(kit, shape, parts, flavour.color)
+		part_sets[key] = [kit.commit_fill(), kit.commit_hull() if kit.hull_used else null]
+	var fill := MeshInstance3D.new()
+	fill.name = "Parts"
+	fill.mesh = part_sets[key][0]
+	fill.material_override = MeshKit.toon_material()
+	root.add_child(fill)
+	if part_sets[key][1]:
+		var line := MeshInstance3D.new()
+		line.name = "PartsOutline"
+		line.mesh = part_sets[key][1]
+		line.material_override = MeshKit.outline_material(OUTLINE_WIDTH)
+		line.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root.add_child(line)
+
 static func _outfit(kit: MeshKit, outfit: KinuOutfit, shape: KinuShape) -> void:
 	var size := shape.size
 	var h := size*.5

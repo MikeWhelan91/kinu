@@ -12,6 +12,9 @@ static var _cache: Dictionary = {}
 static func outfit(item: KinuOutfit) -> Texture2D:
 	return _load("outfit_%s.png"%item.id)
 
+static func part(item: KinuPart) -> Texture2D:
+	return _load("part_%s.png"%item.id)
+
 static func box(item: KinuDecor) -> Texture2D:
 	return _load("box_%s.png"%item.id)
 

@@ -23,7 +23,7 @@ const OLD_OUTFIT_GOALS := {
 }
 
 func defaults() -> Dictionary:
-	return {"version": 5, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": []}
+	return {"version": 6, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": [], "look": "outfit", "my_kinu": MyKinu.defaults()}
 
 func load_data(source: Variant = null) -> void:
 	data = defaults()
@@ -68,6 +68,28 @@ func load_data(source: Variant = null) -> void:
 				"outfit":
 					if value is String:
 						data[key] = value
+				"look":
+					if value in ["outfit", "my_kinu"]:
+						data[key] = value
+				"my_kinu":
+					if value is Dictionary:
+						var xp: Variant = value.get("xp", 0)
+						if (xp is float or xp is int) and is_finite(float(xp)):
+							data.my_kinu.xp = clampi(int(xp), 0, 2147483647)
+						var seen: Variant = value.get("seen_level", 1)
+						if (seen is float or seen is int) and is_finite(float(seen)):
+							data.my_kinu.seen_level = clampi(int(seen), 1, 100000)
+						for text in ["flavour", "last_run"]:
+							if value.get(text) is String and str(value[text]).length() <= 64:
+								data.my_kinu[text] = value[text]
+						data.my_kinu.intro_seen = value.get("intro_seen") == true
+						# Unknown part ids are kept: a newer catalogue on another device may know them,
+						# and anything unwearable is simply skipped when the look is drawn.
+						if value.get("equipped") is Dictionary:
+							for slot in MyKinu.SLOTS:
+								var id: Variant = value.equipped.get(slot, "")
+								if id is String and str(id).length() <= 64:
+									data.my_kinu.equipped[slot] = id
 				"controls":
 					if value in ["classic", "grab", "claw"]:
 						data[key] = value
@@ -207,6 +229,16 @@ func load_data(source: Variant = null) -> void:
 				var key: String = "outfit:"+str(id)
 				if (KinuProgress.stat(str(goal[0])) >= int(goal[1]) or str(data.outfit) == id) and not data.owned.has(key):
 					data.owned.append(key)
+		# Version 6 added My Kinu. Players who were already playing are credited one XP per Kinu
+		# they have landed, up to the arms slot, with each opened slot's starter part put on.
+		# Their outfit, ownership and selected look are left exactly as they were.
+		if int(loaded.get("version", 1)) < 6 and not loaded.has("my_kinu"):
+			data.my_kinu.xp = mini(int(data.stats.total), MyKinu.RETRO_XP_CAP)
+			var level := MyKinu.level_for(int(data.my_kinu.xp))
+			data.my_kinu.seen_level = level
+			for slot in MyKinu.SLOTS:
+				if MyKinu.slot_level(slot) <= level:
+					MyKinu.equip_starter(slot, data.my_kinu)
 		# Store IDs stay strings: JSON numbers cannot safely preserve every Apple transaction ID.
 		if loaded.get("purchases") is Dictionary:
 			data["purchases"] = loaded.purchases.duplicate(true)
@@ -395,7 +427,7 @@ func clear_all_fresh() -> void:
 	persist()
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls", "claw_hand", "outfit", "box", "room", "debug_unlocked", "language", "mode"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "controls", "claw_hand", "outfit", "box", "room", "debug_unlocked", "language", "mode", "look"]:
 		data[key] = value
 		persist()
 
@@ -416,6 +448,11 @@ func add_tickets(amount: int) -> void:
 func owns(kind: String, id: String, price: int = 1) -> bool:
 	if debug_unlocked() or id == "":
 		return true
+	# My Kinu level rewards are free but only owned once that level is reached.
+	if kind == "part":
+		var part := KinuParts.find(id)
+		if part and part.level > 0:
+			return data.owned.has(kind+":"+id)
 	if KinuProgress.is_earned_item(kind, id):
 		return data.owned.has(kind+":"+id) or KinuProgress.met(KinuProgress.goals[kind+":"+id])
 	if KinuProgress.is_crane_only(kind, id) or KinuProgress.is_showcase(kind, id) or KinuProgress.is_event(kind, id):
@@ -455,6 +492,8 @@ func buy(kind: String, id: String, price: int) -> bool:
 		data.owned.append(kind+":"+id)
 	if kind in ["outfit", "box", "room"]:
 		data[kind] = id
+		if kind == "outfit":
+			data.look = "outfit"
 		if kind == "room":
 			Sound.play_room_music(id)
 	persist()
@@ -492,7 +531,8 @@ func finish_run(summary: Dictionary) -> bool:
 	_add_counts(data.flavour_counts, summary.get("flavours", {}))
 	_add_counts(data.shape_counts, summary.get("shapes", {}))
 	if mode == "classic":
-		data.outfit_best[str(data.outfit)] = maxi(int(data.outfit_best.get(str(data.outfit), 0)), score)
+		var look := MyKinu.record_key()
+		data.outfit_best[look] = maxi(int(data.outfit_best.get(look, 0)), score)
 		data.room_best[str(data.room)] = maxi(int(data.room_best.get(str(data.room), 0)), score)
 		data.recent.append(score)
 		data.recent = data.recent.slice(-RECENT_RUNS)
@@ -501,12 +541,32 @@ func finish_run(summary: Dictionary) -> bool:
 		data.stats.clean = maxi(int(data.stats.clean), pile)
 	GrandOpening.record_run()
 	KinuProgress.record_run(summary)
+	_grant_run_xp(summary, record)
 	if not debug_unlocked():
 		for key in KinuProgress.earned_keys():
 			if not earned_before.has(key):
 				mark_fresh(key)
 	persist()
 	return record
+
+## My Kinu XP is earned only here, by a run that reached its results, whatever look it wore.
+## Restarting or leaving from the pause menu never calls finish_run, so it earns nothing. A run's
+## id is remembered so the same run can never pay out twice. The outcome is written back into
+## the summary for the results screen as summary.my_kinu.
+func _grant_run_xp(summary: Dictionary, record: bool) -> void:
+	var run_id := str(summary.get("run_id", ""))
+	if run_id != "" and run_id == str(data.my_kinu.last_run):
+		summary["my_kinu"] = {"xp": 0, "level_before": MyKinu.level(), "level_after": MyKinu.level(), "rewards": {"beans": 0, "tickets": 0, "parts": [], "slots": []}}
+		return
+	data.my_kinu.last_run = run_id
+	var before := MyKinu.level()
+	var gained := MyKinu.run_xp(summary, record)
+	data.my_kinu.xp = mini(int(data.my_kinu.xp)+gained, 2147483647)
+	var after := MyKinu.level()
+	var rewards := MyKinu.grant_levels(before, after)
+	if MyKinu.active() and KinuProgress.catalog:
+		MyKinu.sync_discovered(KinuProgress.catalog)
+	summary["my_kinu"] = {"xp": gained, "level_before": before, "level_after": after, "rewards": rewards}
 
 static func _add_counts(into: Dictionary, counts: Variant) -> void:
 	if counts is Dictionary:

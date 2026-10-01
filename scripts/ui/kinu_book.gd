@@ -175,7 +175,7 @@ static func _thumb(catalog: KinuCatalog, kind: String, item: Resource) -> Contro
 		holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		holder.add_child(DecorPreview.room_swatch(item, Vector2i(112, 100)))
 		return holder
-	var texture: Texture2D = CollectionThumb.outfit(item) if kind == "outfit" else CollectionThumb.box(item)
+	var texture: Texture2D = CollectionThumb.outfit(item) if kind == "outfit" else CollectionThumb.part(item) if kind == "part" else CollectionThumb.box(item)
 	var rect := TextureRect.new()
 	rect.texture = texture
 	rect.custom_minimum_size = Vector2(126, 118)
@@ -274,7 +274,11 @@ static func _item_detail(app: Node, kind: String, item: Resource) -> void:
 		pills.add_child(NestTheme.bean_pill(str(int(item.price)), 15))
 	stack.add_child(status_row)
 	# Every tile says how it is come by, so tapping one always answers "how do I get this?".
-	if item.showcase != "":
+	if item is KinuPart and item.level > 0:
+		app._paper_text(stack, NestTheme.t("Reach My Kinu level %d to earn this.")%item.level, 16)
+	elif item is KinuPart and item.starter:
+		app._paper_text(stack, NestTheme.t("Free when My Kinu's %s slot opens at level %d.")%[NestTheme.t(MyKinu.SLOT_NAMES[item.slot]), MyKinu.slot_level(item.slot)], 16)
+	elif item.showcase != "":
 		app._paper_text(stack, KinuShowcase.acquisition_text(item), 16)
 	elif item.event != "":
 		app._paper_text(stack, GrandOpening.acquisition_text(item), 16)

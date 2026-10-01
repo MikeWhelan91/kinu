@@ -4,8 +4,12 @@ extends RefCounted
 ## Wardrobe; rewards earned by playing live in the Kinu Book.
 
 ## Tabs as [tab id, title, save kind].
-const TABS := [["outfit", "Outfits", "outfit"], ["box", "Boxes", "box"], ["room", "Rooms", "room"]]
-const HINTS := {"outfit": "Outfits dress every Kinu you stack.", "box": "Same size box, fresh new look.", "room": "Change where Kinu lives, with its own music."}
+const TABS := [["outfit", "Outfits", "outfit"], ["part", "Parts", "part"], ["box", "Boxes", "box"], ["room", "Rooms", "room"]]
+## The Wardrobe has no Parts tab: My Kinu has its own dressing screen.
+const WARDROBE_TABS := [["outfit", "Outfits", "outfit"], ["box", "Boxes", "box"], ["room", "Rooms", "room"]]
+const HINTS := {"outfit": "Outfits dress every Kinu you stack.", "part": "Parts dress My Kinu. Wear them once their slot opens.", "box": "Same size box, fresh new look.", "room": "Change where Kinu lives, with its own music."}
+## Which slot the Parts tab is showing.
+static var part_slot := "body"
 
 static var cards: Array[Dictionary] = []
 static var balance: PanelContainer
@@ -63,8 +67,12 @@ static func show(app: Node) -> void:
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var grid := CardGrid.grid(list)
 	var kind := kind_of(app.shop_tab)
+	if kind == "part":
+		var chips := _slot_chips(app)
+		list.add_child(chips)
+		list.move_child(chips, 0)
 	# Cheapest first, so each shelf climbs from common to epic.
-	var stock := items(app.run.catalog, kind).filter(func(item: Resource) -> bool: return is_available(item) and item.goal == "" and item.showcase == "" and item.event == "" and int(item.price) > 0)
+	var stock := items(app.run.catalog, kind).filter(func(item: Resource) -> bool: return is_available(item) and item.goal == "" and item.showcase == "" and item.event == "" and int(item.price) > 0 and (kind != "part" or item.slot == part_slot))
 	stock.sort_custom(func(a: Resource, b: Resource) -> bool: return int(a.price) < int(b.price))
 	for item in stock:
 		var built := CardGrid.card(grid, preview(app.run.catalog, kind, item), item.display_name, CardGrid.tint(grid.get_child_count()), func() -> void: _choose(app, kind, item), 210, "tap", 200, 19, kind == "room")
@@ -73,11 +81,30 @@ static func show(app: Node) -> void:
 		_style_card(card)
 	app._center_label(layout, HINTS[app.shop_tab], 15, NestTheme.MUTED)
 
-## The four category tabs shared by the Shop and Wardrobe.
-static func tabs(app: Node, current: String, pick: Callable, sound: String = "tap") -> HBoxContainer:
+## Slot filters for the Parts tab, each saying when its slot opens.
+static func _slot_chips(app: Node) -> HBoxContainer:
+	var row := HBoxContainer.new()
+	row.name = "PartSlots"
+	row.add_theme_constant_override("separation", 4)
+	for slot in MyKinu.SLOTS:
+		var title := NestTheme.t(MyKinu.SLOT_NAMES[slot])
+		if not MyKinu.slot_unlocked(slot):
+			title = NestTheme.t("%s · Lv %d")%[title, MyKinu.slot_level(slot)]
+		var chip := NestTheme.tab(title, part_slot == slot, func() -> void:
+			part_slot = slot
+			show(app)
+		)
+		chip.name = "Slot_"+slot
+		chip.custom_minimum_size.y = 48
+		chip.add_theme_font_size_override("font_size", 13)
+		row.add_child(chip)
+	return row
+
+## The category tabs shared by the Shop and Wardrobe.
+static func tabs(app: Node, current: String, pick: Callable, sound: String = "tap", entries: Array = TABS) -> HBoxContainer:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 6)
-	for entry in TABS:
+	for entry in entries:
 		var button := NestTheme.tab(entry[1], current == entry[0], func() -> void: pick.call(entry[0]), sound)
 		button.add_theme_font_size_override("font_size", 15)
 		row.add_child(button)
@@ -87,17 +114,21 @@ static func items(catalog: KinuCatalog, kind: String) -> Array:
 	match kind:
 		"outfit":
 			return catalog.outfits
+		"part":
+			return catalog.parts
 	return catalog.decor_of(kind)
 
 static func is_available(item: Resource) -> bool:
 	if item is KinuOutfit:
 		return item.available
-	if item is KinuDecor:
+	if item is KinuDecor or item is KinuPart:
 		return item.available
 	return true
 
 static func preview(catalog: KinuCatalog, kind: String, item: Resource, pixels: Vector2i = Vector2i(170, 124), interactive: bool = false) -> Control:
 	match kind:
+		"part":
+			return MyKinuScreen.part_preview(catalog, item, pixels, interactive)
 		"outfit":
 			if item and item.finish:
 				return kinu_preview(item.finish, null, false, pixels, interactive)
@@ -145,6 +176,8 @@ static func showcase(app: Node, kind: String, item: Resource, action: Callable, 
 		stack.add_child(hint)
 	if item.description != "":
 		app._paper_text(stack, item.description, 18)
+	if item is KinuPart and not MyKinu.slot_unlocked(item.slot):
+		app._center_label(stack, NestTheme.t("Wear it from My Kinu level %d.")%MyKinu.slot_level(item.slot), 16, NestTheme.MUTED)
 	stack.add_child(NestTheme.button(action_label, action, true, "book"))
 	stack.add_child(NestTheme.button("Not Yet", app._close_modal, false, "book"))
 
@@ -186,6 +219,13 @@ static func _refresh(app: Node) -> void:
 
 static func _choose(app: Node, kind: String, item: Resource) -> void:
 	if Save.owns(kind, item.id, item.price):
+		if kind == "part":
+			showcase(app, kind, item, func() -> void:
+				app._close_modal()
+				MyKinuScreen.tab = item.slot
+				MyKinuScreen.show(app, func() -> void: show(app))
+			, "Open My Kinu")
+			return
 		showcase(app, kind, item, func() -> void:
 			app.wardrobe_tab = tab_of(kind)
 			app._wardrobe()
@@ -208,10 +248,16 @@ static func purchase(app: Node, kind: String, item: Resource, done: Callable) ->
 	price_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	price_row.add_child(NestTheme.bean_pill(NestTheme.t("%d beans")%int(item.price), 20))
 	stack.add_child(price_row)
-	stack.add_child(NestTheme.button("Buy & Wear" if kind == "outfit" else "Buy & Use", func() -> void:
+	var wearable := kind == "outfit" or (kind == "part" and MyKinu.slot_unlocked(item.slot))
+	var action := "Buy & Wear" if wearable else "Buy" if kind == "part" else "Buy & Use"
+	stack.add_child(NestTheme.button(action, func() -> void:
 		if Save.buy(kind, item.id, item.price):
 			Sound.play("cashregister")
 			Haptics.pulse(30, .5)
+			# A part bought for an open slot goes straight on My Kinu, and My Kinu goes on.
+			if kind == "part" and MyKinu.slot_unlocked(item.slot):
+				MyKinu.equip(app.run.catalog, item.slot, item.id)
+				MyKinu.wear(app.run.catalog, true)
 		app._close_modal()
 		done.call()
 	, true))

@@ -191,10 +191,10 @@ func _show_card() -> void:
 		var item: Resource = prize.item
 		stage_row.add_child(big_preview(app.run.catalog, prize.kind, item, Vector2i(260, 190)))
 		name_text = NestTheme.t(item.display_name)
-		var kinds := {"outfit": "New outfit", "box": "New box", "room": "New room"}
+		var kinds := {"outfit": "New outfit", "part": "New My Kinu part", "box": "New box", "room": "New room"}
 		detail = NestTheme.t(kinds[prize.kind])
 		if prize.get("crane_only", false):
-			detail = NestTheme.t({"outfit": "Kinu Claw-only outfit", "box": "Kinu Claw-only box", "room": "Kinu Claw-only room"}[prize.kind])
+			detail = NestTheme.t({"outfit": "Kinu Claw-only outfit", "part": "Kinu Claw-only part", "box": "Kinu Claw-only box", "room": "Kinu Claw-only room"}[prize.kind])
 	var name_label := NestTheme.headline(name_text, 34)
 	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -211,15 +211,21 @@ func _show_card() -> void:
 		var lucky_row := CenterContainer.new()
 		lucky_row.add_child(NestTheme.pill("The lucky meter paid out!", 16, Color("e0a81f").darkened(.2)))
 		stack.add_child(lucky_row)
-	if KinuCatcher.is_item(prize):
-		var wear := NestTheme.button("Wear It" if prize.kind == "outfit" else "Use It", func() -> void:
-			Save.buy(prize.kind, prize.id, 0)
+	# A part for a slot My Kinu hasn't opened yet waits in the collection instead.
+	var wearable: bool = KinuCatcher.is_item(prize) and (prize.kind != "part" or MyKinu.slot_unlocked(prize.item.slot))
+	if wearable:
+		var wear := NestTheme.button("Wear It" if prize.kind in ["outfit", "part"] else "Use It", func() -> void:
+			if prize.kind == "part":
+				MyKinu.equip(app.run.catalog, prize.item.slot, prize.id)
+				MyKinu.wear(app.run.catalog, true)
+			else:
+				Save.buy(prize.kind, prize.id, 0)
 			Save.clear_fresh(prize.kind+":"+prize.id)
 			Sound.play("wardrobe")
 			_close("wear")
 		, true, "wardrobe")
 		stack.add_child(wear)
-	stack.add_child(NestTheme.button("Keep Playing" if KinuCatcher.is_item(prize) else "Lovely!", func() -> void: _close("continue"), not KinuCatcher.is_item(prize), "plop"))
+	stack.add_child(NestTheme.button("Keep Playing" if KinuCatcher.is_item(prize) else "Lovely!", func() -> void: _close("continue"), not wearable, "plop"))
 	sign.pivot_offset = Vector2(sign.custom_minimum_size.x*.5, 260)
 	sign.scale = Vector2.ONE*.3
 	sign.modulate.a = 0.0
@@ -230,6 +236,8 @@ func _show_card() -> void:
 ## A large, happy preview of a won item.
 static func big_preview(catalog: KinuCatalog, kind: String, item: Resource, pixels: Vector2i) -> Control:
 	match kind:
+		"part":
+			return MyKinuScreen.part_preview(catalog, item, pixels)
 		"outfit":
 			var kinu := KinuPreview.new()
 			if item.finish:

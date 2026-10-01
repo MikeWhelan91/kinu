@@ -85,6 +85,11 @@ static func register(from: KinuCatalog) -> void:
 			showcase["outfit:"+item.id] = item
 		if item.event != "":
 			event["outfit:"+item.id] = item
+	for item in from.parts:
+		if item.goal != "":
+			goals["part:"+item.id] = item
+		if item.crane_only:
+			crane_only["part:"+item.id] = item
 	for item in from.decor:
 		if item.goal != "":
 			goals[item.kind+":"+item.id] = item
@@ -122,7 +127,7 @@ static func stat(goal: String) -> int:
 	return int(Save.data.stats.get(goal, 0))
 
 static func met(item: Resource) -> bool:
-	var kind: String = item.kind if item is KinuDecor else "outfit"
+	var kind: String = item.kind if item is KinuDecor else "part" if item is KinuPart else "outfit"
 	return Save.data.owned.has(kind+":"+item.id) or stat(item.goal) >= int(item.goal_amount)
 
 static func goal_text(item: Resource) -> String:

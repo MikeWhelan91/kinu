@@ -3128,3 +3128,313 @@ msgstr "iCloud 백업에 실패했어요. 진행 상황은 이 iPhone에 저장�
 
 msgid "iCloud backup could not be verified. Your progress is still saved on this iPhone."
 msgstr "iCloud 백업을 확인하지 못했어요. 진행 상황은 이 iPhone에 저장돼요."
+
+# My Kinu
+msgid "My Kinu"
+msgstr "마이 키누"
+
+msgid "Flavour"
+msgstr "맛"
+
+msgid "Body"
+msgstr "몸"
+
+msgid "Hat"
+msgstr "모자"
+
+msgid "Arms"
+msgstr "팔"
+
+msgid "Glasses"
+msgstr "안경"
+
+msgid "%s\nLv %d"
+msgstr "%s\nLv %d"
+
+msgid "This slot opens at level %d. Parts you own now are ready to wear then."
+msgstr "이 슬롯은 레벨 %d에 열려요. 가진 파츠는 그때 입을 수 있어요."
+
+msgid "Level %d"
+msgstr "레벨 %d"
+
+msgid "%d / %d XP · Next: %s"
+msgstr "%d / %d XP · 다음: %s"
+
+msgid "Every Kinu in your runs looks like this"
+msgstr "플레이 중 모든 키누가 이 모습이에요"
+
+msgid "Wear My Kinu"
+msgstr "마이 키누 입기"
+
+msgid "%s slot"
+msgstr "%s 슬롯"
+
+msgid "Lv %d"
+msgstr "Lv %d"
+
+msgid "Nothing"
+msgstr "없음"
+
+msgid "Parts"
+msgstr "파츠"
+
+msgid "Parts dress My Kinu. Wear them once their slot opens."
+msgstr "파츠로 마이 키누를 꾸며요. 슬롯이 열리면 입을 수 있어요."
+
+msgid "%s · Lv %d"
+msgstr "%s · Lv %d"
+
+msgid "Open My Kinu"
+msgstr "마이 키누 열기"
+
+msgid "Buy"
+msgstr "구매하기"
+
+msgid "Wear it from My Kinu level %d."
+msgstr "마이 키누 레벨 %d부터 입을 수 있어요."
+
+msgid "My Kinu · Lv %d"
+msgstr "마이 키누 · Lv %d"
+
+msgid "Tap To Dress Up"
+msgstr "탭해서 꾸미기"
+
+msgid "My Kinu +%d XP · Level %d"
+msgstr "마이 키누 +%d XP · 레벨 %d"
+
+msgid "My Kinu reached level %d!"
+msgstr "마이 키누가 레벨 %d이 됐어요!"
+
+msgid "New slot: %s"
+msgstr "새 슬롯: %s"
+
+msgid "New part: %s"
+msgstr "새 파츠: %s"
+
+msgid "+%d Catcher tickets"
+msgstr "클로 티켓 +%d장"
+
+msgid "+%d level-up beans"
+msgstr "레벨 업 콩 +%d"
+
+msgid "Meet My Kinu! Dress it up in the Wardrobe."
+msgstr "마이 키누 등장! 옷장에서 꾸며 보세요."
+
+msgid "New My Kinu flavour: %s"
+msgstr "마이 키누 새로운 맛: %s"
+
+msgid "New My Kinu part"
+msgstr "마이 키누 새 파츠"
+
+msgid "Kinu Claw-only part"
+msgstr "키누 클로 한정 파츠"
+
+msgid "My Kinu Parts"
+msgstr "마이 키누 파츠"
+
+msgid "Reach My Kinu level %d to earn this."
+msgstr "마이 키누를 레벨 %d까지 올리면 받을 수 있어요."
+
+msgid "Free when My Kinu's %s slot opens at level %d."
+msgstr "마이 키누의 %s 슬롯이 레벨 %d에 열리면 무료로 받아요."
+
+msgid "Worn below the face, so My Kinu's flavour still shows."
+msgstr "얼굴 아래에 입어서 마이 키누의 맛이 그대로 보여요."
+
+msgid "Sits on top of every Kinu you drop."
+msgstr "떨어뜨리는 모든 키누 위에 얹혀요."
+
+msgid "Little arms for every Kinu you drop."
+msgstr "떨어뜨리는 모든 키누에게 작은 팔을."
+
+msgid "Sits over the eyes of every Kinu you drop."
+msgstr "떨어뜨리는 모든 키누의 눈에 써요."
+
+msgid "Comfy Tee"
+msgstr "편한 티셔츠"
+
+msgid "Sky Tee"
+msgstr "하늘색 티셔츠"
+
+msgid "Sailor Stripes"
+msgstr "마린 스트라이프"
+
+msgid "Cosy Scarf"
+msgstr "포근한 목도리"
+
+msgid "Berry Bow Tie"
+msgstr "베리 나비넥타이"
+
+msgid "Café Apron"
+msgstr "카페 앞치마"
+
+msgid "Mint Hoodie"
+msgstr "민트 후드티"
+
+msgid "Denim Dungarees"
+msgstr "데님 멜빵바지"
+
+msgid "Ballet Tutu"
+msgstr "발레 튀튀"
+
+msgid "Swim Ring"
+msgstr "튜브"
+
+msgid "Club Jersey"
+msgstr "클럽 저지"
+
+msgid "Work Overalls"
+msgstr "작업 멜빵바지"
+
+msgid "Shoyu Bib"
+msgstr "간장 턱받이"
+
+msgid "Knit Sweater"
+msgstr "니트 스웨터"
+
+msgid "Starry Scarf"
+msgstr "별빛 목도리"
+
+msgid "Golden Sash"
+msgstr "황금 띠"
+
+msgid "Little Beanie"
+msgstr "작은 비니"
+
+msgid "Sunny Cap"
+msgstr "햇살 캡모자"
+
+msgid "Painter Beret"
+msgstr "화가 베레모"
+
+msgid "Party Hat"
+msgstr "파티 모자"
+
+msgid "Ribbon Bow"
+msgstr "리본"
+
+msgid "Bucket Hat"
+msgstr "버킷햇"
+
+msgid "Top Hat"
+msgstr "실크햇"
+
+msgid "Chef's Hat"
+msgstr "요리사 모자"
+
+msgid "Flower Crown"
+msgstr "꽃관"
+
+msgid "Straw Hat"
+msgstr "밀짚모자"
+
+msgid "Witch Hat"
+msgstr "마녀 모자"
+
+msgid "Royal Crown"
+msgstr "왕관"
+
+msgid "Halo"
+msgstr "천사 고리"
+
+msgid "Champion Cap"
+msgstr "챔피언 캡모자"
+
+msgid "Lucky Clover"
+msgstr "행운의 클로버"
+
+msgid "Sun Hat"
+msgstr "햇빛 모자"
+
+msgid "Bunny Headband"
+msgstr "토끼 머리띠"
+
+msgid "Cat Headband"
+msgstr "고양이 머리띠"
+
+msgid "Propeller Cap"
+msgstr "프로펠러 모자"
+
+msgid "Little Arms"
+msgstr "작은 팔"
+
+msgid "Cosy Mittens"
+msgstr "포근한 벙어리장갑"
+
+msgid "Cartoon Gloves"
+msgstr "만화 장갑"
+
+msgid "Hello Wave"
+msgstr "안녕 인사"
+
+msgid "Red Balloon"
+msgstr "빨간 풍선"
+
+msgid "Boxing Gloves"
+msgstr "권투 장갑"
+
+msgid "Cheer Pom-poms"
+msgstr "치어 폼폼"
+
+msgid "Little Wings"
+msgstr "작은 날개"
+
+msgid "Bubble Wand"
+msgstr "비눗방울 막대"
+
+msgid "Sparklers"
+msgstr "불꽃 막대"
+
+msgid "Steady Mitts"
+msgstr "든든 벙어리장갑"
+
+msgid "Climber Gloves"
+msgstr "클라이머 장갑"
+
+msgid "Victory Flag"
+msgstr "승리의 깃발"
+
+msgid "Golden Wings"
+msgstr "황금 날개"
+
+msgid "Round Specs"
+msgstr "동그란 안경"
+
+msgid "Red Frames"
+msgstr "빨간 안경테"
+
+msgid "Star Glasses"
+msgstr "별 안경"
+
+msgid "Heart Glasses"
+msgstr "하트 안경"
+
+msgid "Thick Frames"
+msgstr "두꺼운 안경테"
+
+msgid "Cool Shades"
+msgstr "멋진 선글라스"
+
+msgid "Monocle"
+msgstr "외알 안경"
+
+msgid "Swim Goggles"
+msgstr "수경"
+
+msgid "3D Glasses"
+msgstr "3D 안경"
+
+msgid "Cat-eye Glasses"
+msgstr "캣아이 안경"
+
+msgid "Taster's Specs"
+msgstr "시식 안경"
+
+msgid "Planner Glasses"
+msgstr "계획가 안경"
+
+msgid "Golden Specs"
+msgstr "황금 안경"
+
+msgid "Star Shades"
+msgstr "별 선글라스"

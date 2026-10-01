@@ -235,7 +235,7 @@ static func odds_page(app: Node) -> void:
 		meter.add_child(bar)
 		list.add_child(NestTheme.paper(meter))
 	var table := KinuCatcher.odds(catalog)
-	var groups := [["tickets", "Free Plays"], ["beans", "Beans"], ["outfit", "Outfits"], ["box", "Boxes"], ["room", "Rooms"]]
+	var groups := [["tickets", "Free Plays"], ["beans", "Beans"], ["outfit", "Outfits"], ["part", "My Kinu Parts"], ["box", "Boxes"], ["room", "Rooms"]]
 	for group in groups:
 		var rows := table.filter(func(row: Dictionary) -> bool: return row.entry.kind == group[0])
 		if rows.is_empty():

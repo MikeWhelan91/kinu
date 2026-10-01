@@ -225,6 +225,48 @@ func _ready() -> void:
 			Save.data.box = "bamboo"
 			app.shop_tab = {"shop": "outfit", "shop_outfit": "outfit", "shop_box": "box", "shop_room": "room"}[mode]
 			app._shop()
+		"my_kinu", "my_kinu_hat", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results":
+			Save.data.best = 30
+			Save.data.beans = 2400
+			Save.data.my_kinu.xp = 520
+			Save.data.my_kinu.flavour = "matcha"
+			Save.data.owned = ["outfit:frog", "part:top_hat", "part:sky_tee", "part:cool_shades", "part:boxing_gloves"]
+			Save.data.my_kinu.equipped = {"body": "sky_tee", "hat": "top_hat", "arms": "boxing_gloves", "glasses": "cool_shades"}
+			MyKinu.wear(app.run.catalog, true)
+			match mode:
+				"my_kinu":
+					MyKinuScreen.tab = "body"
+					MyKinuScreen.show(app, app._home)
+				"my_kinu_hat":
+					MyKinuScreen.tab = "hat"
+					MyKinuScreen.shape_index = 3
+					MyKinuScreen.show(app, app._home)
+				"my_kinu_flavour":
+					MyKinuScreen.tab = "flavour"
+					MyKinuScreen.show(app, app._home)
+				"shop_part":
+					app.shop_tab = "part"
+					KinuShopScreen.part_slot = "hat"
+					app._shop()
+				"my_kinu_play":
+					app._start()
+					var run: NestRun = app.run
+					var ids := [1,0,4,3,0,2,0,1]
+					for i in ids.size():
+						var body := run.make_body(run.catalog.shapes[ids[i]],MyKinu.base(run.catalog),"lucky" if i == 4 else "")
+						body.position = Vector3(sin(i*1.9)*.15,.1+i*.78,cos(i*1.9)*.15) if i>2 else Vector3(sin(i*2.1)*.8,.62,cos(i*2.1)*.8)
+						body.rotation.y = i*.8
+						body.scored = true
+						body.grip()
+					run.placed = ids.size()
+					run.score = ids.size()
+					app._hud_update()
+				"my_kinu_results":
+					Save.data.my_kinu.xp = 1250
+					app._start()
+					app.initial_best = 30
+					app.run.run_id = "visual"
+					app._results({"score":24,"pile":24,"placed":26,"height":6.4,"run_id":"visual"})
 		"night", "winter":
 			Save.data.room = "night" if mode == "night" else "winter"
 			Save.data.box = "lacquer" if mode == "night" else "goldbox"

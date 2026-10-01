@@ -571,9 +571,9 @@ func _next_card() -> void:
 	_center_label(next_slot,"Next",15,NestTheme.MUTED)
 	if run.next_shape:
 		var finish: KinuFlavour = run.pattern_for(run.next_flavour)
-		var outfit: KinuOutfit = run.catalog.outfit(str(Save.data.outfit))
+		var outfit: KinuOutfit = MyKinu.worn_outfit(run.catalog)
 		var preview := KinuPreview.new()
-		preview.setup(run.next_shape,finish if finish else run.next_flavour,true,Vector2i(100,76),"calm",outfit,false,run.next_special == "sticky")
+		preview.setup(run.next_shape,finish if finish else run.next_flavour,true,Vector2i(100,76),"calm",outfit,false,run.next_special == "sticky",MyKinu.worn_parts(run.catalog))
 		preview.fit_model(1.04)
 		next_slot.add_child(preview)
 		if run.next_special != "":

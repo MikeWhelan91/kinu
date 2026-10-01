@@ -37,6 +37,9 @@ var sticky: bool = false
 var stuck: bool = false
 var visual: Node3D
 var mood: String = "calm"
+## Forces a face regardless of what the body is doing: Kinu Toss uses it for the worried wind-up
+## in the pan and the terror of the flight. "" lets the usual moods decide.
+var mood_override: String = ""
 var scored: bool = false
 var fallen: bool = false
 var touched_ground: bool = false
@@ -220,8 +223,11 @@ func grip() -> void:
 	linear_velocity = Vector3.ZERO
 	angular_velocity = Vector3.ZERO
 
-func release(impulse: Vector3 = Vector3.ZERO) -> void:
-	if not gripped or stuck:
+## `shaken` brings glued Kinu down too. Glue makes a Kinu a permanent anchor so the balance
+## system never wobbles on it, but when a squirt shrinks the pile out from under one, staying
+## frozen in mid-air reads as a bug rather than as glue.
+func release(impulse: Vector3 = Vector3.ZERO, shaken: bool = false) -> void:
+	if not gripped or (stuck and not shaken):
 		return
 	gripped = false
 	freeze = false
@@ -247,6 +253,8 @@ func _process(delta: float) -> void:
 		KinuModel.set_mood(visual, shape, mood, look.light_face)
 
 func _wanted_mood() -> String:
+	if mood_override != "":
+		return mood_override
 	if fallen:
 		return "falling"
 	if sway > .25:

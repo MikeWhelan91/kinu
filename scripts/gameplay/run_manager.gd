@@ -56,10 +56,12 @@ var plate: TowerPlate
 ## Home screen: the nodes making up each mode's set-up, so the one being played can be shown and
 ## the other put away. Empty during a run, when only one set-up is ever built.
 var menu_groups: Dictionary = {}
-## Lunch Rush: seconds left, boxes shipped and the Kinu packed into them.
-var time_left: float = 0.0
-var boxes_shipped: int = 0
-var shipped: int = 0
+## Kinu Toss: the node running the throws, boxes filled and the longest throw that went in (cm).
+var toss: TossPlay
+var boxes_filled: int = 0
+var longest_cm: int = 0
+## Home screen: Kinu Toss's set-up (a lidded box and the pan), shown when Toss is chosen.
+var toss_stage: Node3D
 ## The score is how many Kinu are on the pile right now: in the box or stacked on it, not on the counter.
 var score: int = 0
 var next_milestone: int = MILESTONE_STEP
@@ -69,9 +71,6 @@ var tumbles: int = 0
 var tower_height: float = 0.0
 var elapsed: float = 0.0
 var hold_time: float = 0.0
-## Bento Flip's spring charge, from 0 to 1. It controls the pan's launch height and distance.
-var bento_charge: float = 0.0
-var bento_assisted: bool = false
 var drop_height: float = 3.0
 var beam: MeshInstance3D
 ## A translucent copy of the held Kinu at its predicted first contact. It deliberately shows
@@ -95,8 +94,6 @@ var fallen_body: KinuBody
 var grab_lift: float = 0.0
 var room: TofuShop
 var box: TofuBox
-## Bento Flip's pan sits at the front of the current room and launches toward the bento.
-var pan: BentoPan
 ## Space kept clear at the bottom of the screen (home indicator, rounded corners), in viewport pixels.
 var bottom_inset: float = 20.0
 ## 0 = rock solid, 1 = the part above `wobble_cut` is past its support and about to tip.
@@ -104,43 +101,42 @@ var wobble: float = 0.0
 var wobble_cut: float = 0.0
 var wobble_direction: Vector3 = Vector3.ZERO
 var overbalanced_time: float = 0.0
+var overbalanced_cut: float = -1.0
 var balance_timer: float = 0.0
 
-## "classic" fills the box, "tower" builds as tall as possible, "rush" is Bento Flip.
-const MODES := ["classic", "tower", "rush"]
+## "classic" fills the box, "tower" builds as tall as possible, "toss" flicks Kinu into a lidded box.
+const MODES := ["classic", "tower", "toss"]
 ## Shapes a mode leaves out of its pool. Tower has no box walls to trap a rolling Kinu, so the
 ## round one would turn a careful stack into a coin flip; it sits that mode out.
 const MODE_OMITTED_SHAPES := {"tower": ["ball"]}
 ## Best pile in Classic needed to play each mode.
-const MODE_UNLOCK := {"classic": 0, "tower": 15, "rush": 25}
+const MODE_UNLOCK := {"classic": 0, "tower": 15, "toss": 25}
 ## Every room is composed around a single viewpoint: the camera on the shop's cloth, looking at
 ## the counter's centre. So both home-screen set-ups stand on that same spot and choosing a mode
 ## swaps one for the other, rather than moving the camera somewhere no room was built for.
 ## Tower is taller than a boxful, so the camera rises to frame it whole; that is the only move.
 const MENU_TOWER_FOCUS := 2.55
-## Bento Flip is deliberate rather than timed: each run starts with a small lunch-service stack
-## of tosses, and packing a bento earns two more.
-const RUSH_START := 12.0
-const RUSH_BONUS := 2.0
-const RUSH_BOX_TARGET := 5
 const LEVEL_STEP := .75
 const MAX_TUMBLES := 6
-## Rush is a packing mode: fill the box, close the lid, take the next one. Set false to get Bento
-## Flip — the frying pan and the timer — back instead. Classic is untouched either way.
-const PACKING_RUSH := false
-## Each box wants more Kinu under a lower lid, so a run climbs instead of settling into a rhythm.
-const PACK_TARGET_START := 8
-const PACK_TARGET_STEP := 2
-const PACK_LID_START := 1.60
-const PACK_LID_STEP := .10
-const PACK_LID_MIN := .95
-## Slack at the line, so a Kinu a hair over does not feel cheated.
-const LID_MARGIN := .10
-## Pale while there is room left, red once the mound is at the line.
-const LID_CLEAR := Color(.72, .93, .78, .34)
-const LID_FULL := Color(1, .42, .36, .5)
 const MILESTONE_STEP := 10
-const LUCKY_BEANS := 10
+## Milestone cheers climb with the pile, so the tenth one does not read like the first. Each holds
+## one %d for the pile size.
+const CHEERS := [
+	"%d Kinu! Nice!",
+	"%d Kinu! Going well!",
+	"%d Kinu! Lovely pile!",
+	"%d Kinu! Amazing!",
+	"%d Kinu! Incredible!",
+	"%d Kinu! Unbelievable!",
+	"%d Kinu! Legendary!",
+]
+## True once during a run, as the pile reaches one short of the player's best.
+var warned_best: bool = false
+## True once during a run, on the Kinu that passes the player's best.
+var cheered_best: bool = false
+const LUCKY_BEANS := 50
+## Beans for a Heart Kinu caught with no tumble to refund.
+const HEART_BEANS := 25
 const LUCKY_CHANCE := .06
 ## Lucky/Gold Star Kinu are a mid-run surprise, never an opening drop.
 const LUCKY_MIN_PLACED := 12
@@ -153,11 +149,11 @@ const NEW_FLAVOUR_CHANCE := .20
 const NEW_FLAVOUR_GAP := 5
 ## The bottle is a charge you spend, not a queue slot: you start with one and earn more as the
 ## pile grows, so a squirt is something you save for the moment it is worth most.
-## Shoyu's glue is gone — Sticky Kinu cover that job — and the bottle now holds Nigari.
+## Classic uses Nigari to make space; Tower uses Shoyu to secure a stack.
 const SQUIRTS_START := 1
 ## Pile sizes that hand you another squirt. The gaps widen, so later ones have to be earned.
 const SQUIRT_UNLOCKS := [20, 35, 50]
-## The sauce the bottle carries. Kept as a table so a second one can be slotted in later.
+## Classic's sauce. Tower selects Shoyu through sauce_id().
 const BOTTLE_SAUCE := "nigari"
 ## Both names are real parts of making tofu: nigari is the coagulant that firms it, koji the
 ## culture that makes it swell.
@@ -167,19 +163,21 @@ const BOTTLE_SAUCE := "nigari"
 ##	"koji": {"label": "Koji", "hint": "Koji! Swells a Kinu bigger", "factor": 1.32, "targets": 1, "low": 1.0, "high": 1.45, "tint": "f5c14e"},
 const SAUCES := {
 	"nigari": {"label": "Nigari", "hint": "Nigari! Makes crowded Kinu smaller", "factor": .74, "targets": 3, "low": .55, "high": 1.0, "tint": "8fd3ff"},
+	"shoyu": {"label": "Shoyu", "hint": "Shoyu! Glues a Kinu in place", "targets": 1, "tint": "b87940"},
 }
+
+static func sauce_for_mode(selected_mode: String) -> String:
+	return "shoyu" if selected_mode == "tower" else BOTTLE_SAUCE
+
+func sauce_id() -> String:
+	return sauce_for_mode(mode)
 ## How far from the splash a Kinu can be and still catch the sauce.
 const SAUCE_REACH := 1.35
 const TINY_SCALE := .62
 ## Classic is intentionally the tighter, more immediately tactical mode. Scale only the box's
 ## footprint: its rim stays the familiar height, while a 10% smaller floor asks players to plan
-## their base sooner. Tower and Rush retain the standard dimensions.
+## their base sooner. Tower retains the standard dimensions.
 const CLASSIC_BOX_SCALE := .90
-const BENTO_BOX_SCALE := .78
-const BENTO_TARGET_DEPTH := 0.0
-## The pan starts close to the counter edge, outside the regular pile area. Do not judge a toss
-## as fallen until it has had time to leave the pan and cross the bento.
-const BENTO_LAUNCH_GRACE := 1.8
 ## The best-height ring: pale while it is still above you, gold once you are over it.
 const RING_WAITING := Color(1, .98, .92, .5)
 const RING_PASSED := Color(1, .78, .23, .72)
@@ -188,7 +186,9 @@ const FALLEN_LINGER := 1.5
 const WOBBLE_WARN := .7
 ## How long a section can sit overbalanced before it tips: more time to react before disaster.
 const TIP_HOLD := .7
-const KNOCK_LOOSE_SPEED := 5.0
+## A normal drop falls from about 1.4 units above the pile. It should feel soft and physical,
+## but must not unfreeze a centred support on every turn in either stacking mode.
+const KNOCK_LOOSE_SPEED := 9.0
 ## Touches this close (viewport pixels) to the held Kinu, or to its drop line, grab it.
 const GRAB_RADIUS := 120.0
 const GRAB_LINE_RADIUS := 70.0
@@ -257,15 +257,19 @@ func _clear() -> void:
 	if is_instance_valid(bottle):
 		bottle.queue_free()
 	bottle = null
-	if is_instance_valid(pan):
-		pan.queue_free()
-	pan = null
+	if is_instance_valid(toss):
+		toss.queue_free()
+	toss = null
+	if is_instance_valid(toss_stage):
+		toss_stage.queue_free()
+	toss_stage = null
 	aim_mode = "kinu"
 	active = null
 	pending = null
 	fallen_body = null
 	wobble = 0
 	overbalanced_time = 0
+	overbalanced_cut = -1.0
 	for body in bodies:
 		if is_instance_valid(body):
 			remove_child(body)
@@ -275,34 +279,28 @@ func _clear() -> void:
 	pointer_id = -99
 
 func decor_outdated() -> bool:
-	return box == null or room == null or box.decor != catalog.find_decor("box", str(Save.data.box)) or room.decor != catalog.find_decor("room", str(Save.data.room))
+	return box == null or room == null or room.lane or box.decor != catalog.find_decor("box", str(Save.data.box)) or room.decor != catalog.find_decor("room", str(Save.data.room))
 
-## Rebuilds the box and room if the equipped skins changed (e.g. after a shop visit).
-func refresh_decor() -> void:
+## Rebuilds the box and room if the equipped skins changed (e.g. after a shop visit). `lane` asks
+## for the room with Kinu Toss's lane cut through it; every other screen wants it whole.
+func refresh_decor(lane: bool = false) -> void:
 	var box_decor := catalog.find_decor("box", str(Save.data.box))
-	if box == null or box.decor != box_decor or box is BentoBox:
+	if box == null or box.decor != box_decor:
 		if box:
 			box.free()
 		box = TofuBox.new()
 		box.decor = box_decor
 		add_child(box)
 	var room_decor := catalog.find_decor("room", str(Save.data.room))
-	if room == null or room.decor != room_decor:
+	if room == null or room.decor != room_decor or room.lane != lane:
 		if room:
 			room.free()
 		room = TofuShop.new()
 		room.decor = room_decor
+		room.lane = lane
 		add_child(room)
-
-func _ensure_bento_box() -> void:
-	var decor := catalog.find_decor("box", str(Save.data.box))
-	if box is BentoBox and box.decor == decor:
-		return
-	if is_instance_valid(box):
-		box.queue_free()
-	box = BentoBox.new()
-	box.decor = decor
-	add_child(box)
+	if plate:
+		plate.apply_decor(box_decor)
 
 func show_menu() -> void:
 	refresh_decor()
@@ -327,7 +325,7 @@ func show_menu() -> void:
 	orbit.shake = 0.0
 	# Deliberately arranged, gripped tableaux keep the home screen full and every face readable;
 	# gameplay still uses real falling and settling physics.
-	menu_groups = {"classic": [box] as Array[Node3D], "tower": [plate] as Array[Node3D]}
+	menu_groups = {"classic": [box] as Array[Node3D], "tower": [plate] as Array[Node3D], "toss": [] as Array[Node3D]}
 	# The box, filled the way a good Classic run ends.
 	_tableau("classic", Vector3.ZERO, [
 		["slab", "silken", Vector3(-1.05, .46, .62), .18], ["long", "sesame", Vector3(0, .50, -.72), .04],
@@ -344,6 +342,7 @@ func show_menu() -> void:
 		["block", "tamago", Vector3(.12, TowerPlate.TOP+2.80, .06), -.24],
 		["slab", "sakura", Vector3(.05, TowerPlate.TOP+3.30, -.02), .1],
 		["tall", "silken", Vector3(.18, TowerPlate.TOP+4.10, .04), .3]])
+	_toss_tableau()
 	focus_mode(chosen_mode(), true)
 
 ## Builds one gripped home-screen arrangement at `origin`, from [shape, flavour, offset, yaw] rows.
@@ -357,7 +356,35 @@ func _tableau(group: String, origin: Vector3, pile: Array) -> void:
 		body.grip()
 		menu_groups[group].append(body)
 
-## Home screen: puts the chosen mode's set-up on the counter and takes the other one away, and
+## Home screen: Kinu Toss's box with one Kinu dropping into a hole and one on its way, frozen
+## mid-throw. It stands on the counter's usual spot, square on to the home camera, so it frames
+## like the other set-ups.
+func _toss_tableau() -> void:
+	toss_stage = Node3D.new()
+	add_child(toss_stage)
+	var target := TossBox.new()
+	target.decor = catalog.find_decor("box", str(Save.data.box))
+	target.half_x = 1.8
+	target.half_z = 1.5
+	target.rise = 1.2
+	target.tilt = .5
+	target.with_collision = false
+	target.holes = [
+		{"tier": "big", "center": Vector2(-.5, -.75), "half": float(TossBox.TIERS.big.half)},
+		{"tier": "small", "center": Vector2(.55, .75), "half": float(TossBox.TIERS.small.half)}]
+	target.position.z = -.9
+	toss_stage.add_child(target)
+	menu_groups["toss"].append(toss_stage)
+	# Placed off the box itself, so the Kinu standing in a hole is really in it whatever the tilt.
+	var standing := target.board.to_global(Vector3(.55, TofuBox.RIM_HEIGHT-.15, .75))
+	_tableau("toss", Vector3.ZERO, [
+		["tall", "silken", standing, .35],
+		["block", "matcha", Vector3(-.45, 2.9, 1.6), .5]])
+	var airborne: KinuBody = menu_groups["toss"].back()
+	airborne.rotation = Vector3(-.8, .5, .35)
+	airborne.mood_override = "falling"
+
+## Home screen: puts the chosen mode's set-up on the counter and takes the others away, and
 ## lifts the camera for Tower, which stands taller than a boxful.
 ## `snap` skips the camera's glide, for the first frame of the menu.
 func focus_mode(id: String, snap: bool = false) -> void:
@@ -370,7 +397,7 @@ func focus_mode(id: String, snap: bool = false) -> void:
 	if plate:
 		plate.set_active(tower)
 	if box:
-		box.set_active(not tower)
+		box.set_active(id == "classic")
 	for group in menu_groups:
 		for node in menu_groups[group]:
 			if is_instance_valid(node) and node != box and node != plate:
@@ -400,18 +427,17 @@ static func best_for(id: String) -> int:
 	return int(Save.data.best) if id == "classic" else int(Save.data.mode_best.get(id, 0))
 
 func begin() -> void:
-	refresh_decor()
-	_clear()
 	mode = chosen_mode()
-	if bento_flip():
-		_ensure_bento_box()
+	refresh_decor(mode == "toss")
+	_clear()
 	_set_stage()
-	time_left = RUSH_START
-	boxes_shipped = 0
-	shipped = 0
+	boxes_filled = 0
+	longest_cm = 0
 	menu_mode = false
 	score = 0
 	next_milestone = MILESTONE_STEP
+	warned_best = false
+	cheered_best = false
 	placed = 0
 	tumbles = 0
 	next_special = ""
@@ -446,9 +472,12 @@ func begin() -> void:
 	orbit.tower_top = 0
 	orbit.focus_height = OrbitController.BASE_FOCUS
 	_place_best_ring()
-	if bento_flip():
-		pan = BentoPan.new()
-		add_child(pan)
+	if mode == "toss":
+		toss = TossPlay.new()
+		toss.run = self
+		add_child(toss)
+		toss.start()
+		return
 	choose_next()
 	state = "ready"
 	_spawn()
@@ -476,7 +505,7 @@ func choose_next() -> void:
 		forced_special = ""
 		return
 	var drop_number := placed+2 if is_instance_valid(active) else placed+1
-	if mode == "classic" and not menu_mode and drop_number >= next_sticky_drop:
+	if mode in ["classic", "tower"] and not menu_mode and drop_number >= next_sticky_drop:
 		next_special = "sticky"
 		next_sticky_drop += 7+rng.randi_range(0, 1)
 	elif placed >= 3 and not menu_mode:
@@ -558,12 +587,12 @@ func pattern_for(flavour: KinuFlavour) -> KinuFlavour:
 	return catalog.pattern(str(Save.data.outfit)) if Save.flavour_found(flavour) else null
 
 ## Every Kinu wears the equipped outfit: a costume, or a pattern outfit's look over its flavour.
-func make_body(shape: KinuShape, flavour: KinuFlavour, special: String = "", wear_outfit: bool = true) -> KinuBody:
+func make_body(shape: KinuShape, flavour: KinuFlavour, special: String = "", wear_outfit: bool = true, play_scale: float = 1.0) -> KinuBody:
 	var body := KinuBody.new()
 	var finish: KinuFlavour = pattern_for(flavour) if wear_outfit else null
 	if special == "lucky":
 		finish = catalog.finish("gold")
-	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)) if wear_outfit else null, finish, TINY_SCALE if special == "tiny" else 1.0)
+	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)) if wear_outfit else null, finish, minf(play_scale, TINY_SCALE) if special == "tiny" else play_scale)
 	if special == "sticky":
 		body.make_sticky()
 	body.mark_special(special)
@@ -579,19 +608,15 @@ func tower_top() -> float:
 			top = maxf(top, body.position.y+body.size().y*.45)
 	return top
 
-func _bento_pan_position() -> Vector3:
-	# The pan stays at the near edge of the current view, so every room can reuse the same target
-	# layout while still feeling like the Kinu is being served out of the machine.
-	return orbit.toward_camera()*4.0+orbit.right()*orbit.lateral+Vector3.UP*.40
-
 func _spawn() -> void:
 	if state in ["over", "falling"]:
 		return
 	active = make_body(next_shape, next_flavour, next_special)
-	if placed >= 2 and squirts > 0 and not Save.data.seen_specials.has("bottle"):
-		Save.data.seen_specials.append("bottle")
+	var bottle_tip := "shoyu_bottle" if mode == "tower" else "bottle"
+	if placed >= 2 and squirts > 0 and not Save.data.seen_specials.has(bottle_tip):
+		Save.data.seen_specials.append(bottle_tip)
 		Save.persist()
-		message.emit(tr("Tap the bottle to shrink crowded Kinu!"), Color("5a8fb5"))
+		message.emit(tr("Tap the shoyu bottle to glue Kinu together!") if mode == "tower" else tr("Tap the bottle to shrink crowded Kinu!"), Color("8a613f") if mode == "tower" else Color("5a8fb5"))
 	elif active.special != "" and not Save.data.seen_specials.has(active.special):
 		Save.data.seen_specials.append(active.special)
 		Save.persist()
@@ -601,14 +626,10 @@ func _spawn() -> void:
 	active.collision_mask = 0
 	# Roughly facing the player, but turned enough that edges rarely line up by themselves.
 	active_yaw = rng.randf_range(-SPAWN_MAX_TURN, SPAWN_MAX_TURN)
-	if bento_flip():
-		orbit.lateral = 0.0
-		orbit.depth = 0.0
-	else:
-		var reach := .5 if mode == "tower" else 1.0
-		var spot := Vector2.from_angle(rng.randf()*TAU)*rng.randf_range(SPAWN_MIN_OFFSET, SPAWN_MAX_OFFSET)*reach
-		orbit.lateral = spot.x
-		orbit.depth = spot.y
+	var reach := .5 if mode == "tower" else 1.0
+	var spot := Vector2.from_angle(rng.randf()*TAU)*rng.randf_range(SPAWN_MIN_OFFSET, SPAWN_MAX_OFFSET)*reach
+	orbit.lateral = spot.x
+	orbit.depth = spot.y
 	choose_next()
 	var top := tower_top()
 	orbit.tower_top = top
@@ -616,12 +637,7 @@ func _spawn() -> void:
 		tower_height = maxf(tower_height, top)
 	drop_height = maxf(3.0, top+1.4)
 	hold_time = 0
-	bento_charge = 0.0
-	bento_assisted = false
-	if is_instance_valid(pan):
-		pan.position = _bento_pan_position()
-		pan.rotation.y = orbit.angle
-	active.position = _bento_pan_position()+Vector3.UP*.20 if bento_flip() else orbit.drop_position(drop_height)
+	active.position = orbit.drop_position(drop_height)
 	state = "aim"
 	_rebuild_landing_ghost()
 	beam.show()
@@ -637,26 +653,12 @@ func drop() -> void:
 		_squirt()
 		return
 	state = "settle"
-	active.position = _bento_pan_position()+Vector3.UP*.20 if bento_flip() else orbit.drop_position(drop_height)
+	active.position = orbit.drop_position(drop_height)
 	active.collision_layer = 2
 	active.collision_mask = 3
 	active.freeze = false
 	active.sleeping = false
-	if bento_flip():
-		# A short, friendly lob: dragging the pan sideways changes the diagonal into the bento.
-		var target := box.position+Vector3.UP*(TofuBox.RIM_HEIGHT*.68)
-		var direction := (target-active.position)*Vector3(1, 0, 1)
-		# A held pan reaches the high, long arc needed to clear the bento wall; a quick release is
-		# a deliberately short flop. This makes force an understandable player-controlled skill.
-		# Full charge is intentionally a slow, high serving lob: it has to clear the near rim and
-		# descend into the bento before reaching the far wall. The old fast, shallow throw could
-		# only collide with the outside face of the box.
-		active.linear_velocity = direction.normalized()*lerpf(3.8, 5.0, bento_charge)+Vector3.UP*lerpf(2.8, 12.0, bento_charge)
-		time_left = maxf(0.0, time_left-1.0)
-		bento_charge = 0.0
-		Sound.play("tap", 1.12)
-	else:
-		active.linear_velocity = Vector3.DOWN*.5
+	active.linear_velocity = Vector3.DOWN*.5
 	pending = active
 	active = null
 	elapsed = 0
@@ -667,6 +669,9 @@ func drop() -> void:
 	updated.emit()
 
 func _physics_process(delta: float) -> void:
+	if is_instance_valid(toss):
+		toss.step(delta)
+		return
 	orbit.update(delta, menu_mode)
 	_update_best_ring()
 	if state in ["menu", "over", "shipping"]:
@@ -674,21 +679,14 @@ func _physics_process(delta: float) -> void:
 	run_time += delta
 	if active:
 		hold_time += delta
-		if bento_flip() and gesture == "charge":
-			bento_charge = minf(1.0, bento_charge+delta/1.15)
 		drop_height = lerpf(drop_height, maxf(3.0, orbit.tower_top+1.4), 1.0-exp(-delta*4))
 		grab_lift = lerpf(grab_lift, .3 if gesture == "aim" else 0.0, 1.0-exp(-delta*14))
-		active.position = (_bento_pan_position()+Vector3.UP*.20 if bento_flip() else orbit.drop_position(drop_height))+Vector3.UP*(sin(hold_time*3.4)*.05+grab_lift)
+		active.position = orbit.drop_position(drop_height)+Vector3.UP*(sin(hold_time*3.4)*.05+grab_lift)
 		active.rotation.y = orbit.angle+active_yaw
-		if is_instance_valid(pan):
-			pan.position = _bento_pan_position()
-			pan.rotation.y = orbit.angle
 		if is_instance_valid(bottle) and not bottle.tipping:
 			bottle.position = active.position+Vector3.UP*.3
 			bottle.rotation.y = orbit.angle
 		_update_guide()
-	if bento_flip():
-		_guide_bento_lob()
 	if state == "falling":
 		elapsed += delta
 		if elapsed > 1.8:
@@ -696,21 +694,25 @@ func _physics_process(delta: float) -> void:
 		return
 	for body in bodies:
 		# Ground contact counts even for a gripped (frozen) piece resting against the nest.
-		var launched := bento_flip() and body == pending and elapsed < BENTO_LAUNCH_GRACE
-		if not launched and not body.fallen and body != active and (body.touched_ground or (not body.freeze and is_fallen(body))):
+		if not body.fallen and body != active and (body.touched_ground or (not body.freeze and is_fallen(body))):
 			_fall(body)
 			if state == "falling":
 				return
 	balance_timer -= delta
-	if not bento_flip() and balance_timer <= 0:
+	if balance_timer <= 0:
 		balance_timer = .1
 		_measure_balance()
 		orbit.tower_top = tower_top()
 	if wobble >= 1.0:
+		# A warning at one level must not finish the countdown for a different level.
+		if not is_equal_approx(wobble_cut, overbalanced_cut):
+			overbalanced_cut = wobble_cut
+			overbalanced_time = 0.0
 		overbalanced_time += delta
 		if overbalanced_time >= TIP_HOLD:
 			_tip()
 	else:
+		overbalanced_cut = -1.0
 		overbalanced_time = maxf(0, overbalanced_time-delta*2)
 	if state == "settle":
 		elapsed += delta
@@ -801,10 +803,12 @@ func _held_up(pile: Array[KinuBody], cut: float, com: Vector2, support: Array[Ki
 		var b := body.global_basis.orthonormalized()
 		var reach := (absf(b.x.y)*body.size().x+absf(b.y.y)*body.size().y+absf(b.z.y)*body.size().z)*.5
 		var bottom := body.position.y-reach
-		var spread := body.footprint()*.7
-		var corner := spread*.7
-		for offset in [Vector2(spread, 0), Vector2(-spread, 0), Vector2(0, spread), Vector2(0, -spread),
-				Vector2(corner, corner), Vector2(-corner, corner), Vector2(corner, -corner), Vector2(-corner, -corner)]:
+		# Probe inside each face's real, rotated footprint. A long Kinu is much narrower
+		# across Z than X; a circular ring based on its longest side misses its support.
+		var along_x := Vector2(b.x.x, b.x.z)*body.size().x*.32
+		var along_z := Vector2(b.z.x, b.z.z)*body.size().z*.32
+		for offset in [along_x, -along_x, along_z, -along_z,
+				along_x+along_z, along_x-along_z, -along_x+along_z, -along_x-along_z]:
 			var from := Vector3(body.position.x+offset.x, bottom+.1, body.position.z+offset.y)
 			var query := PhysicsRayQueryParameters3D.create(from, from-Vector3.UP*.4, 3, excluded)
 			var hit := space.intersect_ray(query)
@@ -858,7 +862,7 @@ func toggle_bottle() -> void:
 	elif squirts > 0:
 		aim_mode = "bottle"
 		bottle = ShoyuBottle.new()
-		bottle.tint = Color(str(SAUCES[BOTTLE_SAUCE].tint)).darkened(.25)
+		bottle.tint = Color(str(SAUCES[sauce_id()].tint)).darkened(.25)
 		add_child(bottle)
 		bottle.position = active.position+Vector3.UP*.3
 		active.visible = false
@@ -892,7 +896,7 @@ func _squirt() -> void:
 func _squirted(target: KinuBody) -> void:
 	bottle = null
 	aim_mode = "kinu"
-	var recipe: Dictionary = SAUCES.get(BOTTLE_SAUCE, {})
+	var recipe: Dictionary = SAUCES.get(sauce_id(), {})
 	var touched := 0
 	# Whatever was lit under the bottle is what gets sauced, so the preview is the promise.
 	var chosen := sauce_targets.duplicate()
@@ -903,8 +907,8 @@ func _squirted(target: KinuBody) -> void:
 		touched = _apply_sauce(chosen, recipe)
 	if touched > 0:
 		glazed += touched
-		message.emit(tr("%s! %d Kinu")%[str(recipe.label), touched], Color(str(recipe.tint)).darkened(.3))
-		Sound.play("land", 1.1 if float(recipe.factor) < 1.0 else .7)
+		message.emit(tr("%s! %d Kinu")%[tr(str(recipe.label)), touched], Color(str(recipe.tint)).darkened(.3))
+		Sound.play("land", 1.1 if sauce_id() == "nigari" else .7)
 		Haptics.pulse(28, .5)
 	else:
 		message.emit(tr("Splat! Missed"), Color("8a6d5a"))
@@ -960,16 +964,16 @@ func sauce_aim(hit: Dictionary) -> KinuBody:
 
 ## Lights the Kinu a squirt would catch, and puts out any that have fallen out of reach.
 func _show_sauce_targets(aimed: KinuBody) -> void:
-	var recipe: Dictionary = SAUCES.get(BOTTLE_SAUCE, {})
+	var recipe: Dictionary = SAUCES.get(sauce_id(), {})
 	var wanted: Array[KinuBody] = [] if recipe.is_empty() else sauce_reach(aimed, int(recipe.targets))
 	for body in sauce_targets:
 		if is_instance_valid(body) and not wanted.has(body):
 			body.set_sauce_target(false)
 	for body in wanted:
 		if is_instance_valid(body):
-			# Targeting needs to read over any flavour and the blue pan; it is deliberately brighter
-			# than the sauce itself so the three affected Kinu are unambiguous before spending a squirt.
-			body.set_sauce_target(true, Color("00f5ff"))
+			# Targeting reads over any flavour and the blue pan. The highlight is brighter than
+			# the sauce so affected Kinu are clear before spending a squirt.
+			body.set_sauce_target(true, Color("00f5ff") if sauce_id() == "nigari" else Color("ffc47a"))
 	sauce_targets = wanted
 
 func _clear_sauce_targets() -> void:
@@ -978,27 +982,68 @@ func _clear_sauce_targets() -> void:
 			body.set_sauce_target(false)
 	sauce_targets.clear()
 
-## Resizes exactly the Kinu that were lit, then lets the pile settle into the room it made.
+## Applies the current mode's sauce to exactly the Kinu that were lit.
 func _apply_sauce(chosen: Array[KinuBody], recipe: Dictionary) -> int:
 	var touched := 0
+	if sauce_id() == "shoyu":
+		for body in chosen:
+			if is_instance_valid(body) and not body.fallen and not body.sticky:
+				body.glaze()
+				touched += 1
+		return touched
+	# Footprints are taken before the shrink. Afterwards the support is narrower, so a Kinu
+	# perched over the old edge no longer overlaps it, fails the "resting on" test and is left
+	# frozen in mid-air instead of being let go.
+	var footprint: Dictionary = {}
+	for body in chosen:
+		if is_instance_valid(body):
+			footprint[body] = body.size()
 	for body in chosen:
 		if is_instance_valid(body) and body.rescale(float(recipe.factor), float(recipe.low), float(recipe.high)):
 			touched += 1
 	if touched > 0:
-		for body in bodies:
-			if is_instance_valid(body) and not body.fallen:
-				body.release()
+		for body in _stacked_on(chosen, footprint):
+			body.release(Vector3.ZERO, true)
 	return touched
+
+## The Kinu a squirt has to let go of: the ones it shrank, plus whatever was stacked on them and
+## has just lost its footing. Nothing else is disturbed, so squirting the top of a tower moves the
+## top of the tower and leaves the base holding it up alone. Letting go is necessary because a
+## settled Kinu is frozen, and a frozen body will not notice the support under it getting smaller.
+func _stacked_on(shrunk: Array[KinuBody], footprint: Dictionary = {}) -> Array[KinuBody]:
+	var loose: Array[KinuBody] = []
+	for body in shrunk:
+		if is_instance_valid(body) and not body.fallen:
+			loose.append(body)
+	var spreading := true
+	while spreading:
+		spreading = false
+		for body in bodies:
+			if not is_instance_valid(body) or body.fallen or loose.has(body):
+				continue
+			for under in loose:
+				if _rests_on(body, under, footprint):
+					loose.append(body)
+					spreading = true
+					break
+	return loose
+
+## True when `body` is stacked on `under`: higher up, and overlapping its footprint. `footprint`
+## optionally supplies a pre-shrink size for `under`, so what was resting on it a moment ago still
+## counts as resting on it.
+func _rests_on(body: KinuBody, under: KinuBody, footprint: Dictionary = {}) -> bool:
+	if body.position.y <= under.position.y:
+		return false
+	var under_size: Vector3 = under.size()
+	if footprint.has(under):
+		under_size = under_size.max(footprint[under])
+	var span := (body.size()+under_size)*.5
+	return absf(body.position.x-under.position.x) < span.x and absf(body.position.z-under.position.z) < span.z
 
 func _update_guide() -> void:
 	if active == null:
 		return
 	if state != "aim":
-		marker.hide()
-		beam.hide()
-		return
-	if bento_flip():
-		# Bento Flip's launch is ballistic, so the vertical Classic drop guide would be misleading.
 		marker.hide()
 		beam.hide()
 		return
@@ -1106,7 +1151,7 @@ func on_base(point: Vector3, margin: float = 0.0) -> bool:
 ## Classic narrows the real collision box and every gameplay query with it, so the visible rim,
 ## landing guide and tumble boundary always agree.
 func box_half() -> float:
-	var scale := BENTO_BOX_SCALE if bento_flip() else CLASSIC_BOX_SCALE if mode != "tower" else 1.0
+	var scale := CLASSIC_BOX_SCALE if mode != "tower" else 1.0
 	return (TofuBox.INNER_HALF+TofuBox.WALL)*scale
 
 func box_contains(point: Vector3, margin: float = 0.0) -> bool:
@@ -1123,35 +1168,23 @@ func is_fallen(body: KinuBody) -> bool:
 		return radius > TofuShop.COUNTER_HALF*1.5 or (not TowerPlate.contains(p, .35) and p.y < TowerPlate.TOP+.25)
 	return radius > TofuShop.COUNTER_HALF*1.5 or (not box_contains(p, .35) and p.y < TofuBox.RIM_HEIGHT*.75)
 
-func _fall(body: KinuBody, reason: String = "tumble") -> void:
+func _fall(body: KinuBody) -> void:
 	body.fallen = true
 	fallen_body = body
 	tumbles += 1
 	streak = 0
 	if body == pending:
 		pending = null
-	score = shipped+pile_count() if lid_mode() else pile_count()
+	score = pile_count()
 	orbit.shake = .5
 	Sound.play("mistake")
 	Haptics.pulse(60, .8)
 	_clear_fallen(body)
 	if mode == "tower":
 		score = standing_height()
-	elif bento_flip():
-		score = boxes_shipped
-		message.emit(tr("Missed the bento!"), Color("e0463a"))
-		updated.emit()
-		if time_left <= 0.0:
-			end()
-		else:
-			_spawn()
-		return
 	if tumbles < MAX_TUMBLES:
 		var left := MAX_TUMBLES-tumbles
-		if reason == "lid":
-			message.emit(tr("Too tall! The lid won't close") if left > 1 else tr("Too tall! 1 tumble left"), Color("e0463a"))
-		else:
-			message.emit(tr("Kinu tumbled off! 1 tumble left") if left == 1 else tr("Kinu tumbled off! %d tumbles left")%left, Color("e0463a"))
+		message.emit(tr("Last chance! 1 tumble left") if left == 1 else tr("Whoops! %d tumbles left")%left, Color("e0463a"))
 		updated.emit()
 		return
 	state = "falling"
@@ -1163,7 +1196,7 @@ func _fall(body: KinuBody, reason: String = "tumble") -> void:
 	beam.hide()
 	marker.hide()
 	gesture = ""
-	message.emit(tr("Oh no! That's %d tumbles!")%MAX_TUMBLES, Color("e0463a"))
+	message.emit(tr("That's %d tumbles! Great pile though!")%MAX_TUMBLES, Color("e0463a"))
 	updated.emit()
 
 ## Fallen Kinu are cleared off the counter so they can't prop up or knock into the pile.
@@ -1177,49 +1210,6 @@ func _clear_fallen(body: KinuBody) -> void:
 	body.queue_free()
 
 ## Kinu counted on the pile: settled at least once and not fallen onto the counter.
-## True while Rush is packing boxes under a lid.
-func lid_mode() -> bool:
-	return mode == "rush" and PACKING_RUSH
-
-## True while Rush is still the old pan-and-timer Bento Flip.
-func bento_flip() -> bool:
-	return mode == "rush" and not PACKING_RUSH
-
-## How many Kinu this box wants before the lid is worth closing.
-func pack_target() -> int:
-	return PACK_TARGET_START+boxes_shipped*PACK_TARGET_STEP
-
-## The highest point of a settled Kinu, projected onto world Y so a Kinu resting on its side or
-## stood on end is measured by how much room it actually takes up, not by its upright height.
-func _lid_reach(body: KinuBody) -> float:
-	var half := body.size()*.5
-	var turn := body.global_transform.basis
-	return body.position.y+absf(turn.x.y*half.x)+absf(turn.y.y*half.y)+absf(turn.z.y*half.z)
-
-## The height the lid closes at. It comes down box by box, which keeps the box shallow enough to
-## see into while steadily squeezing the room left to pack in.
-func lid_height() -> float:
-	return TofuBox.RIM_HEIGHT+maxf(PACK_LID_MIN, PACK_LID_START-boxes_shipped*PACK_LID_STEP)
-
-func _too_proud(body: KinuBody) -> bool:
-	return _lid_reach(body) > lid_height()+LID_MARGIN
-
-## How many Kinu are packed in the box right now, against the number needed to close the lid.
-func packed_count() -> int:
-	return pile_count()
-
-func can_ship() -> bool:
-	return lid_mode() and state == "aim" and packed_count() >= pack_target()
-
-func ship_box() -> void:
-	if not can_ship():
-		return
-	if is_instance_valid(active):
-		bodies.erase(active)
-		active.queue_free()
-		active = null
-	_ship()
-
 func pile_count() -> int:
 	var count := 0
 	for body in bodies:
@@ -1230,26 +1220,12 @@ func pile_count() -> int:
 func _settle() -> void:
 	if not pending or pending.fallen:
 		return
-	# The bento's lacquer rim and the Kinu's rounded body make a centre-point-only check feel
-	# unfair. A piece settled anywhere visibly inside the box is a successful serve.
-	if (bento_flip() or lid_mode()) and not box_contains(pending.position, .55):
-		_fall(pending)
-		return
-	# The lid rule: anything standing above the rim would stop the box closing, so it cannot be
-	# part of this box. This is what stops Classic turning into a free-standing tower.
-	if lid_mode() and _too_proud(pending):
-		_fall(pending, "lid")
-		return
 	pending.scored = true
 	placed += 1
 	tower_height = maxf(tower_height, tower_top())
 	score = pile_count()
 	if mode == "tower":
 		score = standing_height()
-	elif lid_mode():
-		score = shipped+pile_count()
-	elif bento_flip():
-		score = boxes_shipped
 	pending.cheer()
 	flavour_counts[pending.flavour.id] = int(flavour_counts.get(pending.flavour.id, 0))+1
 	shape_counts[pending.shape.id] = int(shape_counts.get(pending.shape.id, 0))+1
@@ -1278,15 +1254,12 @@ func _settle() -> void:
 		Haptics.pulse(35, .55)
 	elif special == "heart":
 		hearts_caught += 1
-		if bento_flip():
-			time_left += 3.0
-			message.emit(tr("Heart Kinu! +3s"), Color("ff5d8f"))
-		elif tumbles > 0:
+		if tumbles > 0:
 			tumbles -= 1
 			message.emit(tr("Heart Kinu! A tumble came back"), Color("ff5d8f"))
 		else:
-			bonus_beans += 5
-			message.emit(tr("Heart Kinu! +5 beans"), Color("ff5d8f"))
+			bonus_beans += HEART_BEANS
+			message.emit(tr("Heart Kinu! +%d beans")%HEART_BEANS, Color("ff5d8f"))
 		Sound.play("special", 1.2)
 		Haptics.pulse(35, .55)
 	elif earned_squirt:
@@ -1295,9 +1268,19 @@ func _settle() -> void:
 		message.emit(tr("%d Kinu! +1 Nigari squirt")%score, Color("5a8fb5"))
 		Sound.play("special")
 		Haptics.pulse(35, .55)
+	elif chasing_best():
+		# The moment the run is one Kinu from the record is the tensest it will ever be. Saying so
+		# turns a number the player is not watching into the reason to keep going.
+		message.emit(tr("One more to beat your best!"), Color("ffb62e"))
+		Sound.play("special", 1.15)
+		Haptics.pulse(40, .6)
+	elif beat_best():
+		message.emit(tr("New best! %d Kinu!")%score, Color("ffb62e"))
+		Sound.play("highscore")
+		Haptics.pulse(55, .8)
 	elif milestone:
 		var reached := score/MILESTONE_STEP*MILESTONE_STEP
-		message.emit(tr("%d Kinu! Amazing!")%reached, Color("ff8a1f"))
+		message.emit(tr(_cheer(reached))%reached, Color("ff8a1f"))
 		Sound.play("special")
 		Haptics.pulse(35, .55)
 	elif discovered:
@@ -1305,29 +1288,7 @@ func _settle() -> void:
 		Sound.play("special", 1.2)
 	pending = null
 	action_done.emit("settle")
-	if bento_flip() and pile_count() >= RUSH_BOX_TARGET:
-		_ship()
-		return
-	if bento_flip() and time_left <= 0.0:
-		end()
-		return
 	_spawn()
-
-## A full pan flip is intentionally generous once it has cleanly cleared the rim. This keeps the
-## challenge in choosing aim and charge, rather than demanding pinball-perfect collision luck.
-func _guide_bento_lob() -> void:
-	if bento_assisted or not is_instance_valid(pending) or pending.fallen:
-		return
-	if pending.linear_velocity.y >= 0.0 or pending.position.y < TofuBox.RIM_HEIGHT+.45:
-		return
-	var local := pending.position-box.position
-	var catch_half := box_half()+.45
-	if absf(local.x) > catch_half or absf(local.z) > catch_half:
-		return
-	bento_assisted = true
-	# Preserve a soft fall, but pull the horizontal drift toward the rice bed so the Kinu visibly
-	# drops into the lunch rather than catching the far lip after a successful high arc.
-	pending.linear_velocity = Vector3(-local.x*2.4, -2.2, -local.z*2.4)
 
 func end() -> void:
 	if state == "over":
@@ -1348,7 +1309,7 @@ func end() -> void:
 
 ## Everything the results screen, lifetime stats and daily missions need about this run.
 func summary() -> Dictionary:
-	return {"mode": mode, "pile": pile_count() if mode != "rush" else score, "boxes": boxes_shipped, "score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "dressed": str(Save.data.outfit) != "", "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
+	return {"mode": mode, "pile": placed if mode == "toss" else pile_count(), "boxes": boxes_filled, "distance": longest_cm, "score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "dressed": str(Save.data.outfit) != "", "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
 
 func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if menu_mode or state == "over":
@@ -1360,18 +1321,40 @@ func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if force > 4:
 		Haptics.pulse(12, .25)
 
-## Soybeans for a run: 1 per Kinu on the pile, 2 more for every 10, and 5 more for a new best.
-static func beans_for(score: int, record: bool) -> int:
-	return score+score/10*2+(5 if record else 0)
+## One short of the player's best, once per run, and only when there is a best worth chasing.
+func chasing_best() -> bool:
+	var best := int(Save.data.best)
+	if mode != "classic" or warned_best or best < MILESTONE_STEP or score != best-1:
+		return false
+	warned_best = true
+	return true
 
-## Soybeans for any mode: Tower pays a bean per 10 cm, Rush pays like Classic plus 5 a box.
+## The Kinu that takes the run past the player's best, called out once as it happens.
+func beat_best() -> bool:
+	var best := int(Save.data.best)
+	if mode != "classic" or cheered_best or best < MILESTONE_STEP or score != best+1:
+		return false
+	cheered_best = true
+	return true
+
+## The cheer for a milestone, climbing through CHEERS as the pile grows.
+static func _cheer(reached: int) -> String:
+	return CHEERS[mini(reached/MILESTONE_STEP-1, CHEERS.size()-1)] if reached >= MILESTONE_STEP else CHEERS[0]
+
+## Soybeans for a run: 5 per Kinu on the pile, 10 more for every 10, and 25 more for a new best.
+static func beans_for(score: int, record: bool) -> int:
+	return score*5+score/10*10+(25 if record else 0)
+
+## Soybeans for any mode. Tower pays 5 beans per 10 cm. Toss scores in the thousands, so its rate
+## is set to land a good run near what a good Classic pile pays rather than on the size of its
+## score: 1 bean per 100 points, plus 10 for each box filled.
 static func beans_for_run(stats: Dictionary, record: bool) -> int:
 	var score := int(stats.get("score", 0))
 	match str(stats.get("mode", "classic")):
 		"tower":
-			return score/10+score/100*2+(5 if record else 0)
-		"rush":
-			return beans_for(score, record)+int(stats.get("boxes", 0))*5
+			return score/10*5+score/100*10+(25 if record else 0)
+		"toss":
+			return score/100+int(stats.get("boxes", 0))*10+(25 if record else 0)
 	return beans_for(score, record)
 
 ## Height of what's standing on the plate right now, in cm.
@@ -1398,15 +1381,6 @@ func _place_best_ring() -> void:
 	best_ring_passed = false
 	if best_ring == null:
 		return
-	if lid_mode():
-		best_ring_height = lid_height()
-		best_ring.position = Vector3(0, best_ring_height, 0)
-		# Sized to sit just outside the box walls, so it frames the mound rather than floating free.
-		best_ring.scale = Vector3.ONE*((TofuBox.INNER_HALF*CLASSIC_BOX_SCALE+.10)/(TowerPlate.HALF+.22))
-		best_ring_material.albedo_color = LID_CLEAR
-		best_ring.show()
-		return
-	best_ring.scale = Vector3.ONE
 	var best := best_for("tower")
 	if mode != "tower" or best <= 0:
 		best_ring.hide()
@@ -1421,14 +1395,6 @@ func _place_best_ring() -> void:
 ## the moment the tower climbs past it.
 func _update_best_ring() -> void:
 	if best_ring == null or not best_ring.visible:
-		return
-	if lid_mode():
-		# Reads as headroom: pale with room to spare, reddening as the mound reaches the lid.
-		var fill := clampf((tower_top()-TofuBox.RIM_HEIGHT*.5)/maxf(.01, best_ring_height-TofuBox.RIM_HEIGHT*.5), 0, 1)
-		var tone := LID_CLEAR.lerp(LID_FULL, fill)
-		var breath := .5+.5*sin(Time.get_ticks_msec()*.0035)
-		best_ring_material.albedo_color = Color(tone.r, tone.g, tone.b, tone.a*(.7+.3*breath*fill))
-		best_ring.rotation.y += .002
 		return
 	var beat := tower_top() > best_ring_height
 	if beat and not best_ring_passed:
@@ -1448,106 +1414,23 @@ func _set_stage(menu: bool = false) -> void:
 	# The home screen builds both set-ups so either can be swapped in without a rebuild.
 	if (tower or menu) and plate == null:
 		plate = TowerPlate.new()
+		plate.decor = catalog.find_decor("box", str(Save.data.box))
 		add_child(plate)
 	if plate:
 		plate.position = Vector3.ZERO
 		plate.set_active(tower)
 	if box:
-		box.position = Vector3(0, 0, BENTO_TARGET_DEPTH) if bento_flip() else Vector3.ZERO
-		var scale := BENTO_BOX_SCALE if bento_flip() else CLASSIC_BOX_SCALE if mode != "tower" else 1.0
+		box.position = Vector3.ZERO
+		var scale := CLASSIC_BOX_SCALE if mode != "tower" else 1.0
 		box.scale = Vector3(scale, 1.0, scale)
-		box.set_active(not tower)
-
-## The lid seats flush on the rim, so anything standing proud of the box is pressed down into it.
-## Tofu squashes, which is both the right fiction and the reason a mound is packable at all rather
-## than an instant loss — the lid line is how big a mound the lid can still flatten.
-func _press_lid(lid: Node3D, mound: float, seconds: float) -> void:
-	var floor_y := TofuBox.FLOOR_TOP
-	var rim := TofuBox.RIM_HEIGHT
-	var squash := clampf((rim-floor_y)/maxf(.01, mound-floor_y), .25, 1.0)
-	var packed: Array[KinuBody] = []
-	var starts: Array[float] = []
-	for body in bodies:
-		if is_instance_valid(body) and not body.fallen:
-			packed.append(body)
-			starts.append(body.position.y)
-	# Everything gives at once, so the mound settles as one pressed block rather than in layers.
-	for body in packed:
-		body.poke(2.4*(1.0-squash))
-	Sound.play("land", .7)
-	Haptics.pulse(25, .45)
-	# The whole stack is scaled toward the floor together, so nothing is left poking through the
-	# lid and the pressed block keeps the arrangement the player actually built.
-	var step := func(t: float) -> void:
-		if not is_instance_valid(lid):
-			return
-		lid.position.y = lerpf(mound+.05, rim+.02, t)
-		var give := lerpf(1.0, squash, t)
-		for i in packed.size():
-			if is_instance_valid(packed[i]):
-				packed[i].position.y = floor_y+(starts[i]-floor_y)*give
-	var press := create_tween()
-	press.tween_method(step, 0.0, 1.0, seconds).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-	await press.finished
-
-## Bento Flip: five served Kinu close the bento, then a fresh lunchbox slides in.
-func _ship() -> void:
-	state = "shipping"
-	beam.hide()
-	marker.hide()
-	var packed := pile_count()
-	boxes_shipped += 1
-	shipped += RUSH_BOX_TARGET if bento_flip() else packed
-	if bento_flip():
-		time_left += RUSH_BONUS
-	score = boxes_shipped if bento_flip() else shipped
-	for body in bodies:
-		body.freeze = true
-		body.sway = 0
-	message.emit(tr("Bento packed! +%d tosses")%int(RUSH_BONUS) if bento_flip() else tr("Box packed! %d Kinu · next box wants %d")%[packed, pack_target()], Color("3f8fe0"))
-	Sound.play("cashregister")
-	Haptics.pulse(40, .6)
-	updated.emit()
-	var lid := BentoBox.packed_lid(box.decor)
-	lid.position = box.position+Vector3.UP*6.0
-	add_child(lid)
-	var mound := maxf(tower_top(), TofuBox.RIM_HEIGHT)
-	var packing := create_tween()
-	packing.tween_property(lid, "position:y", mound+.05, .35).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-	await packing.finished
-	if lid_mode():
-		await _press_lid(lid, mound, .5)
-	var riders: Array[Node3D] = [box, lid]
-	for body in bodies:
-		if is_instance_valid(body) and not body.fallen:
-			riders.append(body)
-	var away := create_tween().set_parallel(true)
-	for node in riders:
-		away.tween_property(node, "position:x", node.position.x+14.0, .55).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-	await away.finished
-	if state == "over":
-		return
-	lid.queue_free()
-	for body in bodies:
-		if is_instance_valid(body):
-			body.queue_free()
-	bodies.clear()
-	box.position.x = -14.0
-	var back := create_tween()
-	back.tween_property(box, "position:x", 0.0, .45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	await back.finished
-	Sound.play("drop")
-	if state != "shipping":
-		return
-	state = "ready"
-	_place_best_ring()
-	_spawn()
+		# Toss brings its own lidded box; the Classic one is put away for the run.
+		box.set_active(menu or mode == "classic")
 
 ## "classic": drag anywhere above the bottom strip to move, swipe the strip to spin.
 ## "grab": press on Kinu to move it, swipe anywhere else to spin.
 func control_scheme() -> String:
-	if bento_flip():
-		return "bento"
+	if mode == "toss" and not menu_mode:
+		return "toss"
 	return str(Save.data.get("controls", "classic"))
 
 func spin_zone_top() -> float:
@@ -1571,6 +1454,9 @@ func grabs_active(point: Vector2) -> bool:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not accepting_input or state not in ["aim", "settle"]:
+		return
+	if is_instance_valid(toss):
+		toss.input(event)
 		return
 	if event is InputEventKey and event.pressed:
 		match event.keycode:
@@ -1608,17 +1494,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		_move_gesture(event.position, event.relative)
 
 func _begin_gesture(point: Vector2) -> void:
-	if bento_flip() and state == "aim" and active:
-		if spin_strip_rect().has_point(point):
-			gesture = "spin"
-			orbit.stop_spin()
-			return
-		gesture = "charge"
-		bento_charge = 0.0
-		_set_bento_aim(point)
-		active.poke(-1.8)
-		Haptics.pulse(10, .2)
-		return
 	var classic := control_scheme() == "classic"
 	if classic and point.y >= spin_zone_top() and not spin_strip_rect().has_point(point):
 		gesture = ""
@@ -1638,9 +1513,6 @@ func _begin_gesture(point: Vector2) -> void:
 		orbit.stop_spin()
 
 func _move_gesture(point: Vector2, relative: Vector2) -> void:
-	if gesture == "charge":
-		_set_bento_aim(point)
-		return
 	if gesture == "waiting" and state == "aim" and active:
 		gesture = "aim"
 	if gesture == "spin":
@@ -1654,13 +1526,8 @@ func _move_gesture(point: Vector2, relative: Vector2) -> void:
 			action_done.emit("aim")
 
 func _end_gesture() -> void:
-	if gesture in ["aim", "charge"] and state == "aim":
+	if gesture == "aim" and state == "aim":
 		drop()
 	elif gesture == "spin":
 		orbit.release_spin()
 	gesture = ""
-
-func _set_bento_aim(point: Vector2) -> void:
-	var width := maxf(1.0, get_viewport().get_visible_rect().size.x)
-	# Aim is chosen by where the finger sits horizontally; the player can slide while holding.
-	orbit.lateral = clampf((point.x/width-.5)*2.0, -1.0, 1.0)*1.45

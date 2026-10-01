@@ -60,8 +60,8 @@ static func show(app: Node, layout: VBoxContainer) -> void:
 		]],
 		["Modes", [
 			["Tallest Tower", KinuFlavour.height_text(NestRun.best_for("tower"))],
-			["Most bentos packed in Bento Flip", app._number(NestRun.best_for("rush"))],
-			["Boxes shipped", app._number(stats.boxes_shipped)],
+			["Best Toss score", app._number(NestRun.best_for("toss"))],
+			["Toss boxes filled", app._number(stats.boxes_shipped)],
 		]],
 		["Kinu Claw", [
 			["Plays", app._number(stats.crane_plays)],

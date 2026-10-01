@@ -4,14 +4,23 @@ extends RefCounted
 ## awards one new Catcher-only cosmetic, keeping the bean shop a useful targeted destination.
 
 const REWARDS := [
-	{"kind": "beans", "amount": 30},
-	{"kind": "beans", "amount": 40},
+	{"kind": "beans", "amount": 150},
+	{"kind": "beans", "amount": 200},
 	{"kind": "tickets", "amount": 1},
-	{"kind": "beans", "amount": 50},
-	{"kind": "beans", "amount": 60},
+	{"kind": "beans", "amount": 250},
+	{"kind": "beans", "amount": 300},
 	{"kind": "tickets", "amount": 2},
 	{"kind": "item", "amount": 1},
 ]
+
+## Supabase returns a cooldown snapshot, not a running clock. Keep the receipt point only in
+## memory and tick it forward with Godot's monotonic clock, which cannot be changed by altering
+## the device date or timezone.
+static var _server_status_received_at_ms := -1
+static var _server_remote: Dictionary = {}
+
+static func status_known() -> bool:
+	return not Rewards.configured() or (_server_status_received_at_ms >= 0 and bool(_server_remote.get("known", false)))
 
 static func _today() -> String:
 	return Time.get_date_string_from_system()
@@ -43,22 +52,34 @@ static func _state() -> Dictionary:
 		Save.data.daily_calendar = {"last_day": "", "streak": 0}
 	return Save.data.daily_calendar
 
-## Once Supabase is configured, this short-lived local cache is display-only. The function is
-## still the authority for whether a claim may be granted.
+## The server cooldown belongs to this app session, not the save. Cloud restore replaces Save.data
+## while the game is running; keeping the live response here prevents the home rail disappearing.
 static func _remote() -> Dictionary:
-	var state := _state()
-	if not state.get("remote") is Dictionary:
-		state.remote = {"known": false, "ready": false, "streak": 0, "seconds_remaining": 0}
-	return state.remote
+	if _server_remote.is_empty():
+		_server_remote = {"known": false, "ready": false, "streak": 0, "seconds_remaining": 0}
+	return _server_remote
 
 static func apply_server_status(status: Dictionary) -> void:
-	if status.is_empty():
+	if not status.get("ready") is bool or not (status.get("streak") is int or status.get("streak") is float) or not (status.get("seconds_remaining") is int or status.get("seconds_remaining") is float):
 		return
 	var remote := _remote()
 	remote.known = true
 	remote.ready = bool(status.get("ready", false))
 	remote.streak = clampi(int(status.get("streak", 0)), 0, 7)
 	remote.seconds_remaining = maxi(0, int(status.get("seconds_remaining", 0)))
+	_server_status_received_at_ms = Time.get_ticks_msec()
+
+static func _server_seconds_remaining(remote: Dictionary) -> int:
+	var remaining := maxi(0, int(remote.get("seconds_remaining", 0)))
+	if _server_status_received_at_ms < 0:
+		return remaining
+	var elapsed := maxi(0, int((Time.get_ticks_msec()-_server_status_received_at_ms)/1000))
+	return maxi(0, remaining-elapsed)
+
+## A locally elapsed server cooldown only updates presentation. The claim endpoint still decides
+## whether a prize can be granted, so a manipulated device clock can never create an extra claim.
+static func _server_ready(remote: Dictionary) -> bool:
+	return bool(remote.get("ready", false)) or _server_seconds_remaining(remote) <= 0
 
 static func refresh_server_status() -> Dictionary:
 	if not Rewards.configured():
@@ -71,8 +92,12 @@ static func refresh_server_status() -> Dictionary:
 static func current_index() -> int:
 	var state := _state()
 	var remote := _remote()
-	if Rewards.configured() and bool(remote.get("known", false)):
-		return int(remote.get("streak", 0)) % REWARDS.size() if bool(remote.get("ready", false)) else -1
+	# A persisted response describes a past launch. While Supabase is configured, do not let it
+	# (or the local calendar) advertise a claim before this launch has received server authority.
+	if Rewards.configured():
+		if _server_status_received_at_ms < 0 or not bool(remote.get("known", false)):
+			return -1
+		return int(remote.get("streak", 0)) % REWARDS.size() if _server_ready(remote) else -1
 	var elapsed := _days_since(str(state.get("last_day", "")))
 	if elapsed == 0:
 		return -1
@@ -88,7 +113,7 @@ static func claimed_count() -> int:
 	var state := _state()
 	var remote := _remote()
 	if Rewards.configured() and bool(remote.get("known", false)):
-		return int(remote.get("streak", 0)) % REWARDS.size() if bool(remote.get("ready", false)) else int(remote.get("streak", 0))
+		return int(remote.get("streak", 0)) % REWARDS.size() if _server_ready(remote) else int(remote.get("streak", 0))
 	var elapsed := _days_since(str(state.get("last_day", "")))
 	if elapsed == 0:
 		return int(state.get("streak", 0))
@@ -98,15 +123,21 @@ static func claimed_count() -> int:
 
 static func countdown_text() -> String:
 	if ready():
-		return "Today's treat is ready!"
+		return NestTheme.t("Today's treat is ready!")
+	return NestTheme.t("Next treat in %s") % countdown_clock()
+
+## Time until the next treat as "HH:MM:SS", with no words around it.
+static func countdown_clock() -> String:
+	var seconds := seconds_to_reset()
+	return "%02d:%02d:%02d" % [seconds/3600, (seconds % 3600)/60, seconds % 60]
+
+## Seconds until the day rolls over: the server's answer when it has one, else the device clock.
+static func seconds_to_reset() -> int:
 	var remote := _remote()
 	if Rewards.configured() and bool(remote.get("known", false)):
-		var remaining := maxi(0, int(remote.get("seconds_remaining", 0)))
-		return "Next treat in %02d:%02d:%02d" % [remaining/3600, (remaining % 3600)/60, remaining % 60]
+		return _server_seconds_remaining(remote)
 	var now := Time.get_datetime_dict_from_system()
-	var seconds := 86400-(int(now.hour)*3600+int(now.minute)*60+int(now.second))
-	seconds = clampi(seconds, 0, 86400)
-	return "Next treat in %02d:%02d:%02d" % [seconds/3600, (seconds % 3600)/60, seconds % 60]
+	return clampi(86400-(int(now.hour)*3600+int(now.minute)*60+int(now.second)), 0, 86400)
 
 ## Claims today's prize first, then returns a Catcher-shaped prize dictionary for CapsuleReveal.
 static func claim(catalog: KinuCatalog, rng: RandomNumberGenerator, approved_index: int = -1) -> Dictionary:
@@ -135,10 +166,10 @@ static func claim(catalog: KinuCatalog, rng: RandomNumberGenerator, approved_ind
 static func _item_prize(catalog: KinuCatalog, rng: RandomNumberGenerator) -> Dictionary:
 	var entries: Array = []
 	for item in catalog.outfits:
-		if item.crane_only and not Save.owns("outfit", item.id, int(item.price)):
+		if item.crane_only and item.showcase == "" and item.event == "" and not Save.owns("outfit", item.id, int(item.price)):
 			entries.append({"kind": "outfit", "id": item.id, "rarity": item.rarity})
 	for item in catalog.decor:
-		if item.crane_only and not Save.owns(item.kind, item.id, int(item.price)):
+		if item.crane_only and item.showcase == "" and item.event == "" and not Save.owns(item.kind, item.id, int(item.price)):
 			entries.append({"kind": item.kind, "id": item.id, "rarity": item.rarity})
 	if entries.is_empty():
 		return {}
@@ -166,6 +197,10 @@ static func _item_prize(catalog: KinuCatalog, rng: RandomNumberGenerator) -> Dic
 	return {"kind": str(entry.kind), "id": str(entry.id), "amount": 0, "item": item, "crane_only": true, "lucky": false, "free": true}
 
 static func prompt(app: Node) -> void:
+	# Do not briefly show a locally inferred reward before the first authoritative status arrives.
+	# This also prevents an old save from advertising a claim that Supabase will reject.
+	if Rewards.configured() and _server_status_received_at_ms < 0:
+		return
 	if not ready():
 		return
 	app.get_tree().create_timer(.25).timeout.connect(func() -> void:

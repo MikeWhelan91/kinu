@@ -10,6 +10,8 @@ var message: Label
 var restore_button: Button
 var retry_button: Button
 var purchase_buttons: Dictionary = {}
+var free_reset_label: Label
+var _clock_elapsed := 0.0
 
 static func open(owner: Node, back: Callable, section: String = "beans") -> void:
 	owner._new_screen("beans", true)
@@ -67,7 +69,7 @@ func build() -> void:
 	restore_button.custom_minimum_size.y = 48
 	restore_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	actions.add_child(restore_button)
-	var note := NestTheme.label("Beans are also earned by playing. One free Kinu Claw play arrives daily.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored.", 14, NestTheme.MUTED)
+	var note := NestTheme.label("Beans are also earned by playing. Two free Kinu Claw tickets refill together every 24 hours after the first is used; unused free tickets expire.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored.", 14, NestTheme.MUTED)
 	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(note)
@@ -77,6 +79,24 @@ func build() -> void:
 	_refresh()
 	if Store.products.is_empty():
 		Store.refresh_products()
+	_refresh_free_status()
+
+func _refresh_free_status() -> void:
+	await KinuCatcher.refresh_free_status()
+	if is_instance_valid(self):
+		_update_free_display()
+
+func _process(delta: float) -> void:
+	_clock_elapsed += delta
+	if _clock_elapsed >= 1.0:
+		_clock_elapsed = 0.0
+		_update_free_display()
+
+func _update_free_display() -> void:
+	if is_instance_valid(free_reset_label):
+		free_reset_label.text = KinuCatcher.free_reset_text()
+	if balance_labels.has("tickets"):
+		(balance_labels.tickets as Label).text = NestTheme.t("%s tickets")%app._number(KinuCatcher.total_tickets())
 
 func _currency_view(currency: String, packs: Array, intro_text: String) -> void:
 	var view := VBoxContainer.new()
@@ -85,22 +105,31 @@ func _currency_view(currency: String, packs: Array, intro_text: String) -> void:
 	section_views[currency] = view
 	var wallet := NestTheme.bean_pill("", 22) if currency == "beans" else NestTheme.ticket_pill("", 22)
 	wallet.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	view.add_child(wallet)
+	wallet.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	balance_labels[currency] = wallet.get_child(0).get_child(1)
+	# The balance and the thing you do with it share one centred line, the same shape the Kinu Shop
+	# uses for its purse, instead of stacking as two separate centred blocks.
+	var purse_row := HBoxContainer.new()
+	purse_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	purse_row.add_theme_constant_override("separation", 8)
+	view.add_child(purse_row)
+	purse_row.add_child(wallet)
+	if currency == "tickets":
+		# What a ticket actually buys you, readable before any money is spent rather than only
+		# from inside the machine.
+		var odds := NestTheme.button("See the Odds", func() -> void: KinuCatcherScreen.odds_page(app), false, "book")
+		odds.name = "TicketOdds"
+		odds.custom_minimum_size = Vector2(176, 50)
+		odds.add_theme_font_size_override("font_size", 18)
+		odds.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		purse_row.add_child(odds)
+		free_reset_label = NestTheme.label("", 15, NestTheme.MUTED)
+		free_reset_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		view.add_child(free_reset_label)
 	var intro := NestTheme.label(intro_text, 17, NestTheme.MUTED)
 	intro.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	view.add_child(intro)
-	if currency == "tickets":
-		# What a ticket actually buys you, readable before any money is spent rather than only
-		# from inside the machine.
-		var odds_row := CenterContainer.new()
-		var odds := NestTheme.button("See the Odds", func() -> void: KinuCatcherScreen.odds_page(app), false, "book")
-		odds.name = "TicketOdds"
-		odds.custom_minimum_size = Vector2(190, 50)
-		odds.add_theme_font_size_override("font_size", 18)
-		odds_row.add_child(odds)
-		view.add_child(odds_row)
 	for i in packs.size():
 		_pack(view, packs[i], i, currency)
 
@@ -156,7 +185,7 @@ func _buy_button(id: String) -> Button:
 
 func _refresh() -> void:
 	(balance_labels.beans as Label).text = NestTheme.t("%s beans")%app._number(Save.data.beans)
-	(balance_labels.tickets as Label).text = NestTheme.t("%s tickets")%app._number(Save.data.tickets)
+	_update_free_display()
 	for id in purchase_buttons:
 		var button: Button = purchase_buttons[id]
 		button.text = Store.price(id)
@@ -174,8 +203,19 @@ func _refresh() -> void:
 	retry_button.disabled = Store.loading or not Store.busy.is_empty()
 	restore_button.disabled = Store.manager == null or not Store.busy.is_empty()
 
+## The wallet pills place their icon and amount by hand, so neither sizes itself. A long balance
+## would run past the pill and leave the "+" sitting outside it, which the five-digit balances the
+## bean redenomination produces make routine rather than rare.
+static func _fit_wallet(button: Button, amount: Label, plus: Label) -> void:
+	var font := amount.get_theme_font("font")
+	var gap := 3.0+10.0
+	var text_width := font.get_string_size(amount.text, HORIZONTAL_ALIGNMENT_LEFT, -1, amount.get_theme_font_size("font_size")).x
+	var plus_width := plus.get_theme_font("font").get_string_size(plus.text, HORIZONTAL_ALIGNMENT_LEFT, -1, plus.get_theme_font_size("font_size")).x
+	button.custom_minimum_size.x = maxf(116.0, 46.0+text_width+gap+plus_width)
+
 class WalletButton extends Button:
 	var amount_label: Label
+	var plus_label: Label
 
 	func _ready() -> void:
 		name = "BeanWallet"
@@ -194,7 +234,7 @@ class WalletButton extends Button:
 		add_child(bean)
 		var amount_row := HBoxContainer.new()
 		amount_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		amount_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+		amount_row.alignment = BoxContainer.ALIGNMENT_END
 		amount_row.add_theme_constant_override("separation", 3)
 		amount_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		# Leave a deliberate breathing gap after the artwork; the ticket is wider than the bean.
@@ -205,16 +245,20 @@ class WalletButton extends Button:
 		add_child(amount_row)
 		amount_label = NestTheme.label("", 22)
 		amount_row.add_child(amount_label)
-		amount_row.add_child(NestTheme.label("+", 25, NestTheme.SUN))
+		plus_label = NestTheme.label("+", 25, NestTheme.SUN)
+		amount_row.add_child(plus_label)
 		Save.changed.connect(_refresh)
 		_refresh()
 
 	func _refresh() -> void:
 		amount_label.text = str(int(Save.data.beans))
+		BeanShop._fit_wallet(self, amount_label, plus_label)
 
 ## The claw ticket balance, cut to match the bean wallet above it so the two read as one stack.
 class TicketWalletButton extends Button:
 	var amount_label: Label
+	var plus_label: Label
+	var _clock_elapsed := 0.0
 
 	func _ready() -> void:
 		name = "TicketWallet"
@@ -235,7 +279,7 @@ class TicketWalletButton extends Button:
 		add_child(ticket)
 		var amount_row := HBoxContainer.new()
 		amount_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		amount_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+		amount_row.alignment = BoxContainer.ALIGNMENT_END
 		amount_row.add_theme_constant_override("separation", 3)
 		amount_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		amount_row.offset_left = 46
@@ -245,12 +289,20 @@ class TicketWalletButton extends Button:
 		add_child(amount_row)
 		amount_label = NestTheme.label("", 22)
 		amount_row.add_child(amount_label)
-		amount_row.add_child(NestTheme.label("+", 25, NestTheme.SUN))
+		plus_label = NestTheme.label("+", 25, NestTheme.SUN)
+		amount_row.add_child(plus_label)
 		Save.changed.connect(_refresh)
 		_refresh()
 
 	func _refresh() -> void:
-		amount_label.text = str(int(Save.data.tickets))
+		amount_label.text = str(KinuCatcher.total_tickets())
+		BeanShop._fit_wallet(self, amount_label, plus_label)
+
+	func _process(delta: float) -> void:
+		_clock_elapsed += delta
+		if _clock_elapsed >= 1.0:
+			_clock_elapsed = 0.0
+			_refresh()
 
 ## Small inked packs, drawn in the same palette as the rest of the shop.
 class PackArt extends Control:

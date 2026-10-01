@@ -1,5 +1,5 @@
 extends Node
-## Screenshots the mode picker, Tower and Lunch Rush on a throwaway save, into out= (a folder).
+## Screenshots the mode picker, Tower and Kinu Toss on a throwaway save, into out= (a folder).
 var options := {"out": "user://"}
 var app: Node
 
@@ -26,12 +26,10 @@ func _ready() -> void:
 	run.end()
 	await get_tree().create_timer(1.0).timeout
 	await shot("modes-tower-results")
-	Save.data.mode = "rush"
+	Save.data.mode = "toss"
 	app._start()
-	var spots := [Vector2(-.9, -.9), Vector2(.9, -.9), Vector2(.9, .9), Vector2(-.9, .9), Vector2(0, -.9), Vector2(.9, 0)]
-	for turn in 6:
-		await _drop(run, spots[turn])
-	await shot("modes-rush")
+	await get_tree().create_timer(1.0).timeout
+	await shot("modes-toss")
 	get_tree().quit()
 
 func _drop(run: NestRun, spot: Vector2) -> void:

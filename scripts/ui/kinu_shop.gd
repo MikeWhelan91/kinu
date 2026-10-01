@@ -27,28 +27,44 @@ static func show(app: Node) -> void:
 	cards.clear()
 	var back: Callable = app.shop_back if app.shop_back.is_valid() else app._home
 	var layout: VBoxContainer = app._header("Kinu Shop", back)
-	var balance_row := CenterContainer.new()
-	balance_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Purse and top-up read as one control: what you have, and the way to get more sitting right
+	# against it. Separating them left the top-up looking like a fourth tab in the row below, which
+	# is the same sun yellow the selected tab uses, so players simply did not see it.
+	var purse_row := HBoxContainer.new()
+	purse_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	purse_row.add_theme_constant_override("separation", 8)
+	layout.add_child(purse_row)
 	balance = NestTheme.bean_pill(NestTheme.t("%s beans")%app._number(Save.data.beans), 22)
-	balance_row.add_child(balance)
-	layout.add_child(balance_row)
-	var get_beans := NestTheme.button("Get Beans & Extras  +", app._bean_shop, true)
+	# The balance is a read-out, not a bar: it hugs its number so the pair sits centred together.
+	balance.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	balance.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	purse_row.add_child(balance)
+	var get_beans := NestTheme.button("＋ Get More", app._bean_shop, false)
 	get_beans.name = "GetBeans"
-	get_beans.custom_minimum_size.y = 54
+	get_beans.custom_minimum_size = Vector2(148, 56)
 	get_beans.add_theme_font_size_override("font_size", 20)
-	layout.add_child(get_beans)
+	# Berry, the game's "spend" colour, used nowhere else on this screen: the top-up cannot be
+	# mistaken for a tab, and it sits on the same line as the balance it tops up.
+	for state in ["normal", "hover", "pressed"]:
+		var tone := NestTheme.BERRY.lightened(.08) if state == "hover" else NestTheme.BERRY.darkened(.1) if state == "pressed" else NestTheme.BERRY
+		get_beans.add_theme_stylebox_override(state, NestTheme.box(tone, 24, NestTheme.INK, 6))
+	get_beans.add_theme_color_override("font_color", NestTheme.CREAM)
+	get_beans.add_theme_color_override("font_hover_color", NestTheme.CREAM)
+	get_beans.add_theme_color_override("font_pressed_color", NestTheme.CREAM)
+	purse_row.add_child(get_beans)
 	layout.add_child(tabs(app, app.shop_tab, func(tab: String) -> void:
 		app.shop_tab = tab
 		show(app)
 	))
 	var scroll := DragScroll.new()
 	layout.add_child(scroll)
+	remember_scroll(scroll, "shop:"+str(app.shop_tab))
 	var list: VBoxContainer = app._vbox(scroll, 14)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var grid := CardGrid.grid(list)
 	var kind := kind_of(app.shop_tab)
 	# Cheapest first, so each shelf climbs from common to epic.
-	var stock := items(app.run.catalog, kind).filter(func(item: Resource) -> bool: return item.goal == "" and int(item.price) > 0)
+	var stock := items(app.run.catalog, kind).filter(func(item: Resource) -> bool: return is_available(item) and item.goal == "" and item.showcase == "" and item.event == "" and int(item.price) > 0)
 	stock.sort_custom(func(a: Resource, b: Resource) -> bool: return int(a.price) < int(b.price))
 	for item in stock:
 		var built := CardGrid.card(grid, preview(app.run.catalog, kind, item), item.display_name, CardGrid.tint(grid.get_child_count()), func() -> void: _choose(app, kind, item), 210, "tap", 200, 19, kind == "room")
@@ -72,6 +88,13 @@ static func items(catalog: KinuCatalog, kind: String) -> Array:
 		"outfit":
 			return catalog.outfits
 	return catalog.decor_of(kind)
+
+static func is_available(item: Resource) -> bool:
+	if item is KinuOutfit:
+		return item.available
+	if item is KinuDecor:
+		return item.available
+	return true
 
 static func preview(catalog: KinuCatalog, kind: String, item: Resource, pixels: Vector2i = Vector2i(170, 124), interactive: bool = false) -> Control:
 	match kind:
@@ -141,6 +164,19 @@ static func _style_card(card: Dictionary) -> void:
 		row.add_child(NestTheme.pill("Owned", 15, NestTheme.MUTED))
 	else:
 		row.add_child(NestTheme.bean_pill(str(item.price), 16))
+
+## Where each tab was last scrolled to. Opening an item and coming back rebuilds the screen, so
+## without this the player is thrown to the top of a long grid every time they look at something.
+static var scroll_at: Dictionary = {}
+
+## Remembers this list's position under `key` and puts it back where it was. The restore is
+## deferred because the grid has no height until the layout has run.
+static func remember_scroll(scroll: ScrollContainer, key: String) -> void:
+	var bar := scroll.get_v_scroll_bar()
+	bar.value_changed.connect(func(value: float) -> void: scroll_at[key] = value)
+	var saved: float = scroll_at.get(key, 0.0)
+	if saved > 0.0:
+		scroll.set_deferred("scroll_vertical", int(saved))
 
 static func _refresh(app: Node) -> void:
 	for card in cards:

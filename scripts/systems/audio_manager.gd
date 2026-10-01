@@ -3,6 +3,9 @@ var music: AudioStreamPlayer
 ## The claw machine's motor, held on while its controls are worked. Its own player because it
 ## loops for as long as the player keeps hold, rather than firing once like the other sounds.
 var motor: AudioStreamPlayer
+## Kinu Toss's fire button winding up, held on for as long as the button is. Pausable, so opening
+## the pause menu mid-charge silences it with the game.
+var charger: AudioStreamPlayer
 var voices: Array[AudioStreamPlayer] = []
 var sounds: Dictionary = {}
 var room_music: Dictionary = {}
@@ -11,6 +14,10 @@ var voice_index: int = 0
 var last_impact: int = 0
 var landing_sounds: Array[AudioStream] = []
 var landing_index: int = 0
+## Kinu Toss's in-flight cries.  A shuffled deck makes each throw feel varied without a clip
+## repeating straight away.
+var wee_sounds: Array[AudioStream] = []
+var wee_order: Array[int] = []
 
 const SOUND_FILES := {
 	"homeplay": "homeplay.mp3", "gameover": "newgameover.mp3",
@@ -18,11 +25,11 @@ const SOUND_FILES := {
 	# The cheer, for the two moments worth cheering: a new best, and a prize out of the claw.
 	"yay": "yay.mp3",
 	"cashregister": "cashregister.mp3", "wardrobe": "wardrobe.mp3", "book": "book.mp3",
-	"mistake": "mistake.mp3", "drop": "drop.mp3", "sauce": "sauce.mp3",
+	"mistake": "mistake.mp3", "drop": "drop.mp3", "sauce": "sauce.mp3", "shoot": "shoot.mp3",
 }
 
 ## Per-category trim on top of the usual sfx volume, for clips mixed louder than the rest.
-const VOLUME_TRIM := {"gameover": -6.0}
+const VOLUME_TRIM := {"gameover": -6.0, "wee": -8.0}
 
 ## Each room's ambient loop, keyed by its KinuDecor id. Every room has its own; anything left
 ## out falls back to the default tofu shop track, which is the Tofu Shop's own music.
@@ -33,11 +40,12 @@ const ROOM_MUSIC_FILES := {
 	"arcade": "game.mp3", "dragon_palace": "dragonpalace.mp3", "tea_fields": "fuji.mp3",
 	"sweets": "wagashi.mp3", "aurora": "aurora.mp3", "moon_base": "moonbase.mp3",
 	"sky_shrine": "skyshrine.mp3", "beach": "summerbeach.mp3", "lantern_river": "lantern.mp3",
-	"castle": "castle.mp3",
+	"castle": "castle.mp3", "seaside_town": "tidepool.mp3", "grand_opening": "newgame.mp3",
 	# Not a room you can equip: the Claw Machine page, which has a loop of its own rather than
 	# borrowing the Game Centre's.
 	"catcher": "clawmachinemusic.mp3",
 }
+const ROOM_MUSIC_TRIM := {"catcher": -19.0}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -46,6 +54,11 @@ func _ready() -> void:
 	landing_sounds = [
 		load("res://assets/audio/369952__mischy__plop_1.wav"),
 		load("res://assets/audio/369959__mischy__plop_2hi.wav"),
+	]
+	wee_sounds = [
+		load("res://assets/audio/wee.mp3"), load("res://assets/audio/wee2.mp3"),
+		load("res://assets/audio/wee3.mp3"), load("res://assets/audio/wee4.mp3"),
+		load("res://assets/audio/wee5.mp3"), load("res://assets/audio/wee6.mp3"),
 	]
 	for i in 8:
 		var player := AudioStreamPlayer.new()
@@ -60,6 +73,14 @@ func _ready() -> void:
 		claw.loop = true
 		motor.stream = claw
 	add_child(motor)
+	charger = AudioStreamPlayer.new()
+	charger.process_mode = Node.PROCESS_MODE_PAUSABLE
+	var charge := load("res://assets/audio/charge.mp3") as AudioStreamMP3
+	if charge:
+		# Held longer than the clip runs, the wind-up keeps going.
+		charge.loop = true
+		charger.stream = charge
+	add_child(charger)
 	apply_settings()
 
 ## Loads and caches the looping track for a room, falling back to the default shop theme.
@@ -78,6 +99,7 @@ func play_room_music(room_id: String) -> void:
 		return
 	current_room = room_id
 	music.stream = _room_stream(room_id)
+	apply_settings()
 	music.play()
 
 func start_music() -> void:
@@ -85,10 +107,10 @@ func start_music() -> void:
 
 func apply_settings() -> void:
 	if music:
-		music.volume_db = linear_to_db(maxf(0.00001, float(Save.data.music))) - 8.0
+		music.volume_db = linear_to_db(maxf(0.00001, float(Save.data.music))) - 8.0 + float(ROOM_MUSIC_TRIM.get(current_room, 0.0))
 
 func play(category: String, pitch: float = 1.0) -> void:
-	if (category not in ["land", "plop"] and not sounds.has(category)) or float(Save.data.sfx) < 0.001:
+	if (category not in ["land", "plop", "wee"] and not sounds.has(category)) or float(Save.data.sfx) < 0.001:
 		return
 	if category in ["land", "plop"]:
 		if Time.get_ticks_msec() - last_impact < 140:
@@ -99,11 +121,23 @@ func play(category: String, pitch: float = 1.0) -> void:
 	if category in ["land", "plop"]:
 		player.stream = landing_sounds[landing_index % landing_sounds.size()]
 		landing_index += 1
+	elif category == "wee":
+		player.stream = _next_wee()
 	else:
 		player.stream = sounds[category]
+	if player.stream == null:
+		return
 	player.volume_db = linear_to_db(float(Save.data.sfx)) - 9.0 + float(VOLUME_TRIM.get(category, 0.0))
 	player.pitch_scale = pitch
 	player.play()
+
+## Draws a randomised, non-repeating sequence of wee clips, then reshuffles for the next round.
+func _next_wee() -> AudioStream:
+	if wee_order.is_empty():
+		for index in wee_sounds.size():
+			wee_order.append(index)
+		wee_order.shuffle()
+	return wee_sounds[wee_order.pop_back()]
 
 ## Runs the claw motor while its controls are being worked, and cuts it the moment they are let
 ## go. Safe to call every frame: it only starts or stops on an actual change.
@@ -120,7 +154,24 @@ func claw_motor(on: bool) -> void:
 	else:
 		motor.stop()
 
+## Plays the toss wind-up from the start each time the fire button goes down, and cuts it the
+## moment it's released. Safe to call every frame: it only starts or stops on an actual change.
+func toss_charge(on: bool) -> void:
+	if not is_instance_valid(charger) or charger.stream == null:
+		return
+	if float(Save.data.sfx) < 0.001:
+		on = false
+	if on == charger.playing:
+		return
+	if on:
+		charger.volume_db = linear_to_db(float(Save.data.sfx)) - 9.0
+		charger.play()
+	else:
+		charger.stop()
+
 func shutdown() -> void:
+	if is_instance_valid(charger):
+		charger.stop()
 	if is_instance_valid(motor):
 		motor.stop()
 	if is_instance_valid(music):

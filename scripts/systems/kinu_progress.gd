@@ -16,81 +16,96 @@ const GOAL_TEXT := {
 	"glazed": "Glaze %d Kinu with shoyu",
 }
 
-## Daily mission templates. Each day draws three different types (never yesterday's), then a
-## tier, and a flavour or shape where the mission needs one.
+## Daily mission templates. Each day draws three different types (never yesterday's), assigning
+## an easy, medium and stretch tier in that order, plus a flavour or shape where needed.
 const MISSIONS := [
-	{"type": "pile", "amounts": [30, 50, 65], "rewards": [25, 35, 50]},
-	{"type": "runs", "amounts": [2, 3, 5], "rewards": [20, 25, 35]},
-	{"type": "land", "amounts": [40, 60, 90], "rewards": [25, 35, 45]},
-	{"type": "clean", "amounts": [10, 19, 25], "rewards": [35, 50, 65]},
-	{"type": "lucky", "amounts": [1, 2], "rewards": [40, 60]},
-	{"type": "heart", "amounts": [1, 2], "rewards": [35, 50]},
-	{"type": "height", "amounts": [150, 250, 350], "rewards": [30, 45, 60]},
-	{"type": "flavour", "amounts": [5, 8, 12], "rewards": [30, 40, 55]},
-	{"type": "shape", "amounts": [6, 10, 15], "rewards": [30, 40, 55]},
-	{"type": "streak", "amounts": [16, 28, 40], "rewards": [30, 45, 60]},
-	{"type": "spin", "amounts": [5, 10, 20], "rewards": [20, 25, 35]},
-	{"type": "pile_times", "amounts": [2, 3], "rewards": [35, 50]},
-	{"type": "discover", "amounts": [1], "rewards": [40]},
-	{"type": "dressed", "amounts": [1, 3], "rewards": [20, 30]},
-	{"type": "decorated", "amounts": [1, 3], "rewards": [20, 30]},
+	{"type": "pile", "amounts": [35, 55, 75], "rewards": [125, 175, 250]},
+	{"type": "runs", "amounts": [2, 4, 6], "rewards": [100, 150, 225]},
+	{"type": "land", "amounts": [60, 110, 170], "rewards": [125, 200, 300]},
+	{"type": "clean", "amounts": [15, 25, 40], "rewards": [175, 250, 350]},
+	{"type": "lucky", "amounts": [1, 2, 3], "rewards": [200, 300, 400]},
+	{"type": "heart", "amounts": [1, 2, 3], "rewards": [175, 250, 350]},
+	{"type": "height", "amounts": [250, 400, 600], "rewards": [150, 225, 325]},
+	{"type": "flavour", "amounts": [8, 14, 22], "rewards": [150, 225, 325]},
+	{"type": "shape", "amounts": [10, 18, 28], "rewards": [150, 225, 325]},
+	{"type": "streak", "amounts": [22, 35, 50], "rewards": [150, 225, 325]},
+	{"type": "spin", "amounts": [10, 20, 35], "rewards": [100, 150, 225]},
+	{"type": "pile_times", "amounts": [2, 3, 4], "rewards": [175, 250, 325]},
+	{"type": "dressed", "amounts": [2, 4, 6], "rewards": [100, 150, 225]},
+	{"type": "decorated", "amounts": [2, 4, 6], "rewards": [100, 150, 225]},
 ]
 ## Pile size a "pile_times" mission counts towards.
 const PILE_TIMES_TARGET := 40
 
-## One substantial, repeatable challenge rotates each week. These deliberately use enduring
-## play stats rather than collection objectives, so the pool never dries up for veterans.
+## One substantial, repeatable challenge rotates each week. Every option works in Classic, Tower
+## and Kinu Toss, so a player's active mode never leaves the week's progress stuck at zero.
+## Targets sit in a narrow band because all four weeks are needed for a Monthly Showcase reward.
 const WEEKLY_MISSIONS := [
 	{"id": "land_250", "type": "land", "amount": 250},
-	{"id": "land_400", "type": "land", "amount": 400},
-	{"id": "land_600", "type": "land", "amount": 600},
+	{"id": "land_325", "type": "land", "amount": 325},
+	{"id": "land_375", "type": "land", "amount": 375},
+	{"id": "runs_10", "type": "runs", "amount": 10},
+	{"id": "runs_12", "type": "runs", "amount": 12},
 	{"id": "runs_14", "type": "runs", "amount": 14},
-	{"id": "runs_20", "type": "runs", "amount": 20},
-	{"id": "runs_28", "type": "runs", "amount": 28},
-	{"id": "clean_8", "type": "clean_runs", "amount": 8},
-	{"id": "clean_12", "type": "clean_runs", "amount": 12},
-	{"id": "clean_18", "type": "clean_runs", "amount": 18},
-	{"id": "glaze_20", "type": "glazed", "amount": 20},
-	{"id": "glaze_35", "type": "glazed", "amount": 35},
-	{"id": "glaze_55", "type": "glazed", "amount": 55},
+	{"id": "clean_5", "type": "clean_runs", "amount": 5},
+	{"id": "clean_7", "type": "clean_runs", "amount": 7},
+	{"id": "clean_9", "type": "clean_runs", "amount": 9},
 	{"id": "play_15", "type": "time", "amount": 900},
-	{"id": "play_25", "type": "time", "amount": 1500},
-	{"id": "spin_50", "type": "spin", "amount": 50},
-	{"id": "spin_100", "type": "spin", "amount": 100},
-	{"id": "pile_45", "type": "pile", "amount": 45},
-	{"id": "pile_65", "type": "pile", "amount": 65},
+	{"id": "play_20", "type": "time", "amount": 1200},
+	{"id": "single_run_35", "type": "pile", "amount": 35},
+	{"id": "single_run_45", "type": "pile", "amount": 45},
+	{"id": "streak_20", "type": "streak", "amount": 20},
 	{"id": "streak_30", "type": "streak", "amount": 30},
-	{"id": "streak_45", "type": "streak", "amount": 45},
 ]
-const WEEKLY_BEANS := 150
+const WEEKLY_BEANS := 750
 const WEEKLY_TICKETS := 1
 
 ## Earnable items by "kind:id" (outfit, box or room).
 static var goals: Dictionary = {}
 ## Kinu Catcher exclusives by "kind:id".
 static var crane_only: Dictionary = {}
+## Monthly Showcase rewards by "kind:id".
+static var showcase: Dictionary = {}
+## Limited-time event rewards (the Grand Opening) by "kind:id".
+static var event: Dictionary = {}
 static var catalog: KinuCatalog
 
 static func register(from: KinuCatalog) -> void:
 	catalog = from
 	goals.clear()
 	crane_only.clear()
+	showcase.clear()
+	event.clear()
 	for item in from.outfits:
 		if item.goal != "":
 			goals["outfit:"+item.id] = item
 		if item.crane_only:
 			crane_only["outfit:"+item.id] = item
+		if item.showcase != "":
+			showcase["outfit:"+item.id] = item
+		if item.event != "":
+			event["outfit:"+item.id] = item
 	for item in from.decor:
 		if item.goal != "":
 			goals[item.kind+":"+item.id] = item
 		if item.crane_only:
 			crane_only[item.kind+":"+item.id] = item
+		if item.showcase != "":
+			showcase[item.kind+":"+item.id] = item
+		if item.event != "":
+			event[item.kind+":"+item.id] = item
 
 static func is_earned_item(kind: String, id: String) -> bool:
 	return goals.has(kind+":"+id)
 
 static func is_crane_only(kind: String, id: String) -> bool:
 	return crane_only.has(kind+":"+id)
+
+static func is_showcase(kind: String, id: String) -> bool:
+	return showcase.has(kind+":"+id)
+
+static func is_event(kind: String, id: String) -> bool:
+	return event.has(kind+":"+id)
 
 static func stat(goal: String) -> int:
 	match goal:
@@ -107,7 +122,8 @@ static func stat(goal: String) -> int:
 	return int(Save.data.stats.get(goal, 0))
 
 static func met(item: Resource) -> bool:
-	return stat(item.goal) >= int(item.goal_amount)
+	var kind: String = item.kind if item is KinuDecor else "outfit"
+	return Save.data.owned.has(kind+":"+item.id) or stat(item.goal) >= int(item.goal_amount)
 
 static func goal_text(item: Resource) -> String:
 	if item.goal == "height":
@@ -134,14 +150,44 @@ static func newly_earned(before: Array[String]) -> Array[String]:
 # ---------- Daily missions ----------
 
 static var server_day := ""
+static var _server_daily_seconds := -1
+static var _server_weekly_seconds := -1
+static var _server_clocks_received_at_ms := -1
 
 static func apply_time_status(status: Dictionary) -> void:
 	var key := str(status.get("daily_key", ""))
 	if key.length() == 10 and key[4] == "-" and key[7] == "-":
 		server_day = key
+	if status.has("daily_seconds_remaining") and status.has("weekly_seconds_remaining"):
+		_server_daily_seconds = maxi(0, int(status.daily_seconds_remaining))
+		_server_weekly_seconds = maxi(0, int(status.weekly_seconds_remaining))
+		_server_clocks_received_at_ms = Time.get_ticks_msec()
+
+static func _server_seconds(snapshot: int) -> int:
+	var elapsed := maxi(0, int((Time.get_ticks_msec()-_server_clocks_received_at_ms)/1000))
+	return maxi(0, snapshot-elapsed)
+
+static func needs_time_refresh() -> bool:
+	return Rewards.configured() and (_server_clocks_received_at_ms < 0 or _server_seconds(_server_daily_seconds) == 0 or _server_seconds(_server_weekly_seconds) == 0)
+
+static func daily_seconds_remaining() -> int:
+	if Rewards.configured():
+		return _server_seconds(_server_daily_seconds) if _server_clocks_received_at_ms >= 0 else -1
+	var now := Time.get_datetime_dict_from_system()
+	return clampi(86400-(int(now.hour)*3600+int(now.minute)*60+int(now.second)), 0, 86400)
+
+static func daily_clock() -> String:
+	var seconds := daily_seconds_remaining()
+	if seconds < 0:
+		return "--:--:--"
+	return "%02d:%02d:%02d" % [seconds/3600, (seconds % 3600)/60, seconds % 60]
+
+## Today's "YYYY-MM-DD": the server's day once it has answered, otherwise the device's.
+static func calendar_day() -> String:
+	return server_day if not server_day.is_empty() else Time.get_date_string_from_system()
 
 static func today() -> Array:
-	var day := server_day if not server_day.is_empty() else Time.get_date_string_from_system()
+	var day := calendar_day()
 	var daily: Dictionary = Save.data.daily
 	# With Supabase enabled, never let a changed device clock create a new mission set before the
 	# server has supplied today's key. The Daily screen will populate immediately after startup.
@@ -183,7 +229,8 @@ static func _roll(day: String, avoid_yesterday: bool = true) -> Array:
 	var picked := []
 	for i in 3:
 		var template: Dictionary = pool.pop_at(rng.randi() % pool.size())
-		var tier: int = rng.randi() % template.amounts.size()
+		# A daily set always has one approachable, one medium and one stretch mission.
+		var tier: int = mini(i, template.amounts.size()-1)
 		var mission := {"type": template.type, "amount": template.amounts[tier], "reward": template.rewards[tier], "progress": 0, "claimed": false, "flavour": "", "shape": "", "ticket": false}
 		if template.type == "flavour":
 			var unlocked: Array = []
@@ -268,17 +315,57 @@ static func complete(mission: Dictionary) -> bool:
 
 # ---------- Weekly challenge ----------
 
-## A week is a stable seven-day calendar block. Keeping this independent of a launch means the
-## same challenge survives restarts and device time within the week.
-static func _week_key() -> String:
-	var day := Time.get_unix_time_from_datetime_string(Time.get_date_string_from_system())
-	return str(floori(day / 604800.0))
+## Weeks are cut from the calendar month so every month holds exactly four for the Monthly
+## Showcase: the 1st-7th, 8th-14th, 15th-21st, and the 22nd to the month's end (7 to 10 days).
+## The key ("2026-09-w4") is stable across restarts within the week.
+static func week_of(day: String) -> int:
+	return clampi((int(day.substr(8, 2))-1)/7+1, 1, KinuShowcase.WEEKS)
+
+## Seconds until the weekly challenge rolls over: the rest of today plus the days left in the week.
+static func weekly_seconds_remaining() -> int:
+	if Rewards.configured():
+		return _server_seconds(_server_weekly_seconds) if _server_clocks_received_at_ms >= 0 else -1
+	var day := calendar_day()
+	var week := week_of(day)
+	var year := int(day.substr(0, 4))
+	var month := int(day.substr(5, 2))
+	var last_day := 7*week
+	if week >= KinuShowcase.WEEKS:
+		last_day = 31 if month in [1, 3, 5, 7, 8, 10, 12] else 30
+		if month == 2:
+			last_day = 29 if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0 else 28
+	return daily_seconds_remaining()+(last_day-int(day.substr(8, 2)))*86400
+
+## "3d 04:12:09" while more than a day is left, otherwise "04:12:09".
+static func weekly_clock() -> String:
+	var seconds := weekly_seconds_remaining()
+	if seconds < 0:
+		return "--:--:--"
+	var clock := "%02d:%02d:%02d" % [(seconds % 86400)/3600, (seconds % 3600)/60, seconds % 60]
+	return "%dd %s" % [seconds/86400, clock] if seconds >= 86400 else clock
+
+static func _week_key(day: String = calendar_day()) -> String:
+	return "%s-w%d" % [day.substr(0, 7), week_of(day)]
+
+## Saves from before month weeks keyed a week by days since 1970 / 7. That challenge is kept for
+## the rest of its own week, and counts towards the showcase week it's finished in.
+static func _legacy_week_key(day: String) -> String:
+	return str(floori(Time.get_unix_time_from_datetime_string(day) / 604800.0))
 
 static func weekly() -> Dictionary:
-	var key := _week_key()
+	var day := calendar_day()
+	var key := _week_key(day)
 	var saved: Dictionary = Save.data.weekly
+	if saved.get("week", "") == _legacy_week_key(day) and saved.get("mission") is Dictionary:
+		saved.week = key
+		if complete(saved.mission):
+			KinuShowcase.record_week(key)
+		Save.persist()
 	if saved.get("week", "") == key and saved.get("mission") is Dictionary:
-		return saved.mission
+		# Do not strand a player on a retired mode-specific challenge after the weekly pool changes.
+		var saved_id := str(saved.mission.get("id", ""))
+		if WEEKLY_MISSIONS.any(func(template: Dictionary) -> bool: return str(template.id) == saved_id):
+			return saved.mission
 	var previous_id := str(saved.get("mission", {}).get("id", ""))
 	var index := posmod(hash("kinu-week-"+key), WEEKLY_MISSIONS.size())
 	if WEEKLY_MISSIONS.size() > 1 and str(WEEKLY_MISSIONS[index].id) == previous_id:
@@ -299,7 +386,7 @@ static func weekly_text(mission: Dictionary) -> String:
 		"glazed": return _t("Glaze %d Kinu with shoyu this week")%amount
 		"time": return _t("Play for %d minutes this week")%roundi(amount / 60.0)
 		"spin": return _t("Spin the box %d full turns this week")%amount
-		"pile": return _t("Pile %d Kinu in one run")%amount
+		"pile": return _t("Land %d Kinu in one run")%amount
 		"streak": return _t("Land %d Kinu in a row without a tumble")%amount
 	return ""
 
@@ -324,6 +411,13 @@ static func _record_weekly(summary: Dictionary) -> bool:
 	if complete(mission):
 		return false
 	var score := int(summary.get("pile", summary.get("score", 0)))
+	_advance_weekly(mission, summary, score)
+	if not complete(mission):
+		return false
+	KinuShowcase.record_week(str(Save.data.weekly.week))
+	return true
+
+static func _advance_weekly(mission: Dictionary, summary: Dictionary, score: int) -> void:
 	match str(mission.type):
 		"land": mission.progress = int(mission.progress)+int(summary.get("placed", 0))
 		"runs": mission.progress = int(mission.progress)+1
@@ -335,7 +429,6 @@ static func _record_weekly(summary: Dictionary) -> bool:
 		"spin": mission.progress = int(mission.progress)+int(summary.get("turns", 0))
 		"pile": mission.progress = maxi(int(mission.progress), score)
 		"streak": mission.progress = maxi(int(mission.progress), int(summary.get("streak", 0)))
-	return complete(mission)
 
 ## Applies a finished run to today's missions; returns how many became complete.
 static func record_run(summary: Dictionary) -> int:
@@ -383,6 +476,7 @@ static func record_run(summary: Dictionary) -> int:
 		if complete(mission):
 			finished += 1
 	_record_weekly(summary)
+	GrandOpening.record_missions(finished)
 	return finished
 
 static func claimable() -> int:

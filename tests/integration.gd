@@ -18,10 +18,20 @@ func frames(count: int) -> void:
 
 func click_button(text: String, root: Node = app.screen) -> bool:
 	for child in root.get_children():
-		if child is Button and (child.text == text or child.name == text) and not child.disabled:
+		if child is Button and not child.disabled and _button_says(child, text):
 			child.pressed.emit()
 			return true
 		if click_button(text,child):
+			return true
+	return false
+
+## Home-screen buttons lay their title out as a child Label beside an icon rather than setting
+## button.text, so matching the button's own text alone would never find Play.
+func _button_says(button: Button, text: String) -> bool:
+	if button.text == text or button.name == text:
+		return true
+	for label in button.find_children("*", "Label", true, false):
+		if (label as Label).text == text:
 			return true
 	return false
 
@@ -81,12 +91,12 @@ func _ready() -> void:
 	check(not impossible,"no box or room mission before owning a new box or room")
 	Save.finish_run({"score": 14, "height": 3.5, "placed": 16, "tumbles": 0})
 	Save.load_data()
-	check(Save.is_fresh("flavour:matcha") and Save.is_fresh("outfit:leaf") and not Save.is_fresh("flavour:kinako") and not Save.is_fresh("flavour:yuzu"),"only found flavours and earned rewards wait as new in the Kinu Book")
-	Save.clear_fresh("outfit:leaf")
+	check(Save.is_fresh("flavour:matcha") and not Save.is_fresh("outfit:leaf") and not Save.is_fresh("flavour:kinako") and not Save.is_fresh("flavour:yuzu"),"a first run finds a flavour but does not give away an outfit")
+	Save.clear_fresh("flavour:matcha")
 	Save.load_data()
-	check(not Save.is_fresh("outfit:leaf") and Save.fresh_count("flavour:") == 1,"looking at an unlock clears its badge")
+	check(not Save.is_fresh("flavour:matcha") and Save.fresh_count("flavour:") == 0,"looking at an unlock clears its badge")
 	Save.mark_fresh("flavour:yuzu")
-	check(Save.fresh_count("flavour:") == 1,"undiscovered legacy flavour keys never show unread badges")
+	check(Save.fresh_count("flavour:") == 0,"undiscovered legacy flavour keys never show unread badges")
 	Save.clear_all_fresh()
 	check(Save.fresh_count() == 0,"marking the Kinu Book read clears every badge")
 	check(Save.data.best==14 and is_equal_approx(Save.data.best_height,3.5) and Save.data.discovered.has("matcha"),"progress survives reload")
@@ -95,6 +105,7 @@ func _ready() -> void:
 	Save.data.stats.day_streak = 3
 	Save.data.last_played = Time.get_date_string_from_unix_time(Time.get_unix_time_from_datetime_string(Time.get_date_string_from_system())-86400)
 	Save.finish_run({"score": 12, "height": 3.0, "placed": 14, "tumbles": 1, "time": 30.0, "flavours": {"matcha": 5}})
+	check(Save.is_fresh("outfit:leaf"),"Little Leaf unlocks after three finished runs")
 	Save.load_data()
 	var stats: Dictionary = Save.data.stats
 	check(Save.data.recent == [14, 9, 12] and stats.piled == 35 and stats.tumbles == 3 and stats.hearts == 1 and stats.streak == 7,"lifetime run stats add up and survive reload")
@@ -113,7 +124,12 @@ func _ready() -> void:
 	old_save.store_string(JSON.stringify({"version": 2, "best": 150, "best_height": 5.0}))
 	old_save.close()
 	Save.load_data()
-	check(Save.data.best==15 and int(Save.data.version)==3,"old height best in cm converts to a Kinu count")
+	check(Save.data.best==15 and int(Save.data.version)==5,"old height best in cm converts to a Kinu count")
+	old_save = FileAccess.open(Save.save_path,FileAccess.WRITE)
+	old_save.store_string(JSON.stringify({"version": 4, "best": 25, "runs": 1, "stats": {"streak": 8, "glazed": 10}}))
+	old_save.close()
+	Save.load_data()
+	check(Save.owns("outfit", "leaf") and Save.owns("outfit", "builder") and Save.owns("outfit", "yukata") and Save.owns("outfit", "chef"),"old earned outfits stay owned when goals rise")
 	old_save = FileAccess.open(Save.save_path,FileAccess.WRITE)
 	old_save.store_string(JSON.stringify({"version": 1, "best": 19}))
 	old_save.close()
@@ -358,6 +374,20 @@ func _ready() -> void:
 	check(click_button("Play Again"),"play again button connected")
 	await frames(3)
 	check(run.score==0 and run.bodies.size()==1 and run.state=="aim","restart resets bodies and run state")
+	var abandon_runs := int(Save.data.runs)
+	var abandon_daily: Dictionary = Save.data.daily.duplicate(true)
+	var abandon_weekly: Dictionary = Save.data.weekly.duplicate(true)
+	var abandon_event: Dictionary = Save.data.grand_opening.duplicate(true)
+	app._pause()
+	check(click_button("Restart"),"pause restart button connected")
+	await frames(3)
+	check(int(Save.data.runs)==abandon_runs and Save.data.daily==abandon_daily and Save.data.weekly==abandon_weekly and Save.data.grand_opening==abandon_event,"restarting an unfinished run gives no completion credit")
+	app._pause()
+	check(click_button("Main Menu"),"pause main menu button connected")
+	await frames(3)
+	check(int(Save.data.runs)==abandon_runs and Save.data.daily==abandon_daily and Save.data.weekly==abandon_weekly and Save.data.grand_opening==abandon_event,"leaving an unfinished run gives no completion credit")
+	app._start()
+	await frames(3)
 
 	# A careful bot must be able to build a real tower with real physics.
 	var best_run := 0
@@ -428,22 +458,32 @@ func _ready() -> void:
 	dressed.queue_free()
 
 	# Soybeans: earned per Kinu piled, spent on outfits, which then dress every Kinu.
-	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(25,false)==29 and NestRun.beans_for(25,true)==34,"beans scale with the pile and reward a new best")
+	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(25,false)==145 and NestRun.beans_for(25,true)==170,"beans scale with the pile and reward a new best")
+	# Beans were restated in a larger unit: an older save's balance has to move with the prices.
+	check(Save.BEAN_REDENOMINATION == 5 and KinuCatcher.BEANS[0].amount == 50,"the smallest claw prize is a round 50 beans")
 	check(Array(NestRun.unlocks_between(run.catalog.flavours,9,23))==["Yuzu","Ume","Mango","Hojicha"],"results name flavours unlocked by a new best pile")
 	# Kinu Book rewards follow lifetime goals; daily missions pay out once.
 	var saved_best_for_goals := int(Save.data.best)
 	Save.data.best = 0
 	check(not Save.owns("outfit","parcel"),"an earned outfit starts locked")
-	Save.data.best = 25
+	Save.data.best = 75
 	check(Save.owns("outfit","parcel") and Save.buy("outfit","parcel",0) and Save.data.outfit=="parcel","reaching the goal earns and wears the outfit")
 	Save.data.outfit = ""
 	Save.data.best = saved_best_for_goals
-	Save.data.daily = {"day": Time.get_date_string_from_system(), "missions": [{"type": "pile", "amount": 10, "reward": 25, "progress": 0, "claimed": false, "flavour": "", "ticket": true}, {"type": "lucky", "amount": 1, "reward": 30, "progress": 0, "claimed": false, "flavour": "", "ticket": false}, {"type": "clean", "amount": 8, "reward": 25, "progress": 0, "claimed": false, "flavour": "", "ticket": false}]}
+	Save.data.daily = {"day": KinuProgress.calendar_day(), "missions": [{"type": "pile", "amount": 10, "reward": 25, "progress": 0, "claimed": false, "flavour": "", "ticket": true}, {"type": "lucky", "amount": 1, "reward": 30, "progress": 0, "claimed": false, "flavour": "", "ticket": false}, {"type": "clean", "amount": 8, "reward": 25, "progress": 0, "claimed": false, "flavour": "", "ticket": false}]}
 	var rolled := KinuProgress._roll("2026-09-16")
 	var yesterday := KinuProgress._roll("2026-09-15", false).map(func(m: Dictionary) -> String: return m.type)
 	var types := rolled.map(func(m: Dictionary) -> String: return m.type)
 	check(rolled.size() == 3 and types[0] != types[1] and types[1] != types[2] and types[0] != types[2],"three different daily missions")
-	check(rolled.filter(func(m: Dictionary) -> bool: return bool(m.get("ticket", false))).size() == 1,"exactly one daily mission awards a ticket")
+	var tiered := true
+	for i in rolled.size():
+		var template: Dictionary = KinuProgress.MISSIONS.filter(func(entry: Dictionary) -> bool: return entry.type == rolled[i].type)[0]
+		tiered = tiered and int(rolled[i].amount) == int(template.amounts[i])
+	check(tiered,"daily missions contain easy, medium and stretch targets")
+	check(rolled.filter(func(m: Dictionary) -> bool: return bool(m.get("ticket", false))).is_empty(),"daily missions pay beans only, never tickets")
+	# The seeded set above carries a legacy ticket flag, the way an old save would. Opening it
+	# has to strip that, or a returning player would still be paid a ticket the daily no longer owes.
+	check(not KinuProgress.today().any(func(m: Dictionary) -> bool: return bool(m.get("ticket", false))),"an old save's marked daily mission is cleared on open")
 	check(not types.any(func(t: String) -> bool: return yesterday.has(t)),"daily missions don't repeat yesterday's types")
 	var streak_mission := {"type": "streak", "amount": 10, "reward": 20, "progress": 0, "claimed": false, "flavour": "", "shape": ""}
 	Save.data.daily.missions.append(streak_mission)
@@ -453,7 +493,28 @@ func _ready() -> void:
 	var beans_before := int(Save.data.beans)
 	var tickets_before := int(Save.data.tickets)
 	check(KinuProgress.record_run({"score": 12, "placed": 14, "tumbles": 1, "lucky": 0, "height": 3.0}) == 1 and KinuProgress.claimable() == 1,"a run completes the matching daily mission only")
-	check(KinuProgress.claim(0) == 25 and int(Save.data.beans) == beans_before+25 and int(Save.data.tickets) == tickets_before+1 and KinuProgress.claim(0) == 0 and int(Save.data.tickets) == tickets_before+1,"the marked daily reward grants beans and one ticket exactly once")
+	check(KinuProgress.claim(0) == 25 and int(Save.data.beans) == beans_before+25 and KinuProgress.claim(0) == 0 and int(Save.data.beans) == beans_before+25,"a daily reward grants its beans exactly once")
+	check(int(Save.data.tickets) == tickets_before,"claiming a daily mission never hands out a ticket")
+	# Weekly challenges gate the Monthly Showcase, so every template must work in all three modes
+	# and have clear player-facing text. Mode-specific shoyu and spinning belong in regular play,
+	# not in a shared weekly pool where Toss players could make no progress.
+	var weekly_types := ["land", "runs", "clean_runs", "time", "pile", "streak"]
+	check(KinuProgress.WEEKLY_MISSIONS.all(func(mission: Dictionary) -> bool: return str(mission.type) in weekly_types),"weekly challenges work in every game mode")
+	check(KinuProgress.WEEKLY_MISSIONS.all(func(mission: Dictionary) -> bool: return KinuProgress.weekly_text(mission) != ""),"every weekly challenge has player-facing text")
+	var weekly_land := {"type": "land", "amount": 10, "progress": 0}
+	var weekly_clean := {"type": "clean_runs", "amount": 1, "progress": 0}
+	var weekly_single_run := {"type": "pile", "amount": 12, "progress": 0}
+	KinuProgress._advance_weekly(weekly_land, {"placed": 10}, 0)
+	KinuProgress._advance_weekly(weekly_clean, {"tumbles": 0}, 0)
+	# Toss reports successful throws as `pile`, so the same single-run objective is meaningful there.
+	KinuProgress._advance_weekly(weekly_single_run, {"placed": 12}, 12)
+	check(KinuProgress.complete(weekly_land) and KinuProgress.complete(weekly_clean) and KinuProgress.complete(weekly_single_run),"weekly missions advance from mode-neutral run summaries")
+	Save.data.weekly = {"week": KinuProgress._week_key(), "mission": {"id": "glaze_55", "type": "glazed", "amount": 55, "progress": 10, "claimed": false}}
+	check(str(KinuProgress.weekly().id) != "glaze_55","a saved retired weekly challenge is replaced")
+	Save.data.weekly = {"week": KinuProgress._week_key(), "mission": {"id": "runs_10", "type": "runs", "amount": 1, "progress": 1, "claimed": false}}
+	var weekly_beans := int(Save.data.beans)
+	var weekly_tickets := int(Save.data.tickets)
+	check(KinuProgress.weekly_claimable() and KinuProgress.claim_weekly() and int(Save.data.beans) == weekly_beans+KinuProgress.WEEKLY_BEANS and int(Save.data.tickets) == weekly_tickets+KinuProgress.WEEKLY_TICKETS,"a completed weekly challenge pays its beans and ticket once")
 	# Heart Kinu give back a tumble; Lucky Kinu pay bonus beans.
 	app._start()
 	await frames(3)
@@ -490,26 +551,30 @@ func _ready() -> void:
 	glue_probe.free()
 	run.bodies.erase(tiny)
 	tiny.free()
-	# Sauce bottles: queued like a Kinu, aimed like a Kinu, and they resize the pile below.
+	# Sauce bottles: a charge swapped into the hand, aimed like a Kinu, resizing the pile below.
+	check(run.sauce_id() == "nigari", "Classic keeps the shrinking Nigari bottle")
 	var base_kinu: KinuBody = null
 	for body in run.bodies:
 		if body.scored and not body.fallen and not body.stuck:
 			base_kinu = body
-	for sauce in ["nigari"]:
+	for sauce in [NestRun.BOTTLE_SAUCE]:
 		var recipe: Dictionary = NestRun.SAUCES[sauce]
 		var before := {}
 		for body in run.bodies:
 			if body.scored and not body.fallen:
 				before[body.get_instance_id()] = body.body_scale
 		var spent := run.placed
-		run.next_sauce = sauce
-		run.bodies.erase(run.active)
-		run.active.queue_free()
-		run.active = null
-		run.state = "ready"
-		run._spawn()
+		# The bottle is a charge held alongside the Kinu, not a queued turn: stock a squirt and
+		# swap it into the hand the way the tap does.
+		run.squirts = maxi(run.squirts, 1)
+		run.state = "aim"
+		if not is_instance_valid(run.active):
+			run._spawn()
+			await frames(1)
+			run.state = "aim"
+		run.toggle_bottle()
 		await frames(2)
-		check(run.aim_mode == "bottle" and is_instance_valid(run.bottle) and not run.active.visible,"a queued %s puts the bottle in hand"%sauce)
+		check(run.aim_mode == "bottle" and is_instance_valid(run.bottle) and not run.active.visible,"tapping the bottle puts %s in hand"%sauce)
 		var over := base_kinu.position
 		run.orbit.lateral = over.dot(run.orbit.right())
 		run.orbit.depth = over.dot(run.orbit.toward_camera())
@@ -529,7 +594,7 @@ func _ready() -> void:
 		check(resized > 0 and resized <= int(recipe.targets),"%s resizes up to %d Kinu"%[sauce, int(recipe.targets)])
 		check(smaller == resized if float(recipe.factor) < 1.0 else smaller == 0,"%s moves every Kinu it touches the same way"%sauce)
 		check(run.aim_mode == "kinu" and run.placed == spent,"a sauce spends the turn without adding to the pile")
-	check(run.next_sauce == "" or NestRun.SAUCES.has(run.next_sauce),"the queue only ever holds a known sauce")
+	check(NestRun.SAUCES.has(NestRun.BOTTLE_SAUCE),"the bottle only ever carries a known sauce")
 	Save.data.beans = 100
 	Save.data.owned = []
 	Save.data.outfit = ""
@@ -660,12 +725,18 @@ func _ready() -> void:
 	await frames(2)
 	check(app.page=="shop","shop navigation")
 	check(not KinuShopScreen.cards.any(func(c: Dictionary) -> bool: return c.item.goal != ""),"the shop only sells, never Kinu Book rewards")
+	# Tapping an item opens its showcase first; the wardrobe is one button further on.
 	KinuShopScreen._choose(app,"outfit",run.catalog.outfit("bunny"))
 	await frames(2)
-	check(app.page=="wardrobe" and app.wardrobe_tab=="outfit","tapping something you own opens the wardrobe")
+	check(click_button("Open Wardrobe"),"something you own offers the wardrobe instead of a price")
+	await frames(2)
+	check(app.page=="wardrobe" and app.wardrobe_tab=="outfit","the showcase's wardrobe button opens the wardrobe")
 	var screen_before: Control = app.screen
 	var bunny_card: Dictionary = WardrobeScreen.cards.filter(func(c: Dictionary) -> bool: return c.id == "bunny")[0]
 	bunny_card.button.pressed.emit()
+	await frames(1)
+	# A wardrobe card opens the same showcase the shop uses; "Wear" is what actually equips.
+	check(click_button("Wear"),"a wardrobe card offers to wear the outfit")
 	await frames(1)
 	check(app.screen==screen_before and Save.data.outfit=="bunny","the wardrobe wears an outfit without rebuilding")
 	Save.data.outfit = ""
@@ -686,9 +757,12 @@ func _ready() -> void:
 		app._home()
 	Save.data.tutorial = false
 	app._start()
-	for action in ["aim","drop","spin","settle"]:
+	# Mirrors the expected order in main._tutorial_action; the last panel step is the one after it.
+	var tutorial_actions := ["aim","drop","spin","sticky_ready","settle","squirt"]
+	for action in tutorial_actions:
 		app._tutorial_action(action)
-	check(app.tutorial_step==4,"tutorial progresses across all steps")
+	check(app.tutorial_step==tutorial_actions.size(),"tutorial progresses across all steps")
+	check(app.tutorial_step==app._tutorial_steps().size()-1,"finishing the actions lands on the last coaching step")
 	app._finish_tutorial()
 	Save.load_data()
 	check(Save.data.tutorial,"tutorial completion persists")

@@ -92,6 +92,7 @@ func _simulate(name: String, profile: Dictionary, verbose: bool) -> String:
 			yesterday = missions.map(func(m: Dictionary) -> String: return m.type)
 		# ---- the run itself
 		var earned_before := _earned(earnable, best, best_cm, stats, discovered)
+		var event_start := events.size()
 		var target := minf(profile.cap, profile.score+profile.grow*run)
 		var score := clampi(roundi(target*(1.0+rng.randf_range(-profile.wobble, profile.wobble))), 1, int(profile.cap))
 		var tumbles := int(profile.tumbles)
@@ -123,7 +124,6 @@ func _simulate(name: String, profile: Dictionary, verbose: bool) -> String:
 					hearts += 1
 		var cm := roundi(score*CM_PER_KINU)
 		seconds += placed*SECONDS_PER_KINU
-		var event_start := events.size()
 		# ---- results screen
 		var record := score > best
 		var old_best := best
@@ -134,8 +134,12 @@ func _simulate(name: String, profile: Dictionary, verbose: bool) -> String:
 		stats.lucky += lucky
 		# Profiles play every day, so the day streak is simply the day number.
 		stats.days = day+1
-		# Shoyu: one squirt to start and one per 20 Kinu, landing on a Kinu most of the time.
-		for squirt in SQUIRTS_START_SIM+score/NestRun.SQUIRT_EVERY:
+		# One bottle charge to start, plus charges earned at the current pile milestones.
+		var charges := SQUIRTS_START_SIM
+		for milestone in NestRun.SQUIRT_UNLOCKS:
+			if score >= milestone:
+				charges += 1
+		for squirt in charges:
 			if rng.randf() < GLAZE_HIT:
 				stats.glazed += 1
 		if tumbles == 0:
@@ -243,7 +247,7 @@ func _roll_missions(best: int, discovered: Dictionary, yesterday: Array) -> Arra
 	var picked := []
 	for i in 3:
 		var template: Dictionary = pool.pop_at(rng.randi() % pool.size())
-		var tier: int = rng.randi() % template.amounts.size()
+		var tier: int = mini(i, template.amounts.size()-1)
 		var mission := {"type": template.type, "amount": template.amounts[tier], "reward": template.rewards[tier], "progress": 0}
 		if template.type == "flavour":
 			var unlocked := catalog.flavours.filter(func(f: KinuFlavour) -> bool: return best >= f.unlock_kinu)

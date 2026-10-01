@@ -10,19 +10,24 @@ extends RefCounted
 
 const TICKET_COST := 1
 const LUCKY_EVERY := 15
-## One free play each calendar day.
-const FREE_DAILY := true
+## Free tickets refill as a pair and never carry over into the next cycle.
+const FREE_DAILY_TICKETS := 2
 const HISTORY := 20
 ## Bean prizes this size or bigger count as a jackpot.
-const JACKPOT := 3000
+const JACKPOT := 15000
 
 static var _remote_free_known := false
-static var _remote_free_ready := false
+static var _remote_free_remaining := 0
+static var _remote_free_seconds := 0
+static var _remote_status_at_ms := -1
 
 static func apply_time_status(status: Dictionary) -> void:
-	if status.has("free_claw_ready"):
+	if status.has("free_claw_remaining") or status.has("free_claw_ready"):
 		_remote_free_known = true
-		_remote_free_ready = bool(status.free_claw_ready)
+		_remote_free_remaining = clampi(int(status.get("free_claw_remaining", 1 if bool(status.get("free_claw_ready", false)) else 0)), 0, FREE_DAILY_TICKETS)
+		_remote_free_seconds = maxi(0, int(status.get("free_claw_seconds_remaining", 0)))
+		_remote_status_at_ms = Time.get_ticks_msec()
+		Save.changed.emit()
 
 static func refresh_free_status() -> Dictionary:
 	if not Rewards.configured():
@@ -39,11 +44,11 @@ const TIER_WEIGHTS := {"common": 55.0, "rare": 25.0, "epic": 13.0, "legendary": 
 ## Beans take whatever is left once cosmetics, tickets and the jackpot have taken their cut. Each
 ## weight is a split of that remainder, so retuning any of the others moves beans and nothing else.
 const BEANS := [
-	{"amount": 10, "weight": 40},
-	{"amount": 20, "weight": 30},
-	{"amount": 40, "weight": 16},
-	{"amount": 80, "weight": 8},
-	{"amount": 200, "weight": 3},
+	{"amount": 50, "weight": 40},
+	{"amount": 100, "weight": 30},
+	{"amount": 200, "weight": 16},
+	{"amount": 400, "weight": 8},
+	{"amount": 1000, "weight": 3},
 ]
 const JACKPOT_ODDS := .03
 ## Tickets are the other thing a play can win: another go at the machine, which is a better
@@ -57,12 +62,13 @@ const TICKET_ODDS := 9.0
 const TIER_NAMES := {"common": "Common", "rare": "Rare", "epic": "Epic", "legendary": "Legendary"}
 const TIER_COLORS := {"common": Color("7f9a8c"), "rare": Color("3fa9f5"), "epic": Color("a66bff"), "legendary": Color("d89616")}
 
-## A small pill naming an item's tier in its colour, or null for items without one.
-static func tier_pill(rarity: String, font_size: int = 15) -> PanelContainer:
+## A small pill naming an item's tier in its colour, or null for items without one. `text`
+## replaces the tier's name while keeping its colours (Showcase rewards read "Showcase").
+static func tier_pill(rarity: String, font_size: int = 15, text: String = "") -> PanelContainer:
 	if not TIER_NAMES.has(rarity):
 		return null
 	var text_color: Color = Color("4f3008") if rarity == "legendary" else TIER_COLORS[rarity].darkened(.25)
-	var pill := NestTheme.pill(TIER_NAMES[rarity], font_size, text_color)
+	var pill := NestTheme.pill(text if text != "" else TIER_NAMES[rarity], font_size, text_color)
 	var style := (pill.get_theme_stylebox("panel") as StyleBoxFlat).duplicate() as StyleBoxFlat
 	if rarity == "legendary":
 		style.bg_color = Color("edb62e")
@@ -76,17 +82,18 @@ static func tier_pill(rarity: String, font_size: int = 15) -> PanelContainer:
 	pill.add_theme_stylebox_override("panel", style)
 	return pill
 
-## All paid or Catcher-only catalogue cosmetics enter automatically. Goal rewards and free starter
-## decor stay out, so adding a new prize only requires adding it to the catalogue.
+## All paid or Catcher-only catalogue cosmetics enter automatically. Goal rewards, Monthly Showcase and Grand Opening
+## rewards and free starter decor stay out, so adding a new prize only requires adding it to the
+## catalogue.
 static func _item_entries(catalog: KinuCatalog, available_only: bool) -> Array:
 	var entries: Array = []
 	for item in catalog.outfits:
-		if item.goal == "" and item.finish == null and (int(item.price) > 0 or item.crane_only):
+		if item.available and item.goal == "" and item.showcase == "" and item.event == "" and item.finish == null and (int(item.price) > 0 or item.crane_only):
 			var entry := {"kind": "outfit", "id": item.id, "rarity": item.rarity}
 			if not available_only or not owned(catalog, entry):
 				entries.append(entry)
 	for item in catalog.decor:
-		if item.goal == "" and (int(item.price) > 0 or item.crane_only):
+		if item.available and item.goal == "" and item.showcase == "" and item.event == "" and (int(item.price) > 0 or item.crane_only):
 			var entry := {"kind": item.kind, "id": item.id, "rarity": item.rarity}
 			if not available_only or not owned(catalog, entry):
 				entries.append(entry)
@@ -177,9 +184,35 @@ static func items_left(catalog: KinuCatalog) -> int:
 	return pool(catalog, true).size()
 
 static func free_ready() -> bool:
+	return free_remaining() > 0
+
+static func free_remaining() -> int:
 	if Rewards.configured():
-		return FREE_DAILY and _remote_free_known and _remote_free_ready
-	return FREE_DAILY and str(Save.data.crane.free_day) != Time.get_date_string_from_system()
+		return _remote_free_remaining if _remote_free_known else 0
+	var crane: Dictionary = Save.data.crane
+	return FREE_DAILY_TICKETS if str(crane.get("free_day", "")) != Time.get_date_string_from_system() else maxi(0, FREE_DAILY_TICKETS-int(crane.get("free_used", 1)))
+
+static func total_tickets() -> int:
+	return int(Save.data.tickets)+free_remaining()
+
+static func free_seconds_remaining() -> int:
+	if Rewards.configured():
+		if not _remote_free_known:
+			return -1
+		return maxi(0, _remote_free_seconds-maxi(0, int((Time.get_ticks_msec()-_remote_status_at_ms)/1000)))
+	var now := Time.get_datetime_dict_from_system()
+	return 86400-(int(now.hour)*3600+int(now.minute)*60+int(now.second)) if str(Save.data.crane.get("free_day", "")) == Time.get_date_string_from_system() else 0
+
+static func free_reset_text() -> String:
+	var seconds := free_seconds_remaining()
+	if seconds < 0:
+		return NestTheme.t("Checking free tickets…")
+	if seconds == 0:
+		return NestTheme.t("%d/2 free tickets ready") % free_remaining() if free_remaining() > 0 else NestTheme.t("Checking free tickets…")
+	return NestTheme.t("%d/2 free · refill in %02d:%02d:%02d") % [free_remaining(), seconds/3600, (seconds % 3600)/60, seconds % 60]
+
+static func needs_status_refresh() -> bool:
+	return Rewards.configured() and (not _remote_free_known or _remote_free_seconds > 0 and free_seconds_remaining() == 0)
 
 static func can_play() -> bool:
 	return free_ready() or int(Save.data.tickets) >= TICKET_COST
@@ -198,7 +231,9 @@ static func play(catalog: KinuCatalog, rng: RandomNumberGenerator) -> Dictionary
 	var crane: Dictionary = Save.data.crane
 	var stats: Dictionary = Save.data.stats
 	if free:
-		crane.free_day = Time.get_date_string_from_system()
+		var today := Time.get_date_string_from_system()
+		crane.free_used = int(crane.get("free_used", 1))+1 if str(crane.get("free_day", "")) == today else 1
+		crane.free_day = today
 	else:
 		Save.data.tickets = int(Save.data.tickets)-TICKET_COST
 		stats.crane_tickets_spent = int(stats.crane_tickets_spent)+TICKET_COST
@@ -285,7 +320,7 @@ static func grade(entry: Dictionary) -> String:
 		return "epic" if int(entry.get("amount", 0)) >= 3 else "rare"
 	if str(entry.get("kind", "")) == "beans":
 		var amount := int(entry.get("amount", 0))
-		return "legendary" if amount >= JACKPOT else "epic" if amount >= 200 else "rare" if amount >= 80 else "common"
+		return "legendary" if amount >= JACKPOT else "epic" if amount >= 1000 else "rare" if amount >= 400 else "common"
 	return str(entry.get("rarity", "common"))
 
 static func entry_for(catalog: KinuCatalog, prize: Dictionary) -> Dictionary:

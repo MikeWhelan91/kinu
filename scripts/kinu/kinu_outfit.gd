@@ -19,5 +19,13 @@ extends Resource
 @export var goal_amount: int = 0
 ## Only ever won in the Kinu Catcher: never sold in the shop or earned by a goal.
 @export var crane_only: bool = false
+## Monthly Showcase reward for this month ("2026-10"): earned only by finishing that month's weekly
+## challenges, never sold in the shop or dropped by the Kinu Catcher. Empty for everything else.
+@export var showcase: String = ""
+## Limited-time event reward ("grand_opening"): earned only during that event, never sold in the
+## shop or dropped by the Kinu Catcher, and kept for good once earned. Empty for everything else.
+@export var event: String = ""
+## Temporarily withhold an item from shop and Catcher pools while keeping it visible in Collection.
+@export var available: bool = true
 ## "common", "rare", "epic" or "legendary" for shop and Kinu Catcher items; empty for earned rewards.
 @export var rarity: String = ""

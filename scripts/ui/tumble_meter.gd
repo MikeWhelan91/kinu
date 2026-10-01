@@ -13,11 +13,12 @@ func _ready() -> void:
 
 func _get_minimum_size() -> Vector2:
 	# Report this before the VBox lays out the score card, so the second row cannot be clipped.
-	return Vector2(96, 50)
+	# Six lives use the same two-row layout as Classic.
+	return Vector2(96, 50) if total > 3 else Vector2(84, 24)
 
 func _draw() -> void:
 	# This is intentionally an explicit 3 × 2 grid. Do not collapse it into a single row.
-	var start := Vector2((size.x-84.0)*.5, (size.y-44.0)*.5)
+	var start := Vector2((size.x-84.0)*.5, (size.y-(44.0 if total > 3 else 21.0))*.5)
 	for i in total:
 		var column := i % 3
 		var y := 1.0 if i < 3 else 24.0

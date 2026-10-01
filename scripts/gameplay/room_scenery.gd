@@ -15,7 +15,11 @@ var glow := MeshKit.new()
 var glowing := false
 var rng := RandomNumberGenerator.new()
 ## Symmetric layouts build with their showpiece on +z and are turned to face the home screen.
-var turn := 0.0
+var turn := 0.0:
+	set(value):
+		turn = value
+		# A Toss lane is cut where parts will stand once the scenery is turned into place.
+		MeshKit.cull_turn = value
 
 static func build(owner: TofuShop, layout: String) -> Node3D:
 	var scenery: RoomScenery = PremiumScenery.new() if layout in PremiumScenery.LAYOUTS else RoomScenery.new()

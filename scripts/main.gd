@@ -16,12 +16,15 @@ var score_label: Label
 var height_label: Label
 var best_label: Label
 var tumble_meter: TumbleMeter
-## Lid prototype: offers to close and send out the box once it holds enough.
-var ship_button: Button
 var bottle_button: Button
 var score_title: Label
-var timer_pill: PanelContainer
-var box_pill: PanelContainer
+## Kinu Toss: how full this box is, in the score card, and the streak multiplier under that card.
+var box_label: Label
+var streak_pill: PanelContainer
+## Kinu Toss: flashes each score/miss message under the objective instead of the usual mid-screen
+## toast, since that sits right over the box being aimed at.
+var toss_flash_label: Label
+var toss_flash_tween: Tween
 var drop_button: Button
 var hint_pill: PanelContainer
 var next_slot: VBoxContainer
@@ -42,6 +45,7 @@ var bean_shop_back: Callable
 var shop_back: Callable
 var wardrobe_back: Callable
 var game_center: GameCenterService
+var cloud_kvs: CloudKvsService
 var admob: Admob
 var deaths_since_interstitial := 0
 const ADMOB_APP_ID := "ca-app-pub-1257499604453174~7129218341"
@@ -66,21 +70,83 @@ func _ready() -> void:
 	run.finished.connect(_results)
 	run.action_done.connect(_tutorial_action)
 	game_center = GameCenterService.new()
-	game_center.authenticate()
+	game_center.app = self
+	game_center.cloud_restored.connect(func() -> void:
+		apply_language()
+		_home()
+	)
+	game_center.cloud_status_changed.connect(_show_cloud_conflict)
+	cloud_kvs = CloudKvsService.new()
+	cloud_kvs.app = self
+	cloud_kvs.restored.connect(func() -> void:
+		apply_language()
+		_home()
+	)
+	cloud_kvs.status_changed.connect(_show_cloud_conflict)
 	Store.changed.connect(_store_changed)
+	var ticket_clock := Timer.new()
+	ticket_clock.wait_time = 1.0
+	ticket_clock.timeout.connect(_ticket_clock_tick)
+	add_child(ticket_clock)
+	ticket_clock.start()
 	setup_admob()
 	canvas = CanvasLayer.new()
 	add_child(canvas)
 	get_viewport().size_changed.connect(_resized)
-	_home()
 	Store.notice.connect(func(message: String) -> void: _toast(message, NestTheme.SUN))
+	await _home()
+	add_child(cloud_kvs)
+	game_center.authenticate()
 	if Rewards.configured():
 		_refresh_reward_time()
 
 func _refresh_reward_time() -> void:
+	# The daily sheet may open on launch, so resolve it before the less visible mission/free-claw
+	# gates. This avoids both a false local preview and an unnecessary extra wait.
+	_daily_refresh_pending = true
+	_daily_refresh_last_ms = Time.get_ticks_msec()
+	await DailyCalendar.refresh_server_status()
+	_daily_refresh_pending = false
+	DailyCalendar.prompt(self)
 	var status: Dictionary = await Rewards.time_status()
+	_apply_time_status(status)
+
+func _apply_time_status(status: Dictionary) -> void:
+	if status.is_empty():
+		return
+	var previous_day := KinuProgress.server_day
 	KinuProgress.apply_time_status(status)
 	KinuCatcher.apply_time_status(status)
+	if previous_day != KinuProgress.server_day and is_instance_valid(modal) and bool(modal.get_meta("daily_missions", false)):
+		NestMenuScreen.daily_missions(self)
+
+var _free_refresh_pending := false
+var _free_refresh_last_ms := -30000
+var _daily_refresh_pending := false
+var _daily_refresh_last_ms := -30000
+
+func _ticket_clock_tick() -> void:
+	if page == "catcher":
+		KinuCatcherScreen.refresh(self)
+	if Rewards.configured() and not DailyCalendar.status_known() and not _daily_refresh_pending:
+		var daily_now := Time.get_ticks_msec()
+		if daily_now-_daily_refresh_last_ms >= 30000:
+			_daily_refresh_last_ms = daily_now
+			_daily_refresh_pending = true
+			await DailyCalendar.refresh_server_status()
+			_daily_refresh_pending = false
+			if DailyCalendar.status_known():
+				DailyCalendar.prompt(self)
+	if not (KinuCatcher.needs_status_refresh() or KinuProgress.needs_time_refresh()) or _free_refresh_pending:
+		return
+	var now := Time.get_ticks_msec()
+	if now-_free_refresh_last_ms < 30000:
+		return
+	_free_refresh_last_ms = now
+	_free_refresh_pending = true
+	var status: Dictionary = await Rewards.time_status()
+	_apply_time_status(status)
+	_free_refresh_pending = false
 
 ## "" follows the phone's language; otherwise the player's choice in Settings.
 func apply_language() -> void:
@@ -123,9 +189,17 @@ func _update_safe_area() -> void:
 	run.bottom_inset = safe_bottom
 	_sync_banner()
 
-## The banner only runs on non-gameplay screens, never over the box itself.
+## True while a native banner is actually on screen. Screens use it to stop tucking controls up
+## into the strip the ad occupies.
+func banner_showing() -> bool:
+	return _banner_visible
+
+## Screens that never carry a banner: gameplay, where it would sit over the box, and Home, which
+## is the game's shopfront and the first thing anyone sees.
+const NO_BANNER_PAGES := ["play", "pause", "home"]
+
 func _banner_wanted() -> bool:
-	return is_instance_valid(admob) and page != "play" and page != "pause"
+	return is_instance_valid(admob) and not NO_BANNER_PAGES.has(page)
 
 func _sync_banner() -> void:
 	var want := is_instance_valid(admob) and _banner_wanted() and admob.is_banner_ad_loaded()
@@ -146,6 +220,7 @@ func _new_screen(name_: String, paper: bool = false) -> void:
 	# A celebration belongs to the page that earned it, not to the one being opened.
 	_clear_confetti()
 	page = name_
+	Analytics.screen(name_)
 	# A screen swap mid-drag can free the DragScroll before its deferred release clears this,
 	# leaving every button silently ignoring taps until the app restarts.
 	NestTheme.scroll_dragging = false
@@ -195,6 +270,9 @@ func _center_label(parent: Node, text: String, font_size: int, color: Color = Ne
 func _home() -> void:
 	if not run.decor_outdated():
 		NestMenuScreen.home(self)
+		if game_center:
+			game_center.maybe_restore_cloud_save()
+			_show_cloud_conflict()
 		return
 	# A new box or room takes a moment to build: cover it with a curtain rendered first.
 	var curtain := LoadingCurtain.new()
@@ -202,8 +280,15 @@ func _home() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 	NestMenuScreen.home(self)
+	if game_center:
+		game_center.maybe_restore_cloud_save()
+		_show_cloud_conflict()
 	canvas.move_child(curtain, -1)
 	curtain.finish()
+
+func _show_cloud_conflict() -> void:
+	if page == "home" and ((game_center and game_center.has_cloud_conflict()) or (cloud_kvs and cloud_kvs.has_conflict())):
+		_settings()
 
 func _start() -> void:
 	get_tree().paused = false
@@ -211,6 +296,7 @@ func _start() -> void:
 	_new_screen("play")
 	_build_hud()
 	tutorial_step = -1 if Save.data.tutorial or NestRun.chosen_mode() != "classic" else 0
+	Analytics.run_started(NestRun.chosen_mode(), tutorial_step >= 0)
 	run.begin()
 	if tutorial_step == 0:
 		_build_tutorial()
@@ -227,15 +313,14 @@ func _build_hud() -> void:
 	content.add_child(score_card)
 	var column := _vbox(score_card,-6)
 	var mode := NestRun.chosen_mode()
-	score_title = _center_label(column,{"classic": "Kinu Piled", "tower": "Tower Height", "rush": "Bentos Packed"}[mode],15,NestTheme.MUTED)
+	score_title = _center_label(column,{"classic": "Kinu Piled", "tower": "Tower Height", "toss": "Score"}[mode],15,NestTheme.MUTED)
 	score_label = NestTheme.headline("0",40,NestTheme.SUN)
 	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(score_label)
-	best_label = _center_label(column,"Best 0",15,NestTheme.MUTED)
+	best_label = _center_label(column,NestTheme.t("Best %s")%"0",15,NestTheme.MUTED)
 	tumble_meter = TumbleMeter.new()
-	tumble_meter.total = NestRun.MAX_TUMBLES
+	tumble_meter.total = TossPlay.MAX_MISSES if mode == "toss" else NestRun.MAX_TUMBLES
 	column.add_child(tumble_meter)
-	tumble_meter.visible = mode != "rush" or NestRun.PACKING_RUSH
 	var next_card := PanelContainer.new()
 	next_card.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	next_card.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
@@ -253,23 +338,14 @@ func _build_hud() -> void:
 	bottle_button.alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	bottle_button.add_theme_font_size_override("font_size",24)
 	var bottle_icon := ShoyuBottle.Icon.new()
-	bottle_icon.tint = Color(str(NestRun.SAUCES[NestRun.BOTTLE_SAUCE].tint)).darkened(.25)
+	bottle_icon.tint = Color(str(NestRun.SAUCES[NestRun.sauce_for_mode(mode)].tint)).darkened(.25)
+	bottle_button.tooltip_text = tr("Shoyu Bottle") if mode == "tower" else tr("Nigari")
 	bottle_icon.position = Vector2(16,8)
 	bottle_icon.size = Vector2(30,40)
 	bottle_button.add_child(bottle_icon)
 	content.add_child(bottle_button)
-	# Sits under the bottle and only appears once the box is worth closing, so the choice to ship
-	# now or keep packing is the player's.
-	ship_button = NestTheme.button(tr("Close Lid"),func() -> void: run.ship_box(),true)
-	ship_button.name = "ShipBox"
-	ship_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	ship_button.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	ship_button.offset_left = -124
-	ship_button.offset_top = 228
-	ship_button.custom_minimum_size = Vector2(124,58)
-	ship_button.add_theme_font_size_override("font_size",19)
-	ship_button.hide()
-	content.add_child(ship_button)
+	# Toss has no sauce to squirt.
+	bottle_button.visible = mode != "toss"
 	next_slot = _vbox(next_card,0)
 	var pause_button := NestTheme.button("II",_pause,false,"plop")
 	pause_button.custom_minimum_size = Vector2(70,70)
@@ -284,32 +360,16 @@ func _build_hud() -> void:
 	height_pill.offset_top = 82
 	content.add_child(height_pill)
 	height_label = height_pill.get_child(0)
-	timer_pill = null
-	box_pill = null
-	if mode == "rush" and not NestRun.PACKING_RUSH:
-		# Bento Flip trades the height readout for the remaining tosses and current bento progress.
-		height_pill.hide()
-		timer_pill = NestTheme.pill("12 tosses",24)
-		timer_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		timer_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
-		timer_pill.offset_top = 80
-		content.add_child(timer_pill)
-		box_pill = NestTheme.pill("",17)
-		box_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		box_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
-		box_pill.offset_top = 136
-		content.add_child(box_pill)
-		var charge := BentoChargeMeter.new()
-		charge.run = run
-		charge.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP)
-		charge.grow_horizontal = Control.GROW_DIRECTION_BOTH
-		charge.offset_top = 182
-		charge.offset_bottom = 210
-		content.add_child(charge)
-	if Save.data.controls == "claw" and not (mode == "rush" and not NestRun.PACKING_RUSH):
+	box_label = null
+	streak_pill = null
+	if mode == "toss":
+		_toss_hud(score_card, column, next_card, pause_button, height_pill)
+	if mode == "toss":
+		_build_toss_controls()
+	elif Save.data.controls == "claw":
 		_build_claw_controls()
 	else:
-		var hint := "Pack the box  ·  close the lid when it's full" if mode == "rush" and NestRun.PACKING_RUSH else "Hold to flip  ·  swipe bottom strip to spin" if mode == "rush" else "Drag Kinu to move  ·  swipe to spin" if Save.data.controls == "grab" else "Drag to move  ·  let go to drop"
+		var hint := "Drag Kinu to move  ·  swipe to spin" if Save.data.controls == "grab" else "Drag to move  ·  let go to drop"
 		hint_pill = NestTheme.pill(hint,18)
 		hint_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
 		hint_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -323,6 +383,77 @@ func _build_hud() -> void:
 			content.add_child(hint_pill)
 	pad.hint = hint_pill
 	pad.app = self
+
+## Kinu Toss keeps its score dead centre: the lives with the pause button under them on the left,
+## Next on the right, and down the middle the score card (score and best), this box's objective
+## in its own pill, then the streak. Both side columns share one width, so the middle is the
+## middle of the screen. There is no distance readout; the score already pays for distance.
+const TOSS_SIDE := 124.0
+
+func _toss_hud(score_card: PanelContainer, column: VBoxContainer, next_card: PanelContainer, pause_button: Button, height_pill: Control) -> void:
+	height_pill.hide()
+	var row := HBoxContainer.new()
+	row.name = "TossHud"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+	row.add_theme_constant_override("separation",6)
+	content.add_child(row)
+	var left := VBoxContainer.new()
+	left.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	left.custom_minimum_size.x = TOSS_SIDE
+	left.add_theme_constant_override("separation",10)
+	row.add_child(left)
+	var lives := PanelContainer.new()
+	lives.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lives.add_theme_stylebox_override("panel",_slim_card())
+	left.add_child(lives)
+	column.remove_child(tumble_meter)
+	lives.add_child(tumble_meter)
+	content.remove_child(pause_button)
+	pause_button.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	pause_button.custom_minimum_size = Vector2(64,64)
+	pause_button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	left.add_child(pause_button)
+	var middle := VBoxContainer.new()
+	middle.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	middle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	middle.add_theme_constant_override("separation",8)
+	row.add_child(middle)
+	content.remove_child(score_card)
+	# Only as wide as the score needs; the space either side is the view down the table.
+	score_card.custom_minimum_size.x = 172
+	score_card.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	score_card.add_theme_stylebox_override("panel",_slim_card())
+	middle.add_child(score_card)
+	score_label.add_theme_font_size_override("font_size",36)
+	# The box being filled is the objective right now, so it gets its own sun-yellow pill.
+	var objective := NestTheme.pill("",18)
+	(objective.get_theme_stylebox("panel") as StyleBoxFlat).bg_color = NestTheme.SUN
+	objective.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	middle.add_child(objective)
+	box_label = objective.get_child(0)
+	toss_flash_label = NestTheme.headline("",20,NestTheme.SUN)
+	toss_flash_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	toss_flash_label.modulate.a = 0
+	middle.add_child(toss_flash_label)
+	streak_pill = NestTheme.pill("",16)
+	streak_pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	streak_pill.hide()
+	middle.add_child(streak_pill)
+	content.remove_child(next_card)
+	next_card.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	next_card.custom_minimum_size.x = TOSS_SIDE
+	next_card.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	next_card.add_theme_stylebox_override("panel",_slim_card())
+	row.add_child(next_card)
+
+## The HUD's cream card with just enough padding for the narrow Toss columns.
+func _slim_card() -> StyleBoxFlat:
+	var style := NestTheme.box(NestTheme.CREAM,22,NestTheme.INK,6)
+	style.content_margin_left = 6
+	style.content_margin_right = 6
+	style.content_margin_top = 6
+	return style
 
 ## The claw scheme: a column down one side of the screen (right, or left for left-handed play)
 ## with the move stick on top, Drop in the middle and the spin stick below. Each stick tracks its
@@ -366,6 +497,39 @@ func _build_claw_controls() -> void:
 	hint_pill.offset_top = 136
 	content.add_child(hint_pill)
 
+## Kinu Toss's own controls: a wide aim box that swings an arrow to the throw direction, and a
+## Fire button beside it that charges on hold and lets go on release. Both sit low on screen, in
+## easy reach of one thumb, so lining up a throw never asks for two hands.
+func _build_toss_controls() -> void:
+	var row := HBoxContainer.new()
+	row.name = "TossControls"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	row.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	row.offset_left = 16
+	row.offset_right = -16
+	row.offset_bottom = -40
+	row.add_theme_constant_override("separation",12)
+	content.add_child(row)
+	var aim_box := TossAimBox.new()
+	aim_box.run = run
+	aim_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(aim_box)
+	var power_meter := TossPowerMeter.new()
+	power_meter.run = run
+	power_meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(power_meter)
+	var fire_button := TossFireButton.new()
+	fire_button.run = run
+	fire_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(fire_button)
+	hint_pill = NestTheme.pill("Drag to aim  ·  hold Fire to launch",18)
+	hint_pill.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	hint_pill.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hint_pill.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	hint_pill.offset_bottom = -2
+	content.add_child(hint_pill)
+
 func _hud_update() -> void:
 	if page != "play" or not is_instance_valid(score_label):
 		return
@@ -374,12 +538,18 @@ func _hud_update() -> void:
 			score_label.text = KinuFlavour.height_text(run.score)
 			best_label.text = tr("Best %s")%KinuFlavour.height_text(NestRun.best_for("tower"))
 			height_label.text = tr("%d Kinu")%run.pile_count()
-		"rush":
+		"toss":
 			score_label.text = _number(run.score)
-			best_label.text = tr("Best %s")%_number(NestRun.best_for("rush"))
+			best_label.text = tr("Best %s")%_number(NestRun.best_for("toss"))
+			if is_instance_valid(run.toss):
+				box_label.text = tr("Box %d  ·  %d / %d")%[run.toss.box_index+1, run.toss.box_kinu, run.toss.box_quota]
+				streak_pill.visible = run.streak >= 2
+				(streak_pill.get_child(0) as Label).text = tr("Streak ×%s")%str(snappedf(run.toss.multiplier, .1)).trim_suffix(".0")
 		_:
 			score_label.text = _number(run.score)
-			best_label.text = tr("Best %s")%_number(Save.data.best)
+			# Same accessor the results screen snapshots, so the target named during a run and the
+			# one it is judged against afterwards can never come from different places.
+			best_label.text = tr("Best %s")%_number(NestRun.best_for(run.mode))
 	tumble_meter.used = run.tumbles
 	if is_instance_valid(bottle_button):
 		bottle_button.text = "×%d"%run.squirts
@@ -388,20 +558,13 @@ func _hud_update() -> void:
 	if is_instance_valid(drop_button):
 		drop_button.text = tr("Squirt") if run.aim_mode == "bottle" else tr("Drop")
 		drop_button.disabled = run.state != "aim"
-	if is_instance_valid(ship_button):
-		ship_button.visible = run.can_ship()
-	if run.lid_mode():
-		# What matters while packing is how full this box is, not how tall the pile got.
-		height_label.text = tr("%d / %d packed")%[run.packed_count(),run.pack_target()]
-	elif run.mode == "classic":
+	if run.mode == "classic":
 		height_label.text = KinuFlavour.height_text(NestRun.height_cm(run.tower_height))
-	if is_instance_valid(timer_pill):
-		var tosses := int(run.time_left)
-		var toss_label: Label = timer_pill.get_child(0)
-		toss_label.text = tr("%d tosses")%tosses
-		toss_label.add_theme_color_override("font_color",Color("e0463a") if tosses <= 3 else NestTheme.INK)
-		(box_pill.get_child(0) as Label).text = tr("Bento %d  ·  %d / %d")%[run.boxes_shipped+1, mini(run.pile_count(),NestRun.RUSH_BOX_TARGET), NestRun.RUSH_BOX_TARGET]
 	hint_pill.visible = run.placed < 3 and run.state == "aim" and tutorial_step < 0
+	_next_card()
+
+## The card in the top corner showing the Kinu queued up next.
+func _next_card() -> void:
 	for child in next_slot.get_children():
 		next_slot.remove_child(child)
 		child.queue_free()
@@ -425,9 +588,16 @@ func _hud_update() -> void:
 		name_label.clip_text = true
 		name_label.custom_minimum_size.x = 100
 		name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		if run.mode == "toss":
+			name_label.clip_text = false
+			name_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			name_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 
 func _toast(text: String, color: Color) -> void:
 	if page != "play":
+		return
+	if is_instance_valid(run) and run.mode == "toss" and is_instance_valid(toss_flash_label):
+		_flash_objective(text, color)
 		return
 	if toast_tween and toast_tween.is_valid():
 		toast_tween.kill()
@@ -446,6 +616,21 @@ func _toast(text: String, color: Color) -> void:
 	toast_tween.tween_property(toast_panel,"scale",Vector2.ONE,.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	toast_tween.tween_interval(1.6)
 	toast_tween.tween_property(toast_panel,"modulate:a",0.0,.4)
+
+## Kinu Toss's own message display: a flash of text right under the objective pill, instead of
+## the usual toast, since that pill sits over the mat and box the player is aiming at.
+func _flash_objective(text: String, color: Color) -> void:
+	if toss_flash_tween and toss_flash_tween.is_valid():
+		toss_flash_tween.kill()
+	toss_flash_label.text = text
+	toss_flash_label.add_theme_color_override("font_color",color.lightened(.2))
+	toss_flash_label.pivot_offset = toss_flash_label.size*.5
+	toss_flash_label.scale = Vector2(.7,.7)
+	toss_flash_label.modulate.a = 1
+	toss_flash_tween = create_tween()
+	toss_flash_tween.tween_property(toss_flash_label,"scale",Vector2.ONE,.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	toss_flash_tween.tween_interval(1.3)
+	toss_flash_tween.tween_property(toss_flash_label,"modulate:a",0.0,.35)
 
 ## Page header: one wooden sign contains both navigation and a title centred across the page.
 func _header(title: String, callback: Callable = _home) -> VBoxContainer:
@@ -470,6 +655,7 @@ func _header(title: String, callback: Callable = _home) -> VBoxContainer:
 		Sound.play("plop")
 		callback.call()
 	)
+	back.name = "Back"
 	back.mouse_filter = Control.MOUSE_FILTER_STOP
 	back.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	back.position = Vector2.ZERO
@@ -521,6 +707,7 @@ func _show_shop() -> void:
 	KinuShopScreen.show(self)
 
 func _bean_shop(section: String = "beans") -> void:
+	Analytics.track("shop_opened", {"section": section})
 	Sound.play("cashregister")
 	if page == "shop":
 		bean_shop_back = _show_shop
@@ -588,8 +775,9 @@ func _pause() -> void:
 	NestMenuScreen.pause(self)
 
 func _results(stats: Dictionary) -> void:
+	Analytics.run_finished(stats)
 	var mode := str(stats.get("mode","classic"))
-	if mode in ["classic", "tower"]:
+	if mode in GameCenterService.LEADERBOARD_IDS:
 		game_center.submit_score(mode, int(stats.get("score", 0)))
 	NestMenuScreen.results(self, stats)
 	show_ad_after_run()
@@ -667,6 +855,7 @@ func _tutorial_action(action: String) -> void:
 		_tutorial_refresh()
 
 func _finish_tutorial() -> void:
+	Analytics.track("tutorial_completed")
 	Save.setting("tutorial",true)
 	tutorial_step = -1
 	_hud_update()
@@ -682,6 +871,8 @@ func _notification(what: int) -> void:
 		get_tree().quit()
 	elif what == NOTIFICATION_APPLICATION_PAUSED and page=="play":
 		_pause()
+	elif what == NOTIFICATION_APPLICATION_RESUMED and game_center:
+		game_center.fetch_cloud_save()
 	elif what == NOTIFICATION_WM_GO_BACK_REQUEST:
 		if page=="play":
 			_pause()
@@ -748,8 +939,8 @@ func setup_admob() -> void:
 	ads.consent_form_failed_to_load.connect(func(error_data: Variant) -> void:
 		push_warning("[Ads] Consent form load failed: %s" % error_data.get_message())
 		_continue_ads_after_consent(ads))
-	print("[Ads] Updating consent; real ad units: %s" % admob_is_real)
-	ads.update_consent_info()
+	print("[Ads] Requesting ATT before consent")
+	ads.request_tracking_authorization()
 
 ## StoreKit can grant Remove Ads while the app is already running. AdMob banners
 ## live outside Godot's canvas, so changing the saved entitlement alone does not
@@ -798,16 +989,9 @@ func _continue_ads_after_consent(ads: Admob) -> void:
 		ads.remove_meta("consent_retry_pending")
 		ads.update_consent_info()
 		return
-	if ads.has_meta("tracking_requested"): return
-	ads.set_meta("tracking_requested", true)
-	print("[Ads] Consent resolved; requesting ATT when iOS is active")
-	ads.request_tracking_authorization()
-
-func _on_ads_tracking_resolved(ads: Admob, authorized: bool) -> void:
-	if not _ads_session_active(ads) or not ads.can_request_ads(): return
 	if ads.has_meta("sdk_start_requested"): return
 	ads.set_meta("sdk_start_requested", true)
-	print("[Ads] ATT resolved (authorized: %s); starting ads" % authorized)
+	print("[Ads] Consent resolved; starting ads")
 	# The native singleton outlives an Admob node (for example, a restored
 	# purchase can remove that node). Reuse an already initialized SDK.
 	if ads.is_sdk_initialized():
@@ -816,6 +1000,12 @@ func _on_ads_tracking_resolved(ads: Admob, authorized: bool) -> void:
 		_load_initial_ads(ads)
 	else:
 		ads.initialize()
+
+func _on_ads_tracking_resolved(ads: Admob, authorized: bool) -> void:
+	if not _ads_session_active(ads) or ads.has_meta("tracking_resolved"): return
+	ads.set_meta("tracking_resolved", true)
+	print("[Ads] ATT resolved (authorized: %s); updating consent; real ad units: %s" % [authorized, admob_is_real])
+	ads.update_consent_info()
 
 func _load_initial_ads(ads: Admob) -> void:
 	if not _ads_session_active(ads) or not ads.can_request_ads(): return

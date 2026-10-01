@@ -1629,3 +1629,1502 @@ msgstr "新的最高紀錄！"
 
 msgid "Tickets won"
 msgstr "獲得的代幣"
+
+# Monthly Showcase
+
+msgid "January"
+msgstr "1月"
+
+msgid "February"
+msgstr "2月"
+
+msgid "March"
+msgstr "3月"
+
+msgid "April"
+msgstr "4月"
+
+msgid "May"
+msgstr "5月"
+
+msgid "June"
+msgstr "6月"
+
+msgid "July"
+msgstr "7月"
+
+msgid "August"
+msgstr "8月"
+
+msgid "September"
+msgstr "9月"
+
+msgid "October"
+msgstr "10月"
+
+msgid "November"
+msgstr "11月"
+
+msgid "December"
+msgstr "12月"
+
+msgid "Jan"
+msgstr "1月"
+
+msgid "Feb"
+msgstr "2月"
+
+msgid "Mar"
+msgstr "3月"
+
+msgid "Apr"
+msgstr "4月"
+
+msgid "Jun"
+msgstr "6月"
+
+msgid "Jul"
+msgstr "7月"
+
+msgid "Aug"
+msgstr "8月"
+
+msgid "Sep"
+msgstr "9月"
+
+msgid "Oct"
+msgstr "10月"
+
+msgid "Nov"
+msgstr "11月"
+
+msgid "Dec"
+msgstr "12月"
+
+msgid "{month} {year}"
+msgstr "{year}年{month}"
+
+msgid "{day} {month}"
+msgstr "{month}{day}日"
+
+msgid "{start}–{end} {month}"
+msgstr "{month}{start}–{end}日"
+
+msgid "%s SHOWCASE"
+msgstr "%s精選"
+
+msgid "MONTHLY SHOWCASE"
+msgstr "每月精選"
+
+msgid "NEW THIS MONTH!"
+msgstr "本月新登場！"
+
+msgid "THIS MONTH'S EXCLUSIVE"
+msgstr "本月限定"
+
+msgid "EARNED THIS MONTH!"
+msgstr "本月已獲得！"
+
+msgid "Showcase exclusive"
+msgstr "精選限定"
+
+msgid "Showcase"
+msgstr "精選"
+
+msgid "Kinu outfit"
+msgstr "小絹服裝"
+
+msgid "Box"
+msgstr "盒子"
+
+msgid "Room"
+msgstr "場景"
+
+msgid "Never sold in the Shop or found in the Kinu Claw."
+msgstr "不會在商店或小絹夾爪出現。"
+
+msgid "WEEK %d"
+msgstr "第 %d 週"
+
+msgid "DONE"
+msgstr "完成"
+
+msgid "NOW"
+msgstr "進行中"
+
+msgid "MISSED"
+msgstr "錯過"
+
+msgid "SOON"
+msgstr "即將開始"
+
+msgid "THIS WEEK'S CHALLENGE"
+msgstr "本週挑戰"
+
+msgid "%d / %d weeks"
+msgstr "%d / %d 週"
+
+msgid "Last day!"
+msgstr "最後一天！"
+
+msgid "%d days left"
+msgstr "剩 %d 天"
+
+msgid "Finish all %d to win it. Each one also pays beans and a claw ticket."
+msgstr "完成全部 %d 週即可獲得。每週也會給豆子和夾爪代幣。"
+
+msgid "DONE FOR THIS WEEK"
+msgstr "本週完成！"
+
+msgid "Week %d's challenge opens on %s."
+msgstr "第 %d 週的挑戰將於%s開始。"
+
+msgid "MISSED A WEEK"
+msgstr "錯過了一週"
+
+msgid "A week closed unfinished, so %s can't be earned this month. Next month's showcase starts on the 1st."
+msgstr "有一週沒完成挑戰，本月無法獲得%s。下個月的精選活動將於1號開始。"
+
+msgid "SHOWCASE COMPLETE"
+msgstr "精選達成"
+
+msgid "SHOWCASE COMPLETE!"
+msgstr "精選達成！"
+
+msgid "%s is yours. A new showcase arrives on the 1st."
+msgstr "%s 已到手！1號推出新的精選活動。"
+
+msgid "LET'S GO!"
+msgstr "出發吧！"
+
+msgid "A new showcase starts on the 1st of every month."
+msgstr "每月1號推出新的精選活動。"
+
+msgid "No showcase this month. Check back on the 1st!"
+msgstr "本月沒有精選活動，1號再來看看吧！"
+
+msgid "Earned!"
+msgstr "已獲得！"
+
+msgid "Missed"
+msgstr "錯過"
+
+msgid "Coming in the %s Monthly Showcase. Finish that month's weekly challenges to earn it."
+msgstr "將在%s每月精選登場。完成該月的每週挑戰即可獲得。"
+
+msgid "This month's Showcase reward. Finish every weekly challenge in %s to earn it."
+msgstr "本月精選獎勵。完成%s的所有每週挑戰即可獲得。"
+
+msgid "The %s Monthly Showcase reward. It isn't sold in the Shop or found in the Kinu Claw."
+msgstr "%s每月精選獎勵。商店和小絹夾爪都無法獲得。"
+
+msgid "WEEKLY CHALLENGE"
+msgstr "每週挑戰"
+
+msgid "The new weekly challenge opens when the server resets. Check back shortly."
+msgstr "新的每週挑戰會在伺服器重置後開放。請稍後再查看。"
+
+msgid "Land %d Kinu this week"
+msgstr "本週放上 %d 個小絹"
+
+msgid "Play %d runs this week"
+msgstr "本週玩 %d 局"
+
+msgid "Finish %d clean runs this week"
+msgstr "本週完成 %d 局零掉落"
+
+msgid "Glaze %d Kinu with shoyu this week"
+msgstr "本週為 %d 個小絹淋上醬油"
+
+msgid "Play for %d minutes this week"
+msgstr "本週玩 %d 分鐘"
+
+msgid "Spin the box %d full turns this week"
+msgstr "本週把盒子轉 %d 圈"
+
+# Daily Treats and catalogue text
+
+msgid "DAILY TREATS"
+msgstr "每日獎勵"
+
+msgid "★  7 DAYS · 7 PRIZES  ★"
+msgstr "★  7天・7份獎勵  ★"
+
+msgid "DAY %d OF 7"
+msgstr "第 %d 天 / 共 7 天"
+
+msgid "DAY %d"
+msgstr "第 %d 天"
+
+msgid "TODAY'S TREAT"
+msgstr "今日獎勵"
+
+msgid "COLLECTED TODAY"
+msgstr "今日已領取"
+
+msgid "+%d BEANS"
+msgstr "豆子 +%d"
+
+msgid "1 CLAW TICKET"
+msgstr "夾爪代幣 1 枚"
+
+msgid "%d CLAW TICKETS"
+msgstr "夾爪代幣 %d 枚"
+
+msgid "CLAW TREASURE"
+msgstr "夾爪寶物"
+
+msgid "★  TODAY · GRAND PRIZE  ★"
+msgstr "★  今天・大獎  ★"
+
+msgid "★  DAY 7 · GRAND PRIZE  ★"
+msgstr "★  第 7 天・大獎  ★"
+
+msgid "Kinu Claw Treasure"
+msgstr "小絹夾爪寶物"
+
+msgid "A cosmetic only the claw can drop."
+msgstr "只有夾爪才會掉落的裝扮。"
+
+msgid "Collected — back to Day 1 tomorrow!"
+msgstr "已領取 — 明天從第 1 天開始！"
+
+msgid "CLAIM MY TREAT!"
+msgstr "領取獎勵！"
+
+msgid "CHECKING…"
+msgstr "確認中…"
+
+msgid "See you tomorrow!"
+msgstr "明天見！"
+
+msgid "Maybe later"
+msgstr "等等再說"
+
+msgid "Miss a day and the calendar restarts at Day 1."
+msgstr "只要漏掉一天，就會從第 1 天重新開始。"
+
+msgid "NEXT TREAT IN"
+msgstr "距離下個獎勵"
+
+msgid "NEXT TREAT"
+msgstr "下個獎勵"
+
+msgid "Next treat in %s"
+msgstr "距離下個獎勵 %s"
+
+msgid "Today's treat is ready!"
+msgstr "今日獎勵已送達！"
+
+msgid "DAILY TREAT READY"
+msgstr "每日獎勵已送達"
+
+msgid "Claim it!"
+msgstr "快領取！"
+
+msgid "Tap to open your reward"
+msgstr "點一下打開獎勵"
+
+msgid "Come back for your next treat"
+msgstr "下個獎勵也別錯過"
+
+msgid "A little prize is waiting!"
+msgstr "小小獎勵正在等你！"
+
+msgid "TREAT READY!"
+msgstr "獎勵到了！"
+
+msgid "Couldn't check your daily treat. Please try again while online."
+msgstr "無法確認每日獎勵，請在連線狀態下再試一次。"
+
+msgid "Kinu's everyday shape. Sturdy on every side."
+msgstr "小絹的日常模樣，每一面都穩穩的。"
+
+msgid "A flat, sleepy Kinu. The best base there is."
+msgstr "扁扁又想睡的小絹，最棒的底座。"
+
+msgid "Stretched out for a nap. Great for bridging gaps."
+msgstr "伸長身子睡午覺，最適合填補空隙。"
+
+msgid "Standing up proud. Saves space, but wobbles."
+msgstr "驕傲地站著，很省空間，但會搖搖晃晃。"
+
+msgid "Rolled into a ball. Loves to roll away."
+msgstr "縮成一顆球，最愛滾來滾去。"
+
+msgid "A mischievous forest spirit costume, tail included."
+msgstr "調皮森林精靈裝，附尾巴。"
+
+msgid "Soft, floppy ears for extra-snuggly hops."
+msgstr "軟軟垂耳，蹦蹦跳跳好療癒。"
+
+msgid "Tiny wings for a moonlit flutter."
+msgstr "在月光下拍動的小翅膀。"
+
+msgid "A clever bushy tail, always up to something."
+msgstr "聰明的蓬鬆尾巴，總在打什麼主意。"
+
+msgid "Cool, damp, and ready to leap."
+msgstr "涼涼濕濕，隨時準備跳躍。"
+
+msgid "A single leaf cap. Autumn's simplest gift."
+msgstr "一片葉子帽，秋天最簡單的禮物。"
+
+msgid "A tiny hat and an eyepatch for high-seas snacking."
+msgstr "小帽子配眼罩，航海吃點心。"
+
+msgid "Silent, stealthy, and sworn to protect the box."
+msgstr "無聲無息，誓死守護盒子。"
+
+msgid "Round, black-and-white, and endlessly huggable."
+msgstr "圓滾滾黑白配，怎麼抱都抱不夠。"
+
+msgid "Spiky and prehistoric, but still very cuddly."
+msgstr "尖刺刺的史前生物，但還是很好抱。"
+
+msgid "A snug little helmet for space-bound snacking."
+msgstr "合身的小頭盔，帶著點心去太空。"
+
+msgid "A friendly boo under a floaty sheet."
+msgstr "飄飄床單下，友善地「哇！」一聲。"
+
+msgid "All fin, no bite. Promise."
+msgstr "只有魚鰭，不會咬人，保證。"
+
+msgid "Sweet, red, and freckled with seeds."
+msgstr "甜甜紅紅，點綴著小籽。"
+
+msgid "Bold stripes for a fierce little roar."
+msgstr "大膽的條紋，小小聲地吼一下。"
+
+msgid "Curled horns and a proud little tail."
+msgstr "捲捲的角，還有驕傲的小尾巴。"
+
+msgid "A warm woodgrain finish, carved with care."
+msgstr "用心雕刻的溫暖木紋。"
+
+msgid "Cool swirls of stone, polished smooth."
+msgstr "磨得光滑的冰涼石紋。"
+
+msgid "Faceted and glinting like cut glass."
+msgstr "像切割玻璃一樣閃閃發亮。"
+
+msgid "A little pocket of starlight, swirled in."
+msgstr "把一小口星光捲了進去。"
+
+msgid "Gleaming and precious, fit for a treasure box."
+msgstr "閃亮珍貴，最適合寶箱。"
+
+msgid "Plain cypress wood, warm and simple."
+msgstr "樸素溫暖的檜木。"
+
+msgid "Woven slats that smell faintly of rice."
+msgstr "淡淡飄著米香的竹編蒸籠。"
+
+msgid "Glossy red lacquer, polished to a mirror shine."
+msgstr "磨得像鏡子一樣光亮的朱紅漆器。"
+
+msgid "Painted with drifting cherry blossom petals."
+msgstr "畫滿飄落的櫻花花瓣。"
+
+msgid "Cool, solid stone, worn smooth over time."
+msgstr "歲月磨圓的冰涼堅石。"
+
+msgid "Gilded edges fit for a treasure hoard."
+msgstr "鑲金邊，適合裝滿寶藏。"
+
+msgid "The cosy little shop where it all began."
+msgstr "一切開始的溫馨小店。"
+
+msgid "Lanterns and stalls, glowing long after sundown."
+msgstr "日落後依然明亮的燈籠與攤位。"
+
+msgid "A frosty hush and a blanket of fresh snow."
+msgstr "寂靜的霜寒，覆上一層新雪。"
+
+msgid "A lane lined with blossoms, petals drifting on the breeze."
+msgstr "花瓣隨風飄落的櫻花小巷。"
+
+msgid "Fresh from the shell, still a little wobbly."
+msgstr "剛破殼而出，還有點搖搖晃晃。"
+
+msgid "Wrapped up snug, ready to be delivered with love."
+msgstr "包得緊緊的，準備帶著愛送達。"
+
+msgid "A tiny towel for a well-earned soak."
+msgstr "辛苦後泡湯用的小毛巾。"
+
+msgid "A neat little rice pillow, nori sash and all."
+msgstr "繫上海苔腰帶的整齊小飯枕。"
+
+msgid "Buzzing stripes and see-through little wings."
+msgstr "嗡嗡條紋配上透明小翅膀。"
+
+msgid "Round, lucky, and always bouncing back."
+msgstr "圓圓的很吉利，跌倒了總會站起來。"
+
+msgid "A cheerful octopus cap with dangling little legs."
+msgstr "垂著小腳的開心章魚帽。"
+
+msgid "A river spirit's dish-shaped cap, kept nice and damp."
+msgstr "保持濕潤的河童盤子帽。"
+
+msgid "A humble woven basket, sturdy and simple."
+msgstr "樸素又結實的編織籃。"
+
+msgid "Peppermint stripes, sweet enough to lick."
+msgstr "甜到想舔一口的薄荷條紋。"
+
+msgid "Ribboned shut, like a present waiting to be opened."
+msgstr "綁上緞帶，等著被打開的禮物。"
+
+msgid "Stacked lacquered tiers for a New Year's feast."
+msgstr "新年大餐用的層層漆器便當盒。"
+
+msgid "Cool and glassy, like it was carved from a glacier."
+msgstr "冰涼透亮，彷彿從冰川雕出來。"
+
+msgid "Buzzing with electric colour, straight off the arcade floor."
+msgstr "從遊樂場直送的電光色彩。"
+
+msgid "Tall green stalks swaying in a gentle hush."
+msgstr "高高的青竹在寧靜中搖曳。"
+
+msgid "Red leaves settling over old wooden eaves."
+msgstr "紅葉輕輕落在古老的木屋簷上。"
+
+msgid "Steam rising off a warm, mineral-scented bath."
+msgstr "溫暖的溫泉上冒著熱氣。"
+
+msgid "Paper lanterns, drumbeats, and the smell of grilled snacks."
+msgstr "紙燈籠、太鼓聲，還有烤小吃的香味。"
+
+msgid "A quiet platform for watching the full moon rise."
+msgstr "靜靜欣賞滿月升起的賞月台。"
+
+msgid "A skyline glowing pink and blue after dark."
+msgstr "入夜後閃耀粉紅與藍光的天際線。"
+
+msgid "Nine tails' worth of old, playful magic."
+msgstr "九條尾巴份量的古老調皮魔法。"
+
+msgid "Feathers that glow like the last embers of a fire."
+msgstr "像餘燼般發光的羽毛。"
+
+msgid "A single spiralled horn and a shimmering mane."
+msgstr "一根螺旋角配上閃亮鬃毛。"
+
+msgid "One paw raised, calling good fortune your way."
+msgstr "舉起一隻爪，把好運招過來。"
+
+msgid "A small suit of armour, worn with quiet pride."
+msgstr "帶著沉穩驕傲穿上的小盔甲。"
+
+msgid "Rippling scales in the colours of a garden pond."
+msgstr "閃著庭園池塘色彩的粼粼魚鱗。"
+
+msgid "Frilly gills and a permanent, gummy smile."
+msgstr "荷葉邊鰓和永遠的憨笑。"
+
+msgid "A sash-tied robe patterned for a festival stroll."
+msgstr "繫上腰帶、適合逛祭典的和服。"
+
+msgid "Small horns and a grin that's more mischief than menace."
+msgstr "小角配上比起嚇人更像調皮的笑容。"
+
+msgid "Unbothered, citrus-scented, and perfectly zen."
+msgstr "什麼都不在意，帶著柚子香的完美禪意。"
+
+msgid "Baby Chick"
+msgstr "小雞寶寶"
+
+msgid "Shiba Pup"
+msgstr "柴犬寶寶"
+
+msgid "Calico Kitty"
+msgstr "三花貓"
+
+msgid "Honey Bear"
+msgstr "蜂蜜熊"
+
+msgid "Hamster"
+msgstr "倉鼠"
+
+msgid "Baby Penguin"
+msgstr "企鵝寶寶"
+
+msgid "Duckling"
+msgstr "小鴨"
+
+msgid "Mochi Seal"
+msgstr "麻糬海豹"
+
+msgid "Little Otter"
+msgstr "小水獺"
+
+msgid "Red Panda"
+msgstr "小熊貓"
+
+msgid "Mushroom Cap"
+msgstr "蘑菇帽"
+
+msgid "Peachy"
+msgstr "桃桃"
+
+msgid "Lemon Drop"
+msgstr "檸檬糖"
+
+msgid "Cupcake"
+msgstr "杯子蛋糕"
+
+msgid "Purin Pudding"
+msgstr "布丁"
+
+msgid "Boba Tea"
+msgstr "珍珠奶茶"
+
+msgid "Melonpan"
+msgstr "菠蘿麵包"
+
+msgid "Sprinkle Donut"
+msgstr "彩糖甜甜圈"
+
+msgid "Marshmallow"
+msgstr "棉花糖"
+
+msgid "Taiyaki"
+msgstr "鯛魚燒"
+
+msgid "Tiny Cloud"
+msgstr "小雲朵"
+
+msgid "Twinkle Star"
+msgstr "閃閃星"
+
+msgid "Sleepy Moon"
+msgstr "睏睏月亮"
+
+msgid "Sunflower"
+msgstr "向日葵"
+
+msgid "Daisy Chain"
+msgstr "雛菊花圈"
+
+msgid "Tiny Sailor"
+msgstr "小水手"
+
+msgid "Puddle Pal"
+msgstr "水窪小夥伴"
+
+msgid "Berry Overalls"
+msgstr "莓果吊帶褲"
+
+msgid "Little Artist"
+msgstr "小畫家"
+
+msgid "Sleepy Cap"
+msgstr "睡帽"
+
+msgid "Downy yellow fluff, fresh out of the nest."
+msgstr "剛離巢的黃色絨毛。"
+
+msgid "A curled tail and the world's proudest grin."
+msgstr "捲捲尾巴，世界上最得意的笑容。"
+
+msgid "Patchwork fur and a whole lot of purring."
+msgstr "拼布般的毛色和滿滿的呼嚕聲。"
+
+msgid "Sticky-pawed and always sniffing out something sweet."
+msgstr "爪子黏黏的，總在嗅著甜食。"
+
+msgid "Cheeks stuffed full, just in case."
+msgstr "以防萬一，臉頰塞得滿滿的。"
+
+msgid "A waddly little tuxedo, fresh off the ice."
+msgstr "剛從冰上走來的搖擺小燕尾服。"
+
+msgid "Soft yellow down and a very determined waddle."
+msgstr "柔軟黃絨毛，走得搖搖擺擺卻很堅定。"
+
+msgid "Round, smooth, and built entirely for flopping."
+msgstr "圓圓滑滑，天生就是用來躺平的。"
+
+msgid "A floaty little paddler with a taste for snacks."
+msgstr "愛吃點心的漂浮划水小高手。"
+
+msgid "A rusty coat and a tail made for wrapping up warm."
+msgstr "鏽紅色毛皮，尾巴正好拿來保暖。"
+
+msgid "A speckled forest-floor cap, sprouted overnight."
+msgstr "一夜之間冒出來的斑點森林蘑菇帽。"
+
+msgid "Blushed pink and irresistibly soft."
+msgstr "泛著粉紅，軟得讓人受不了。"
+
+msgid "Zesty, sunny, and a little bit sour."
+msgstr "清爽明亮，還帶點微酸。"
+
+msgid "Frosted on top with a cherry for good measure."
+msgstr "頂上抹滿糖霜，再加一顆櫻桃。"
+
+msgid "Wobbly, caramel-topped, and endlessly jiggly."
+msgstr "淋上焦糖，一直抖個不停。"
+
+msgid "Milky sweetness with tapioca pearls sinking to the bottom."
+msgstr "香甜奶味，珍珠沉在杯底。"
+
+msgid "A crackly sugar crust over a soft, sweet bun."
+msgstr "酥脆糖皮包著鬆軟香甜的麵包。"
+
+msgid "Glazed, ringed, and scattered with sprinkles."
+msgstr "亮晶晶的圈圈，撒滿彩色糖粒。"
+
+msgid "Pillowy soft and ready for the campfire."
+msgstr "像枕頭一樣鬆軟，準備好去營火旁。"
+
+msgid "A warm fish-shaped cake, filled with something sweet."
+msgstr "包著甜餡、熱呼呼的魚形點心。"
+
+msgid "A puff of soft, drifting sky."
+msgstr "一團輕輕飄動的柔軟天空。"
+
+msgid "A little points-and-all night-sky sparkle."
+msgstr "連尖角都閃閃發亮的夜空小星光。"
+
+msgid "A crescent cap for the drowsiest of Kinu."
+msgstr "給最想睡的小絹戴的新月帽。"
+
+msgid "Bright petals that always face the light."
+msgstr "永遠朝著光的明亮花瓣。"
+
+msgid "A ring of little white blooms, woven by hand."
+msgstr "親手編成的小白花圈。"
+
+msgid "A crisp collar and cap for smooth sailing."
+msgstr "筆挺的領子和帽子，一帆風順。"
+
+msgid "A cheerful yellow slicker for splashing through puddles."
+msgstr "踩水窪用的開心黃色雨衣。"
+
+msgid "Cosy dungarees with a pocketful of berries."
+msgstr "口袋裝滿莓果的舒適吊帶褲。"
+
+msgid "A paint-splattered smock and a beret, tilted just so."
+msgstr "沾滿顏料的畫袍，配上斜斜的貝雷帽。"
+
+msgid "A soft nightcap for the cosiest of naps."
+msgstr "最舒服的午睡要戴的柔軟睡帽。"
+
+msgid "Magical Kinu"
+msgstr "魔法小絹"
+
+msgid "Moon Princess"
+msgstr "月亮公主"
+
+msgid "Candy Witch"
+msgstr "糖果女巫"
+
+msgid "Celestial Bunny"
+msgstr "星空兔"
+
+msgid "Sakura Deer"
+msgstr "櫻花鹿"
+
+msgid "Frog Prince"
+msgstr "青蛙王子"
+
+msgid "Pastel Dragon"
+msgstr "粉彩龍"
+
+msgid "Snow Fox"
+msgstr "雪狐"
+
+msgid "Dream Jellyfish"
+msgstr "夢幻水母"
+
+msgid "Kinu Fairy"
+msgstr "小絹精靈"
+
+msgid "A sparkling bow and a wand full of wishes."
+msgstr "閃亮蝴蝶結和裝滿願望的魔杖。"
+
+msgid "A silvery gown fit for ruling the night sky."
+msgstr "足以統治夜空的銀色禮服。"
+
+msgid "A pointed hat stitched from spun sugar."
+msgstr "用棉花糖縫成的尖帽子。"
+
+msgid "Starlit ears that shimmer under a midnight sky."
+msgstr "在午夜星空下閃耀的星光耳朵。"
+
+msgid "Little antlers dusted in drifting cherry blossom."
+msgstr "沾著飄落櫻花的小鹿角。"
+
+msgid "A tiny crown, just in case that kiss works."
+msgstr "小小王冠，以防那個吻真的有效。"
+
+msgid "A candy-coloured dragon, all softness and no fire."
+msgstr "糖果色的龍，軟綿綿又不噴火。"
+
+msgid "A frost-white coat, silent as falling snow."
+msgstr "像落雪般安靜的霜白毛皮。"
+
+msgid "Trailing tendrils that glow like a lullaby."
+msgstr "像搖籃曲般發光的飄逸觸手。"
+
+msgid "Gossamer wings and a sprinkle of pixie dust."
+msgstr "薄紗翅膀，再撒一點精靈粉。"
+
+msgid "Builder Helmet"
+msgstr "工地安全帽"
+
+msgid "Balance Pole"
+msgstr "平衡桿"
+
+msgid "Shoyu Chef"
+msgstr "醬油主廚"
+
+msgid "Festival Yukata"
+msgstr "祭典浴衣"
+
+msgid "Mountain Climber"
+msgstr "登山家"
+
+msgid "Lucky Charm"
+msgstr "幸運御守"
+
+msgid "A bright hard hat and reflective vest for Kinu who mean business."
+msgstr "給認真小絹的亮色安全帽和反光背心。"
+
+msgid "A cheerful performer’s sash and a pole for improbable stacks."
+msgstr "開心的特技表演腰帶，配上用來疊出奇蹟的長桿。"
+
+msgid "A tall chef’s toque for a true master of sticky stacking."
+msgstr "給黏黏疊疊真正大師的高高主廚帽。"
+
+msgid "A midnight-blue summer robe with hanabi across the cloth."
+msgstr "布料上綻放煙火的深夜藍夏日浴衣。"
+
+msgid "A red beanie, tiny pack and plenty of summit spirit."
+msgstr "紅毛帽、小背包，滿滿的登頂精神。"
+
+msgid "A little bell and golden star charms for fortunate Kinu."
+msgstr "給幸運小絹的小鈴鐺和金星御守。"
+
+msgid "Jelly Cube"
+msgstr "果凍方塊"
+
+msgid "Rose Delight"
+msgstr "玫瑰軟糖"
+
+msgid "Chocolate Square"
+msgstr "巧克力磚"
+
+msgid "Burger Stack"
+msgstr "漢堡塔"
+
+msgid "Joyful Snack Box"
+msgstr "歡樂點心盒"
+
+msgid "Sunny Sea Sponge"
+msgstr "陽光海綿"
+
+msgid "Bread Loaf"
+msgstr "吐司"
+
+msgid "Bouncy, wobbly, and topped with a glossy jelly dome."
+msgstr "Q彈晃動，頂著亮晶晶的果凍圓頂。"
+
+msgid "A soft pink sweet dusted in fragrant rose sugar."
+msgstr "撒上芬芳玫瑰糖的粉紅軟糖。"
+
+msgid "Six neat little chocolate tiles, ready to snap apart."
+msgstr "六塊整齊小巧克力，隨時可以掰開。"
+
+msgid "A sesame bun, leafy lettuce and a very tidy patty."
+msgstr "芝麻麵包、生菜，還有一塊很整齊的肉排。"
+
+msgid "A bright little takeaway box with a fry-shaped crown."
+msgstr "戴著薯條王冠的鮮豔外帶盒。"
+
+msgid "A porous yellow friend in square trousers and a tiny red tie."
+msgstr "穿方形褲子、打小紅領帶的多孔黃色朋友。"
+
+msgid "A warm crust, soft centre and three fresh-baked score marks."
+msgstr "溫熱外皮、鬆軟內裡，還有三道剛烤好的刀痕。"
+
+msgid "Cracks mended in gold, more beautiful for the break."
+msgstr "用金修補裂痕，破碎後更美麗。"
+
+msgid "Iron-banded and brimming with pirate's gold."
+msgstr "鐵箍箱子裡裝滿海盜黃金。"
+
+msgid "Split open to reveal a crystal-studded heart."
+msgstr "剖開後露出滿是水晶的內心。"
+
+msgid "A round plastic shell, twisted open for a surprise."
+msgstr "轉開圓圓的扭蛋殼，會有什麼驚喜呢？"
+
+msgid "A festival drum, painted red and ready to boom."
+msgstr "漆成紅色、準備咚咚響的祭典太鼓。"
+
+msgid "Layered sponge and cream, one strawberry short of perfect."
+msgstr "海綿蛋糕與奶油層層疊，只差一顆草莓就完美了。"
+
+msgid "A deep blue box scattered with tiny constellations."
+msgstr "點綴著小星座的深藍色盒子。"
+
+msgid "Rippling water with koi drifting just beneath the surface."
+msgstr "水波盪漾，錦鯉在水面下悠游。"
+
+msgid "Soft and puffed up, like it drifted down from the sky."
+msgstr "軟綿綿鼓鼓的，像從天上飄下來。"
+
+msgid "Inlaid shell that shimmers with every tilt of the light."
+msgstr "每次傾斜都閃著光的螺鈿貝殼。"
+
+msgid "Blinking lights and the chime of a claw machine."
+msgstr "閃爍燈光和夾娃娃機的音效。"
+
+msgid "A hall beneath the sea, glittering with dragon treasure."
+msgstr "海底宮殿裡閃耀著龍的寶藏。"
+
+msgid "A quiet dome overlooking the grey lunar dust."
+msgstr "俯瞰灰色月塵的寧靜圓頂。"
+
+msgid "A shrine perched above the clouds, ropes and bells swaying."
+msgstr "雲端上的神社，繩索和鈴鐺輕輕搖晃。"
+
+msgid "Rolling green rows with a mountain standing watch."
+msgstr "高山守望著起伏的綠色茶田。"
+
+msgid "A landscape built entirely from sugar and sponge."
+msgstr "完全用糖和海綿蛋糕打造的風景。"
+
+msgid "Snow lit up in ribbons of green and violet."
+msgstr "被綠色與紫色光帶照亮的雪原。"
+
+msgid "Warm sand, gentle waves, and a striped parasol."
+msgstr "溫暖沙灘、輕柔海浪和條紋陽傘。"
+
+msgid "Paper lanterns drifting downstream on quiet water."
+msgstr "紙燈籠在靜靜的水面上順流而下。"
+
+msgid "Stone towers and banners snapping in the wind."
+msgstr "石塔與迎風飄揚的旗幟。"
+
+msgid "A rice-ball cap with a neat nori patch."
+msgstr "貼著整齊海苔的飯糰帽。"
+
+msgid "Dumpling"
+msgstr "餃子"
+
+msgid "Crab"
+msgstr "螃蟹"
+
+msgid "Ladybug"
+msgstr "瓢蟲"
+
+msgid "Snail"
+msgstr "蝸牛"
+
+msgid "Tempura Shrimp"
+msgstr "炸蝦天婦羅"
+
+msgid "Pufferfish"
+msgstr "河豚"
+
+msgid "Hermit Crab"
+msgstr "寄居蟹"
+
+msgid "Firefly"
+msgstr "螢火蟲"
+
+msgid "Pumpkin"
+msgstr "南瓜"
+
+msgid "Snowman"
+msgstr "雪人"
+
+msgid "Firework"
+msgstr "煙火"
+
+msgid "Ramen Bowl"
+msgstr "拉麵碗"
+
+msgid "Narwhal"
+msgstr "獨角鯨"
+
+msgid "Kraken Hatchling"
+msgstr "海怪寶寶"
+
+msgid "Tsukumogami"
+msgstr "付喪神"
+
+msgid "Moss"
+msgstr "青苔"
+
+msgid "Driftwood"
+msgstr "漂流木"
+
+msgid "Coral"
+msgstr "珊瑚"
+
+msgid "Pumpkin Patch"
+msgstr "南瓜田"
+
+msgid "Snowdrift"
+msgstr "雪堆"
+
+msgid "Paper Lantern"
+msgstr "紙燈籠"
+
+msgid "Abyss"
+msgstr "深淵"
+
+msgid "Starforge"
+msgstr "星辰鍛爐"
+
+msgid "Tidepool Town"
+msgstr "潮池小鎮"
+
+msgid "Soft folds and a just-steamed glow."
+msgstr "柔軟的褶子，剛蒸好的光澤。"
+
+msgid "Tiny claws, very serious side-step."
+msgstr "小小鉗子，非常認真地橫著走。"
+
+msgid "A cheerful spotted shell for garden days."
+msgstr "適合花園日子的開心斑點外殼。"
+
+msgid "A little shell, moving at its own pace."
+msgstr "背著小殼，照自己的步調前進。"
+
+msgid "Crisp curls and a golden crunch."
+msgstr "酥脆捲曲，金黃香脆。"
+
+msgid "Round, prickly, and surprisingly polite."
+msgstr "圓圓刺刺，卻意外地有禮貌。"
+
+msgid "A borrowed shell with a perfect fit."
+msgstr "借來的殼，卻剛剛好合身。"
+
+msgid "A warm little lantern for twilight tumbles."
+msgstr "黃昏時滾來滾去用的溫暖小燈。"
+
+msgid "A plump autumn cap, here for the harvest season."
+msgstr "為豐收季節而來的圓胖秋日帽。"
+
+msgid "A frosty cap with a carrot-bright nose."
+msgstr "附胡蘿蔔亮橘鼻子的冰涼帽子。"
+
+msgid "A little night sky ready to burst into colour."
+msgstr "隨時準備綻放色彩的小夜空。"
+
+msgid "Noodles, broth, and a very cozy brim."
+msgstr "麵條、湯頭，還有暖呼呼的碗緣。"
+
+msgid "A gentle sea-unicorn with a pearly horn."
+msgstr "有著珍珠色角的溫柔海中獨角獸。"
+
+msgid "A tiny tentacle-cap from the glowiest depths."
+msgstr "來自最亮深海的小觸手帽。"
+
+msgid "An old paper lantern, awake with friendly mischief."
+msgstr "甦醒過來的古老紙燈籠，友善又愛惡作劇。"
+
+msgid "A soft green finish with a quiet forest feel."
+msgstr "帶著寧靜森林氣息的柔和綠色。"
+
+msgid "Sun-bleached wood washed smooth by the tide."
+msgstr "被陽光曬白、被潮水磨滑的木頭。"
+
+msgid "Warm reef colours for the sea-set collection."
+msgstr "海洋系列專屬的溫暖珊瑚礁色彩。"
+
+msgid "A harvest-orange box for the autumn shop window."
+msgstr "秋季櫥窗的豐收橘色盒子。"
+
+msgid "Pale blue timber tucked under fresh snow."
+msgstr "埋在新雪下的淡藍木頭。"
+
+msgid "Festival red with a soft candlelit warmth."
+msgstr "祭典紅色，帶著燭光般的柔和暖意。"
+
+msgid "Deep-sea blue, scattered with bioluminescent life."
+msgstr "散布著發光生物的深海藍。"
+
+msgid "Molten metal flecked with fresh-forged stardust."
+msgstr "熔化的金屬裡點綴著剛鍛好的星塵。"
+
+msgid "An original sunny undersea town of coral homes and kelp gardens."
+msgstr "有珊瑚房屋和海帶花園的陽光海底小鎮。"
+
+# Kinu Toss
+
+msgid "Toss"
+msgstr "投擲"
+
+msgid "Flick them into the box!"
+msgstr "把小絹彈進盒子裡！"
+
+msgid "Flick Kinu from the pan into the holes in the box. Six misses and you're out."
+msgstr "從平底鍋把小絹彈進盒子的洞裡。失誤六次就結束。"
+
+msgid "Slide the pan to line up, then flick up to throw. Kinu have to drop through a hole in the lid and stay in: smaller holes, longer throws and unbroken streaks score more. Each box takes a few Kinu before the next one arrives, further away or harder to hit. Six misses end the run."
+msgstr "滑動平底鍋對準位置，往上一彈就能投出。小絹必須穿過蓋子上的洞並留在盒子裡：洞越小、投得越遠、連續命中越多，分數越高。每個盒子收下幾個小絹後，就會換成更遠或更難投中的下一個盒子。失誤六次就結束。"
+
+msgid "Big hole"
+msgstr "大洞"
+
+msgid "Nice"
+msgstr "漂亮"
+
+msgid "Small hole"
+msgstr "小洞"
+
+msgid "Lucky Box"
+msgstr "幸運盒"
+
+msgid "In"
+msgstr "進了"
+
+msgid "Box full! +%d"
+msgstr "盒子滿了！+%d"
+
+msgid "Curve Shot"
+msgstr "曲球"
+
+msgid "Curve loaded! Flick to throw"
+msgstr "曲球準備好了！彈出去吧"
+
+msgid "Heart Kinu! +%d beans"
+msgstr "愛心小絹！豆子 +%d"
+
+msgid "Heart Kinu! A miss came back"
+msgstr "愛心小絹！失誤少一次"
+
+msgid "Missed! %d misses left"
+msgstr "沒中！還剩 %d 次"
+
+msgid "Missed! 1 miss left"
+msgstr "沒中！還剩 1 次"
+
+msgid "On the lid! +%d"
+msgstr "在蓋子上！+%d"
+
+msgid "Perfect"
+msgstr "完美"
+
+msgid "Skip Shot"
+msgstr "彈跳球"
+
+msgid "Standing Kinu"
+msgstr "站立小絹"
+
+msgid "Six misses! Great tossing though!"
+msgstr "失誤六次！不過投得很棒！"
+
+msgid "1 Miss Left"
+msgstr "還剩 1 次"
+
+msgid "%d Misses Left"
+msgstr "還剩 %d 次"
+
+msgid "Knocked out! -%d"
+msgstr "被撞出去了！-%d"
+
+# Grand Opening launch event
+msgid "Play a run"
+msgstr "玩 1 局"
+
+msgid "Play on %d different days"
+msgstr "在 %d 個不同的日子遊玩"
+
+msgid "A Grand Opening exclusive from Kinu Tumble's launch. It will never be sold or given out again."
+msgstr "小絹疊疊樂上線紀念的盛大開幕限定獎勵，之後不會再販售或發放。"
+
+msgid "A Grand Opening exclusive. %s by 31 October to keep it forever."
+msgstr "盛大開幕限定。在 10 月 31 日前「%s」就能永久擁有。"
+
+msgid "All three launch exclusives are yours. Thank you for being here from day one!"
+msgstr "三款開幕限定獎勵都到手了。謝謝你從第一天就陪著我們！"
+
+msgid "The Grand Opening has closed. Anything you earned is yours to keep."
+msgstr "盛大開幕活動已結束。已獲得的獎勵會永遠保留。"
+
+msgid "Kinu Tumble is open! Earn three launch exclusives before 31 October."
+msgstr "小絹疊疊樂開幕啦！在 10 月 31 日前收集三款限定獎勵。"
+
+msgid "See the %s Showcase"
+msgstr "查看%s精選"
+
+msgid "Earned items stay in your collection forever. They'll never be sold in the Shop or found in the Kinu Claw."
+msgstr "獲得的獎勵會永遠留在收藏中，不會在商店或小絹夾爪出現。"
+
+msgid "LAUNCH CELEBRATION!"
+msgstr "開幕慶祝！"
+
+msgid "GRAND OPENING"
+msgstr "盛大開幕"
+
+msgid "Earned! It's in your collection."
+msgstr "已獲得！已加入收藏。"
+
+msgid "Grand Opening"
+msgstr "盛大開幕"
+
+msgid "LAUNCH EXCLUSIVE!"
+msgstr "開幕限定！"
+
+msgid "Launch exclusives"
+msgstr "開幕限定獎勵"
+
+msgid "Launch"
+msgstr "開幕限定"
+
+msgid "Opening Day"
+msgstr "開幕日"
+
+msgid "First Edition"
+msgstr "首發版"
+
+msgid "Pulled the kusudama open on Kinu Tumble's very first day. Confetti everywhere!"
+msgstr "在小絹疊疊樂開幕第一天拉開彩球，滿天都是彩紙！"
+
+msgid "White lacquer and gold, tied with the opening-day ribbon. Number one of one."
+msgstr "白漆描金，繫上開幕紀念緞帶。獨一無二的第一號。"
+
+msgid "The tofu shop on its very first day, with flowers from well-wishers and confetti in the air."
+msgstr "開幕第一天的豆腐店，擺滿祝賀花籃，彩紙漫天飛舞。"
+
+msgid "MISSIONS RESET IN"
+msgstr "任務重置倒數"
+
+msgid "Resets in %s"
+msgstr "重置倒數 %s"
+
+# Home tour
+msgid "Skip"
+msgstr "略過"
+
+msgid "Later"
+msgstr "稍後"
+
+msgid "Done"
+msgstr "完成"
+
+msgid "Try it!"
+msgstr "試試看！"
+
+msgid "Shop & Wardrobe"
+msgstr "商店與衣櫃"
+
+msgid "Events"
+msgstr "活動"
+
+msgid "Game Modes"
+msgstr "遊戲模式"
+
+msgid "Your daily treat, the Grand Opening and the Monthly Showcase live here. A red dot means something is waiting for you."
+msgstr "每日獎勵、盛大開幕和每月精選都在這裡。出現紅點就代表有東西在等你。"
+
+msgid "Your daily treat and the Monthly Showcase live here. A red dot means something is waiting for you."
+msgstr "每日獎勵和每月精選都在這裡。出現紅點就代表有東西在等你。"
+
+msgid "Switch between Classic, Tower and Toss here."
+msgstr "在這裡切換經典、高塔和投擲模式。"
+
+msgid "Classic is all about filling the box. Pile %d Kinu in one run to unlock Tower, and %d for Toss."
+msgstr "經典模式就是把盒子裝滿。一局疊 %d 個小絹解鎖高塔，%d 個解鎖投擲。"
+
+msgid "Win outfits, boxes and rooms. Your first play every day is free!"
+msgstr "抓取服裝、盒子和場景。每天第一次免費！"
+
+msgid "Win outfits, boxes and rooms with beans or claw tickets."
+msgstr "用豆子或代幣抓取服裝、盒子和場景。"
+
+msgid "Spend beans on outfits, boxes and rooms in the Shop, then dress up your Kinu in the Wardrobe."
+msgstr "在商店用豆子買服裝、盒子和場景，再到衣櫃幫小絹打扮。"
+
+msgid "Everything you can collect, and how to get it. New unlocks wait here with a badge."
+msgstr "所有能收集的東西和取得方式都在這裡。新解鎖的會有標記。"
+
+msgid "Three new missions every day, plus a weekly challenge. Finish them for beans!"
+msgstr "每天 3 個新任務，還有每週挑戰。完成就能拿豆子！"
+
+# Kinu Toss fire button
+msgid "Fire"
+msgstr "發射"
+
+# Untranslated in-game text found in the 29 Sep audit
+msgid "%d Kinu! Nice!"
+msgstr "%d 個小絹！不錯喔！"
+
+msgid "%d Kinu! Going well!"
+msgstr "%d 個小絹！很順喔！"
+
+msgid "%d Kinu! Lovely pile!"
+msgstr "%d 個小絹！疊得真漂亮！"
+
+msgid "%d Kinu! Incredible!"
+msgstr "%d 個小絹！難以置信！"
+
+msgid "%d Kinu! Unbelievable!"
+msgstr "%d 個小絹！太不可思議了！"
+
+msgid "%d Kinu! Legendary!"
+msgstr "%d 個小絹！傳說級！"
+
+msgid "Nigari"
+msgstr "鹽滷"
+
+msgid "Nigari! Makes crowded Kinu smaller"
+msgstr "鹽滷！讓擠在一起的小絹變小"
+
+msgid "Tap the bottle to shrink crowded Kinu!"
+msgstr "點一下瓶子，把擠在一起的小絹變小！"
+
+msgid "%s! %d Kinu"
+msgstr "%s！%d 個小絹"
+
+msgid "Last chance! 1 tumble left"
+msgstr "最後機會！只剩 1 次"
+
+msgid "Whoops! %d tumbles left"
+msgstr "哎呀！還剩 %d 次機會"
+
+msgid "That's %d tumbles! Great pile though!"
+msgstr "掉了 %d 次！不過疊得很棒！"
+
+msgid "%d Kinu! +1 Nigari squirt"
+msgstr "%d 個小絹！鹽滷 +1 次"
+
+msgid "One more to beat your best!"
+msgstr "再 1 個就破紀錄！"
+
+msgid "New best! %d Kinu!"
+msgstr "新紀錄！%d 個小絹！"
+
+msgid "Drag to aim  ·  hold Fire to launch"
+msgstr "拖曳瞄準 · 長按發射"
+
+msgid "Streak ×%s"
+msgstr "連續 ×%s"
+
+msgid "Sticky Kinu"
+msgstr "黏黏小絹"
+
+msgid "Sticky Kinu! Anything it touches is glued in place"
+msgstr "黏黏小絹！碰到的都會黏住"
+
+msgid "You're holding one — see the syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."
+msgstr "你手上拿的就是，看那個糖漿標記。碰到的東西都會被黏住固定，把它放在需要穩住的地方吧。"
+
+msgid "Tap the bottle icon to pick it up, aim it over a crowded spot and let go. Nigari makes up to three Kinu smaller and frees up room. You earn another at 20, 35 and 50 Kinu."
+msgstr "點一下瓶子圖示拿起，瞄準擁擠的地方後放開。鹽滷最多能讓 3 個小絹變小，騰出空間。疊到 20、35 和 50 個時各再得一次。"
+
+msgid "Kinu that tumble onto the counter don't count. Six tumbles and the run is over."
+msgstr "掉到檯面上的小絹不算。掉了六次這局就結束。"
+
+msgid "Land %d Kinu in a row"
+msgstr "連續放上 %d 個小絹"
+
+msgid "Land %d Kinu in one run"
+msgstr "一局放上 %d 個小絹"
+
+msgid "RevenueCat couldn't load the App Store products. Please try again."
+msgstr "無法載入 App Store 商品，請再試一次。"
+
+msgid "We couldn't confirm the purchase receipt. Please try again later."
+msgstr "無法確認購買收據，請稍後再試。"
+
+msgid "Purchases restored."
+msgstr "已恢復購買。"
+
+msgid "Beans are also earned by playing. One free Kinu Claw play arrives daily.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "豆豆也可以靠遊玩獲得。小絹夾爪每天可免費玩一次。\n「恢復購買」能救回移除廣告，但用掉的豆豆不會退回。"
+
+msgid "How It Works"
+msgstr "玩法說明"
+
+msgid "Items you already own leave the machine, so every item you win is new. The chances shown are for you, right now."
+msgstr "已擁有的獎品會從機台移除，所以抓到的一定是新的。顯示的機率是你目前的機率。"
+
+msgid "Claim!"
+msgstr "領取！"
+
+msgid "＋ Get More"
+msgstr "＋ 取得更多"
+
+msgid "Missed!"
+msgstr "沒投進！"
+
+msgid "Your best: %s"
+msgstr "最佳紀錄：%s"
+
+msgid "%d Kinu in"
+msgstr "投進 %d 個"
+
+msgid "Longest %s"
+msgstr "最遠 %s"
+
+msgid "Next: %s at %d Kinu"
+msgstr "下一個：%s（%d 個小絹）"
+
+msgid "Fill the box. Six tumbles and you're out."
+msgstr "把盒子裝滿。掉了六次就結束。"
+
+msgid "Land Kinu in the tofu box. Anything that bounces out onto the counter is a tumble, and six tumbles end the run. You score the pile you keep."
+msgstr "把小絹放進豆腐盒。掉到檯面上就算失誤，六次這局就結束。留在盒裡的數量就是分數。"
+
+msgid "Best score"
+msgstr "最高分"
+
+msgid "Matched Your Best!"
+msgstr "追平最佳紀錄！"
+
+msgid "So Close!"
+msgstr "好可惜！"
+
+msgid "Great Run!"
+msgstr "玩得好！"
+
+msgid "Nice Pile!"
+msgstr "疊得好！"
+
+msgid "Best Toss score"
+msgstr "投擲最高分"
+
+msgid "Toss boxes filled"
+msgstr "投擲填滿的盒子"
+
+msgid "Checking free tickets…"
+msgstr "正在確認免費代幣…"
+
+msgid "%d/2 free tickets ready"
+msgstr "%d/2 枚免費代幣已可使用"
+
+msgid "%d/2 free · refill in %02d:%02d:%02d"
+msgstr "免費 %d/2 枚 · 補充倒數 %02d:%02d:%02d"
+
+msgid "Two free claw tickets refill 24 hours after the first is used. Unused free tickets don't stack."
+msgstr "使用第一枚免費代幣 24 小時後會補滿 2 枚。未使用的免費代幣不會累積。"
+
+msgid "Win outfits, boxes and rooms. Two free claw tickets refill together!"
+msgstr "抓取服裝、盒子和場景。2 枚免費代幣會一起補充！"
+
+msgid "Beans are also earned by playing. Two free Kinu Claw tickets refill together every 24 hours after the first is used; unused free tickets expire.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "遊玩也能獲得豆子。小絹夾娃娃機的 2 枚免費代幣會在使用第一枚後每 24 小時一起補滿，未使用的免費代幣不會累積。\n「恢復購買」可恢復移除廣告，但已使用的消耗品不會恢復。"
+
+# Save and recent UI text
+msgid "iCloud Save"
+msgstr "iCloud 存檔"
+
+msgid "Save Conflict"
+msgstr "存檔衝突"
+
+msgid "Your iPhone and iCloud have different progress. Choose which to keep."
+msgstr "iPhone 與 iCloud 的進度不同。請選擇要保留的存檔。"
+
+msgid "Keep iPhone Save"
+msgstr "保留 iPhone 存檔"
+
+msgid "Use iCloud Save"
+msgstr "使用 iCloud 存檔"
+
+msgid "Sync Now"
+msgstr "立即同步"
+
+msgid "Get tickets"
+msgstr "取得代幣"
+
+msgid "%d more to beat your best of %s!"
+msgstr "再提高 %d 就能超越最佳紀錄 %s！"
+
+msgid "iCloud sync is available in the iPhone app."
+msgstr "可在 iPhone App 中使用 iCloud 同步。"
+
+msgid "Checking iCloud sync…"
+msgstr "正在檢查 iCloud 同步…"
+
+msgid "iCloud sync is unavailable. Progress is saved on this iPhone."
+msgstr "無法使用 iCloud 同步。進度已儲存在這支 iPhone 上。"
+
+msgid "Choose which progress to keep.\nThis iPhone: Best %d · %d runs\niCloud: Best %d · %d runs"
+msgstr "請選擇要保留的進度。\n這支 iPhone：最佳 %d · 遊玩 %d 次\niCloud：最佳 %d · 遊玩 %d 次"
+
+msgid "iCloud progress is ready. Return Home to restore it."
+msgstr "已找到 iCloud 進度。返回首頁即可恢復。"
+
+msgid "just now"
+msgstr "剛剛"
+
+msgid "1 minute ago"
+msgstr "1 分鐘前"
+
+msgid "%d minutes ago"
+msgstr "%d 分鐘前"
+
+msgid "Progress sent to iCloud sync %s."
+msgstr "已於%s將進度傳送至 iCloud。"
+
+msgid "iCloud has a game save. New progress will sync automatically."
+msgstr "iCloud 中有遊戲存檔。新進度會自動同步。"
+
+msgid "Waiting for the first iCloud sync."
+msgstr "正在等待首次 iCloud 同步。"
+
+msgid "Last restored from iCloud: %s"
+msgstr "上次從 iCloud 恢復：%s"
+
+msgid "Never"
+msgstr "從未"
+
+msgid "Sign in to Game Center to use iCloud saves."
+msgstr "請登入 Game Center 以使用 iCloud 存檔。"
+
+msgid "iCloud saves are available in the iPhone app."
+msgstr "可在 iPhone App 中使用 iCloud 存檔。"
+
+msgid "Sign in to Game Center and turn on iCloud Drive to back up progress."
+msgstr "登入 Game Center 並開啟 iCloud Drive，即可備份進度。"
+
+msgid "Checking iCloud for your save…"
+msgstr "正在 iCloud 中尋找存檔…"
+
+msgid "No Game Center iCloud save was found. Progress is only on this iPhone. Back Up Now will create a new cloud save."
+msgstr "找不到 Game Center 的 iCloud 存檔。進度只存在這支 iPhone 上。點選「立即備份」將建立新的雲端存檔。"
+
+msgid "Backing up to iCloud…"
+msgstr "正在備份至 iCloud…"
+
+msgid "Waiting to back up recent progress…"
+msgstr "正在等待備份最新進度…"
+
+msgid "Backup sent to Game Center iCloud."
+msgstr "已將備份傳送至 Game Center iCloud。"
+
+msgid "Waiting for the first iCloud backup…"
+msgstr "正在等待首次 iCloud 備份…"
+
+msgid "Last downloaded: %s\nLast backed up: %s"
+msgstr "上次下載：%s\n上次備份：%s"
+
+msgid "There is no progress to back up yet. If you expected an older save, do not create a new one."
+msgstr "目前沒有可備份的進度。如果你預期有舊存檔，請不要建立新存檔。"
+
+msgid "iCloud is unavailable. Your progress is still saved on this iPhone."
+msgstr "無法使用 iCloud。進度仍儲存在這支 iPhone 上。"
+
+msgid "Your iCloud save could not be read. This iPhone's save is safe."
+msgstr "無法讀取 iCloud 存檔。這支 iPhone 上的存檔仍然安全。"
+
+msgid "Your iCloud save could not be restored. This iPhone's save is safe."
+msgstr "無法恢復 iCloud 存檔。這支 iPhone 上的存檔仍然安全。"
+
+msgid "iCloud backup failed. Your progress is still saved on this iPhone."
+msgstr "iCloud 備份失敗。進度仍儲存在這支 iPhone 上。"
+
+msgid "iCloud backup could not be verified. Your progress is still saved on this iPhone."
+msgstr "無法驗證 iCloud 備份。進度仍儲存在這支 iPhone 上。"

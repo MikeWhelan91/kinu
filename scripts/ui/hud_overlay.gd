@@ -17,8 +17,10 @@ func _draw() -> void:
 	if run == null:
 		return
 	match run.control_scheme():
-		"classic", "bento":
+		"classic":
 			_draw_spin_strip()
+		"toss":
+			_draw_toss_arc()
 		"claw":
 			pass # The joysticks and drop button draw their own state; nothing to overlay here.
 		_:
@@ -45,6 +47,28 @@ func _draw_spin_strip() -> void:
 	var baseline := center+Vector2(-width*.5, font_size*.36)
 	draw_string_outline(font, baseline, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, 8, NestTheme.INK)
 	draw_string(font, baseline, text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, NestTheme.CREAM)
+
+## The trajectory belongs in the HUD, rather than the 3D world: it stays bright and comfortably
+## thick on a phone at any camera distance. TossPlay supplies samples from its actual solver.
+func _draw_toss_arc() -> void:
+	if not is_instance_valid(run.toss) or not is_instance_valid(run.orbit.camera):
+		return
+	var world_points := run.toss.preview_trajectory()
+	if world_points.size() < 2:
+		return
+	var points := PackedVector2Array()
+	for point in world_points:
+		if run.orbit.camera.is_position_behind(point):
+			return
+		points.append(run.orbit.camera.unproject_position(point))
+	# A dark halo preserves the arc over a bright room; the short dashes keep it gentle, not noisy.
+	for i in points.size()-1:
+		if i % 2 == 1:
+			continue
+		var a := points[i]
+		var b := points[i+1]
+		draw_line(a, b, Color(NestTheme.INK, .34), 11.0, true)
+		draw_line(a, b, Color("fff4bd", .92), 5.0, true)
 
 func _draw_spin_arrows(center: Vector2) -> void:
 	var drift := sin(Time.get_ticks_msec()*.004)*.12

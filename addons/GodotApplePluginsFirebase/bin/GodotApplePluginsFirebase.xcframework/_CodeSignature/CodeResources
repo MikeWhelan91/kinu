@@ -6,7 +6,7 @@
 	<dict>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/GodotApplePluginsFirebase</key>
 		<data>
-		WSxhbugG/iSJbf2/Sb+5MS/A5TE=
+		0tprF4HXaKEg1AE8/8luwH11ApE=
 		</data>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Headers/GodotApplePluginsFirebase-Swift.h</key>
 		<data>
@@ -14,11 +14,11 @@
 		</data>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Info.plist</key>
 		<data>
-		YTTNwnL+TsFy5+Qe3GHZPaPD55o=
+		9ZFW3eM2v54Jomofzoo18cdj6Ic=
 		</data>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<data>
-		2+vEkcnQv6O/JhADcGO6zQwukpw=
+		Zi7un3IOuBJvjgsc0IjsBf1phRI=
 		</data>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/arm64-apple-ios.abi.json</key>
 		<data>
@@ -35,6 +35,10 @@
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/arm64-apple-ios.swiftinterface</key>
 		<data>
 		jXgKEYX9UNYWlYXaNSRXi0Z3cYQ=
+		</data>
+		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/arm64-apple-ios.swiftmodule</key>
+		<data>
+		zmGNs0rtbk2JEEMrCbrfq8DaVyw=
 		</data>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/module.modulemap</key>
 		<data>
@@ -107,7 +111,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			UdyUQ9JdprB2VoVRND/O9/s5IxXNki+Emp4XcuYiFvY=
+			ABmUda/SKpBfXLGmE7yZlD9RVKvHtGv2PMFmYjAtreA=
 			</data>
 		</dict>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Headers/GodotApplePluginsFirebase-Swift.h</key>
@@ -121,14 +125,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			bzjq5mVE6VT01j6qFcJCsdmt6sr+emXrxlEz+ZZgCNo=
+			SUDCdVmSkjjoNBAw+0XCuYsJn7gprl9+3qMhNWdp7jc=
 			</data>
 		</dict>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/Project/arm64-apple-ios.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			30FowFmGdf5fFzXeUPv75exAZhhTsQ3zB8kqMZAo+0M=
+			bUqUBfE/nTgqTmglKwZ1h1JboIarGIrKjcpHOLSNDKY=
 			</data>
 		</dict>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/arm64-apple-ios.abi.json</key>
@@ -157,6 +161,13 @@
 			<key>hash2</key>
 			<data>
 			n63qWWNey6vxIC/YunwKHY2Pxs+MN0wWrL5EB0V3FQo=
+			</data>
+		</dict>
+		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/GodotApplePluginsFirebase.swiftmodule/arm64-apple-ios.swiftmodule</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			+tDh7/KwV9qbmme1c0L6pW4vyyoeMNqKhoYbOaC6cQE=
 			</data>
 		</dict>
 		<key>ios-arm64/GodotApplePluginsFirebase.framework/Modules/module.modulemap</key>

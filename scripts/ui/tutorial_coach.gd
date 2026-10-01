@@ -20,11 +20,14 @@ func build(owner: Node, safe_bottom: float) -> void:
 	dock.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dock.add_theme_constant_override("separation", 4)
 	dock.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	dock.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	var classic: bool = Save.data.controls == "classic"
-	dock.anchor_top = .78 if classic else 1.0
+	var claw: bool = Save.data.controls == "claw"
+	# The claw sticks and Drop button fill the lower side of the screen. Keep the guide
+	# above them so Skip Guide remains reachable during the first run.
+	dock.grow_vertical = Control.GROW_DIRECTION_END if claw else Control.GROW_DIRECTION_BEGIN
+	dock.anchor_top = .26 if claw else .78 if classic else 1.0
 	dock.anchor_bottom = dock.anchor_top
-	dock.offset_top = -10.0 if classic else -safe_bottom-10.0
+	dock.offset_top = 0.0 if claw else -10.0 if classic else -safe_bottom-10.0
 	dock.offset_bottom = dock.offset_top
 	dock.offset_left = 18
 	dock.offset_right = -18

@@ -7,12 +7,14 @@ static var machine: CatcherMachine
 static var action: Button
 static var hint: Label
 static var balance: PanelContainer
+static var reset_label: Label
 static var back: Callable
 
 const BUTTON_SIZE := 118.0
 
 static func show(app: Node, return_to: Callable = Callable()) -> void:
 	back = return_to if return_to.is_valid() else app._home
+	Analytics.track("catcher_opened", {"tickets": KinuCatcher.total_tickets(), "free_play_ready": KinuCatcher.free_ready()})
 	app._new_screen("catcher", true)
 	Sound.play_room_music("catcher")
 	var layout: VBoxContainer = app._header("Kinu Claw", func() -> void: back.call())
@@ -20,7 +22,17 @@ static func show(app: Node, return_to: Callable = Callable()) -> void:
 	var top := HBoxContainer.new()
 	top.add_theme_constant_override("separation", 10)
 	layout.add_child(top)
-	balance = NestTheme.ticket_pill(NestTheme.t("%s tickets")%app._number(Save.data.tickets), 20)
+	balance = NestTheme.ticket_pill(NestTheme.t("%s tickets")%app._number(KinuCatcher.total_tickets()), 20)
+	balance.mouse_filter = Control.MOUSE_FILTER_PASS
+	var balance_button := Button.new()
+	balance_button.name = "TicketBalanceButton"
+	balance_button.tooltip_text = NestTheme.t("Get tickets")
+	balance_button.focus_mode = Control.FOCUS_NONE
+	balance_button.mouse_filter = Control.MOUSE_FILTER_STOP
+	for state in ["normal", "hover", "pressed", "focus"]:
+		balance_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	balance_button.pressed.connect(func() -> void: app._bean_shop("tickets"))
+	balance.add_child(balance_button)
 	var balance_row := HBoxContainer.new()
 	balance_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	balance_row.add_child(balance)
@@ -30,6 +42,8 @@ static func show(app: Node, return_to: Callable = Callable()) -> void:
 	odds.custom_minimum_size = Vector2(110, 50)
 	odds.add_theme_font_size_override("font_size", 18)
 	top.add_child(odds)
+	reset_label = NestTheme.label("", 15, NestTheme.MUTED)
+	layout.add_child(reset_label)
 	# The cabinet breaks out of the page's side gutters and runs edge to edge, so the case has
 	# the full width of the screen to be looked into rather than a narrow slot in the middle.
 	var wide := MarginContainer.new()
@@ -123,7 +137,9 @@ static func refresh(app: Node) -> void:
 	if not is_instance_valid(action):
 		return
 	var label: Label = balance.get_child(0).get_child(1)
-	label.text = NestTheme.t("%s tickets")%app._number(Save.data.tickets)
+	label.text = NestTheme.t("%s tickets")%app._number(KinuCatcher.total_tickets())
+	if is_instance_valid(reset_label):
+		reset_label.text = KinuCatcher.free_reset_text()
 	var fill := NestTheme.SUN
 	match machine.state:
 		"aim":
@@ -140,7 +156,7 @@ static func refresh(app: Node) -> void:
 			hint.text = ""
 			if KinuCatcher.free_ready():
 				action.text = NestTheme.t("Free\nPlay")
-			elif int(Save.data.tickets) >= KinuCatcher.TICKET_COST:
+			elif KinuCatcher.total_tickets() >= KinuCatcher.TICKET_COST:
 				action.text = NestTheme.t("Play\n1 Ticket")
 			else:
 				action.text = NestTheme.t("Get\nTickets")
@@ -169,9 +185,15 @@ static func _act(app: Node) -> void:
 			if not KinuCatcher.can_play():
 				app._bean_shop("tickets")
 				return
-			var prize := await KinuCatcher.play_free(app.run.catalog, machine.rng) if KinuCatcher.free_ready() else KinuCatcher.play(app.run.catalog, machine.rng)
+			var was_free := KinuCatcher.free_ready()
+			var prize := await KinuCatcher.play_free(app.run.catalog, machine.rng) if was_free else KinuCatcher.play(app.run.catalog, machine.rng)
 			if prize.is_empty():
 				return
+			Analytics.track("catcher_play_completed", {
+				"free": was_free,
+				"prize_kind": str(prize.get("kind", "")),
+				"prize_rarity": str(prize.get("rarity", "")),
+			})
 			Sound.play("cashregister")
 			Haptics.pulse(20, .4)
 			machine.begin_aim()
@@ -192,6 +214,7 @@ static func _reveal(app: Node, prize: Dictionary) -> void:
 ## The lucky meter, every prize still in the machine with its chance this play, and the rules.
 static func odds_page(app: Node) -> void:
 	var stack: VBoxContainer = app._modal("Odds")
+	_info_button(app, stack)
 	var catalog: KinuCatalog = app.run.catalog
 	var scroll := DragScroll.new()
 	scroll.custom_minimum_size = Vector2(0, minf(520, app.get_viewport().get_visible_rect().size.y-360))
@@ -211,18 +234,6 @@ static func odds_page(app: Node) -> void:
 		bar.add_theme_stylebox_override("fill", bar_fill)
 		meter.add_child(bar)
 		list.add_child(NestTheme.paper(meter))
-	var rules := [
-		"Every play wins exactly one prize.",
-		NestTheme.t("Base cosmetic chance: %s. Rarity is rolled only after an item win.")%_percent(KinuCatcher.COSMETIC_ODDS),
-		"Items you already own leave the machine, so every item you win is new. The chances below are for you, right now.",
-		NestTheme.t("Lucky meter: after %d plays in a row without an item, the next play is always an item.")%(KinuCatcher.LUCKY_EVERY-1),
-		"One free play every day. Free plays don't stack.",
-		NestTheme.t("Tickets are a prize too: %s of plays win another go at the machine.")%_percent(KinuCatcher.TICKET_ODDS),
-	]
-	for rule in rules:
-		var text := NestTheme.label(rule, 15)
-		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		list.add_child(NestTheme.paper(text))
 	var table := KinuCatcher.odds(catalog)
 	var groups := [["tickets", "Free Plays"], ["beans", "Beans"], ["outfit", "Outfits"], ["box", "Boxes"], ["room", "Rooms"]]
 	for group in groups:
@@ -260,6 +271,50 @@ static func odds_page(app: Node) -> void:
 			box.add_child(line)
 		list.add_child(NestTheme.paper(box))
 	stack.add_child(NestTheme.button("Close", app._close_modal, true, "book"))
+
+## The house rules never change from play to play, so they sit behind an "i" in the panel's top
+## corner instead of pushing the lucky meter and the live chances down the page.
+static func _info_button(app: Node, stack: VBoxContainer) -> void:
+	var heading: Control = stack.get_child(0)
+	var info := NestTheme.button("i", func() -> void: rules_page(app), false, "book")
+	info.custom_minimum_size = Vector2(40, 40)
+	info.add_theme_font_size_override("font_size", 24)
+	info.focus_mode = Control.FOCUS_NONE
+	info.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	info.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	info.offset_top = -2
+	info.offset_right = 4
+	# A cream disc with the same ink outline the rest of the game uses. Left unstyled it was a bare
+	# glyph on a brown board, which is close to invisible.
+	for state in ["normal", "hover", "pressed"]:
+		var tone := NestTheme.CREAM.darkened(.06) if state == "hover" else NestTheme.SUN if state == "pressed" else NestTheme.CREAM
+		info.add_theme_stylebox_override(state, NestTheme.box(tone, 20, NestTheme.INK, 4))
+	for key in ["font_color", "font_hover_color", "font_pressed_color"]:
+		info.add_theme_color_override(key, NestTheme.INK)
+	heading.add_child(info)
+
+## How the machine works, opened from the Odds panel's "i".
+static func rules_page(app: Node) -> void:
+	var stack: VBoxContainer = app._modal("How It Works")
+	var scroll := DragScroll.new()
+	scroll.custom_minimum_size = Vector2(0, minf(460, app.get_viewport().get_visible_rect().size.y-360))
+	stack.add_child(scroll)
+	var list := VBoxContainer.new()
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list.add_theme_constant_override("separation", 8)
+	scroll.add_child(list)
+	for rule in [
+		"Every play wins exactly one prize.",
+		NestTheme.t("Base cosmetic chance: %s. Rarity is rolled only after an item win.")%_percent(KinuCatcher.COSMETIC_ODDS),
+		"Items you already own leave the machine, so every item you win is new. The chances shown are for you, right now.",
+		NestTheme.t("Lucky meter: after %d plays in a row without an item, the next play is always an item.")%(KinuCatcher.LUCKY_EVERY-1),
+		"Two free claw tickets refill 24 hours after the first is used. Unused free tickets don't stack.",
+		NestTheme.t("Tickets are a prize too: %s of plays win another go at the machine.")%_percent(KinuCatcher.TICKET_ODDS),
+	]:
+		var text := NestTheme.label(rule, 15)
+		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		list.add_child(NestTheme.paper(text))
+	stack.add_child(NestTheme.button("Back", func() -> void: odds_page(app), true, "book"))
 
 static func _percent(value: float) -> String:
 	return ("%.2f%%" if value < 10.0 else "%.1f%%")%value

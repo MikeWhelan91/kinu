@@ -14,7 +14,7 @@ const OUTLINE_WIDTH := .02
 const GHOST_OUTLINE_WIDTH := .055
 const MOODS := ["calm", "falling", "squish", "happy", "content", "worried"]
 ## Accessories worn over the bare Kinu, which keeps its own body and face.
-const BARE_STYLES := ["leaf", "pirate", "onsen", "nigiri", "hatchling", "parcel"]
+const BARE_STYLES := ["leaf", "pirate", "onsen", "nigiri", "hatchling", "parcel", "overalls"]
 ## Suits added with the Kinu Catcher, built by _premium_outfit.
 const PREMIUM_STYLES := ["kitsune", "phoenix", "unicorn", "maneki", "samurai", "koi", "axolotl", "kimono", "oni", "capybara"]
 ## The expanded Catcher wardrobe, built by _cute_outfit.
@@ -25,6 +25,8 @@ const CUTE_STYLES := [
 	"magical_girl", "moon_princess", "candy_witch", "celestial_bunny", "sakura_deer", "royal_frog", "pastel_dragon", "snow_fox", "jellyfish", "fairy",
 	"builder", "acrobat", "chef", "yukata", "climber", "lucky_charm",
 	"jelly_cube", "rose_delight", "chocolate_square", "burger", "snack_box", "sea_sponge", "bread_loaf",
+	"onigiri", "dumpling", "crab", "ladybug", "snail", "tempura_shrimp", "pufferfish", "hermit_crab", "firefly", "pumpkin", "snowman", "firework", "ramen_bowl", "narwhal", "kraken_hatchling", "tsukumogami",
+	"opening_day",
 ]
 const GOLD := Color("f5c14e")
 const RAINBOW := [Color("ff8fa3"), Color("ffb65c"), Color("ffe36e"), Color("8fdc8a"), Color("7fc4f5"), Color("b99cf2")]
@@ -375,6 +377,11 @@ static func _outfit(kit: MeshKit, outfit: KinuOutfit, shape: KinuShape) -> void:
 	if style in ["onsen", "nigiri", "hatchling", "parcel"]:
 		_accessory(kit, shape, style)
 		return
+	# These are deliberately light-touch accessories: the Kinu stays visible and each
+	# costume gets one easy-to-read idea, rather than becoming a recoloured cube.
+	if style == "overalls":
+		_overalls(kit, shape, face)
+		return
 	if style == "pirate":
 		# Tied red kerchief, a fitted vest, striped shirt and an actual one-eye patch.
 		var red := Color("c93f49")
@@ -384,11 +391,11 @@ static func _outfit(kit: MeshKit, outfit: KinuOutfit, shape: KinuShape) -> void:
 		for i in 3:
 			kit.add_rounded_box(Vector3(0, -h.y*.45-i*size.y*.085, h.z*1.04), Vector3(size.x*.72, size.y*.035, .03), Color("304257"), Vector3.ZERO, false, 4)
 		for side in [-1.0, 1.0]:
-			kit.add_rounded_box(Vector3(side*h.x*.8, -h.y*.48, .02), Vector3(size.x*.25, size.y*.49, size.z*1.08), dark, Vector3.ZERO, true, shape.roundness)
+			kit.add_rounded_box(Vector3(side*h.x*.8, -h.y*.48, .02), Vector3(minf(size.x*.25, .34), size.y*.49, size.z*1.08), dark, Vector3.ZERO, true, shape.roundness)
 		var skin := Face.new(kit, size, shape.roundness)
 		for i in 16:
 			var t := float(i)/15
-			skin.mark(lerpf(-h.x*.9, h.x*.9, t), eye_y+.04+(t-.35)*size.y*.23, Vector2(size.x*.1, .035), dark, .12, .027)
+			skin.mark(lerpf(-h.x*.9, h.x*.9, t), eye_y+.04+(t-.35)*maxf(size.y*.23, .2), Vector2(minf(size.x*.1, .13), .035), dark, .12, .027)
 		skin.mark(-minf(h.x*.42, .2), eye_y+.04, Vector2(.24, .23), dark, -.15, .06)
 		kit.add("torus", Vector3(-h.x-.035, eye_y-.07, h.z*.4), Vector3(.16, .16, .16), Color("f5c456"), Vector3(PI*.5, 0, 0))
 		return
@@ -453,7 +460,7 @@ static func _outfit(kit: MeshKit, outfit: KinuOutfit, shape: KinuShape) -> void:
 					tone = dark
 				kit.add("sphere", Vector3(h.x*.8+.06*i, -h.y*.4+.065*i, -h.z-.06-.07*i), Vector3(.31, .29, .30)*(1.0-i*.07), tone)
 			if style == "tanuki":
-				kit.add("sphere", Vector3(.06, top+.13, 0), Vector3(.34, .05, .22), LEAF, Vector3(0, .3, .25))
+				kit.add("sphere", Vector3(.06, top+.02, 0), Vector3(.34, .05, .22), LEAF, Vector3(0, .3, .25))
 				for side in [-1.0, 1.0]:
 					face.mark(side*h.x*.79, eye_y, Vector2(size.x*.13, size.y*.3), dark, side*.18, .02)
 			if style == "tiger":
@@ -506,9 +513,9 @@ static func _outfit(kit: MeshKit, outfit: KinuOutfit, shape: KinuShape) -> void:
 			for frac in ([-.72, -.95] if size.y > .8 else [-.9]):
 				_band(kit, shape, frac, .1 if size.y > .8 else .08, dark)
 			for side in [-1.0, 1.0]:
-				kit.add("sphere", Vector3(side*h.x*.45, top*.72, -h.z-.1), Vector3(.42, .56, .06), Color("dff3ff"), Vector3(0, side*.5, side*-.6))
-				kit.add("cylinder", Vector3(side*h.x*.28, top+.12, 0), Vector3(.03, .26, .03), dark, Vector3(0, 0, side*-.35))
-				kit.add("sphere", Vector3(side*(h.x*.28+.05), top+.25, 0), Vector3(.1, .1, .1), dark)
+				kit.add("sphere", Vector3(side*minf(h.x*.45, .34), minf(top*.72, .42), -h.z*1.06-.04), Vector3(.42, .56, .06), Color("dff3ff"), Vector3(0, side*.5, side*-.6))
+				var feeler := _stalk(kit, Vector3(side*minf(h.x*.28, .22), top-.06, 0), .3, .03, Vector3(0, 0, side*.35), dark)
+				kit.add("sphere", feeler, Vector3(.1, .1, .1), dark)
 			kit.add("cone", Vector3(0, -h.y*.55, -h.z-.12), Vector3(.12, .22, .12), dark, Vector3(-PI*.5, 0, 0))
 		"kappa":
 			# A water dish ringed with hair on top, and a turtle shell on the back.
@@ -568,6 +575,47 @@ static func _crust_line(face: Face, half: Vector2, power: float, roll: float, of
 		var at := origin+along*(step*(i+.5)-behind)
 		face.mark(at.x, at.y, Vector2(step*1.3, thickness), color, roll, lift)
 
+## Berry Overalls are an actual garment: the trousers wrap right round the lower body and the
+## straps run up the front, over the shoulders and down the back. The Kinu's own flavour still
+## shows above the waist, which is the whole point of dungarees. Nothing may cross the face, so
+## the waistline is derived from where the expression actually ends rather than guessed.
+static func _overalls(kit: MeshKit, shape: KinuShape, face: Face) -> void:
+	var size := shape.size
+	var h := size*.5
+	var denim := Color("4f8cc9")
+	var dark_denim := Color("376fa9")
+	var berry := Color("d94e6b")
+	var gold := Color("f5c14e")
+	# The blush is the lowest thing _face draws, at the eye line minus .115.
+	var eye_y := h.y*.35 if shape.id == "tall" else 0.0
+	var waist := minf(-h.y*.26, eye_y-.16)
+	var hem := -h.y*1.04
+	# Trousers: one piece wrapping all four sides and the underside.
+	kit.add_rounded_box(Vector3(0, (waist+hem)*.5, 0), Vector3(size.x*1.05, waist-hem, size.z*1.05), denim, Vector3.ZERO, true, shape.roundness)
+	kit.add_rounded_box(Vector3(0, waist-.012, 0), Vector3(size.x*1.09, .075, size.z*1.09), dark_denim, Vector3.ZERO, true, shape.roundness)
+	kit.add_rounded_box(Vector3(0, hem+.05, 0), Vector3(size.x*1.08, .06, size.z*1.08), dark_denim, Vector3.ZERO, true, shape.roundness)
+	# A bib pocket on the front of the trousers, with the berries in it.
+	var pocket := (waist+hem)*.5+.02
+	kit.add_rounded_box(Vector3(0, pocket, h.z*1.08), Vector3(size.x*.38, (waist-hem)*.52, .03), dark_denim, Vector3.ZERO, true, 4)
+	for side in [-1.0, 1.0]:
+		kit.add("sphere", Vector3(side*.07, pocket+.02, h.z*1.08+.05), Vector3.ONE*.075, berry, Vector3.ZERO, false)
+		kit.add("sphere", Vector3(side*.07, pocket+.07, h.z*1.08+.05), Vector3(.05, .04, .02), Color("4d7a40"), Vector3(0, 0, side*.4), false)
+	# Straps: they hug the front surface on their way up, then cross the shoulder as real
+	# geometry and run back down behind. Set out at the corners so they clear the cheeks.
+	for side in [-1.0, 1.0]:
+		# No shoulder pad: a thin strap running up the front, across the shoulder and back down
+		# behind. The pad read as a dark blob stuck on the chest.
+		var shoulder := minf(waist+size.y*.34, h.y*.72)
+		var strap := minf(.085, size.x*.085)
+		var x: float = side*h.x*.95
+		for z in [h.z*.84, -h.z*.84]:
+			kit.add_rounded_box(Vector3(x, (waist+shoulder)*.5, z), Vector3(strap, maxf(shoulder-waist, .08), strap*.9), denim, Vector3(0, 0, side*.12), true, 4)
+		kit.add_rounded_box(Vector3(x, shoulder, 0), Vector3(strap, strap*.9, size.z*.86), denim, Vector3(0, 0, side*.12), true, 4)
+		kit.add("sphere", Vector3(side*h.x*.92, waist+minf(.06, size.y*.08), h.z*.94), Vector3.ONE*minf(.065, size.x*.065), gold, Vector3.ZERO, false)
+	# A seam down each leg.
+	for side in [-1.0, 1.0]:
+		kit.add_rounded_box(Vector3(side*h.x*.62, (waist+hem)*.5, h.z*1.07), Vector3(.028, (waist-hem)*.66, .02), dark_denim, Vector3.ZERO, false, 3)
+
 ## Bright, toy-like Catcher outfits. Shared primitives keep them readable on every Kinu shape,
 ## while each style gets its own silhouette, prop or surface motif.
 static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: Color, face: Face) -> void:
@@ -602,10 +650,15 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 			if style == "red_panda":
 				for side in [-1.0, 1.0]:
 					face.mark(side*h.x*.8, eye_y, Vector2(.16, .3), cream, side*.3, .02)
-			for i in (8 if style == "snow_fox" else 6):
-				var u := i/float(7 if style == "snow_fox" else 5)
-				var tone := cream if style == "snow_fox" or (style == "shiba" and i > 3) else (dark if style == "red_panda" and i%2 else color)
-				kit.add("sphere", Vector3(h.x*.72+i*.055, -h.y*.42+sin(u*PI)*.34, -h.z-.08-i*.07), Vector3.ONE*(.28-i*.018), tone)
+			var segments := 8 if style == "snow_fox" else 7
+			for i in segments:
+				var u := i/float(segments-1)
+				var tone := cream if style == "snow_fox" or (style == "shiba" and u > .6) else (dark if style == "red_panda" and i % 2 else color)
+				# Rooted at the base of the back and curling up past the shoulder line, offset
+				# just enough to stay in silhouette from the front three-quarter view.
+				var a := -.9+u*2.0
+				var reach := minf(.42, size.y*.46)
+				kit.add("fine", Vector3(minf(h.x*.72, .45)+u*.16, -h.y*.45+reach*(sin(a)+.78), -h.z*.96-u*.1-cos(a)*.08), Vector3.ONE*(.38-u*.14), tone)
 			if style == "snow_fox":
 				for flake in [-1.0, 1.0]:
 					_cute_star(kit, Vector3(flake*h.x*.72, top+.02, front*.45), .11, sky, Vector3.FORWARD)
@@ -620,7 +673,7 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 					face.mark(side*h.x*.76, eye_y-.12, Vector2(.17, .15), Color("ffb0b8"), 0, .02)
 				kit.add("sphere", Vector3(.08, top+.13, .02), Vector3(.12, .2, .08), Color("d99b3d"), Vector3(0, 0, .6))
 			elif style == "otter":
-				face.mark(0, -h.y*.72, Vector2(size.x*.44, size.y*.17), cream, 0, .018)
+				_belly(face, Vector2(0, -h.y*.72), Vector2(size.x*.44, size.y*.17), cream, .018)
 				var shell := Vector3(0, -h.y*.3, front+.18)
 				kit.add("sphere", shell, Vector3(.3, .26, .08), Color("d99b65"))
 				for i in 3:
@@ -628,20 +681,21 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 			else:
 				_bell(kit, Vector3(0, -h.y*.72, front+.08), .12)
 		"penguin":
-			face.mark(0, -h.y*.45, Vector2(size.x*.58, size.y*.58), cream, 0, .016)
-			kit.add("cone", Vector3(0, eye_y-.06, front+.12), Vector3(.09, .17, .09), Color("f2a12e"), Vector3(PI*.5, 0, 0))
+			_belly(face, Vector2(0, -h.y*.45), Vector2(size.x*.58, size.y*.58), cream, .016)
+			kit.add("cone", Vector3(0, eye_y-.06, front+.1), Vector3(.09, .17, .09), Color("f2a12e"), Vector3(PI*.5, 0, 0))
 			for side in [-1.0, 1.0]:
-				kit.add("sphere", Vector3(side*(h.x+.1), -.08, -.02), Vector3(.08, size.y*.46, .28), color.darkened(.12), Vector3(.2, 0, side*.55))
-				kit.add("sphere", Vector3(side*.23, -h.y-.08, front*.45), Vector3(.22, .07, .3), Color("f2a12e"))
+				kit.add("sphere", Vector3(side*h.x*.98, -.08, -.02), Vector3(.12, size.y*.52, .3), color.lightened(.22), Vector3(.2, 0, side*.5))
+				kit.add("sphere", Vector3(side*(h.x*.98+.03), -.1, -.02), Vector3(.08, size.y*.42, .22), color.darkened(.1), Vector3(.2, 0, side*.5), false)
+				kit.add("sphere", Vector3(side*minf(.23, h.x*.44), -h.y-.02, h.z*.4), Vector3(.22, .08, .3), Color("f2a12e"))
 		"duckling":
 			kit.add("sphere", Vector3(0, top+.13, 0), Vector3(.12, .2, .12), color)
 			kit.add("cone", Vector3(0, eye_y-.06, front+.15), Vector3(.11, .23, .11), Color("f28c28"), Vector3(PI*.5, 0, 0))
 			for side in [-1.0, 1.0]:
 				kit.add("sphere", Vector3(side*(h.x+.08), -.05, 0), Vector3(.1, size.y*.4, .34), color.lightened(.06), Vector3(.15, 0, side*.5))
 		"seal":
-			face.mark(0, eye_y-.15, Vector2(.3, .16), cream, 0, .02)
+			_belly(face, Vector2(0, eye_y-.15), Vector2(.3, .16), cream, .02)
 			for side in [-1.0, 1.0]:
-				kit.add("sphere", Vector3(side*(h.x+.09), -h.y*.38, 0), Vector3(.09, .32, .28), color.darkened(.06), Vector3(.2, 0, side*.75))
+				kit.add("sphere", Vector3(side*(h.x+.11), -h.y*.38, 0), Vector3(.1, .34, .3), color.lightened(.2), Vector3(.2, 0, side*.75))
 				for whisker in [-1.0, 1.0]:
 					face.mark(side*h.x*.2, eye_y-.15+whisker*.045, Vector2(.19, .012), dark, side*.08, .025)
 			for side in [-1.0, 1.0]:
@@ -711,7 +765,7 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 			for side in [-1.0, 1.0]:
 				_cute_star(kit, Vector3(side*(h.x+.04), -.15, .04), .15, cream, Vector3(side, 0, 0))
 		"moon_outfit":
-			kit.add("torus", Vector3(0, top+.14, 0), Vector3(.34, .11, .34), gold, Vector3(PI*.5, 0, 0))
+			kit.add("torus", Vector3(0, top+.02, 0), Vector3(.34, .11, .34), gold, Vector3(PI*.5, 0, 0))
 			for side in [-1.0, 1.0]:
 				_cute_star(kit, Vector3(side*h.x*.65, top+.02, front*.35), .1, cream, Vector3.FORWARD)
 		"sunflower", "daisy":
@@ -742,7 +796,7 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 				face.mark(side*h.x*.33, -h.y*.42, Vector2(.055, .055), gold, 0, .026)
 			face.mark(0, -h.y*.64, Vector2(.22, .12), Color("376fa9"), 0, .03)
 		"artist":
-			kit.add("sphere", Vector3(-.08, top+.12, 0), Vector3(size.x*.55, .13, size.z*.48), Color("d9485f"), Vector3(0, 0, -.12))
+			kit.add("sphere", Vector3(-.08, top-.01, 0), Vector3(size.x*.55, .16, size.z*.48), Color("d9485f"), Vector3(0, 0, -.12))
 			_cute_bow(kit, Vector3(h.x+.06, -.1, .08), Color("4f8cc9"), .18)
 			var palette := Vector3(-h.x-.12, -h.y*.25, front*.2)
 			kit.add("sphere", palette, Vector3(.08, .3, .25), Color("d9a66b"), Vector3(0, 0, .5))
@@ -759,9 +813,8 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 				kit.add("sphere", Vector3(side*(h.x+.07), -h.y*.2, 0), Vector3(.11, .38, .3), cream, Vector3(.1, 0, side*.45))
 				_cute_star(kit, Vector3(side*h.x*.78, -.2, front+.04), .11, gold, Vector3.FORWARD)
 			_band(kit, shape, -.72, .1, cream)
-			var wand := Vector3(h.x+.22, -.05, front*.2)
-			kit.add("cylinder", wand, Vector3(.035, .7, .035), gold, Vector3(0, 0, -.35))
-			_cute_star(kit, wand+Vector3(.22, .34, 0), .14, pink, Vector3.FORWARD)
+			var wand := _stalk(kit, Vector3(h.x+.1, -.4, front*.2), .7, .035, Vector3(0, 0, -.35), gold)
+			_cute_star(kit, wand, .14, pink, Vector3.FORWARD)
 		"moon_princess":
 			kit.add("torus", Vector3(0, top+.18, .02), Vector3(.32, .09, .32), gold, Vector3(PI*.5, 0, 0))
 			for i in 5:
@@ -816,12 +869,11 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 				kit.add("sphere", Vector3((i-2)*.14, top+.11, front*.45), Vector3.ONE*.055, cream, Vector3.ZERO, false)
 		"fairy":
 			for side in [-1.0, 1.0]:
-				kit.add("sphere", Vector3(side*(h.x+.12), .1, -h.z*.25), Vector3(.08, .48, .42), Color("dff8ff"), Vector3(.25, side*.35, side*.65))
-				kit.add("sphere", Vector3(side*(h.x+.12), -h.y*.35, -h.z*.25), Vector3(.07, .3, .3), Color("ffdff0"), Vector3(.25, side*.35, side*.8))
+				kit.add("sphere", Vector3(side*(h.x+.24), h.y*.6, -h.z*.5), Vector3(.5, .08, .82), Color("dff8ff"), Vector3(.25, side*-.45, side*.55))
+				kit.add("sphere", Vector3(side*(h.x+.28), h.y*.12, -h.z*.6), Vector3(.38, .07, .6), Color("ffdff0"), Vector3(.2, side*-.4, side*.5))
 				_cute_flower(kit, Vector3(side*h.x*.42, top+.11, front*.18), .1, pink if side < 0 else cream, Vector3.FORWARD)
-			var wand := Vector3(h.x+.2, -.08, front*.18)
-			kit.add("cylinder", wand, Vector3(.025, .62, .025), gold, Vector3(0, 0, -.4))
-			_cute_star(kit, wand+Vector3(.2, .29, 0), .12, gold, Vector3.FORWARD)
+			var wand := _stalk(kit, Vector3(h.x+.08, -.38, front*.18), .62, .025, Vector3(0, 0, -.4), gold)
+			_cute_star(kit, wand, .12, gold, Vector3.FORWARD)
 		"builder":
 			# A chunky hard hat, reflective vest and little tool belt make the early stacking reward read instantly.
 			kit.add("cylinder", Vector3(0, top+.1, 0), Vector3(size.x*.54, .16, size.z*.54), Color("ffd34f"))
@@ -840,10 +892,47 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 			_band(kit, shape, .72, .07, Color("e54d5b"))
 			_band(kit, shape, -.68, .08, Color("e54d5b"))
 		"yukata":
-			_band(kit, shape, -.72, .18, Color("344f9d"))
-			for i in 6:
-				_cute_flower(kit, Vector3((i%2-.5)*size.x*.72, (-.25+(i/3)*.24)*size.y, front+.025), .07, Color("ffd5e5"), Vector3.FORWARD)
-			_cute_bow(kit, Vector3(0, -h.y*.68, -h.z-.1), Color("e75a8d"), .16)
+			# A summer festival robe. The front of a Kinu is almost all face, so surface detail
+			# there reads as nothing: the identity is carried by silhouette instead — hanging
+			# sleeves, a bright obi, a kitsune mask pushed up on the head and an uchiwa fan.
+			var obi := Color("e0553f")
+			var paper := Color("fdf6ea")
+			for side in [-1.0, 1.0]:
+				kit.add_rounded_box(Vector3(side*(h.x+.11), -h.y*.26, 0), Vector3(.17, size.y*.6, size.z*.56), color.lightened(.09), Vector3(0, 0, side*.1), true, 4)
+				kit.add("fine", Vector3(side*(h.x+.12), -h.y*.54, 0), Vector3(.18, .17, size.z*.56), color.lightened(.09))
+				kit.add_rounded_box(Vector3(side*(h.x+.12), -h.y*.57, 0), Vector3(.19, size.y*.11, size.z*.58), obi.darkened(.14), Vector3(0, 0, side*.1), false, 4)
+				for burst in 2:
+					var spot := Vector3(side*(h.x+.2), -h.y*(.06+burst*.34), 0)
+					for ray in 6:
+						var a := TAU*ray/6.0
+						kit.add("sphere", spot+Vector3(0, sin(a)*.11, cos(a)*.11), Vector3(.03, .09, .03), [Color("ffd5e5"), Color("8ce0ff")][burst], Vector3(a+PI*.5, 0, 0), false)
+			_band(kit, shape, -.66, .22, obi)
+			_band(kit, shape, -.78, .05, gold)
+			# Out on the hip and in a contrasting gold: under the chin and in the obi's own red
+			# it read as a moustache.
+			_cute_bow(kit, Vector3(h.x*.78, -h.y*.74, front*1.16), gold, .21)
+			kit.add("sphere", Vector3(h.x*.78, -h.y*.74, front*1.26), Vector3.ONE*.085, Color("c0392f"), Vector3.ZERO, false)
+			# A kitsune mask pushed up on the side of the head, on its cord.
+			var mask := Vector3(-h.x*.56, top+.01, front*.44)
+			kit.add_rounded_box(Vector3(0, top+.02, 0), Vector3(size.x*1.12, .05, .05), Color("c0392f"), Vector3.ZERO, false, 4)
+			kit.add("fine", mask, Vector3(.56, .5, .24), paper, Vector3(0, 0, .3))
+			kit.add("fine", mask+Vector3(.02, -.2, .05), Vector3(.28, .26, .2), paper, Vector3(0, 0, .3))
+			for ear in [-1.0, 1.0]:
+				kit.add("cone", mask+Vector3(ear*.2-.05, .25, .02), Vector3(.24, .26, .22), paper, Vector3(0, 0, .3+ear*.42))
+				kit.add("cone", mask+Vector3(ear*.2-.05, .24, .11), Vector3(.11, .15, .07), Color("d8433c"), Vector3(0, 0, .3+ear*.42), false)
+			kit.add("sphere", mask+Vector3(-.02, .11, .13), Vector3(.36, .07, .06), Color("d8433c"), Vector3(0, 0, .3), false)
+			kit.add("sphere", mask+Vector3(.01, -.3, .12), Vector3(.1, .08, .06), dark, Vector3(0, 0, .3), false)
+			for eye in [-1.0, 1.0]:
+				kit.add("sphere", mask+Vector3(eye*.13-.02, -.03, .13), Vector3(.11, .08, .05), dark, Vector3(0, 0, .3+eye*.2), false)
+			# An uchiwa fan held out at the side, with its own little firework on the paper.
+			var fan := Vector3(h.x+.48, h.y*.24, front*.24)
+			kit.add("cylinder", fan, Vector3(.58, .05, .58), paper, Vector3(PI*.5, 0, .22))
+			kit.add("torus", fan, Vector3(.62, .06, .62), Color("b8794a"), Vector3(PI*.5, 0, .22), false)
+			kit.add_rounded_box(fan+Vector3(-.08, -.4, 0), Vector3(.07, .4, .05), Color("c99a5e"), Vector3(0, 0, .22), true, 4)
+			for ray in 8:
+				var a := TAU*ray/8.0
+				kit.add("sphere", fan+Vector3(cos(a)*.14, sin(a)*.14, .04), Vector3(.13, .035, .03), Color("e0553f"), Vector3(0, 0, a), false)
+				kit.add("sphere", fan+Vector3(cos(a)*.23, sin(a)*.23, .04), Vector3.ONE*.045, Color("f2a83c"), Vector3.ZERO, false)
 		"climber":
 			kit.add("sphere", Vector3(0, top+.12, 0), Vector3(size.x*.52, .16, size.z*.52), Color("d84c4d"))
 			kit.add("sphere", Vector3(0, top+.27, -.08), Vector3(.16, .16, .16), Color("fff4df"))
@@ -886,10 +975,360 @@ static func _cute_outfit(kit: MeshKit, shape: KinuShape, style: String, color: C
 			_band(kit, shape, -.62, .16, Color("f7f0d9"))
 			_band(kit, shape, -.86, .17, Color("754b35"))
 			face.mark(0, -h.y*.71, Vector2(.055, size.y*.23), Color("d94648"), 0, .03)
+		"onigiri":
+			# Worn as a rice ball: a soft rice peak, a sesame dusting and a nori belt
+			# wide enough to read as seaweed rather than a shadow under the chin.
+			kit.add("cone", Vector3(0, top+.04, 0), Vector3(size.x*1.34, .42, size.z*1.22), color.lightened(.04))
+			kit.add("fine", Vector3(0, top+.2, 0), Vector3(.44, .34, .42), color.lightened(.04))
+			kit.add("sphere", Vector3(size.x*.2, top+.3, size.z*.2), Vector3(.19, .16, .17), Color("c9424b"))
+			_band(kit, shape, -.74, .3, NORI)
+			_band(kit, shape, -.52, .05, Color("47705c"))
+			for i in 9:
+				_speck(face, shape, sin(i*2.4)*h.x*.82, cos(i*1.9)*h.y*.82, Vector2(.075, .035), Color("4a3d33"), i*.8, .024)
+		"dumpling":
+			# A pleated gyoza crown with a pinched crimp, sitting in its bamboo steamer.
+			kit.add("fine", Vector3(0, top+.02, 0), Vector3(size.x*1.04, .3, size.z*1.0), color.lightened(.03))
+			for i in 5:
+				var t := (i-2)/2.0
+				kit.add("fine", Vector3(t*size.x*.44, top+.2-absf(t)*.07, -.02), Vector3(.32, .44, .38), color.lightened(.1), Vector3(0, 0, t*.55))
+				kit.add_rounded_box(Vector3(t*size.x*.44, top+.24-absf(t)*.08, .18), Vector3(.04, .3, .05), Color("bb8a4f"), Vector3(0, 0, t*.55), false, 4)
+			for i in 3:
+				kit.add("fine", Vector3((i-1)*.34, top+.5+absf(i-1)*.1, -.24), Vector3(.2, .15, .18), Color("fdfaf2"), Vector3.ZERO, false)
+		"crab":
+			# Stalk eyes, two waving pincers, little side legs and a plated belly.
+			for side in [-1.0, 1.0]:
+				var eye := _stalk(kit, Vector3(side*size.x*.2, top-.04, front*.24), .36, .05, Vector3(0, 0, side*-.2), color)
+				kit.add("sphere", eye, Vector3.ONE*.17, cream)
+				kit.add("sphere", eye+Vector3(0, .01, .08), Vector3.ONE*.08, dark, Vector3.ZERO, false)
+				kit.add("sphere", Vector3(side*(h.x+.14), -h.y*.42, h.z*.2), Vector3(.13, .32, .17), color.darkened(.1), Vector3(0, 0, side*.55))
+				kit.add("sphere", Vector3(side*(h.x+.3), -h.y*.04, h.z*.22), Vector3(.24, .3, .2), color, Vector3(0, 0, side*.4))
+				kit.add("sphere", Vector3(side*(h.x+.35), h.y*.2, h.z*.24), Vector3(.19, .15, .16), color.lightened(.14), Vector3(0, 0, side*-.25))
+				for leg in 2:
+					kit.add("sphere", Vector3(side*(h.x+.05), -h.y-.02, h.z*(.2-leg*.5)), Vector3(.1, .08, .26), color.darkened(.16), Vector3(0, 0, side*.35))
+			face.mark(0, -h.y*.76, Vector2(size.x*.52, size.y*.15), Color("ffd9bd"), 0, .02)
+			for i in 3:
+				face.mark((i-1)*size.x*.26, h.y*.56, Vector2(size.x*.2, .035), color.darkened(.2), 0, .022)
+		"ladybug":
+			# A black head panel, a wing-case seam down the middle and spots front and back.
+			_band(kit, shape, .78, .18, dark)
+			kit.add_rounded_box(Vector3(0, -h.y*.1, -h.z*1.04), Vector3(.06, size.y*1.1, .05), dark, Vector3.ZERO, false, 4)
+			for side in [-1.0, 1.0]:
+				var tip := _stalk(kit, Vector3(side*size.x*.16, top-.04, front*.2), .36, .036, Vector3(0, 0, side*-.34), dark)
+				kit.add("sphere", tip, Vector3.ONE*.095, dark)
+				face.mark(side*h.x*.88, h.y*.3, Vector2(.19, .19), dark, 0, .024)
+				face.mark(side*h.x*.8, -h.y*.78, Vector2(.22, .22), dark, 0, .024)
+				face.mark(side*h.x*.4, -h.y*.86, Vector2(.15, .15), dark, 0, .024)
+				kit.add("sphere", Vector3(side*h.x*.55, h.y*.25, -h.z*1.06), Vector3(.22, .22, .06), dark, Vector3.ZERO, false)
+				kit.add("sphere", Vector3(side*h.x*.6, -h.y*.45, -h.z*1.06), Vector3(.18, .18, .06), dark, Vector3.ZERO, false)
+				kit.add("sphere", Vector3(side*(h.x+.06), -h.y*.2, -h.z*.4), Vector3(.05, size.y*.42, .3), color.lightened(.2), Vector3(0, 0, side*.3))
+		"snail":
+			# A big ribbed shell riding on the back, tall curious eye stalks and a soft foot.
+			var shell := Color("d9a05f")
+			var hub := Vector3(0, h.y*.4, -h.z*.9)
+			for i in 7:
+				var t := i/6.0
+				var ring := minf(size.x, size.y)*(1.0-t*.76)
+				var a := -.6+t*3.2
+				var at := hub+Vector3(cos(a)*t*.13, sin(a)*t*.13, -.06-t*.07)
+				kit.add("torus", at, Vector3(ring, .3-t*.17, ring), shell.lightened(t*.26) if i % 2 else shell.darkened(.1), Vector3(PI*.5, 0, 0))
+			kit.add("sphere", hub+Vector3(cos(2.6)*.13, sin(2.6)*.13, -.19), Vector3.ONE*.17, shell.lightened(.34))
+			for side in [-1.0, 1.0]:
+				var eye := _stalk(kit, Vector3(side*size.x*.19, top-.04, front*.22), .42, .05, Vector3(0, 0, side*-.22), color)
+				kit.add("sphere", eye, Vector3.ONE*.11, color.lightened(.16))
+				kit.add("sphere", eye+Vector3(0, .01, .05), Vector3.ONE*.05, dark, Vector3.ZERO, false)
+			kit.add_rounded_box(Vector3(0, -h.y-.04, .06), Vector3(size.x*1.22, .16, size.z*1.34), color.lightened(.2), Vector3.ZERO, true, 6)
+			face.mark(0, -h.y*.78, Vector2(size.x*.5, .04), color.lightened(.34), 0, .024)
+		"tempura_shrimp":
+			# Craggy batter all over, a striped tail fan at the back and two long whiskers.
+			for i in 16:
+				_speck(face, shape, sin(i*2.3)*h.x*.84, cos(i*1.7)*h.y*.84, Vector2(.12, .09), Color("ffd689") if i % 2 else Color("e4922f"), i*.7, .026)
+			for i in 6:
+				var a := TAU*i/6.0
+				kit.add("fine", Vector3(sin(a)*h.x*.5, top+.06, cos(a)*h.z*.5), Vector3(.26, .2, .24), color.lightened(.16 if i % 2 else 0.0))
+			var clear := _opening(shape, "").grow(.2)
+			for i in 12:
+				var a := TAU*i/12.0
+				var lump := Vector3(sin(a)*h.x*1.04, h.y*.52*sin(i*2.1), cos(a)*h.z*1.04)
+				if lump.z > 0 and clear.has_point(Vector2(lump.x, lump.y)):
+					continue
+				kit.add("fine", lump, Vector3(.36, .32, .36), color.lightened(.22 if i % 2 else .06))
+			for i in 3:
+				kit.add("cone", Vector3((i-1)*.26, -h.y*.36+absf(i-1)*.12, -h.z-.46), Vector3(.3, .56, .2), Color("ff8f7a") if i % 2 == 0 else Color("fff1e4"), Vector3(-1.05, 0, (i-1)*.5))
+			for side in [-1.0, 1.0]:
+				_stalk(kit, Vector3(side*size.x*.26, top-.06, -h.z*.16), .58, .026, Vector3(-.26, 0, side*.72), Color("d9653a"))
+				kit.add("sphere", Vector3(side*(h.x+.16), -h.y*.56, h.z*.24), Vector3(.1, .12, .32), Color("ff9a80"), Vector3(0, 0, side*.5))
+		"pufferfish":
+			# Puffed right up: spines all round the body, stubby fins and a pale belly.
+			var clear := _opening(shape, "").grow(.16)
+			var spine := color.darkened(.18)
+			for row in 3:
+				var lift := h.y*(.12-row*.44)
+				var waist := pow(maxf(1.0-pow(absf(lift/h.y)/1.15, shape.roundness), 0.0), 1.0/shape.roundness)
+				for i in 10:
+					var a := TAU*(i+row*.5)/10.0
+					if cos(a) > 0 and clear.has_point(Vector2(sin(a)*h.x*waist, lift)):
+						continue
+					kit.add("cone", Vector3(sin(a)*h.x*1.16*waist, lift, cos(a)*h.z*1.16*waist), Vector3(.3, .3, .3), spine, Vector3(cos(a)*1.4, 0, -sin(a)*1.4))
+			for i in 4:
+				var a := TAU*i/4.0+.5
+				kit.add("cone", Vector3(sin(a)*h.x*.46, top+.06, cos(a)*h.z*.44), Vector3(.3, .3, .3), spine, Vector3(cos(a)*.35, 0, -sin(a)*.35))
+			face.mark(0, -h.y*.72, Vector2(size.x*.56, size.y*.22), Color("fff2d8"), 0, .02)
+			for side in [-1.0, 1.0]:
+				kit.add("sphere", Vector3(side*(h.x+.08), -h.y*.24, h.z*.1), Vector3(.08, .26, .3), color.lightened(.18), Vector3(0, 0, side*.45))
+			kit.add("sphere", Vector3(0, -h.y*.3, -h.z-.22), Vector3(.1, .36, .34), color.lightened(.18), Vector3(.3, 0, 0))
+		"hermit_crab":
+			# The chase pair with Abyss: a borrowed spiral shell, a pearl, and two red pincers.
+			# A conch: the same coil that reads so clearly on the Snail, but in cream and pink
+			# with a drawn-out spire, so the two shells are never mistaken for each other.
+			var borrowed := Color("fff0e0")
+			var hub := Vector3(0, h.y*.38, -h.z*.9)
+			for i in 7:
+				var t := i/6.0
+				var ring := minf(size.x, size.y)*(1.04-t*.8)
+				var a := -.5+t*3.4
+				var at := hub+Vector3(cos(a)*t*.14, sin(a)*t*.14, -.06-t*.08)
+				kit.add("torus", at, Vector3(ring, .32-t*.19, ring), borrowed.darkened(t*.1) if i % 2 else Color("ffcfae").darkened(t*.06), Vector3(PI*.5, 0, 0))
+			kit.add("cone", hub+Vector3(cos(2.9)*.14, sin(2.9)*.14, -.22), Vector3(.24, .34, .24), Color("ffbb9c"), Vector3(-1.4, 0, 0))
+			kit.add("torus", hub+Vector3(0, 0, -.02), Vector3(minf(size.x, size.y)*1.08, .16, minf(size.x, size.y)*1.08), Color("ff9fae"), Vector3(PI*.5, 0, 0), false)
+			for side in [-1.0, 1.0]:
+				var eye := _stalk(kit, Vector3(side*size.x*.2, top-.04, front*.24), .34, .045, Vector3(0, 0, side*-.2), color.lightened(.1), )
+				kit.add("sphere", eye, Vector3.ONE*.12, cream)
+				kit.add("sphere", eye+Vector3(0, .01, .055), Vector3.ONE*.055, dark, Vector3.ZERO, false)
+				kit.add("sphere", Vector3(side*(h.x+.13), -h.y*.4, h.z*.22), Vector3(.12, .3, .16), color.darkened(.12), Vector3(0, 0, side*.55))
+				kit.add("sphere", Vector3(side*(h.x+.29), -h.y*.02, h.z*.24), Vector3(.23, .29, .19), color, Vector3(0, 0, side*.4))
+				kit.add("sphere", Vector3(side*(h.x+.34), h.y*.21, h.z*.26), Vector3(.18, .14, .15), color.lightened(.16), Vector3(0, 0, side*-.25))
+				for leg in 2:
+					kit.add("sphere", Vector3(side*(h.x+.04), -h.y-.02, h.z*(.15-leg*.42)), Vector3(.09, .08, .24), color.darkened(.18), Vector3(0, 0, side*.35))
+		"firefly":
+			# Lace wings, feelers and a lantern tail, with the glow carried round the front
+			# so the pull reads as a firefly even head-on.
+			for side in [-1.0, 1.0]:
+				# Long wings laid back over the body, not fins sticking out of the ribs.
+				kit.add("sphere", Vector3(side*(h.x+.36), h.y*.52, -h.z*.34), Vector3(.78, .08, .5), Color("d6f5dd"), Vector3(.2, side*-.62, side*.45))
+				kit.add("sphere", Vector3(side*(h.x+.3), h.y*.06, -h.z*.5), Vector3(.6, .075, .4), Color("bfe8cf"), Vector3(.18, side*-.55, side*.65))
+				var tip := _stalk(kit, Vector3(side*size.x*.17, top-.05, front*.2), .44, .03, Vector3(0, 0, side*-.38), Color("2f4a34"))
+				kit.add("sphere", tip, Vector3.ONE*.08, Color("f7ef79"))
+			_band(kit, shape, -.76, .2, Color("f7ef79"))
+			kit.add("sphere", Vector3(0, -h.y*.86, -h.z-.2), Vector3(.36, .3, .3), Color("f7ef79"))
+			kit.add("sphere", Vector3(0, -h.y*.86, -h.z-.3), Vector3(.24, .2, .16), Color("fffdd6"), Vector3.ZERO, false)
+			for i in 5:
+				_speck(face, shape, sin(i*2.6)*h.x*.78, h.y*.3+cos(i*1.8)*h.y*.3, Vector2(.07, .07), Color("cdeb8f"), 0, .024)
+		"pumpkin":
+			# Carved ribs round the front, a bulging crown of segments, stem, vine and leaf.
+			var rib := color.darkened(.24)
+			var crust_half := Vector2(face.half.x, face.half.y)*.94
+			for i in 5:
+				_crust_line(face, crust_half, shape.roundness, PI*.5, (i-2)*size.x*.3, rib, .04, .02)
+			for i in 8:
+				var a := TAU*i/8.0
+				kit.add("fine", Vector3(sin(a)*h.x*.74, top-.02, cos(a)*h.z*.72), Vector3(.3, .2, .3), color.lightened(.06))
+			var stem := _stalk(kit, Vector3(0, top-.04, 0), .34, .1, Vector3(0, 0, -.12), Color("4d7a40"))
+			for i in 3:
+				kit.add("torus", stem+Vector3(.09+i*.055, .03+i*.07, -.01), Vector3(.14-i*.012, .032, .14-i*.012), Color("6aa44a"), Vector3(.45, 0, PI*.5), false)
+			# The leaf grows off the stem, so its inner edge has to overlap it.
+			kit.add("sphere", Vector3(-.19, top+.09, .05), Vector3(.46, .06, .3), Color("74b84a"), Vector3(0, .45, .28))
+			kit.add("sphere", Vector3(-.4, top+.05, .11), Vector3(.3, .05, .2), Color("5f9c3c"), Vector3(0, .5, .2))
+		"snowman":
+			# A tall black hat with a holly band, a knitted scarf with a trailing end,
+			# twig arms and a scatter of fresh snow.
+			kit.add("cylinder", Vector3(0, top+.06, 0), Vector3(size.x*.66, .06, size.z*.62), dark)
+			kit.add("cylinder", Vector3(0, top+.28, 0), Vector3(size.x*.44, .42, size.z*.42), dark)
+			kit.add("cylinder", Vector3(0, top+.13, 0), Vector3(size.x*.45, .08, size.z*.43), Color("d84d58"))
+			kit.add("sphere", Vector3(size.x*.2, top+.13, size.z*.24), Vector3.ONE*.075, Color("4f8f4a"), Vector3.ZERO, false)
+			_band(kit, shape, -.68, .16, Color("d84d58"))
+			kit.add_rounded_box(Vector3(h.x*.72, -h.y*.44, front*.5), Vector3(.18, size.y*.44, .12), Color("d84d58"), Vector3(0, 0, .14), true, 5)
+			for i in 3:
+				kit.add_rounded_box(Vector3(h.x*.72, -h.y*.44-i*size.y*.12, front*.5+.02), Vector3(.2, .03, .02), Color("b53a46"), Vector3.ZERO, false, 4)
+			for side in [-1.0, 1.0]:
+				kit.add("cylinder", Vector3(side*(h.x+.2), -h.y*.06, -.02), Vector3(.04, .58, .04), Color("7a5236"), Vector3(0, 0, side*1.15))
+				for twig in 2:
+					kit.add("cylinder", Vector3(side*(h.x+.44), h.y*.04+twig*.12, -.02), Vector3(.03, .2, .03), Color("7a5236"), Vector3(0, 0, side*(.55+twig*.7)))
+			for i in 3:
+				face.mark(0, -h.y*(.84-i*.1), Vector2(.09, .09), dark, 0, .026)
+			for i in 9:
+				_speck(face, shape, sin(i*2.5)*h.x*.86, cos(i*1.6)*h.y*.86, Vector2(.075, .075), Color("bcd9f0"), 0, .022)
+		"firework":
+			# A night-sky suit that is going off: three rockets bursting above the crown.
+			for i in 22:
+				_speck(face, shape, sin(i*2.3)*h.x*.86, cos(i*1.7)*h.y*.86, Vector2(.04, .04), Color("fff3b0") if i % 3 else Color("8ce0ff"), 0, .022)
+			for burst in 3:
+				var origin := Vector3((burst-1)*size.x*.32, top-.06, -.02)
+				var tone: Color = RAINBOW[(burst*2) % RAINBOW.size()]
+				var head := _stalk(kit, origin, .34, .035, Vector3(0, 0, (burst-1)*.2), tone.darkened(.25))
+				for ray in 7:
+					var a := PI*ray/6.0
+					kit.add("sphere", head+Vector3(cos(a)*.26, sin(a)*.26, 0), Vector3(.055, .2, .045), tone, Vector3(0, 0, PI*.5-a), false)
+					kit.add("sphere", head+Vector3(cos(a)*.42, sin(a)*.42, 0), Vector3.ONE*.05, tone.lightened(.3), Vector3.ZERO, false)
+				_cute_star(kit, head+Vector3(0, 0, .06), .13, tone.lightened(.25), Vector3.FORWARD)
+			for side in [-1.0, 1.0]:
+				_cute_star(kit, Vector3(side*h.x*.8, h.y*.1, front+.03), .13, gold, Vector3.FORWARD)
+		"ramen_bowl":
+			# Sat right inside the bowl: a flared red bowl round the legs, a noodle nest
+			# on the crown with nori, naruto and egg, and chopsticks across the rim.
+			var bowl := Color("d84a3d")
+			# The Kinu sits in the bowl, but a bowl wide enough to flare around it reaches well
+			# past the piece's collision shape, so in a packed box the bowls slide through each
+			# other. It hugs the lower body instead, with the rim doing the reading.
+			kit.add_rounded_box(Vector3(0, -h.y*.74, 0), Vector3(size.x*1.1, size.y*.46, size.z*1.1), bowl, Vector3.ZERO, true, shape.roundness)
+			kit.add("torus", Vector3(0, -h.y*.5, 0), Vector3(size.x*1.16, .15, size.z*1.16), Color("f7efe0"))
+			kit.add("cylinder", Vector3(0, -h.y-.05, 0), Vector3(size.x*.46, .12, size.z*.46), Color("b03a30"))
+			for i in 9:
+				var a := TAU*i/9.0
+				kit.add_rounded_box(Vector3(sin(a)*size.x*.56, -h.y*.76, cos(a)*size.z*.56), Vector3(.12, .18, .08), Color("f7efe0"), Vector3(0, -a, 0), false, 4)
+			kit.add("fine", Vector3(0, top-.02, 0), Vector3(size.x*1.02, .3, size.z*.98), Color("f2dda3"))
+			for i in 9:
+				var a := TAU*i/9.0
+				var loop := size.x*(.34+fmod(i*.17, .2))
+				kit.add("torus", Vector3(sin(a)*.11, top+.04+fmod(i*.27, .08), cos(a)*.09), Vector3(loop, .07, loop), Color("fbefc4"), Vector3(PI*.5, a, 0), false)
+			kit.add_rounded_box(Vector3(size.x*.34, top+.18, .1), Vector3(.3, .32, .03), Color("3f6552"), Vector3(0, 0, .22), true, 3)
+			kit.add("cylinder", Vector3(-size.x*.3, top+.11, .1), Vector3(.24, .09, .24), Color("fdf6ec"))
+			kit.add("sphere", Vector3(-size.x*.3, top+.16, .1), Vector3(.14, .03, .14), Color("ff8fa3"), Vector3.ZERO, false)
+			for i in 5:
+				kit.add("cylinder", Vector3(sin(i*2.3)*size.x*.28, top+.13+fmod(i*.2, .04), cos(i*1.8)*size.z*.22), Vector3(.09, .08, .09), Color("8ec96a"))
+			for stick in 2:
+				kit.add("cylinder", Vector3(h.x*.56+stick*.07, h.y*.38, front*.3), Vector3(.045, .78, .045), Color("e7c08a"), Vector3(0, 0, -.3))
+		"narwhal":
+			# A long twisted horn, a pale speckled belly, side flippers and a fluked tail.
+			# A tusk, not a peg: a cone whose base is rooted in the brow, ribbed along its length.
+			var horn_root := Vector3(0, top-.18, front*.5)
+			var horn_lean := Vector3(-.5, 0, 0)
+			var horn_up := Basis.from_euler(horn_lean)*Vector3(0, 1, 0)
+			kit.add("cone", horn_root+horn_up*.42, Vector3(.32, .84, .32), Color("f6ecd6"), horn_lean)
+			for i in 6:
+				var t := i/5.0
+				kit.add("torus", horn_root+horn_up*(.08+t*.62), Vector3(.33-t*.24, .085, .33-t*.24), Color("c2a97c"), Vector3(PI*.5-.5, 0, 0), false)
+			face.mark(0, -h.y*.7, Vector2(size.x*.56, size.y*.26), Color("eaf6ff"), 0, .02)
+			for i in 10:
+				_speck(face, shape, sin(i*2.4)*h.x*.8, h.y*.35+cos(i*1.7)*h.y*.3, Vector2(.06, .045), color.darkened(.2), i*.5, .022)
+			for side in [-1.0, 1.0]:
+				kit.add("sphere", Vector3(side*(h.x+.14), -h.y*.28, h.z*.05), Vector3(.08, .3, .46), color.lightened(.14), Vector3(.1, 0, side*.6))
+			for side in [-1.0, 1.0]:
+				kit.add("sphere", Vector3(side*.2, -h.y*.52, -h.z-.24), Vector3(.46, .14, .4), color.lightened(.1), Vector3(0, side*.5, side*.35))
+		"kraken_hatchling":
+			# Legendary sea chase: a hooded mantle with fins, glowing spots, and tentacles
+			# curling right round the base with pale suckers.
+			kit.add("fine", Vector3(0, top+.16, -.02), Vector3(size.x*1.12, .6, size.z*1.04), color.lightened(.22))
+			for side in [-1.0, 1.0]:
+				kit.add("cone", Vector3(side*h.x*.84, top+.24, -h.z*.2), Vector3(.34, .42, .16), color.lightened(.36), Vector3(0, 0, side*-1.0))
+			for i in 8:
+				var a := TAU*i/8.0
+				var curl := color.lightened(.3 if i % 2 else .16)
+				kit.add("sphere", Vector3(sin(a)*h.x*.86, -h.y*.72, cos(a)*h.z*.86), Vector3(.17, .3, .17), curl, Vector3(cos(a)*.3, 0, -sin(a)*.3))
+				kit.add("sphere", Vector3(sin(a)*h.x*1.04, -h.y-.12, cos(a)*h.z*1.04), Vector3(.15, .22, .15), curl, Vector3(cos(a)*.75, 0, -sin(a)*.75))
+				kit.add("sphere", Vector3(sin(a)*h.x*1.2, -h.y-.22, cos(a)*h.z*1.2), Vector3(.11, .12, .11), curl.lightened(.15), Vector3(cos(a)*1.2, 0, -sin(a)*1.2))
+			for i in 9:
+				_speck(face, shape, sin(i*2.5)*h.x*.82, h.y*.3+cos(i*1.8)*h.y*.34, Vector2(.075, .075), Color("6ff2e0"), 0, .024)
+			for side in [-1.0, 1.0]:
+				kit.add("sphere", Vector3(side*h.x*.52, top+.34, front*.32), Vector3.ONE*.11, Color("9dfff0"), Vector3.ZERO, false)
+		"tsukumogami":
+			# Legendary yokai: a lantern body ribbed top to bottom, wooden caps, a rope
+			# handle and two little wisp flames drifting alongside.
+			var paper := color
+			var timber := Color("6d3b32")
+			kit.add("cylinder", Vector3(0, top+.04, 0), Vector3(size.x*1.04, .12, size.z*1.0), timber)
+			kit.add("cylinder", Vector3(0, -h.y-.04, 0), Vector3(size.x*1.04, .12, size.z*1.0), timber)
+			for frac in [-.94, -.74, .74, .94]:
+				_band(kit, shape, frac, .05, paper.darkened(.3))
+			kit.add("torus", Vector3(0, top+.2, 0), Vector3(.26, .05, .26), timber.lightened(.1), Vector3(0, 0, PI*.5))
+			kit.add("cylinder", Vector3(0, -h.y-.2, 0), Vector3(.06, .2, .06), timber)
+			kit.add("sphere", Vector3(0, -h.y-.34, 0), Vector3(.16, .2, .16), Color("d8433c"))
+			face.mark(0, -h.y*.66, Vector2(size.x*.3, size.y*.2), Color("d8433c"), 0, .024)
+			var flame := Vector3(h.x*.42, top+.04, .04)
+			kit.add("fine", flame, Vector3(.26, .3, .24), Color("ffa63d"))
+			kit.add("cone", flame+Vector3(.02, .18, 0), Vector3(.2, .3, .18), Color("ffc862"), Vector3(0, 0, -.2))
+			kit.add("fine", flame+Vector3(0, .02, .06), Vector3(.13, .16, .1), Color("fff0c2"), Vector3.ZERO, false)
+		"opening_day":
+			# Grand Opening exclusive: a gold kusudama split open on the crown, the way a shop's
+			# ceremonial ball is pulled open on its first day, with confetti bursting out, streamers
+			# spilling down both sides and a ribbon-cutting rosette.
+			var red := Color("d8403f")
+			var white := Color("fff7ec")
+			var r := minf(.28, size.x*.22)
+			var hinge := Vector3(0, top+.01, 0)
+			var open := .95
+			for side in [-1.0, 1.0]:
+				# Hinged at the bottom: each half tips outward, so its open face turns up and in.
+				var roll: float = side*-(PI*.5+open)
+				var base: Vector3 = hinge+Vector3(side*r*sin(open), r*cos(open), 0)
+				var inward := Basis.from_euler(Vector3(0, 0, roll))*Vector3.DOWN
+				kit.add("dome", base, Vector3.ONE*r*2, GOLD, Vector3(0, 0, roll))
+				kit.add("cylinder", base+inward*.012, Vector3(r*1.84, .02, r*1.84), white, Vector3(0, 0, roll), false)
+				kit.add("cylinder", base+inward*.022, Vector3(r*1.1, .02, r*1.1), red, Vector3(0, 0, roll), false)
+				# Painted bands round each half, so it reads as a ball rather than a bow.
+				kit.add("torus", base+Basis.from_euler(Vector3(0, 0, roll))*Vector3.UP*r*.42, Vector3(r*1.84, .1, r*1.84), red, Vector3(0, 0, roll), false)
+			kit.add("sphere", hinge, Vector3(.16, .1, .16), GOLD.darkened(.15))
+			# Confetti bursting out of the open ball.
+			for i in 11:
+				var a := PI*(i+.5)/11.0
+				var reach := r*1.4+fmod(i*.37, .18)
+				kit.add("block", hinge+Vector3(cos(a)*reach, r*1.1+sin(a)*reach*.9, fmod(i*.53, .2)-.1), Vector3(.08, .05, .02), RAINBOW[i % RAINBOW.size()], Vector3(i*.7, i*1.3, i*.9), false)
+			# Paper streamers hanging down each side, fluttering as they fall. Each link sits on the
+			# suit's own curve, so they hug a round Kinu instead of hanging off into the air.
+			var streamers := [GOLD, white, Color("7fc4f5")]
+			var k := shape.roundness
+			var skin := func(y: float) -> float:
+				return h.x*1.1*pow(maxf(1.0-pow(absf(y)/(h.y*1.08), k), 0.0), 1.0/k)+.012
+			for side in [-1.0, 1.0]:
+				for lane in 2:
+					var z_off: float = (lane-.5)*size.z*.46
+					var tone: Color = streamers[(lane+(1 if side > 0 else 0)) % 3]
+					var start := h.y*.86
+					var length := size.y*(.66-lane*.16)
+					var last := Vector3(side*skin.call(start), start, z_off)
+					for link in 5:
+						var t := (link+1)/5.0
+						var y := start-length*t
+						var next := Vector3(side*skin.call(y), y, z_off+sin(t*PI*2.2+lane*2.0)*.07)
+						var d := next-last
+						kit.add_rounded_box((last+next)*.5, Vector3(.025, d.length()+.03, .1), tone, Vector3(atan2(d.z, -d.y), 0, side*atan2(d.x*side, -d.y)*-1.0), false, 3)
+						last = next
+			_band(kit, shape, -.8, .12, white)
+			for i in 12:
+				_speck(face, shape, sin(i*2.3)*h.x*.86, cos(i*1.7)*h.y*.86, Vector2(.05, .05), RAINBOW[i % RAINBOW.size()] if i % 3 else GOLD, i*.6, .022)
+			# The ribbon-cutting rosette: pleated white ring, red centre, two tails.
+			var rosette := Vector3(h.x*.62, -h.y*.5, front+.04) if shape.id in ["slab", "long"] else Vector3(0, -h.y*.66, front+.05)
+			for tail in [-1.0, 1.0]:
+				kit.add_rounded_box(rosette+Vector3(tail*.06, -.14, -.01), Vector3(.08, .24, .03), red, Vector3(0, 0, tail*.28), true, 3)
+			_cute_flower(kit, rosette, .14, white, Vector3.FORWARD)
+			kit.add("sphere", rosette+Vector3(0, 0, .03), Vector3(.14, .14, .05), red, Vector3.ZERO, false)
+			kit.add("sphere", rosette+Vector3(0, 0, .055), Vector3(.065, .065, .03), GOLD, Vector3.ZERO, false)
 		"bread_loaf":
 			kit.add("sphere", Vector3(0, top+.08, 0), Vector3(size.x*.62, .25, size.z*.62), Color("bd763f"))
 			for i in 3:
 				face.mark((i-1)*size.x*.22, top*.78, Vector2(.06, size.y*.28), Color("f4cb7b"), -.35, .024)
+
+## A belly panel laid down as overlapping small patches, each tangent to the bit of surface it
+## sits on. A single large mark only touches at its centre and peels away on a curved body.
+static func _belly(face: Face, at: Vector2, extent: Vector2, color: Color, lift: float) -> void:
+	for ring in 3:
+		var r := (ring+.6)/3.0
+		var count := 1 if ring == 0 else ring*8
+		for i in count:
+			var a := TAU*i/float(count)
+			face.mark(at.x+cos(a)*extent.x*.5*r, at.y+sin(a)*extent.y*.5*r, extent*.5, color, 0, lift)
+
+## A stalk rooted at `root`, leaning by `lean`, returning its tip so whatever belongs on the end
+## can be placed exactly there.
+static func _stalk(kit: MeshKit, root: Vector3, length: float, width: float, lean: Vector3, color: Color) -> Vector3:
+	var up := Basis.from_euler(lean)*Vector3(0, 1, 0)
+	kit.add("cylinder", root+up*(length*.5), Vector3(width, length, width), color, lean)
+	return root+up*length
+
+## A small firework burst painted on the cloth: short rays out of a bright centre.
+static func _hanabi(face: Face, shape: KinuShape, at: Vector2, radius: float, color: Color) -> void:
+	if _opening(shape, "").grow(radius*1.2).has_point(at):
+		return
+	for ray in 8:
+		var a := TAU*ray/8.0
+		face.mark(at.x+cos(a)*radius*.55, at.y+sin(a)*radius*.55, Vector2(radius*.72, .024), color, a, .024)
+		face.mark(at.x+cos(a)*radius, at.y+sin(a)*radius, Vector2(.032, .032), color.lightened(.32), 0, .026)
+	face.mark(at.x, at.y, Vector2(.055, .055), Color("fff3b0"), 0, .028)
+
+## A scattered surface dot that skips the face opening, so a pattern never lands on the eyes.
+static func _speck(face: Face, shape: KinuShape, x: float, y: float, extent: Vector2, color: Color, roll: float, lift: float) -> void:
+	if _opening(shape, "").grow(maxf(extent.x, extent.y)*.6).has_point(Vector2(x, y)):
+		return
+	face.mark(x, y, extent, color, roll, lift)
 
 static func _cute_bow(kit: MeshKit, at: Vector3, color: Color, scale: float) -> void:
 	for side in [-1.0, 1.0]:
@@ -1001,18 +1440,26 @@ static func _premium_outfit(kit: MeshKit, shape: KinuShape, style: String, color
 					face.mark(side*h.x*.95, chin-.02, Vector2(.02, .08), GOLD, 0, .02)
 			# A rainbow mane running over the crown and down the back, then a rainbow tail.
 			var mane: Array[Vector3] = []
-			# The mane falls from the crown over one side of the head and on down the back.
-			for i in 5:
-				mane.append(Vector3(-h.x*.25-i*.04, top+.08-i*.01, lerpf(h.z*.55, -h.z*.9, i/4.0)))
-			for i in 6:
-				mane.append(Vector3(-h.x*1.02-.06, lerpf(top-.02, -h.y*.35, i/5.0), lerpf(h.z*.5, -h.z*.3, i/5.0)))
-			for i in 4:
-				mane.append(Vector3(-h.x*.2, lerpf(h.y*.8, -h.y*.1, i/3.0), -h.z*1.08-.07))
+			# Many small tufts laid shoulder to shoulder read as hair. A handful of fat ones
+			# reads as scoops of ice cream sitting on the head.
+			# A crest along the top ridge and a fall down the back. Run down one flank it was
+			# hidden by the head from whichever side the card happened to show.
+			for i in 10:
+				var u := i/9.0
+				mane.append(Vector3(sin(u*3.0)*.05, top+.04-u*.03, lerpf(h.z*.5, -h.z*.95, u)))
+			for i in 8:
+				var u := i/7.0
+				mane.append(Vector3(sin(u*4.0)*.06, lerpf(top-.04, -h.y*.45, u), -h.z*1.02-.04))
 			for i in mane.size():
-				kit.add("sphere", mane[i], Vector3(.28, .24, .26), RAINBOW[i % RAINBOW.size()])
+				var u := i/float(maxi(mane.size()-1, 1))
+				var band := u*(RAINBOW.size()-1)
+				var tone: Color = RAINBOW[int(band)].lerp(RAINBOW[mini(int(band)+1, RAINBOW.size()-1)], fmod(band, 1.0))
+				kit.add("fine", mane[i], Vector3(.21, .2, .21), tone)
 			for i in 6:
 				var u := i/5.0
-				kit.add("sphere", Vector3(sin(u*4.0)*.12, -h.y*.35-u*.12+sin(u*3.0)*.1, -h.z-.12-u*.42), Vector3.ONE*(.24-u*.08), RAINBOW[i])
+				var band := u*(RAINBOW.size()-1)
+				var tone: Color = RAINBOW[int(band)].lerp(RAINBOW[mini(int(band)+1, RAINBOW.size()-1)], fmod(band, 1.0))
+				kit.add("fine", Vector3(sin(u*4.0)*.12, -h.y*.35-u*.12+sin(u*3.0)*.1, -h.z-.12-u*.42), Vector3.ONE*(.27-u*.08), tone)
 		"maneki":
 			var orange := Color("f2a33a")
 			for side in [-1.0, 1.0]:
@@ -1024,7 +1471,7 @@ static func _premium_outfit(kit: MeshKit, shape: KinuShape, style: String, color
 			kit.add("fine", Vector3(h.x*.4, h.y*.1, -h.z*1.02), Vector3(size.x*.36, size.y*.4, .16), dark, Vector3(0, 0, .4))
 			kit.add("fine", Vector3(-h.x*.45, -h.y*.35, -h.z*1.02), Vector3(size.x*.28, size.y*.3, .15), orange, Vector3(0, 0, -.3))
 			# The beckoning paw, raised beside the face, with a pink pad.
-			var arm := Vector3(h.x+.13, eye_y+minf(h.y*.55, .3), h.z*.35)
+			var arm := Vector3(h.x+minf(.3, size.x*.2), eye_y+minf(h.y*.55, .3), h.z*.35)
 			kit.add("fine", arm, Vector3(.3, minf(size.y*.7, .6), .3), color, Vector3(0, 0, -.12))
 			var paw_at := arm+Vector3(-.03, minf(size.y*.3, .26), .0)
 			kit.add("fine", paw_at, Vector3(.34, .3, .32), color)
@@ -1201,12 +1648,15 @@ static func _limbless_suit(kit: MeshKit, shape: KinuShape, style: String, color:
 		for i in 8:
 			var a := TAU*(i+.5)/8.0
 			var out := Vector3(sin(a), 0, cos(a))
-			var base := Vector3(sin(a)*h.x*.82, -h.y*.96, cos(a)*h.z*.82)
-			# Each tentacle tapers outward and curls up at the tip.
-			for k in 4:
-				var at := base+out*(k*.1)+Vector3(0, k*k*.024, 0)
-				kit.add("sphere", at, Vector3(.24, .16, .24)*(1.0-k*.2), color.darkened(.06))
-			kit.add("sphere", base+out*.12+Vector3(0, .02, 0), Vector3(.06, .06, .03), cream, Vector3(0, a, 0), false)
+			var base := Vector3(sin(a)*h.x*.76, -h.y*.9, cos(a)*h.z*.76)
+			# The legs have to actually dangle: they drop well below the body, splay outward
+			# and curl back up at the tip, with a row of suckers down the outside.
+			for k in 6:
+				var t := k/5.0
+				var at := base+out*(.06+t*.34)+Vector3(0, -sin(t*2.6)*.42, 0)
+				kit.add("sphere", at, Vector3(.28, .24, .28)*(1.0-k*.12), color.darkened(.04+k*.012))
+				if k > 0:
+					kit.add("sphere", at+out*.1+Vector3(0, -.03, 0), Vector3(.075, .075, .035)*(1.0-k*.09), cream, Vector3(0, a, 0), false)
 		# Hachimaki headband with a red sun and a tied knot, for takoyaki day.
 		_band(kit, shape, .86, .1, cream)
 		face.mark(0, h.y*.86, Vector2(.09, .09), Color("d8434f"), 0, .045)
@@ -1216,8 +1666,8 @@ static func _limbless_suit(kit: MeshKit, shape: KinuShape, style: String, color:
 	var opening := _opening(shape, style)
 	# Gold rim inked on both edges, so it reads even when the face itself is gold.
 	var rim_center := opening.get_center()
-	face.mark(rim_center.x, rim_center.y, opening.size*1.22, INK, 0, .006)
-	face.mark(rim_center.x, rim_center.y, opening.size*1.16, gold, 0, .012)
+	face.mark(rim_center.x, rim_center.y, opening.size*1.18, INK, 0, .006)
+	face.mark(rim_center.x, rim_center.y, opening.size*1.14, gold, 0, .012)
 	face.mark(rim_center.x, rim_center.y, opening.size*1.05, INK, 0, .018)
 	kit.add_rounded_box(Vector3(0, -h.y*.98, 0), Vector3(size.x*1.1, .1, size.z*1.1), color.darkened(.25), Vector3.ZERO, true, shape.roundness)
 	if size.y > .8:

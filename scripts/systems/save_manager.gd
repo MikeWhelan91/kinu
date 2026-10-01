@@ -3,6 +3,7 @@ signal changed
 const PATH := "user://nest_save.json"
 var data: Dictionary = {}
 var save_path: String = PATH
+var _last_cloud_content := ""
 
 ## How many past piles the Records chart remembers.
 const RECENT_RUNS := 10
@@ -10,13 +11,24 @@ const RECENT_RUNS := 10
 func _ready() -> void:
 	load_data()
 
-func defaults() -> Dictionary:
-	return {"version": 3, "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": []}
+## Beans were restated in a larger unit at version 4: prices, prizes and rewards all moved by
+## this factor together, so the change is one of units only and buys exactly what it did before.
+const BEAN_REDENOMINATION := 5
+## Goal rewards earned before the wardrobe pacing update remain owned after their targets rise.
+const OLD_OUTFIT_GOALS := {
+	"leaf": ["runs", 1], "astronaut": ["height", 350], "ghost": ["flavours", 10],
+	"hatchling": ["total", 100], "parcel": ["best", 25], "builder": ["best", 10],
+	"acrobat": ["clean", 8], "chef": ["glazed", 10], "yukata": ["streak", 8],
+	"climber": ["height", 500], "daruma": ["clean", 31], "dragon": ["best", 62],
+}
 
-func load_data() -> void:
+func defaults() -> Dictionary:
+	return {"version": 5, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": []}
+
+func load_data(source: Variant = null) -> void:
 	data = defaults()
-	var loaded: Variant = _read(save_path)
-	if not loaded is Dictionary:
+	var loaded: Variant = source if source is Dictionary else _read(save_path)
+	if not loaded is Dictionary and source == null:
 		loaded = _read(save_path + ".bak")
 	if loaded is Dictionary:
 		for key in data:
@@ -26,6 +38,15 @@ func load_data() -> void:
 				continue
 			var value: Variant = loaded[key]
 			match key:
+				"cloud_revision":
+					if (value is float or value is int) and is_finite(float(value)):
+						data[key] = clampi(int(value), 0, 2147483647)
+				"cloud_updated_at":
+					if (value is float or value is int) and is_finite(float(value)):
+						data[key] = maxf(float(value), 0.0)
+				"cloud_last_downloaded", "cloud_last_uploaded":
+					if value is String and value.length() <= 32:
+						data[key] = value
 				"best", "runs", "beans", "tickets":
 					if (value is float or value is int) and is_finite(float(value)):
 						data[key] = clampi(int(value), 0, 2147483647)
@@ -35,7 +56,7 @@ func load_data() -> void:
 				"music", "sfx":
 					if (value is float or value is int) and is_finite(float(value)):
 						data[key] = clampf(float(value), 0, 1)
-				"haptics", "tutorial", "debug_unlocked":
+				"haptics", "tutorial", "home_tour", "debug_unlocked":
 					if value is bool:
 						data[key] = value
 				"language":
@@ -97,6 +118,34 @@ func load_data() -> void:
 				"weekly":
 					if value is Dictionary and value.get("week") is String and value.get("mission") is Dictionary:
 						data.weekly = value
+				"showcase":
+					if value is Dictionary:
+						if value.get("announced") is String:
+							data.showcase.announced = value.announced
+						if value.get("weeks") is Dictionary:
+							for month in value.weeks:
+								if month is String and value.weeks[month] is Array:
+									data.showcase.weeks[month] = []
+									for week in value.weeks[month]:
+										if (week is float or week is int) and not data.showcase.weeks[month].has(int(week)):
+											data.showcase.weeks[month].append(int(week))
+						for list in ["earned", "reveal"]:
+							if value.get(list) is Array:
+								for entry in value[list]:
+									if entry is String and not data.showcase[list].has(entry):
+										data.showcase[list].append(entry)
+				"grand_opening":
+					if value is Dictionary:
+						for counter in ["runs", "missions"]:
+							var number: Variant = value.get(counter, 0)
+							if (number is float or number is int) and is_finite(float(number)):
+								data.grand_opening[counter] = clampi(int(number), 0, 100000)
+						data.grand_opening.announced = value.get("announced") == true
+						for list in ["days", "earned", "reveal"]:
+							if value.get(list) is Array:
+								for entry in value[list]:
+									if entry is String and not data.grand_opening[list].has(entry):
+										data.grand_opening[list].append(entry)
 				"daily_calendar":
 					if value is Dictionary and value.get("last_day", "") is String:
 						data.daily_calendar.last_day = value.last_day
@@ -120,6 +169,9 @@ func load_data() -> void:
 								data.crane[counter] = clampi(int(number), 0, 1000)
 						if value.get("free_day") is String:
 							data.crane.free_day = value.free_day
+						var used: Variant = value.get("free_used", 1 if value.get("free_day", "") != "" else 0)
+						if used is int or used is float:
+							data.crane.free_used = clampi(int(used), 0, KinuCatcher.FREE_DAILY_TICKETS)
 						if value.get("history") is Array:
 							for entry in value.history.slice(-KinuCatcher.HISTORY):
 								if entry is Dictionary and entry.get("kind") is String:
@@ -129,6 +181,10 @@ func load_data() -> void:
 						for item in value:
 							if item is String and not data.discovered.has(item):
 								data.discovered.append(item)
+		# The home tour arrived after launch. Anyone who'd already played a couple of runs knows the
+		# home screen, so it's only for players still on their first return to it.
+		if not loaded.has("home_tour") and int(data.runs) >= 2:
+			data.home_tour = true
 		# Early shop builds stored outfits separately.
 		if loaded.get("owned_outfits") is Array:
 			for item in loaded.owned_outfits:
@@ -138,11 +194,25 @@ func load_data() -> void:
 		# Flavour goals moved from cm to a tenth as many Kinu, so the same flavours stay unlocked.
 		if int(loaded.get("version", 1)) == 2:
 			data.best = int(data.best)/10
+		# Version 4 restated beans in a larger unit: every price, prize and reward was multiplied
+		# by five at once, so an older balance has to move with them or it quietly buys a fifth of
+		# what it used to. Lifetime bean totals are restated too, so the records screen stays honest.
+		if int(loaded.get("version", 1)) < 4:
+			data.beans = int(data.beans)*BEAN_REDENOMINATION
+			for key in ["beans_earned", "bonus_beans", "beans_spent", "crane_beans_won"]:
+				data.stats[key] = int(data.stats.get(key, 0))*BEAN_REDENOMINATION
+		if int(loaded.get("version", 1)) < 5:
+			for id in OLD_OUTFIT_GOALS:
+				var goal: Array = OLD_OUTFIT_GOALS[id]
+				var key: String = "outfit:"+str(id)
+				if (KinuProgress.stat(str(goal[0])) >= int(goal[1]) or str(data.outfit) == id) and not data.owned.has(key):
+					data.owned.append(key)
 		# Store IDs stay strings: JSON numbers cannot safely preserve every Apple transaction ID.
 		if loaded.get("purchases") is Dictionary:
 			data["purchases"] = loaded.purchases.duplicate(true)
 		data["ads_removed"] = loaded.get("ads_removed", false) == true
 		data["ads_entitlement_date"] = float(loaded.get("ads_entitlement_date", 0.0))
+	_last_cloud_content = _cloud_content_json()
 
 func _read(path: String) -> Variant:
 	if not FileAccess.file_exists(path):
@@ -153,23 +223,109 @@ func _read(path: String) -> Variant:
 	return parser.data
 
 func persist() -> bool:
+	var old_revision := int(data.cloud_revision)
+	var old_updated_at := float(data.cloud_updated_at)
+	var content := _cloud_content_json()
+	if content != _last_cloud_content:
+		data.cloud_revision = old_revision + 1
+		data.cloud_updated_at = maxf(Time.get_unix_time_from_system(), old_updated_at)
 	var temp := save_path + ".tmp"
 	var file := FileAccess.open(temp, FileAccess.WRITE)
 	if file == null:
+		data.cloud_revision = old_revision
+		data.cloud_updated_at = old_updated_at
 		return false
 	file.store_string(JSON.stringify(data))
 	file.flush()
 	var write_error := file.get_error()
 	file.close()
 	if write_error != OK:
+		data.cloud_revision = old_revision
+		data.cloud_updated_at = old_updated_at
 		return false
 	# Never replace the last valid backup with a corrupted main file.
 	if _read(save_path) is Dictionary:
 		DirAccess.copy_absolute(save_path, save_path + ".bak")
 	var error := DirAccess.rename_absolute(temp, save_path)
 	if error == OK:
+		_last_cloud_content = content
 		changed.emit()
+	else:
+		data.cloud_revision = old_revision
+		data.cloud_updated_at = old_updated_at
 	return error == OK
+
+## The cloud copy includes the purchase ledger so restored consumable balances cannot be
+## delivered twice. Anonymous Supabase tokens and development switches never leave the device.
+func cloud_snapshot() -> Dictionary:
+	return {"format": 1, "save": _cloud_data()}
+
+func _cloud_data() -> Dictionary:
+	var copy := data.duplicate(true)
+	copy.erase("backend_session")
+	copy.erase("debug_unlocked")
+	copy.erase("cloud_last_downloaded")
+	copy.erase("cloud_last_uploaded")
+	return copy
+
+func _cloud_content_json() -> String:
+	var copy := _cloud_data()
+	copy.erase("cloud_revision")
+	copy.erase("cloud_updated_at")
+	return JSON.stringify(copy)
+
+func cloud_snapshot_valid(snapshot: Variant) -> bool:
+	if not snapshot is Dictionary or snapshot.get("format") != 1:
+		return false
+	var saved: Variant = snapshot.get("save")
+	if not saved is Dictionary:
+		return false
+	if not (saved.get("version") is int or saved.get("version") is float) or int(saved.version) > int(defaults().version):
+		return false
+	if not saved.get("owned") is Array or not saved.get("discovered") is Array or not saved.get("stats") is Dictionary:
+		return false
+	if not saved.get("purchases", {}) is Dictionary:
+		return false
+	return (saved.get("cloud_revision", 0) is int or saved.get("cloud_revision", 0) is float) and (saved.get("cloud_updated_at", 0.0) is int or saved.get("cloud_updated_at", 0.0) is float)
+
+func cloud_has_progress(saved: Dictionary) -> bool:
+	return int(saved.get("runs", 0)) > 0 or int(saved.get("best", 0)) > 0 or int(saved.get("beans", 0)) > 0 or int(saved.get("tickets", 0)) > 0 or not (saved.get("owned", []) as Array).is_empty() or not (saved.get("discovered", []) as Array).is_empty()
+
+func local_has_new_purchases(saved: Dictionary) -> bool:
+	var local_receipts: Dictionary = data.get("purchases", {})
+	var cloud_receipts: Dictionary = saved.get("purchases", {})
+	for id in local_receipts:
+		if not cloud_receipts.has(id):
+			return true
+	return false
+
+func cloud_has_new_purchases(saved: Dictionary) -> bool:
+	var local_receipts: Dictionary = data.get("purchases", {})
+	var cloud_receipts: Dictionary = saved.get("purchases", {})
+	for id in cloud_receipts:
+		if not local_receipts.has(id):
+			return true
+	return false
+
+func restore_cloud_snapshot(snapshot: Dictionary) -> bool:
+	if not cloud_snapshot_valid(snapshot):
+		return false
+	var before := data.duplicate(true)
+	var before_content := _last_cloud_content
+	var session: Dictionary = data.get("backend_session", {}).duplicate(true)
+	var local_ads := bool(data.get("ads_removed", false))
+	var last_downloaded := str(data.get("cloud_last_downloaded", ""))
+	var last_uploaded := str(data.get("cloud_last_uploaded", ""))
+	load_data(snapshot.save)
+	data.backend_session = session
+	data["ads_removed"] = local_ads or bool(data.get("ads_removed", false))
+	data.cloud_last_downloaded = last_downloaded
+	data.cloud_last_uploaded = last_uploaded
+	if persist():
+		return true
+	data = before
+	_last_cloud_content = before_content
+	return false
 
 ## Atomically save currency balances and the delivery receipt before acknowledging Apple.
 ## Returns -1 on save failure, 0 for a replay, and 1 for a newly applied transaction.
@@ -261,8 +417,8 @@ func owns(kind: String, id: String, price: int = 1) -> bool:
 	if debug_unlocked() or id == "":
 		return true
 	if KinuProgress.is_earned_item(kind, id):
-		return KinuProgress.met(KinuProgress.goals[kind+":"+id])
-	if KinuProgress.is_crane_only(kind, id):
+		return data.owned.has(kind+":"+id) or KinuProgress.met(KinuProgress.goals[kind+":"+id])
+	if KinuProgress.is_crane_only(kind, id) or KinuProgress.is_showcase(kind, id) or KinuProgress.is_event(kind, id):
 		return data.owned.has(kind+":"+id)
 	return price <= 0 or data.owned.has(kind+":"+id)
 
@@ -289,7 +445,7 @@ func set_flavour_in_mix(id: String, included: bool) -> void:
 
 ## Spends soybeans on a shop item and equips it where that makes sense. False if unaffordable.
 func buy(kind: String, id: String, price: int) -> bool:
-	if (KinuProgress.is_earned_item(kind, id) or KinuProgress.is_crane_only(kind, id)) and not owns(kind, id, price):
+	if (KinuProgress.is_earned_item(kind, id) or KinuProgress.is_crane_only(kind, id) or KinuProgress.is_showcase(kind, id) or KinuProgress.is_event(kind, id)) and not owns(kind, id, price):
 		return false
 	if not owns(kind, id, price):
 		if int(data.beans) < price:
@@ -343,6 +499,7 @@ func finish_run(summary: Dictionary) -> bool:
 	_record_day()
 	if int(summary.get("tumbles", 0)) == 0:
 		data.stats.clean = maxi(int(data.stats.clean), pile)
+	GrandOpening.record_run()
 	KinuProgress.record_run(summary)
 	if not debug_unlocked():
 		for key in KinuProgress.earned_keys():

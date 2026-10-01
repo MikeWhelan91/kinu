@@ -29,18 +29,17 @@ static func contains(point: Vector3, margin: float = 0.0) -> bool:
 	return absf(point.x) <= reach and absf(point.z) <= reach
 
 ## Built box models by skin id; new boxes and shop previews duplicate these (sharing meshes).
+## Bounded, so scrolling the shop does not keep every skin built for the rest of the session.
 static var models: Dictionary = {}
 
 func _ready() -> void:
 	var key := decor.id if decor else "default"
-	if not models.has(key):
-		models[key] = _build_model()
-	add_child((models[key] as Node3D).duplicate())
+	add_child(MeshKit.cached_model(models, key, _build_model).duplicate())
 	if with_collision:
 		_add_collision()
 
 ## Box finishes that replace the red hanko seal with their own emblem.
-const EMBLEM_EFFECTS := ["gachapon", "taiko", "treasure", "shortcake", "starry", "cloud", "koi_pond"]
+const EMBLEM_EFFECTS := ["gachapon", "taiko", "treasure", "shortcake", "starry", "cloud", "koi_pond", "abyss", "starforge", "moss", "driftwood", "coral", "pumpkin_patch", "snowdrift", "paper_lantern", "first_edition"]
 
 ## Gold, gems and other trims built apart from the walls so they get their own finish.
 var accent := MeshKit.new()
@@ -50,7 +49,7 @@ func _build_model() -> Node3D:
 	var kit := MeshKit.new()
 	var effect := decor.effect if decor else ""
 	# Neon trim is built separately so only the rim, posts and stamps glow.
-	var trim := MeshKit.new() if effect == "glow" else kit
+	var trim := MeshKit.new() if effect in ["glow", "paper_lantern"] else kit
 	var outer := INNER_HALF+WALL
 	var wood := _color("wood", WOOD)
 	var wood_dark := _color("wood_dark", WOOD_DARK)
@@ -91,11 +90,11 @@ func _build_model() -> Node3D:
 	var model := kit.build(.035)
 	var fill := model.get_node("Fill") as MeshInstance3D
 	match effect:
-		"shiny", "kintsugi", "raden", "taiko", "gachapon":
+		"shiny", "kintsugi", "raden", "taiko", "gachapon", "first_edition":
 			fill.material_override = shiny_material()
 		"glass", "koi_pond":
 			fill.material_override = glass_material()
-		"glow":
+		"glow", "paper_lantern":
 			var glowing := trim.build(.035)
 			(glowing.get_node("Fill") as MeshInstance3D).material_override = glow_material()
 			model.add_child(glowing)
@@ -103,9 +102,9 @@ func _build_model() -> Node3D:
 		var trims := accent.build(.03)
 		trims.name = "Accent"
 		match effect:
-			"starry", "geode":
+			"starry", "geode", "abyss", "starforge", "paper_lantern":
 				(trims.get_node("Fill") as MeshInstance3D).material_override = glow_material()
-			"cloud", "shortcake", "koi_pond":
+			"cloud", "shortcake", "koi_pond", "moss", "driftwood", "coral", "pumpkin_patch", "snowdrift":
 				pass
 			_:
 				(trims.get_node("Fill") as MeshInstance3D).material_override = gold_material()
@@ -170,6 +169,14 @@ func _wall_pattern(kit: MeshKit, effect: String, basis: Basis, angle: float, out
 					continue
 				for k in 3:
 					_accent("cone", basis*Vector3(x+(k-1)*.14, .2+k*.05, outer+.1), Vector3(.17, .56-absf(k-1)*.16, .17), _color("stamp", Color("b77cf2")).lightened(k*.1), turn+Vector3(-.3, 0, (k-1)*.35))
+		"first_edition":
+			# The opening-day ribbon runs right round the box, with a line of gold studs along the
+			# foot like the trim on a presentation case.
+			kit.add_rounded_box(basis*Vector3(0, RIM_HEIGHT*.45, outer+.01), Vector3(outer*2-.02, .3, .02), _color("ribbon", Color("d8403f")), turn, false, 8.0)
+			for edge in [-1.0, 1.0]:
+				kit.add_rounded_box(basis*Vector3(0, RIM_HEIGHT*.45+edge*.17, outer+.012), Vector3(outer*2-.02, .04, .02), _color("stamp", Color("f5c14e")), turn, false, 8.0)
+			for i in 11:
+				_accent("bead", basis*Vector3(-outer+.22+i*(outer*2-.44)/10.0, .13, outer+.03), Vector3(.075, .075, .05), GOLD_TRIM)
 		"gachapon":
 			for i in 3:
 				kit.add_rounded_box(basis*Vector3(0, .2+i*.004, outer+.01+i*.004), Vector3(outer*2-.1, .06, .02), [Color("fff7ea"), Color("ffd84d"), Color("fff7ea")][i], turn, false, 8.0)
@@ -243,6 +250,146 @@ func _wall_pattern(kit: MeshKit, effect: String, basis: Basis, angle: float, out
 							var a := TAU*petal/5.0
 							kit.add("sphere", basis*Vector3(at.x+sin(a)*.11, at.y+.18+cos(a)*.11, outer+.014), Vector3(.16, .09, .02), shimmer[(i+petal) % shimmer.size()], turn+Vector3(0, 0, -a), false)
 							_accent("bead", basis*Vector3(at.x, at.y+.18, outer+.02), Vector3(.08, .08, .02), GOLD_TRIM)
+		"moss":
+			# Moss creeping up from the base, with clover, pebbles and two little mushrooms.
+			for i in 13:
+				var x := -outer+.2+i*(outer*2-.4)/12.0
+				kit.add("fine", basis*Vector3(x, .06+fmod(i*.29, .2), outer+.04), Vector3(.46, .34+fmod(i*.23, .18), .18), _color("wood_light", WOOD_LIGHT).lightened(.06 if i % 2 else 0.0))
+				if i % 3 == 0:
+					kit.add("fine", basis*Vector3(x+.1, RIM_HEIGHT-.16, outer+.03), Vector3(.34, .24, .14), _color("wood_light", WOOD_LIGHT).darkened(.08))
+			for i in 4:
+				var x := -outer*.72+i*outer*.48
+				if absf(x) < .5:
+					continue
+				for leaf in 3:
+					var a := TAU*leaf/3.0
+					kit.add("sphere", basis*Vector3(x+sin(a)*.1, .42+cos(a)*.1, outer+.03), Vector3(.17, .17, .03), Color("8cc85a"), turn, false)
+			for mushroom in [-outer*.55, outer*.62]:
+				kit.add("cylinder", basis*Vector3(mushroom, .3, outer+.08), Vector3(.1, .28, .1), Color("f5ead2"))
+				kit.add("sphere", basis*Vector3(mushroom, .44, outer+.08), Vector3(.3, .22, .3), Color("d4544c"))
+				for spot in 3:
+					kit.add("sphere", basis*Vector3(mushroom-.08+spot*.08, .48, outer+.16), Vector3(.06, .06, .03), Color("fff6e2"), turn, false)
+		"driftwood":
+			# Long sun-bleached grain grooves, a rope lashing and a stranded starfish.
+			for i in 5:
+				var y := .18+i*(RIM_HEIGHT-.4)/4.0
+				kit.add_rounded_box(basis*Vector3(sin(i*1.7)*.3, y, outer+.008), Vector3(outer*1.5, .035, .02), _color("wood_dark", WOOD_DARK), turn+Vector3(0, 0, sin(i*2.3)*.03), false, 4.0)
+				kit.add_rounded_box(basis*Vector3(-outer*.5+fmod(i*.9, 1.4), y+.06, outer+.008), Vector3(outer*.5, .025, .02), _color("wood_light", WOOD_LIGHT), turn, false, 4.0)
+			for rope in 2:
+				var x := (-1.0 if rope == 0 else 1.0)*outer*.66
+				for wrap in 4:
+					kit.add_rounded_box(basis*Vector3(x, .2+wrap*.2, outer+.03), Vector3(.34, .12, .05), Color("e2cda4"), turn+Vector3(0, 0, .28), true, 5.0)
+			for arm in 5:
+				var a := TAU*arm/5.0
+				kit.add("cone", basis*Vector3(sin(a)*.17, RIM_HEIGHT*.72+cos(a)*.17, outer+.03), Vector3(.18, .4, .04), _color("stamp", Color("48a0b4")), turn+Vector3(0, 0, -a), false)
+		"coral":
+			# Branching coral climbing each wall, with anemone tufts and a scatter of polyps.
+			for i in 4:
+				var x := -outer*.74+i*outer*.5
+				if absf(x) < .5:
+					continue
+				var tone: Color = [Color("ff9d7a"), Color("ffd0a1"), Color("ff7fa8"), Color("ffe1b0")][i]
+				kit.add_rounded_box(basis*Vector3(x, .5, outer+.03), Vector3(.14, .9, .05), tone, turn, true, 5.0)
+				for branch in 3:
+					var lean := (branch-1)*.6
+					kit.add_rounded_box(basis*Vector3(x+lean*.24, .72+branch*.16, outer+.035), Vector3(.1, .46, .05), tone.lightened(.1), turn+Vector3(0, 0, -lean), true, 5.0)
+					kit.add("sphere", basis*Vector3(x+lean*.42, .96+branch*.18, outer+.05), Vector3(.13, .13, .05), tone.lightened(.22), turn, false)
+			for i in 5:
+				var x := -outer+.35+i*(outer*2-.7)/4.0
+				if absf(x) < .45:
+					continue
+				for frond in 6:
+					var a := PI*frond/5.0
+					kit.add("sphere", basis*Vector3(x+cos(a)*.16, .12+sin(a)*.24, outer+.03), Vector3(.07, .3, .04), Color("ffc0d8"), turn+Vector3(0, 0, PI*.5-a), false)
+			for i in 9:
+				kit.add("sphere", basis*Vector3(-outer+.3+i*(outer*2-.6)/8.0, RIM_HEIGHT-.14, outer+.02), Vector3(.1, .1, .03), Color("fff0d6"), turn, false)
+		"pumpkin_patch":
+			# A vine running the length of each wall, hung with leaves and little pumpkins.
+			var vine := Color("4f7f33")
+			for i in 10:
+				var x := -outer+.2+i*(outer*2-.4)/9.0
+				kit.add_rounded_box(basis*Vector3(x, .8+sin(i*1.4)*.16, outer+.02), Vector3((outer*2-.4)/8.0, .08, .03), vine, turn+Vector3(0, 0, cos(i*1.4)*.3), false, 4.0)
+				if i % 2 == 0:
+					kit.add("sphere", basis*Vector3(x, .8+sin(i*1.4)*.16+.2, outer+.04), Vector3(.32, .28, .05), vine.lightened(.2), turn+Vector3(0, 0, sin(i)*.5), false)
+			for i in 3:
+				var x := -outer*.66+i*outer*.66
+				if absf(x) < .45:
+					continue
+				for rib in 5:
+					kit.add("sphere", basis*Vector3(x+(rib-2)*.12, .34, outer+.1), Vector3(.2, .62, .2), Color("f79331").darkened(.06*absf(rib-2)), turn, rib == 0 or rib == 4)
+				kit.add("cylinder", basis*Vector3(x, .68, outer+.1), Vector3(.09, .24, .09), vine)
+				kit.add("sphere", basis*Vector3(x-.24, .66, outer+.1), Vector3(.3, .1, .16), vine.lightened(.2), turn+Vector3(0, .4, .35))
+			for i in 7:
+				kit.add("sphere", basis*Vector3(-outer+.28+i*(outer*2-.56)/6.0, RIM_HEIGHT-.16, outer+.02), Vector3(.1, .1, .03), Color("f5c46a"), turn, false)
+		"snowdrift":
+			# Drifts banked along the rim and the base, with icicles hanging off the trim.
+			var snow := Color("fbfdff")
+			for i in 11:
+				var x := -outer+.16+i*(outer*2-.32)/10.0
+				kit.add("fine", basis*Vector3(x, RIM_HEIGHT-.06, outer-.02), Vector3(.56, .3+fmod(i*.31, .2), .34), snow)
+				kit.add("fine", basis*Vector3(x+.12, .05, outer+.04), Vector3(.5, .24+fmod(i*.27, .16), .2), snow)
+			for i in 6:
+				var x := -outer+.42+i*(outer*2-.84)/5.0
+				kit.add("cone", basis*Vector3(x, RIM_HEIGHT-.36, outer+.06), Vector3(.12, .42+fmod(i*.4, .26), .12), Color("d6ecfb"), turn+Vector3(PI, 0, 0))
+			for i in 9:
+				var at := Vector2(-outer+.3+fmod(i*.83, outer*1.7), .3+fmod(i*.41, RIM_HEIGHT-.7))
+				if absf(at.x) < .45:
+					continue
+				for arm in 3:
+					kit.add("sphere", basis*Vector3(at.x, at.y, outer+.02), Vector3(.16, .025, .02), snow, turn+Vector3(0, 0, arm*PI/3.0), false)
+		"paper_lantern":
+			# Washi panels between bamboo ribs, lit from within, with a tassel at each end.
+			for i in 7:
+				var x := -outer+.28+i*(outer*2-.56)/6.0
+				kit.add_rounded_box(basis*Vector3(x, RIM_HEIGHT*.5, outer+.012), Vector3(.055, RIM_HEIGHT-.16, .025), _color("wood_dark", WOOD_DARK), turn, false, 4.0)
+			for y in [.2, RIM_HEIGHT*.5, RIM_HEIGHT-.22]:
+				kit.add_rounded_box(basis*Vector3(0, y, outer+.008), Vector3(outer*2-.12, .07, .02), _color("wood_light", WOOD_LIGHT), turn, false, 5.0)
+			for side in [-1.0, 1.0]:
+				var x: float = side*(outer-.22)
+				kit.add("cylinder", basis*Vector3(x, RIM_HEIGHT-.3, outer+.06), Vector3(.14, .12, .14), _color("stamp", Color("ffd464")))
+				for strand in 5:
+					kit.add_rounded_box(basis*Vector3(x-.1+strand*.05, RIM_HEIGHT-.56, outer+.06), Vector3(.035, .42, .035), _color("stamp", Color("ffd464")), turn, false, 4.0)
+		"abyss":
+			# Bioluminescent life in the dark: drifting jellyfish, glowing plankton and
+			# a pair of anglerfish lures dangling from the rim.
+			var deep_glow := [Color("35e4e0"), Color("817cff"), Color("a7f3e8")]
+			for i in 18:
+				var at := Vector2(-outer+.18+fmod(i*.73, outer*1.8), .14+fmod(i*.37, RIM_HEIGHT-.28))
+				if absf(at.x) < .42 and absf(at.y-RIM_HEIGHT*.45) < .34:
+					continue
+				_accent("bead", basis*Vector3(at.x, at.y, outer+.03), Vector3(.07, .07, .025), deep_glow[i % deep_glow.size()])
+			for i in 3:
+				var x: float = [-outer*.68, outer*.3, outer*.78][i]
+				if absf(x) < .5:
+					continue
+				var bell := basis*Vector3(x, .5+fmod(i*.47, .4), outer+.05)
+				_accent("fine", bell, Vector3(.52, .38, .1), deep_glow[i % deep_glow.size()])
+				for tentacle in 4:
+					_accent("sphere", bell+basis*Vector3(-.15+tentacle*.1, -.3-fmod(tentacle*.17, .12), 0), Vector3(.045, .46, .03), deep_glow[(i+1) % deep_glow.size()], turn+Vector3(0, 0, (tentacle-1.5)*.16), false)
+			for side in [-1.0, 1.0]:
+				var stalk: float = side*outer*.5
+				kit.add_rounded_box(basis*Vector3(stalk, RIM_HEIGHT-.34, outer+.03), Vector3(.035, .5, .03), Color("123a48"), turn+Vector3(0, 0, side*.2), false, 4.0)
+				_accent("sphere", basis*Vector3(stalk+side*.1, RIM_HEIGHT-.6, outer+.05), Vector3(.17, .17, .05), Color("d9fff4"))
+		"starforge":
+			# Molten seams cracking up through the cooled metal, throwing off sparks.
+			var rng := RandomNumberGenerator.new()
+			rng.seed = int(angle*100)+7
+			for seam in 3:
+				var point := Vector2(-outer*.72+seam*outer*.72, .1)
+				for step in 6:
+					var next := point+Vector2(rng.randf_range(-.26, .26), (RIM_HEIGHT-.24)/6.0)
+					next.x = clampf(next.x, -outer+.12, outer-.12)
+					if absf(next.x) < .4 and absf(next.y-RIM_HEIGHT*.45) < .34:
+						next.x += .5
+					var middle := (point+next)*.5
+					var delta := next-point
+					_accent("sphere", basis*Vector3(middle.x, middle.y, outer+.02), Vector3(delta.length()+.08, .085, .03), Color("ff8a2b"), turn+Vector3(0, 0, atan2(delta.y, delta.x)))
+					if step % 2 == 1:
+						_accent("bead", basis*Vector3(next.x+.14, next.y+.1, outer+.05), Vector3(.075, .075, .03), Color("ffe07a"))
+					point = next
+			for i in 9:
+				var x := -outer+.24+i*(outer*2-.48)/8.0
+				_accent("bead", basis*Vector3(x, RIM_HEIGHT-.08+fmod(i*.23, .14), outer+.04), Vector3(.06, .06, .03), Color("ffd15c"))
 
 const GOLD_TRIM := Color("f2c14e")
 
@@ -316,6 +463,77 @@ func _emblem(kit: MeshKit, effect: String, face: Vector3, basis: Basis, angle: f
 				var a := TAU*i/6.0
 				_accent("sphere", face+basis*Vector3(sin(a)*.1, cos(a)*.1+.02, .05), Vector3(.12, .2, .05), Color("ffb3cf"), turn+Vector3(0, 0, -a))
 			_accent("sphere", face+out*.07, Vector3(.1, .1, .05), Color("ffd84d"), turn)
+		"abyss":
+			# A glowing anglerfish lure hanging over a dark crescent.
+			_accent("sphere", face, Vector3(.5, .5, .04), Color("2be1d3"), turn)
+			kit.add("sphere", face+basis*Vector3(.12, .08, .025), Vector3(.36, .36, .04), _color("wood", WOOD), turn, false)
+			for i in 5:
+				var a := TAU*i/5.0
+				_accent("bead", face+basis*Vector3(sin(a)*.42, cos(a)*.42, .01), Vector3(.075, .075, .03), Color("a7f3e8"))
+		"starforge":
+			# A struck star over the forge, with four sparks flying off it.
+			_accent("sphere", face, Vector3(.5, .5, .04), Color("ffe07a"), turn)
+			for i in 4:
+				var a := TAU*i/4.0
+				kit.add("cone", face+basis*Vector3(sin(a)*.23, cos(a)*.23, .035), Vector3(.1, .28, .03), Color("e86d27"), turn+Vector3(0, 0, -a), false)
+			for i in 4:
+				var a := TAU*i/4.0+PI*.25
+				_accent("bead", face+basis*Vector3(sin(a)*.44, cos(a)*.44, .01), Vector3(.08, .08, .03), Color("ff8a2b"))
+		"moss":
+			# A three-leaf sprig pressed into a pale stone.
+			kit.add("cylinder", face, Vector3(.66, .03, .66), Color("d9d2be"), disc)
+			for i in 3:
+				var a := TAU*i/3.0
+				kit.add("sphere", face+basis*Vector3(sin(a)*.14, cos(a)*.14+.04, .03), Vector3(.26, .3, .03), Color("6fae45"), turn+Vector3(0, 0, -a), false)
+			kit.add_rounded_box(face+basis*Vector3(0, -.22, .03), Vector3(.05, .22, .02), Color("4f7f33"), turn, false, 4.0)
+		"driftwood":
+			# A scallop shell, ribbed and sun-faded.
+			kit.add("sphere", face+basis*Vector3(0, -.08, 0), Vector3(.72, .58, .05), Color("fdf1dc"), turn)
+			for i in 5:
+				var a := PI*.5+(i-2)*.36
+				kit.add("sphere", face+basis*Vector3(cos(a)*.2, -.2+sin(a)*.24, .035), Vector3(.05, .44, .02), Color("d9bf97"), turn+Vector3(0, 0, PI*.5-a), false)
+			kit.add("sphere", face+basis*Vector3(0, -.28, .04), Vector3(.14, .1, .03), Color("c6a87c"), turn, false)
+		"coral":
+			# A branching coral head over a pale disc.
+			kit.add("cylinder", face, Vector3(.66, .03, .66), Color("fff0dc"), disc)
+			for i in 3:
+				var lean := (i-1)*.5
+				kit.add_rounded_box(face+basis*Vector3(lean*.14, -.06+absf(lean)*.04, .03), Vector3(.09, .44, .02), Color("ff7fa8"), turn+Vector3(0, 0, -lean), false, 5.0)
+				kit.add("sphere", face+basis*Vector3(lean*.26, .18, .04), Vector3(.14, .14, .03), Color("ffc0d8"), turn, false)
+		"pumpkin_patch":
+			# One plump pumpkin with a curled stem.
+			for rib in 5:
+				kit.add("sphere", face+basis*Vector3((rib-2)*.09, -.04, .02), Vector3(.16, .5, .04), Color("f07c1e").darkened(.06*absf(rib-2)), turn, false)
+			kit.add_rounded_box(face+basis*Vector3(.02, .26, .03), Vector3(.06, .2, .02), Color("4f7f33"), turn+Vector3(0, 0, .3), false, 4.0)
+			kit.add("sphere", face+basis*Vector3(-.16, .28, .03), Vector3(.24, .12, .02), Color("6fae45"), turn+Vector3(0, 0, .4), false)
+		"snowdrift":
+			# A six-armed snowflake on a frosted disc.
+			kit.add("cylinder", face, Vector3(.66, .03, .66), Color("e6f4ff"), disc)
+			for i in 3:
+				kit.add("sphere", face+basis*Vector3(0, 0, .03), Vector3(.62, .06, .02), Color("fbfdff"), turn+Vector3(0, 0, i*PI/3.0), false)
+			for i in 6:
+				var a := TAU*i/6.0
+				kit.add("sphere", face+basis*Vector3(sin(a)*.22, cos(a)*.22, .04), Vector3(.2, .05, .02), Color("fbfdff"), turn+Vector3(0, 0, -a+PI*.5), false)
+			kit.add("sphere", face+basis*Vector3(0, 0, .05), Vector3(.12, .12, .03), Color("9fd2f5"), turn, false)
+		"first_edition":
+			# A gold "No. 1" medal: pleated rosette, a red face with a gold numeral, and ribbon tails.
+			for tail in [-1.0, 1.0]:
+				kit.add_rounded_box(face+basis*Vector3(tail*.14, -.4, -.005), Vector3(.14, .36, .02), Color("d8403f"), turn+Vector3(0, 0, tail*.3), false, 4.0)
+			for i in 14:
+				var a := TAU*i/14.0
+				_accent("sphere", face+basis*Vector3(sin(a)*.3, cos(a)*.3, .005), Vector3(.17, .17, .04), GOLD_TRIM)
+			kit.add("cylinder", face+out*.03, Vector3(.48, .03, .48), Color("d8403f"), disc, false)
+			_accent("torus", face+out*.045, Vector3(.5, .12, .5), GOLD_TRIM, disc)
+			_accent("block", face+out*.06+basis*Vector3(.015, 0, 0), Vector3(.075, .26, .03), GOLD_TRIM, turn)
+			_accent("block", face+out*.06+basis*Vector3(-.045, .095, 0), Vector3(.1, .055, .03), GOLD_TRIM, turn+Vector3(0, 0, .6))
+			_accent("block", face+out*.06+basis*Vector3(.015, -.12, 0), Vector3(.17, .045, .03), GOLD_TRIM, turn)
+		"paper_lantern":
+			# A lit washi roundel inside a bamboo hoop.
+			_accent("cylinder", face, Vector3(.68, .03, .68), _color("stamp", Color("ffd464")), disc)
+			kit.add("torus", face+out*.02, Vector3(.72, .06, .72), _color("wood_dark", WOOD_DARK), disc, false)
+			kit.add_rounded_box(face+out*.04, Vector3(.28, .28, .02), Color("b8221f"), turn, false, 8.0)
+			for i in 2:
+				kit.add_rounded_box(face+out*.06+basis*Vector3(0, .08-i*.16, 0), Vector3(.2, .05, .02), _color("stamp", Color("ffd464")), turn, false, 4.0)
 
 const RAINBOW_ARC := [Color("ff8fa3"), Color("ffb65c"), Color("ffe36e"), Color("8fdc8a"), Color("7fc4f5")]
 
@@ -346,6 +564,44 @@ func _corner(kit: MeshKit, effect: String, post: Vector3, corner: Vector2) -> vo
 			kit.add("cylinder", cap+Vector3.UP*.02, Vector3(.5, .03, .5), Color("5fb86a"), Vector3.ZERO, false)
 		"cloud":
 			_accent("fine", cap+Vector3.UP*.08, Vector3(.5, .36, .5), Color.WHITE)
+		"moss":
+			kit.add("fine", cap+Vector3.UP*.06, Vector3(.46, .3, .46), _color("wood_light", WOOD_LIGHT).lightened(.08))
+			for blade in 3:
+				var a := TAU*blade/3.0
+				kit.add("sphere", cap+Vector3(sin(a)*.1, .24, cos(a)*.1), Vector3(.07, .3, .07), Color("8cc85a"), Vector3(sin(a)*.3, 0, -cos(a)*.3))
+		"driftwood":
+			for wrap in 3:
+				kit.add_rounded_box(cap+Vector3(0, -.06+wrap*.11, 0), Vector3(.3, .09, .3), Color("e2cda4"), Vector3(0, wrap*.4, .12), true, 5.0)
+			kit.add("fine", cap+Vector3.UP*.2, Vector3(.3, .26, .3), Color("fdf1dc"))
+		"coral":
+			for frond in 5:
+				var a := TAU*frond/5.0
+				kit.add("sphere", cap+Vector3(sin(a)*.1, .24, cos(a)*.1), Vector3(.09, .46, .09), [Color("ff9d7a"), Color("ff7fa8"), Color("ffd0a1")][frond % 3], Vector3(sin(a)*.42, 0, -cos(a)*.42))
+		"pumpkin_patch":
+			for rib in 5:
+				kit.add("sphere", cap+Vector3((rib-2)*.06, .12, 0), Vector3(.1, .3, .28), Color("f07c1e").darkened(.05*absf(rib-2)), Vector3.ZERO, rib == 0 or rib == 4)
+			kit.add("cylinder", cap+Vector3(0, .3, 0), Vector3(.07, .18, .07), Color("4f7f33"))
+		"snowdrift":
+			kit.add("fine", cap+Vector3.UP*.08, Vector3(.48, .34, .48), Color("fbfdff"))
+			kit.add("fine", cap+Vector3(.08, .24, -.05), Vector3(.28, .22, .28), Color("fbfdff"))
+		"first_edition":
+			# A little gold kusudama on each post, tied with a red cord.
+			_accent("sphere", cap+Vector3.UP*.14, Vector3(.32, .32, .32), GOLD_TRIM)
+			kit.add("torus", cap+Vector3.UP*.14, Vector3(.34, .3, .34), Color("d8403f"), Vector3(PI*.5, PI*.25*corner.x*corner.y, 0), false)
+			kit.add("cone", cap+Vector3.UP*-.08, Vector3(.1, .2, .1), Color("d8403f"), Vector3(PI, 0, 0), false)
+		"paper_lantern":
+			_accent("sphere", cap+Vector3.UP*.12, Vector3(.34, .38, .34), _color("stamp", Color("ffd464")))
+			kit.add("cylinder", cap+Vector3.UP*.3, Vector3(.16, .06, .16), _color("wood_dark", WOOD_DARK))
+		"abyss":
+			_accent("fine", cap+Vector3.UP*.14, Vector3(.4, .3, .4), Color("35e4e0"))
+			for tentacle in 4:
+				var a := TAU*tentacle/4.0
+				_accent("sphere", cap+Vector3(sin(a)*.1, -.04, cos(a)*.1), Vector3(.05, .34, .05), Color("a7f3e8"), Vector3(sin(a)*.3, 0, -cos(a)*.3), false)
+		"starforge":
+			_accent("sphere", cap+Vector3.UP*.1, Vector3(.28, .28, .28), Color("ff8a2b"))
+			for spark in 4:
+				var a := TAU*spark/4.0+.4
+				_accent("bead", cap+Vector3(sin(a)*.2, .3+fmod(spark*.11, .16), cos(a)*.2), Vector3(.075, .075, .075), Color("ffe07a"))
 
 ## A looped ribbon bow perched on one corner post.
 func _bow(kit: MeshKit, center: Vector3, color: Color) -> void:
@@ -355,23 +611,14 @@ func _bow(kit: MeshKit, center: Vector3, color: Color) -> void:
 		kit.add_rounded_box(center+across*side*.14+Vector3(0, -.28, 0), Vector3(.14, .5, .04), color, Vector3(0, PI*.25, side*.35), true, 4.0)
 	kit.add("sphere", center+Vector3(0, .06, 0), Vector3(.28, .24, .28), color.darkened(.12))
 
-## Tower mode puts the box away: hidden, and nothing can land on it.
+## Tower and Toss put the box away: hidden, and nothing can land on it. The mask goes too —
+## a body still collides when the *other* side's mask matches, so clearing the layer alone left
+## an invisible box in the middle of the counter for Kinu to hit.
 func set_active(active: bool) -> void:
 	visible = active
 	if is_instance_valid(body):
 		body.collision_layer = 1 if active else 0
-
-## Lunch Rush's packing lid: planks in the box's colours with its seal on top.
-static func lid(skin: KinuDecor) -> Node3D:
-	var kit := MeshKit.new()
-	var palette: Dictionary = skin.palette if skin else {}
-	var outer := INNER_HALF+WALL
-	for i in 4:
-		var z := -outer+outer*.5*(i+.5)
-		kit.add_rounded_box(Vector3(0, .06, z), Vector3(outer*2+.08, .12, outer*.5-.02), palette.get("wood_light", WOOD_LIGHT) if i % 2 else palette.get("wood", WOOD), Vector3.ZERO, true, 10.0)
-	kit.add("cylinder", Vector3(0, .13, 0), Vector3(.9, .02, .9), palette.get("stamp", HANKO), Vector3.ZERO, false)
-	kit.add_rounded_box(Vector3(0, .15, 0), Vector3(.4, .02, .4), palette.get("stamp_mark", Color("fff6e2")), Vector3.ZERO, false, 8.0)
-	return kit.build(.035)
+		body.collision_mask = 2 if active else 0
 
 var body: StaticBody3D
 

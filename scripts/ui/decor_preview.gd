@@ -113,10 +113,12 @@ class RoomSwatch extends Control:
 		frame.set_corner_radius_all(14)
 		draw_style_box(frame, area)
 		var floor_top := area.position.y+area.size.y*.72
-		if decor.layout != "":
+		if decor.layout not in TofuShop.INTERIORS:
 			_draw_outdoor(area)
 		else:
 			_draw_shop(area, floor_top)
+			if decor.layout == "grand_opening":
+				_draw_opening(area, floor_top)
 		if TofuShop.PARTICLE_COUNTS.has(decor.effect):
 			var colors: Array = decor.palette.get("particles", TofuShop.PARTICLE_COLORS[decor.effect])
 			for i in 14:
@@ -292,6 +294,46 @@ class RoomSwatch extends Control:
 					draw_colored_polygon(PackedVector2Array([Vector2(keep.x-width*.5-6, y-8), Vector2(keep.x+width*.5+6, y-8), Vector2(keep.x, y-16)]), Color("56606e"))
 				for x in [.14, .86]:
 					draw_circle(at.call(x, .56), 13, Color("ffb3c8"))
+			"seaside_town":
+				# A side-on slice of the reef town, matching the room: sunlight slanting down
+				# through the water, kelp between the coral homes, reef along the seabed.
+				for shaft in 5:
+					var top_x: float = .06+shaft*.22
+					var beam := PackedVector2Array([
+						at.call(top_x, 0.0), at.call(top_x+.1, 0.0),
+						at.call(top_x+.02, .82), at.call(top_x-.06, .82)])
+					draw_colored_polygon(beam, Color(.78, .97, 1.0, .16))
+				var seabed: float = area.position.y+area.size.y*.78
+				draw_rect(Rect2(Vector2(area.position.x, seabed), Vector2(area.size.x, area.end.y-seabed)), _c("floor", Color("d9e0c8")))
+				for i in 6:
+					draw_circle(at.call(.08+i*.17, .8+fmod(i*.13, .06)), 9, _c("floor", Color("d9e0c8")).darkened(.06))
+				var town_tones := [Color("ef7f92"), Color("f5a94e"), Color("7f8ed4"), Color("cd7fc2"), Color("56b3ab")]
+				for kelp in 6:
+					var root: Vector2 = at.call(.04+kelp*.19+fmod(kelp*.07, .05), .79)
+					for seg in 5:
+						var sway := sin(seg*1.1+kelp)*5.0
+						draw_line(root+Vector2(sway, -seg*11.0), root+Vector2(sin((seg+1)*1.1+kelp)*5.0, -(seg+1)*11.0), Color("3f8f63"), 2.5)
+						draw_circle(root+Vector2(sway+4, -seg*11.0-4), 3.2, Color("4f9c4a"))
+				for i in 4:
+					var home: Vector2 = at.call(.14+i*.24, .78)
+					var tone: Color = town_tones[i % town_tones.size()]
+					var roof: Color = Color("f6e6cd").lerp(tone, .18)
+					var w := 15.0+(i % 2)*3.0
+					var tall := 30.0+(i % 3)*8.0
+					draw_rect(Rect2(home-Vector2(w, tall), Vector2(w*2, tall)), tone)
+					draw_colored_polygon(PackedVector2Array([
+						home-Vector2(w+6, tall), home+Vector2(w+6, -tall),
+						home+Vector2(w*.4, -tall-9), home-Vector2(w*.4, tall+9)]), roof)
+					# A balcony, a door to one side and a lit porthole to the other.
+					draw_rect(Rect2(home-Vector2(w+2, tall*.45), Vector2(w*2+4, 3)), roof)
+					draw_rect(Rect2(home-Vector2(w*.75, tall*.32), Vector2(8, tall*.32)), tone.darkened(.38))
+					draw_circle(home+Vector2(w*.45, -tall*.6), 4.5, Color("ffe19b"))
+					draw_circle(home+Vector2(w*.45, -tall*.22), 3.2, Color("ffe19b"))
+				for i in 16:
+					var reef: Vector2 = at.call(fmod(i*.37, .96)+.02, .8+fmod(i*.11, .1))
+					draw_line(reef, reef+Vector2(sin(i*1.7)*4, -9-fmod(i*3, 7)), [Color("e97982"), Color("f5aa58"), Color("a77bd2"), Color("41966f")][i % 4], 2.5)
+				for i in 18:
+					draw_circle(at.call(fmod(i*.41, .96)+.02, .06+fmod(i*.23, .66)), 1.8, Color("b7fff5"))
 			"veranda":
 				draw_circle(at.call(.78, .22), 16, _c("moon", Color("fff4c4")))
 				draw_rect(Rect2(at.call(.04, .36), Vector2(area.size.x*.45, area.size.y*.28)), _c("paper", Color("ffe7a8")))
@@ -302,6 +344,30 @@ class RoomSwatch extends Control:
 					var base: Vector2 = at.call(.55+i*.08, .9)
 					draw_line(base, base+Vector2(sin(i)*6, -34), Color("8a9a5a"), 2)
 					draw_circle(base+Vector2(sin(i)*6, -38), 5, Color("f1e3bf"))
+
+	## The shop on its first day: kohaku curtain along the wall's foot, bunting and a flower stand.
+	func _draw_opening(area: Rect2, floor_top: float) -> void:
+		var band := area.size.y*.12
+		draw_rect(Rect2(Vector2(area.position.x, floor_top-band), Vector2(area.size.x, band)), Color("d8403f"))
+		var stripe := area.size.x/10.0
+		for i in 5:
+			draw_rect(Rect2(Vector2(area.position.x+(i*2+1)*stripe, floor_top-band), Vector2(stripe, band)), Color("fff7ec"))
+		var flags := [Color("d8403f"), Color("fff7ec"), Color("ffd84d"), Color("7fd4e8"), Color("ff8fb1")]
+		var count := 9
+		for i in count:
+			var left := area.position.x+area.size.x*(i+.05)/count
+			var width := area.size.x*.9/count
+			var sag := sin((i+.5)/count*PI)*area.size.y*.05
+			var top := area.position.y+area.size.y*.06+sag
+			draw_colored_polygon(PackedVector2Array([Vector2(left, top), Vector2(left+width, top), Vector2(left+width*.5, top+area.size.y*.12)]), flags[i % flags.size()])
+		var wreath := Vector2(area.position.x+area.size.x*.2, floor_top-area.size.y*.3)
+		var radius := minf(area.size.x, area.size.y)*.13
+		draw_line(wreath, Vector2(wreath.x, floor_top), Color("8a5532"), 2)
+		for i in 10:
+			var a := TAU*i/10.0
+			draw_circle(wreath+Vector2(cos(a), sin(a))*radius, radius*.4, [Color("ff8fb1"), Color("fff7ec"), Color("ffd84d")][i % 3])
+		draw_circle(wreath, radius*.5, Color("fff7ec"))
+		draw_circle(wreath, radius*.25, Color("d8403f"))
 
 	func _draw_shop(area: Rect2, floor_top: float) -> void:
 		draw_rect(Rect2(Vector2(area.position.x, floor_top), Vector2(area.size.x, area.end.y-floor_top-6)), _c("floor", Color("9c6a42")))

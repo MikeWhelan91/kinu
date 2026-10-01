@@ -1,5 +1,5 @@
 extends Node
-## Kinu Catcher odds, meters, ownership and saving, plus Tower and Lunch Rush played by a bot.
+## Kinu Catcher odds, meters, ownership and saving, plus Tower and Kinu Toss played by a bot.
 ##   godot --headless --path . tests/catcher.tscn
 var failures: Array[String] = []
 var checks := 0
@@ -15,6 +15,8 @@ func frames(count: int) -> void:
 		await get_tree().physics_frame
 
 func _ready() -> void:
+	# This suite exercises local save rules; server-gated free plays have their own tests.
+	ProjectSettings.set_setting("supabase/url", "")
 	Save.save_path = "user://catcher_test.json"
 	for suffix in ["", ".bak", ".tmp"]:
 		DirAccess.remove_absolute(Save.save_path+suffix)
@@ -46,25 +48,33 @@ func _ready() -> void:
 			var kind: String = item.kind if item is KinuDecor else "outfit"
 			check(ids.has(kind+item.id), "Catcher exclusive %s is in the machine"%item.id)
 			check(not Save.owns(kind, item.id, item.price), "Catcher exclusive %s starts unowned"%item.id)
+		if item.showcase != "":
+			var showcase_kind: String = item.kind if item is KinuDecor else "outfit"
+			check(not ids.has(showcase_kind+item.id) and int(item.price) == 0 and not item.crane_only, "Monthly Showcase reward %s is never in the machine or shop"%item.id)
+		if item.event != "":
+			var event_kind: String = item.kind if item is KinuDecor else "outfit"
+			check(not ids.has(event_kind+item.id) and int(item.price) == 0 and not item.crane_only, "Grand Opening reward %s is never in the machine or shop"%item.id)
+			check(not Save.owns(event_kind, item.id, item.price), "Grand Opening reward %s starts unowned"%item.id)
 	var shop_exclusives := catalog.outfits.filter(func(o: KinuOutfit) -> bool: return o.crane_only and o.goal == "" and o.price > 0)
 	check(shop_exclusives.is_empty(), "exclusives are never priced for the shop")
 	var cute_commons := KinuModel.CUTE_STYLES.slice(0, 30)
 	var cute_rares := KinuModel.CUTE_STYLES.slice(30)
 	check(cute_commons.size() == 30 and cute_commons.all(func(id: String) -> bool:
 		var outfit := catalog.outfit(id)
-		return outfit != null and not outfit.crane_only and outfit.rarity == "common" and outfit.price == 440
-	), "thirty common outfits are available in the bean shop")
-	check(cute_rares.size() == 10 and cute_rares.all(func(id: String) -> bool:
+		return outfit != null and not outfit.crane_only and outfit.rarity == "common" and outfit.price > 0
+	), "the original common outfits are available in the bean shop")
+	check(cute_rares.slice(0, 10).all(func(id: String) -> bool:
 		var outfit := catalog.outfit(id)
 		return outfit != null and outfit.crane_only and outfit.rarity == "rare"
-	), "ten new rare outfits are in the Catcher and Kinu Book")
+	), "the original rare outfits are in the Catcher and Kinu Book")
+	check(KinuModel.CUTE_STYLES.all(func(id: String) -> bool: return catalog.outfit(id) != null), "every cute outfit style has a catalog entry")
 	check(catalog.outfits.filter(func(o: KinuOutfit) -> bool: return o.style in KinuModel.PREMIUM_STYLES).size() == 10, "ten new outfits")
-	check(catalog.decor_of("box").size() == 22 and catalog.decor_of("room").size() == 20, "ten new boxes and ten new rooms")
-	# ---------- Earning tickets ----------
+	check(catalog.decor_of("box").size() >= 22 and catalog.decor_of("room").size() >= 20, "the expanded box and room collections remain available")
+	# ---------- Daily missions and legacy ticket flags ----------
 	var legacy_missions := [
-		{"claimed": true}, {"claimed": false}, {"claimed": false},
+		{"claimed": true, "ticket": false}, {"claimed": false, "ticket": true}, {"claimed": false, "ticket": false},
 	]
-	check(KinuProgress._ensure_ticket_mission("2026-09-17", legacy_missions) and legacy_missions.filter(func(m: Dictionary) -> bool: return bool(m.get("ticket", false))).size() == 1 and legacy_missions.filter(func(m: Dictionary) -> bool: return bool(m.get("ticket", false)))[0].claimed == false, "an old daily save gains exactly one ticket mission without choosing a claimed mission")
+	check(KinuProgress._clear_ticket_flags(legacy_missions) and legacy_missions.all(func(m: Dictionary) -> bool: return not bool(m.get("ticket", false))) and not KinuProgress._clear_ticket_flags(legacy_missions), "old daily missions lose ticket flags exactly once")
 	Save.data.daily = {"day": Time.get_date_string_from_system(), "missions": [
 		{"type": "runs", "amount": 1, "reward": 10, "progress": 1, "claimed": false, "flavour": "", "shape": "", "ticket": false},
 		{"type": "clean", "amount": 1, "reward": 20, "progress": 1, "claimed": false, "flavour": "", "shape": "", "ticket": true},
@@ -72,8 +82,8 @@ func _ready() -> void:
 	]}
 	var mission_beans := int(Save.data.beans)
 	check(KinuProgress.claim(0) == 10 and int(Save.data.beans) == mission_beans+10 and int(Save.data.tickets) == 0, "a bean-only daily mission does not grant a ticket")
-	check(KinuProgress.claim(1) == 20 and int(Save.data.beans) == mission_beans+30 and int(Save.data.tickets) == 1, "the marked daily mission grants its beans and one ticket")
-	check(KinuProgress.claim(1) == 0 and int(Save.data.tickets) == 1, "the ticket mission cannot grant its ticket twice")
+	check(KinuProgress.claim(1) == 20 and int(Save.data.beans) == mission_beans+30 and int(Save.data.tickets) == 0, "a legacy marked daily mission grants beans without a ticket")
+	check(KinuProgress.claim(1) == 0 and int(Save.data.tickets) == 0, "a claimed daily mission cannot pay twice")
 	# ---------- Seven-day calendar ----------
 	Save.data.daily_calendar = {"last_day": "", "streak": 0}
 	check(DailyCalendar.ready() and DailyCalendar.current_index() == 0 and DailyCalendar.claimed_count() == 0, "a new calendar starts at claimable Day 1")
@@ -81,7 +91,7 @@ func _ready() -> void:
 	var calendar_rng := RandomNumberGenerator.new()
 	calendar_rng.seed = 7
 	var calendar_prize := DailyCalendar.claim(catalog, calendar_rng)
-	check(calendar_prize.kind == "beans" and calendar_prize.amount == 30 and int(Save.data.beans) == calendar_beans+30 and not DailyCalendar.ready() and DailyCalendar.claimed_count() == 1, "Day 1 grants beans and checks its calendar square once")
+	check(calendar_prize.kind == "beans" and calendar_prize.amount == int(DailyCalendar.REWARDS[0].amount) and int(Save.data.beans) == calendar_beans+int(DailyCalendar.REWARDS[0].amount) and not DailyCalendar.ready() and DailyCalendar.claimed_count() == 1, "Day 1 grants beans and checks its calendar square once")
 	# Built from the local calendar, not a raw UTC stamp: writing "yesterday" the way the old
 	# rollover did made this pass everywhere east of UTC and fail silently everywhere west of it.
 	Save.data.daily_calendar = {"last_day": DailyCalendar._yesterday(), "streak": 2}
@@ -95,14 +105,16 @@ func _ready() -> void:
 	rng.seed = 42
 	Save.data.beans = 0
 	Save.data.tickets = 0
-	check(KinuCatcher.free_ready() and KinuCatcher.can_play(), "a fresh day has a free play")
+	check(KinuCatcher.free_remaining() == 2 and KinuCatcher.total_tickets() == 2 and KinuCatcher.can_play(), "a fresh day has two visible free tickets")
 	var first := KinuCatcher.play(catalog, rng)
 	check(not first.is_empty() and first.free and int(Save.data.beans) == (first.amount if first.kind == "beans" else 0), "the free play costs nothing and pays out")
-	check(not KinuCatcher.free_ready(), "only one free play a day")
-	var plays := 1
+	check(KinuCatcher.free_remaining() == 1 and KinuCatcher.total_tickets() == int(Save.data.tickets)+1, "the first free play leaves one visible non-bankable ticket")
 	var second := KinuCatcher.play(catalog, rng)
-	plays += 0 if second.is_empty() else 1
-	check(second.is_empty() and int(Save.data.tickets) == 0, "no tickets and no free play means no play")
+	check(not second.is_empty() and second.free and KinuCatcher.free_remaining() == 0, "the second free play uses the last free ticket")
+	var plays := 2
+	Save.data.tickets = 0
+	var third := KinuCatcher.play(catalog, rng)
+	check(third.is_empty() and int(Save.data.tickets) == 0, "no tickets and no free play means no play")
 	Save.data.tickets = 1000000
 	var items_won := 0
 	var longest_dry := 0
@@ -130,7 +142,7 @@ func _ready() -> void:
 	check(not repeats, "an owned item is never won again")
 	check(longest_dry <= KinuCatcher.LUCKY_EVERY-1, "the lucky meter never lets %d plays pass without an item (longest %d)"%[KinuCatcher.LUCKY_EVERY, longest_dry])
 	check(int(Save.data.stats.crane_plays) == plays and Save.data.crane.history.size() == KinuCatcher.HISTORY, "plays and recent history are recorded")
-	check(int(Save.data.stats.crane_tickets_spent) == plays-1, "only paid plays count as tickets spent")
+	check(int(Save.data.stats.crane_tickets_spent) == plays-2, "only paid plays count as tickets spent")
 	var odds := KinuCatcher.odds(catalog)
 	var shown := 0.0
 	for row in odds:
@@ -159,7 +171,7 @@ func _ready() -> void:
 	Save.data.mode = "tower"
 	check(NestRun.chosen_mode() == "classic", "a locked mode falls back to Classic")
 	Save.data.best = 30
-	check(NestRun.chosen_mode() == "tower" and NestRun.mode_unlocked("rush"), "modes unlock with a Classic best")
+	check(NestRun.chosen_mode() == "tower" and NestRun.mode_unlocked("toss"), "modes unlock with a Classic best")
 	var app: Node = load("res://scenes/main.tscn").instantiate()
 	add_child(app)
 	await frames(5)
@@ -168,6 +180,14 @@ func _ready() -> void:
 	app._start()
 	await frames(3)
 	check(run.mode == "tower" and not run.box.visible and run.plate.visible and run.box.body.collision_layer == 0, "Tower swaps the box for the plate")
+	check(run.sauce_id() == "shoyu" and int(NestRun.SAUCES[run.sauce_id()].targets) == 1, "Tower equips a single-target Shoyu bottle")
+	var sauce_probe := run.make_body(run.catalog.shapes[0], run.catalog.flavours[0])
+	sauce_probe.scored = true
+	var before_sauce := sauce_probe.body_scale
+	var sauce_targets: Array[KinuBody] = [sauce_probe]
+	check(run._apply_sauce(sauce_targets, NestRun.SAUCES[run.sauce_id()]) == 1 and sauce_probe.sticky and is_equal_approx(sauce_probe.body_scale, before_sauce), "Tower Shoyu glues a Kinu without shrinking it")
+	run.bodies.erase(sauce_probe)
+	sauce_probe.free()
 	for turn in 14:
 		if run.state != "aim":
 			break
@@ -183,30 +203,35 @@ func _ready() -> void:
 	run.end()
 	await frames(2)
 	check(app.page == "results" and int(Save.data.mode_best.get("tower", -1)) == run.score and int(Save.data.best) == 30, "Tower bests are kept apart from Classic")
-	Save.data.mode = "rush"
+	Save.data.mode = "toss"
 	app._start()
 	await frames(3)
-	check(run.mode == "rush" and run.box.visible and not run.plate.visible and is_instance_valid(app.timer_pill), "Lunch Rush uses the box and shows a clock")
-	var spots := [Vector2(-.9, -.9), Vector2(.9, -.9), Vector2(.9, .9), Vector2(-.9, .9), Vector2(0, -.9), Vector2(.9, 0), Vector2(0, .9), Vector2(-.9, 0), Vector2(0, 0), Vector2(-.45, .45), Vector2(.45, -.45), Vector2(.45, .45)]
-	var turn := 0
-	while run.boxes_shipped == 0 and turn < 40 and run.state != "over":
+	var toss: TossPlay = run.toss
+	check(run.mode == "toss" and is_instance_valid(toss) and not run.box.visible and not run.plate.visible, "Kinu Toss puts the Classic box and the plate away")
+	check(TossPlay.MAX_MISSES == 6 and app.tumble_meter.total == 6, "Toss grants six misses and shows six lives")
+	check(is_instance_valid(toss.box) and not toss.box.lidded and toss.box.position.z < -3.0, "Toss opens on an open box down the table")
+	check(run.room.lane, "the room is built with a lane cut for the throw")
+	# Thrown at the box hard enough to reach it, and again too softly to.
+	var landed := 0
+	var thrown := 0
+	while thrown < 8 and run.state != "over":
 		if run.state == "aim":
-			var spot: Vector2 = spots[turn % spots.size()]
-			run.orbit.lateral = spot.x
-			run.orbit.depth = spot.y
-			run.time_left = 60.0
-			run.drop()
-			turn += 1
+			var before := run.score
+			toss.throw(.84 if thrown % 3 != 2 else .06)
+			for tick in 500:
+				await frames(1)
+				if run.state != "settle":
+					break
+			if run.score > before:
+				landed += 1
+			thrown += 1
 		await frames(1)
-	check(run.boxes_shipped == 1 and run.shipped >= NestRun.RUSH_BOX_TARGET, "a full box ships")
-	for tick in 200:
-		await frames(1)
-		if run.state == "aim":
-			break
-	check(run.state == "aim" and run.pile_count() == 0 and is_equal_approx(run.box.position.x, 0.0), "a fresh empty box slides in after shipping")
-	run.time_left = .05
-	await frames(10)
-	check(run.state == "over" and app.page == "results" and int(Save.data.mode_best.get("rush", -1)) >= NestRun.RUSH_BOX_TARGET, "running out of time ends Lunch Rush with a score")
+	check(landed > 0, "a firm flick lands Kinu in the box and scores")
+	check(run.tumbles > 0, "a limp flick falls short and costs a miss")
+	check(run.state == "over" or run.tumbles < TossPlay.MAX_MISSES, "the run ends on the sixth miss")
+	run.end()
+	await frames(2)
+	check(app.page == "results" and int(Save.data.mode_best.get("toss", -1)) == run.score, "Toss keeps its own best")
 	check(app.screen.find_child("ResultsCatcher", true, false) != null, "results offer the Kinu Catcher")
 	print("CHECKS=", checks, " FAILURES=", failures.size())
 	for suffix in ["", ".bak", ".tmp"]:

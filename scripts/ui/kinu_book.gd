@@ -5,6 +5,7 @@ extends RefCounted
 
 static func show(app: Node) -> void:
 	app._new_screen("collection", true)
+	_tab_badges.clear()
 	var layout = app._header("Kinu Book")
 	var tabs := HBoxContainer.new()
 	tabs.add_theme_constant_override("separation", 8)
@@ -17,8 +18,8 @@ static func show(app: Node) -> void:
 		tabs.add_child(button)
 		if tab[2] == "-":
 			continue
-		var fresh: int = Save.fresh_count(tab[2]) if tab[2] != "" else Save.fresh_count()-Save.fresh_count("flavour:")
-		_badge(button, fresh)
+		_tab_badges.append({"button": button, "prefix": tab[2]})
+		_badge(button, _fresh_for(tab[2]))
 	if app.book_tab == "collection":
 		_collection(app, layout)
 	elif app.book_tab == "records":
@@ -61,14 +62,17 @@ static func _flavours(app: Node, layout: VBoxContainer) -> void:
 		if known and not in_mix:
 			preview.modulate.a = .4
 		var fresh_key := "flavour:"+flavour.id
+		var badged: Array[Control] = []
 		var card := CardGrid.card(grid, preview, flavour.display_name if known else "???", CardGrid.tint(i), func() -> void:
 			if Save.is_fresh(fresh_key):
 				Save.clear_fresh(fresh_key)
-				show(app)
+				for button in badged:
+					_mark_seen(button)
 			app._flavour_detail(flavour, known)
 		, 210, "book")
 		if known and Save.is_fresh(fresh_key):
 			_badge(card.button, 1, true)
+			badged.append(card.button)
 		if not known:
 			NestTheme.style_card(card.button, "locked")
 		var status := NestTheme.t("Pile %d Kinu")%flavour.unlock_kinu if locked else ("Not found yet" if not known else (flavour.rarity() if in_mix else "Not in the mix"))
@@ -111,6 +115,8 @@ static func _collection(app: Node, layout: VBoxContainer) -> void:
 	var total := 0
 	for entry in KinuShopScreen.TABS:
 		for item in KinuShopScreen.items(catalog, entry[2]):
+			if not KinuShopScreen.is_available(item):
+				continue
 			total += 1
 			if Save.owns(entry[2], item.id, item.price):
 				owned += 1
@@ -119,7 +125,7 @@ static func _collection(app: Node, layout: VBoxContainer) -> void:
 	list.add_child(count_row)
 	for entry in KinuShopScreen.TABS:
 		var kind: String = entry[2]
-		var entries: Array = KinuShopScreen.items(catalog, kind).duplicate()
+		var entries: Array = KinuShopScreen.items(catalog, kind).filter(func(item: Resource) -> bool: return KinuShopScreen.is_available(item))
 		entries.sort_custom(func(a: Resource, b: Resource) -> bool:
 			var ra: int = RARITY_ORDER.get(a.rarity, 0)
 			var rb: int = RARITY_ORDER.get(b.rarity, 0)
@@ -143,13 +149,19 @@ static func _collection(app: Node, layout: VBoxContainer) -> void:
 			if not have:
 				preview.modulate = Color(.62, .56, .52)
 			var fresh_key: String = kind+":"+item.id
+			# The button does not exist until the card is built, so the tap handler reaches it
+			# through this one-slot holder, which is only filled when the card actually wears a badge.
+			var badged: Array[Control] = []
 			var card := CardGrid.card(grid, preview, item.display_name, _tier_tint(item.rarity, grid.get_child_count()), func() -> void:
 				Save.clear_fresh(fresh_key)
+				for button in badged:
+					_mark_seen(button)
 				_item_detail(app, kind, item)
 			, 196, "book", 150, 15, kind == "room")
 			_collection_status(card, kind, item)
 			if have and Save.is_fresh(fresh_key):
 				_badge(card.button, 1, true)
+				badged.append(card.button)
 	app._center_label(layout, "Tap a card for a closer look.", 15, NestTheme.MUTED)
 
 ## A small thumbnail for the collection grid: a pre-baked image for outfits and boxes, or a fresh
@@ -196,7 +208,8 @@ static func _collection_status(card: Dictionary, kind: String, item: Resource) -
 	# the goal text collapsing into a single letter per line.
 	box.custom_minimum_size.x = 126
 	card.status.add_child(box)
-	var tier := KinuCatcher.tier_pill(item.rarity, 16)
+	# Showcase rewards look like every other card of their tier; only the pill's word changes.
+	var tier: Control = KinuCatcher.tier_pill(item.rarity, 16, "Showcase" if item.showcase != "" else ("Launch" if item.event != "" else ""))
 	if tier:
 		var tier_row := CenterContainer.new()
 		tier_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -249,7 +262,11 @@ static func _item_detail(app: Node, kind: String, item: Resource) -> void:
 	pills.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	pills.add_theme_constant_override("separation", 6)
 	status_row.add_child(pills)
-	if KinuCatcher.tier_pill(item.rarity, 17):
+	if item.showcase != "":
+		pills.add_child(KinuCatcher.tier_pill(item.rarity, 17, "Showcase"))
+	elif item.event != "":
+		pills.add_child(GrandOpeningSheet.exclusive_pill(17))
+	elif KinuCatcher.tier_pill(item.rarity, 17):
 		pills.add_child(KinuCatcher.tier_pill(item.rarity, 17))
 	elif item.crane_only:
 		pills.add_child(NestTheme.pill("Only in the Kinu Claw", 13, NestTheme.PURPLE))
@@ -257,7 +274,11 @@ static func _item_detail(app: Node, kind: String, item: Resource) -> void:
 		pills.add_child(NestTheme.bean_pill(str(int(item.price)), 15))
 	stack.add_child(status_row)
 	# Every tile says how it is come by, so tapping one always answers "how do I get this?".
-	if item.crane_only:
+	if item.showcase != "":
+		app._paper_text(stack, KinuShowcase.acquisition_text(item), 16)
+	elif item.event != "":
+		app._paper_text(stack, GrandOpening.acquisition_text(item), 16)
+	elif item.crane_only:
 		app._paper_text(stack, NestTheme.t("Only won in the Kinu Claw."), 16)
 	elif item.goal != "":
 		app._paper_text(stack, NestTheme.t("%s to earn this.")%KinuProgress.goal_text(item), 16)
@@ -294,10 +315,36 @@ static func _big_preview(catalog: KinuCatalog, kind: String, item: Resource, hav
 
 ## Red count in the top-right corner of a tab or card, for unlocks not looked at yet.
 ## Cards sit inside a scroll area that clips, so their badge tucks inside the corner (`inset`).
+## Unread badges are replaced in place rather than stacked, so a count can be taken down the
+## moment its unlock is opened.
+const BADGE_NAME := "FreshBadge"
+
+## The tab buttons and the fresh-key prefix each one counts, rebuilt with the screen.
+static var _tab_badges: Array[Dictionary] = []
+
+## Unseen unlocks behind a tab. The Collection tab counts everything that is not a flavour.
+static func _fresh_for(prefix: String) -> int:
+	return Save.fresh_count(prefix) if prefix != "" else Save.fresh_count()-Save.fresh_count("flavour:")
+
+## Takes the unread badge off a card and off the tabs counting it. Done in place instead of
+## rebuilding the screen, so opening a card does not throw the player back to the top of a long grid.
+static func _mark_seen(card_button: Control) -> void:
+	if is_instance_valid(card_button):
+		_badge(card_button, 0, true)
+	for entry in _tab_badges:
+		var button: Control = entry.button
+		if is_instance_valid(button):
+			_badge(button, _fresh_for(str(entry.prefix)))
+
 static func _badge(target: Control, count: int, inset: bool = false) -> void:
+	var showing := target.get_node_or_null(NodePath(BADGE_NAME))
+	if showing:
+		target.remove_child(showing)
+		showing.queue_free()
 	if count <= 0:
 		return
 	var badge := NestTheme.count_badge(count)
+	badge.name = BADGE_NAME
 	badge.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
 	badge.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	badge.offset_top = 2 if inset else -10

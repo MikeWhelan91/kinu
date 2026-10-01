@@ -63,12 +63,16 @@ func _layout_navigation() -> void:
 				local_polygon.append(point-bounds.position)
 			item.hit_polygon = local_polygon
 
+## Where the strips' hems hang at rest, for a front `height` tall.
+func hem_y(height: float) -> float:
+	# The strips hang a fifth of the screen, but never so short that a strip's label (about 80px up
+	# from the hem) rides up behind the sign. On 16:9 screens like the iPhone SE a fifth is too short.
+	return top_margin+18+maxf(height*.2, MIN_DROP)+18
+
 func _panel_pose(index: int, time: float) -> Dictionary:
 	var ease := progress*progress*(3.0-2.0*progress)
 	var rail_y := top_margin+18
-	# The strips hang a fifth of the screen, but never so short that a strip's label (about 80px up
-	# from the hem) rides up behind the sign. On 16:9 screens like the iPhone SE a fifth is too short.
-	var curtain_bottom := rail_y+maxf(size.y*.2, MIN_DROP)+18
+	var curtain_bottom := hem_y(size.y)
 	var strip_width := size.x/STRIPS
 	var side := -1.0 if index < STRIPS/2 else 1.0
 	var outward := ease*size.x*.55*side*(1.0+absf(index-(STRIPS-1)*.5)*.3)

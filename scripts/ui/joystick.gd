@@ -27,6 +27,8 @@ var deflection: Vector2 = Vector2.ZERO
 var _touch_index: int = -1
 
 const LABEL_HEIGHT := 24.0
+## A quiet centre and a gentler first half of travel make fine aiming and spinning easier.
+const DEADZONE := .14
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -47,10 +49,18 @@ func _physics_process(delta: float) -> void:
 		return
 	if not is_instance_valid(run) or run.state != "aim":
 		return
+	var motion := _motion_deflection()
 	if kind == "spin":
-		run.orbit.spin_hold(deflection, delta)
+		run.orbit.spin_hold(motion, delta)
 	else:
-		run.orbit.move_hold(deflection, delta)
+		run.orbit.move_hold(motion, delta)
+
+func _motion_deflection() -> Vector2:
+	var amount := deflection.length()
+	if amount <= DEADZONE:
+		return Vector2.ZERO
+	var travel := (amount-DEADZONE)/(1.0-DEADZONE)
+	return deflection/amount*pow(travel, 1.35)
 
 func _input(event: InputEvent) -> void:
 	if not visible or (run == null and not steer.is_valid()):
@@ -88,7 +98,7 @@ func _update_from(global_point: Vector2) -> void:
 		local = local.normalized()*base_radius
 	deflection = local/base_radius
 	queue_redraw()
-	if deflection.length() > .1 and is_instance_valid(run):
+	if deflection.length() > DEADZONE and is_instance_valid(run):
 		run.action_done.emit("spin" if kind == "spin" else "aim")
 
 func _draw() -> void:

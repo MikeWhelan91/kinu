@@ -8,7 +8,11 @@ extends Node
 ## screen. mode=aim drops a few, then captures mid-turn with the next Kinu hovering
 ## on its beam, which is the "drag, spin, drop" moment. mode=scene is a turned,
 ## uncluttered view of the room and a part-filled box, for the rooms collage.
-## room and box take catalog ids.
+## room, box and outfit take catalog ids. size=1920x1080 changes the frame, hud=off leaves the
+## game's own UI out (for event and promo art), zoom=1.3 widens the camera's view, tilt=-.3 lowers it
+## toward eye level (the player's swipe range is -.22 to .38), shift=-1.5 slides the frame down so the
+## pile sits higher (clear of App Store text overlays), and outdir= saves
+## somewhere other than the studio.
 ## Not --headless: that has no rendering device and the capture comes back blank.
 ##
 ## The point is a box packed WIDE. Left to itself the drop point barely moves and
@@ -40,7 +44,9 @@ var run: NestRun
 ## settling discoveries writes to the save. The player's own save is snapshotted
 ## here and put back before the tool exits.
 var saved: Dictionary = {}
-var options := {"room": "shop", "box": "hinoki", "mode": "packed", "drops": str(DROPS), "out": "packed.png", "lang": "en"}
+## The saved image's size, which may be larger than the window it is shot in.
+var target := SIZE
+var options := {"room": "shop", "box": "hinoki", "outfit": "", "mode": "packed", "drops": str(DROPS), "out": "packed.png", "lang": "en", "size": "", "hud": "on", "outdir": OUT, "zoom": "1", "tilt": "", "shift": "0"}
 
 func _ready() -> void:
 	for arg in OS.get_cmdline_user_args():
@@ -49,8 +55,20 @@ func _ready() -> void:
 			options[pair[0]] = pair[1]
 	var aim: bool = options.mode == "aim"
 	var scene: bool = options.mode == "scene"
-	DirAccess.make_dir_recursive_absolute(OUT)
-	get_window().size = SIZE
+	DirAccess.make_dir_recursive_absolute(str(options.outdir))
+	var frame := SIZE
+	if str(options.size).contains("x"):
+		var parts := str(options.size).split("x")
+		frame = Vector2i(int(parts[0]), int(parts[1]))
+	# A window can't be bigger than the screen, so a large frame is shot at the biggest size that
+	# fits with the same shape, then scaled up to the exact size asked for when it's saved.
+	var room := Vector2(DisplayServer.screen_get_usable_rect().size)*.9
+	var fit := minf(1.0, minf(room.x/frame.x, room.y/frame.y))
+	target = frame
+	# The project's portrait window limits would otherwise clamp a landscape frame.
+	get_window().min_size = Vector2i.ZERO
+	get_window().max_size = Vector2i.ZERO
+	get_window().size = Vector2i((Vector2(frame)*fit).round())
 	saved = Save.data.duplicate(true)
 	# The game reads the language when the main scene starts, so it is set first.
 	Save.data.language = options.lang
@@ -64,6 +82,7 @@ func _ready() -> void:
 	Save.data.best = 9999
 	Save.data.room = options.room
 	Save.data.box = options.box
+	Save.data.outfit = options.outfit
 	main._start()
 	run = main.run
 	# No toasts over the pile, and no tutorial card.
@@ -114,9 +133,28 @@ func _ready() -> void:
 	main._hud_update()
 	await _rest()
 
-	var path: String = OUT+str(options.out)
+	if str(options.tilt) != "":
+		run.orbit.tilt = float(options.tilt)
+		for _frame in 60:
+			await get_tree().process_frame
+	run.orbit.camera.v_offset = float(options.shift)
+	if float(options.zoom) != 1.0:
+		run.orbit.camera.fov = minf(run.orbit.camera.fov*float(options.zoom), 100.0)
+	if options.hud == "off":
+		main.canvas.hide()
+	if not aim:
+		# The run's own update re-shows the landing guide (and the ghost Kinu riding on it) every
+		# frame, so the run is paused before the guide is hidden for the capture.
+		run.set_process(false)
+		for guide in [run.beam, run.marker]:
+			guide.get_parent().remove_child(guide)
+		for _frame in 3:
+			await get_tree().process_frame
+	var path: String = str(options.outdir).path_join(str(options.out))
 	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
+	if image.get_size() != target:
+		image.resize(target.x, target.y, Image.INTERPOLATE_LANCZOS)
 	image.save_png(path)
 	print("[play] saved ", path, " pile ", run.score, " tumbles ", run.tumbles)
 	Save.data = saved

@@ -1629,3 +1629,1502 @@ msgstr "최고 기록 경신!"
 
 msgid "Tickets won"
 msgstr "획득한 티켓"
+
+# Monthly Showcase
+
+msgid "January"
+msgstr "1월"
+
+msgid "February"
+msgstr "2월"
+
+msgid "March"
+msgstr "3월"
+
+msgid "April"
+msgstr "4월"
+
+msgid "May"
+msgstr "5월"
+
+msgid "June"
+msgstr "6월"
+
+msgid "July"
+msgstr "7월"
+
+msgid "August"
+msgstr "8월"
+
+msgid "September"
+msgstr "9월"
+
+msgid "October"
+msgstr "10월"
+
+msgid "November"
+msgstr "11월"
+
+msgid "December"
+msgstr "12월"
+
+msgid "Jan"
+msgstr "1월"
+
+msgid "Feb"
+msgstr "2월"
+
+msgid "Mar"
+msgstr "3월"
+
+msgid "Apr"
+msgstr "4월"
+
+msgid "Jun"
+msgstr "6월"
+
+msgid "Jul"
+msgstr "7월"
+
+msgid "Aug"
+msgstr "8월"
+
+msgid "Sep"
+msgstr "9월"
+
+msgid "Oct"
+msgstr "10월"
+
+msgid "Nov"
+msgstr "11월"
+
+msgid "Dec"
+msgstr "12월"
+
+msgid "{month} {year}"
+msgstr "{year}년 {month}"
+
+msgid "{day} {month}"
+msgstr "{month} {day}일"
+
+msgid "{start}–{end} {month}"
+msgstr "{month} {start}–{end}일"
+
+msgid "%s SHOWCASE"
+msgstr "%s 쇼케이스"
+
+msgid "MONTHLY SHOWCASE"
+msgstr "월간 쇼케이스"
+
+msgid "NEW THIS MONTH!"
+msgstr "이번 달 신규!"
+
+msgid "THIS MONTH'S EXCLUSIVE"
+msgstr "이번 달 한정"
+
+msgid "EARNED THIS MONTH!"
+msgstr "이번 달 획득!"
+
+msgid "Showcase exclusive"
+msgstr "쇼케이스 한정"
+
+msgid "Showcase"
+msgstr "쇼케이스"
+
+msgid "Kinu outfit"
+msgstr "키누 옷"
+
+msgid "Box"
+msgstr "상자"
+
+msgid "Room"
+msgstr "배경"
+
+msgid "Never sold in the Shop or found in the Kinu Claw."
+msgstr "상점이나 키누 클로에는 나오지 않아요."
+
+msgid "WEEK %d"
+msgstr "%d주차"
+
+msgid "DONE"
+msgstr "완료"
+
+msgid "NOW"
+msgstr "진행 중"
+
+msgid "MISSED"
+msgstr "놓침"
+
+msgid "SOON"
+msgstr "곧 시작"
+
+msgid "THIS WEEK'S CHALLENGE"
+msgstr "이번 주 챌린지"
+
+msgid "%d / %d weeks"
+msgstr "%d / %d주"
+
+msgid "Last day!"
+msgstr "마지막 날!"
+
+msgid "%d days left"
+msgstr "%d일 남음"
+
+msgid "Finish all %d to win it. Each one also pays beans and a claw ticket."
+msgstr "%d주를 모두 완료하면 받아요. 매주 콩과 클로 티켓도 받아요."
+
+msgid "DONE FOR THIS WEEK"
+msgstr "이번 주 완료!"
+
+msgid "Week %d's challenge opens on %s."
+msgstr "%d주차 챌린지는 %s에 시작돼요."
+
+msgid "MISSED A WEEK"
+msgstr "한 주를 놓쳤어요"
+
+msgid "A week closed unfinished, so %s can't be earned this month. Next month's showcase starts on the 1st."
+msgstr "완료하지 못한 주가 있어서 이번 달에는 %s을(를) 받을 수 없어요. 다음 달 쇼케이스는 1일에 시작돼요."
+
+msgid "SHOWCASE COMPLETE"
+msgstr "쇼케이스 달성"
+
+msgid "SHOWCASE COMPLETE!"
+msgstr "쇼케이스 달성!"
+
+msgid "%s is yours. A new showcase arrives on the 1st."
+msgstr "%s 획득! 1일에 새 쇼케이스가 시작돼요."
+
+msgid "LET'S GO!"
+msgstr "가 보자!"
+
+msgid "A new showcase starts on the 1st of every month."
+msgstr "매달 1일에 새 쇼케이스가 시작돼요."
+
+msgid "No showcase this month. Check back on the 1st!"
+msgstr "이번 달은 쇼케이스가 없어요. 1일에 다시 확인해 주세요!"
+
+msgid "Earned!"
+msgstr "획득!"
+
+msgid "Missed"
+msgstr "놓침"
+
+msgid "Coming in the %s Monthly Showcase. Finish that month's weekly challenges to earn it."
+msgstr "%s 월간 쇼케이스에 등장해요. 그달의 주간 챌린지를 모두 완료하면 받을 수 있어요."
+
+msgid "This month's Showcase reward. Finish every weekly challenge in %s to earn it."
+msgstr "이번 달 쇼케이스 보상이에요. %s의 주간 챌린지를 모두 완료하면 받을 수 있어요."
+
+msgid "The %s Monthly Showcase reward. It isn't sold in the Shop or found in the Kinu Claw."
+msgstr "%s 월간 쇼케이스 보상이에요. 상점이나 키누 클로에서는 얻을 수 없어요."
+
+msgid "WEEKLY CHALLENGE"
+msgstr "주간 챌린지"
+
+msgid "The new weekly challenge opens when the server resets. Check back shortly."
+msgstr "새 주간 챌린지는 서버가 초기화된 후 시작돼요. 잠시 후 다시 확인해 주세요."
+
+msgid "Land %d Kinu this week"
+msgstr "이번 주 키누 %d개 올리기"
+
+msgid "Play %d runs this week"
+msgstr "이번 주 %d판 플레이"
+
+msgid "Finish %d clean runs this week"
+msgstr "이번 주 안 떨어뜨리고 %d판 완료"
+
+msgid "Glaze %d Kinu with shoyu this week"
+msgstr "이번 주 키누 %d개에 간장 뿌리기"
+
+msgid "Play for %d minutes this week"
+msgstr "이번 주 %d분 플레이"
+
+msgid "Spin the box %d full turns this week"
+msgstr "이번 주 상자를 %d바퀴 돌리기"
+
+# Daily Treats and catalogue text
+
+msgid "DAILY TREATS"
+msgstr "데일리 선물"
+
+msgid "★  7 DAYS · 7 PRIZES  ★"
+msgstr "★  7일 · 7가지 선물  ★"
+
+msgid "DAY %d OF 7"
+msgstr "7일 중 %d일째"
+
+msgid "DAY %d"
+msgstr "%d일째"
+
+msgid "TODAY'S TREAT"
+msgstr "오늘의 선물"
+
+msgid "COLLECTED TODAY"
+msgstr "오늘 받았어요"
+
+msgid "+%d BEANS"
+msgstr "콩 +%d"
+
+msgid "1 CLAW TICKET"
+msgstr "클로 티켓 1장"
+
+msgid "%d CLAW TICKETS"
+msgstr "클로 티켓 %d장"
+
+msgid "CLAW TREASURE"
+msgstr "클로 보물"
+
+msgid "★  TODAY · GRAND PRIZE  ★"
+msgstr "★  오늘 · 대상  ★"
+
+msgid "★  DAY 7 · GRAND PRIZE  ★"
+msgstr "★  7일째 · 대상  ★"
+
+msgid "Kinu Claw Treasure"
+msgstr "키누 클로 보물"
+
+msgid "A cosmetic only the claw can drop."
+msgstr "클로에서만 나오는 꾸미기 아이템."
+
+msgid "Collected — back to Day 1 tomorrow!"
+msgstr "받았어요 — 내일은 1일째부터!"
+
+msgid "CLAIM MY TREAT!"
+msgstr "선물 받기!"
+
+msgid "CHECKING…"
+msgstr "확인 중…"
+
+msgid "See you tomorrow!"
+msgstr "내일 또 만나요!"
+
+msgid "Maybe later"
+msgstr "나중에"
+
+msgid "Miss a day and the calendar restarts at Day 1."
+msgstr "하루라도 빠지면 1일째부터 다시 시작해요."
+
+msgid "NEXT TREAT IN"
+msgstr "다음 선물까지"
+
+msgid "NEXT TREAT"
+msgstr "다음 선물"
+
+msgid "Next treat in %s"
+msgstr "다음 선물까지 %s"
+
+msgid "Today's treat is ready!"
+msgstr "오늘의 선물이 도착했어요!"
+
+msgid "DAILY TREAT READY"
+msgstr "데일리 선물 도착"
+
+msgid "Claim it!"
+msgstr "받아요!"
+
+msgid "Tap to open your reward"
+msgstr "탭해서 선물 열기"
+
+msgid "Come back for your next treat"
+msgstr "다음 선물도 기대해 주세요"
+
+msgid "A little prize is waiting!"
+msgstr "작은 선물이 기다리고 있어요!"
+
+msgid "TREAT READY!"
+msgstr "선물 도착!"
+
+msgid "Couldn't check your daily treat. Please try again while online."
+msgstr "데일리 선물을 확인하지 못했어요. 온라인 상태에서 다시 시도해 주세요."
+
+msgid "Kinu's everyday shape. Sturdy on every side."
+msgstr "키누의 기본 모양. 어느 면이든 튼튼해요."
+
+msgid "A flat, sleepy Kinu. The best base there is."
+msgstr "납작하고 졸린 키누. 최고의 받침이에요."
+
+msgid "Stretched out for a nap. Great for bridging gaps."
+msgstr "쭉 뻗어서 낮잠 중. 틈을 잇기에 딱이에요."
+
+msgid "Standing up proud. Saves space, but wobbles."
+msgstr "당당하게 서 있어요. 자리는 덜 차지하지만 흔들려요."
+
+msgid "Rolled into a ball. Loves to roll away."
+msgstr "동그랗게 말렸어요. 데굴데굴 굴러가는 걸 좋아해요."
+
+msgid "A mischievous forest spirit costume, tail included."
+msgstr "장난꾸러기 숲의 정령 옷. 꼬리도 있어요."
+
+msgid "Soft, floppy ears for extra-snuggly hops."
+msgstr "폭신하게 늘어진 귀로 깡충깡충."
+
+msgid "Tiny wings for a moonlit flutter."
+msgstr "달밤에 파닥이는 작은 날개."
+
+msgid "A clever bushy tail, always up to something."
+msgstr "영리한 복슬 꼬리. 늘 뭔가 꾸미고 있어요."
+
+msgid "Cool, damp, and ready to leap."
+msgstr "시원하고 촉촉하게, 뛸 준비 완료."
+
+msgid "A single leaf cap. Autumn's simplest gift."
+msgstr "나뭇잎 한 장 모자. 가을의 소박한 선물."
+
+msgid "A tiny hat and an eyepatch for high-seas snacking."
+msgstr "작은 모자와 안대로 바다 위 간식 시간."
+
+msgid "Silent, stealthy, and sworn to protect the box."
+msgstr "소리 없이 은밀하게, 상자를 지키기로 맹세했어요."
+
+msgid "Round, black-and-white, and endlessly huggable."
+msgstr "동글동글 흑백, 계속 안아 주고 싶어요."
+
+msgid "Spiky and prehistoric, but still very cuddly."
+msgstr "뾰족뾰족 선사시대 친구지만 여전히 포근해요."
+
+msgid "A snug little helmet for space-bound snacking."
+msgstr "우주에서 간식 먹기 딱 좋은 아늑한 헬멧."
+
+msgid "A friendly boo under a floaty sheet."
+msgstr "둥실둥실 이불 속에서 다정하게 '까꿍!'"
+
+msgid "All fin, no bite. Promise."
+msgstr "지느러미만 있고 물지 않아요. 약속해요."
+
+msgid "Sweet, red, and freckled with seeds."
+msgstr "달콤하고 빨갛고, 씨앗이 콕콕."
+
+msgid "Bold stripes for a fierce little roar."
+msgstr "선명한 줄무늬로 작지만 용감하게 어흥."
+
+msgid "Curled horns and a proud little tail."
+msgstr "돌돌 말린 뿔과 당당한 작은 꼬리."
+
+msgid "A warm woodgrain finish, carved with care."
+msgstr "정성껏 깎은 따뜻한 나뭇결."
+
+msgid "Cool swirls of stone, polished smooth."
+msgstr "매끈하게 다듬은 시원한 돌 무늬."
+
+msgid "Faceted and glinting like cut glass."
+msgstr "커팅한 유리처럼 반짝반짝."
+
+msgid "A little pocket of starlight, swirled in."
+msgstr "별빛을 살짝 담아 휘감았어요."
+
+msgid "Gleaming and precious, fit for a treasure box."
+msgstr "보물 상자에 어울리는 귀하고 눈부신 빛."
+
+msgid "Plain cypress wood, warm and simple."
+msgstr "따뜻하고 소박한 편백나무."
+
+msgid "Woven slats that smell faintly of rice."
+msgstr "은은하게 밥 냄새가 나는 대나무 찜기."
+
+msgid "Glossy red lacquer, polished to a mirror shine."
+msgstr "거울처럼 반짝이게 닦은 붉은 옻칠."
+
+msgid "Painted with drifting cherry blossom petals."
+msgstr "흩날리는 벚꽃잎을 그렸어요."
+
+msgid "Cool, solid stone, worn smooth over time."
+msgstr "세월에 매끄러워진 단단하고 시원한 돌."
+
+msgid "Gilded edges fit for a treasure hoard."
+msgstr "보물 더미에 어울리는 금빛 테두리."
+
+msgid "The cosy little shop where it all began."
+msgstr "모든 게 시작된 아늑한 작은 가게."
+
+msgid "Lanterns and stalls, glowing long after sundown."
+msgstr "해가 져도 빛나는 등불과 노점."
+
+msgid "A frosty hush and a blanket of fresh snow."
+msgstr "고요한 서리와 소복한 새 눈."
+
+msgid "A lane lined with blossoms, petals drifting on the breeze."
+msgstr "꽃잎이 바람에 날리는 벚꽃길."
+
+msgid "Fresh from the shell, still a little wobbly."
+msgstr "막 껍데기에서 나와 아직 조금 비틀비틀."
+
+msgid "Wrapped up snug, ready to be delivered with love."
+msgstr "포근하게 포장해서 사랑을 담아 배달할 준비 완료."
+
+msgid "A tiny towel for a well-earned soak."
+msgstr "수고한 날의 온천욕을 위한 작은 수건."
+
+msgid "A neat little rice pillow, nori sash and all."
+msgstr "김 띠까지 두른 깔끔한 밥 베개."
+
+msgid "Buzzing stripes and see-through little wings."
+msgstr "윙윙 줄무늬와 투명한 작은 날개."
+
+msgid "Round, lucky, and always bouncing back."
+msgstr "동그랗고 운이 좋고, 언제나 다시 일어나요."
+
+msgid "A cheerful octopus cap with dangling little legs."
+msgstr "대롱대롱 다리가 달린 명랑한 문어 모자."
+
+msgid "A river spirit's dish-shaped cap, kept nice and damp."
+msgstr "촉촉하게 유지한 강 요정의 접시 모자."
+
+msgid "A humble woven basket, sturdy and simple."
+msgstr "소박하고 튼튼한 엮은 바구니."
+
+msgid "Peppermint stripes, sweet enough to lick."
+msgstr "핥고 싶을 만큼 달콤한 페퍼민트 줄무늬."
+
+msgid "Ribboned shut, like a present waiting to be opened."
+msgstr "리본으로 묶은, 열어 주길 기다리는 선물."
+
+msgid "Stacked lacquered tiers for a New Year's feast."
+msgstr "설날 잔치를 위한 겹겹이 옻칠 찬합."
+
+msgid "Cool and glassy, like it was carved from a glacier."
+msgstr "빙하를 깎아 만든 듯 시원하고 투명해요."
+
+msgid "Buzzing with electric colour, straight off the arcade floor."
+msgstr "오락실에서 막 나온 짜릿한 전기색."
+
+msgid "Tall green stalks swaying in a gentle hush."
+msgstr "고요 속에 흔들리는 키 큰 초록 대나무."
+
+msgid "Red leaves settling over old wooden eaves."
+msgstr "오래된 나무 처마 위로 내려앉는 붉은 잎."
+
+msgid "Steam rising off a warm, mineral-scented bath."
+msgstr "따뜻한 온천에서 피어오르는 김."
+
+msgid "Paper lanterns, drumbeats, and the smell of grilled snacks."
+msgstr "종이 등불, 북소리, 구운 간식 냄새."
+
+msgid "A quiet platform for watching the full moon rise."
+msgstr "보름달이 뜨는 걸 보는 조용한 누각."
+
+msgid "A skyline glowing pink and blue after dark."
+msgstr "밤이 되면 분홍빛과 파란빛으로 빛나는 스카이라인."
+
+msgid "Nine tails' worth of old, playful magic."
+msgstr "꼬리 아홉 개만큼의 오래되고 장난스러운 마법."
+
+msgid "Feathers that glow like the last embers of a fire."
+msgstr "마지막 불씨처럼 빛나는 깃털."
+
+msgid "A single spiralled horn and a shimmering mane."
+msgstr "나선형 뿔 하나와 반짝이는 갈기."
+
+msgid "One paw raised, calling good fortune your way."
+msgstr "한 발을 들고 행운을 불러요."
+
+msgid "A small suit of armour, worn with quiet pride."
+msgstr "조용한 자부심으로 입은 작은 갑옷."
+
+msgid "Rippling scales in the colours of a garden pond."
+msgstr "정원 연못 빛깔로 일렁이는 비늘."
+
+msgid "Frilly gills and a permanent, gummy smile."
+msgstr "하늘하늘 아가미와 늘 웃는 얼굴."
+
+msgid "A sash-tied robe patterned for a festival stroll."
+msgstr "축제 산책에 어울리는 띠를 맨 기모노."
+
+msgid "Small horns and a grin that's more mischief than menace."
+msgstr "작은 뿔과 무섭기보다 장난스러운 미소."
+
+msgid "Unbothered, citrus-scented, and perfectly zen."
+msgstr "무엇에도 태평하게, 유자 향 가득 평온 그 자체."
+
+msgid "Baby Chick"
+msgstr "아기 병아리"
+
+msgid "Shiba Pup"
+msgstr "아기 시바"
+
+msgid "Calico Kitty"
+msgstr "삼색 고양이"
+
+msgid "Honey Bear"
+msgstr "꿀곰"
+
+msgid "Hamster"
+msgstr "햄스터"
+
+msgid "Baby Penguin"
+msgstr "아기 펭귄"
+
+msgid "Duckling"
+msgstr "아기 오리"
+
+msgid "Mochi Seal"
+msgstr "찹쌀떡 물범"
+
+msgid "Little Otter"
+msgstr "꼬마 수달"
+
+msgid "Red Panda"
+msgstr "레서판다"
+
+msgid "Mushroom Cap"
+msgstr "버섯 모자"
+
+msgid "Peachy"
+msgstr "복숭아"
+
+msgid "Lemon Drop"
+msgstr "레몬 사탕"
+
+msgid "Cupcake"
+msgstr "컵케이크"
+
+msgid "Purin Pudding"
+msgstr "푸딩"
+
+msgid "Boba Tea"
+msgstr "버블티"
+
+msgid "Melonpan"
+msgstr "메론빵"
+
+msgid "Sprinkle Donut"
+msgstr "스프링클 도넛"
+
+msgid "Marshmallow"
+msgstr "마시멜로"
+
+msgid "Taiyaki"
+msgstr "붕어빵"
+
+msgid "Tiny Cloud"
+msgstr "꼬마 구름"
+
+msgid "Twinkle Star"
+msgstr "반짝별"
+
+msgid "Sleepy Moon"
+msgstr "졸린 달"
+
+msgid "Sunflower"
+msgstr "해바라기"
+
+msgid "Daisy Chain"
+msgstr "데이지 화관"
+
+msgid "Tiny Sailor"
+msgstr "꼬마 선원"
+
+msgid "Puddle Pal"
+msgstr "물웅덩이 친구"
+
+msgid "Berry Overalls"
+msgstr "베리 멜빵바지"
+
+msgid "Little Artist"
+msgstr "꼬마 화가"
+
+msgid "Sleepy Cap"
+msgstr "잠꾸러기 모자"
+
+msgid "Downy yellow fluff, fresh out of the nest."
+msgstr "둥지에서 막 나온 노란 솜털."
+
+msgid "A curled tail and the world's proudest grin."
+msgstr "돌돌 말린 꼬리와 세상에서 가장 뿌듯한 미소."
+
+msgid "Patchwork fur and a whole lot of purring."
+msgstr "알록달록 털과 가득한 골골송."
+
+msgid "Sticky-pawed and always sniffing out something sweet."
+msgstr "끈적한 발로 늘 달콤한 걸 킁킁 찾아요."
+
+msgid "Cheeks stuffed full, just in case."
+msgstr "혹시 몰라 볼에 가득 채웠어요."
+
+msgid "A waddly little tuxedo, fresh off the ice."
+msgstr "얼음 위에서 막 온 뒤뚱뒤뚱 턱시도."
+
+msgid "Soft yellow down and a very determined waddle."
+msgstr "보드라운 노란 솜털과 아주 결연한 뒤뚱 걸음."
+
+msgid "Round, smooth, and built entirely for flopping."
+msgstr "동그랗고 매끈한, 오직 뒹굴기 위한 몸."
+
+msgid "A floaty little paddler with a taste for snacks."
+msgstr "간식을 좋아하는 둥실둥실 헤엄이."
+
+msgid "A rusty coat and a tail made for wrapping up warm."
+msgstr "적갈색 털과 포근하게 감싸는 꼬리."
+
+msgid "A speckled forest-floor cap, sprouted overnight."
+msgstr "하룻밤 새 쏙 돋아난 점박이 숲 버섯 모자."
+
+msgid "Blushed pink and irresistibly soft."
+msgstr "발그레한 분홍빛, 참을 수 없이 말랑해요."
+
+msgid "Zesty, sunny, and a little bit sour."
+msgstr "상큼하고 화사하고 살짝 새콤해요."
+
+msgid "Frosted on top with a cherry for good measure."
+msgstr "크림을 듬뿍 올리고 체리까지 얹었어요."
+
+msgid "Wobbly, caramel-topped, and endlessly jiggly."
+msgstr "캐러멜을 얹고 끝없이 말랑말랑 흔들려요."
+
+msgid "Milky sweetness with tapioca pearls sinking to the bottom."
+msgstr "우유의 달콤함과 바닥에 가라앉은 타피오카 펄."
+
+msgid "A crackly sugar crust over a soft, sweet bun."
+msgstr "바삭한 설탕 껍질 속 폭신하고 달콤한 빵."
+
+msgid "Glazed, ringed, and scattered with sprinkles."
+msgstr "반짝이는 글레이즈에 스프링클을 뿌렸어요."
+
+msgid "Pillowy soft and ready for the campfire."
+msgstr "베개처럼 폭신하고 모닥불 준비 완료."
+
+msgid "A warm fish-shaped cake, filled with something sweet."
+msgstr "달콤한 속이 든 따끈한 물고기 모양 과자."
+
+msgid "A puff of soft, drifting sky."
+msgstr "둥실 떠다니는 부드러운 하늘 한 조각."
+
+msgid "A little points-and-all night-sky sparkle."
+msgstr "뾰족한 끝까지 반짝이는 밤하늘 조각."
+
+msgid "A crescent cap for the drowsiest of Kinu."
+msgstr "가장 졸린 키누를 위한 초승달 모자."
+
+msgid "Bright petals that always face the light."
+msgstr "언제나 빛을 바라보는 환한 꽃잎."
+
+msgid "A ring of little white blooms, woven by hand."
+msgstr "작은 흰 꽃을 손으로 엮은 화관."
+
+msgid "A crisp collar and cap for smooth sailing."
+msgstr "빳빳한 깃과 모자로 순조로운 항해."
+
+msgid "A cheerful yellow slicker for splashing through puddles."
+msgstr "물웅덩이를 첨벙첨벙 건너는 명랑한 노란 우비."
+
+msgid "Cosy dungarees with a pocketful of berries."
+msgstr "주머니 가득 베리를 담은 포근한 멜빵바지."
+
+msgid "A paint-splattered smock and a beret, tilted just so."
+msgstr "물감 묻은 작업복과 살짝 기울인 베레모."
+
+msgid "A soft nightcap for the cosiest of naps."
+msgstr "가장 포근한 낮잠을 위한 부드러운 잠옷 모자."
+
+msgid "Magical Kinu"
+msgstr "마법 키누"
+
+msgid "Moon Princess"
+msgstr "달의 공주"
+
+msgid "Candy Witch"
+msgstr "사탕 마녀"
+
+msgid "Celestial Bunny"
+msgstr "별하늘 토끼"
+
+msgid "Sakura Deer"
+msgstr "벚꽃 사슴"
+
+msgid "Frog Prince"
+msgstr "개구리 왕자"
+
+msgid "Pastel Dragon"
+msgstr "파스텔 드래곤"
+
+msgid "Snow Fox"
+msgstr "눈여우"
+
+msgid "Dream Jellyfish"
+msgstr "꿈 해파리"
+
+msgid "Kinu Fairy"
+msgstr "키누 요정"
+
+msgid "A sparkling bow and a wand full of wishes."
+msgstr "반짝이는 리본과 소원이 가득한 요술봉."
+
+msgid "A silvery gown fit for ruling the night sky."
+msgstr "밤하늘을 다스리기에 어울리는 은빛 드레스."
+
+msgid "A pointed hat stitched from spun sugar."
+msgstr "솜사탕으로 꿰맨 뾰족 모자."
+
+msgid "Starlit ears that shimmer under a midnight sky."
+msgstr "한밤중 하늘 아래 반짝이는 별빛 귀."
+
+msgid "Little antlers dusted in drifting cherry blossom."
+msgstr "흩날리는 벚꽃이 내려앉은 작은 뿔."
+
+msgid "A tiny crown, just in case that kiss works."
+msgstr "그 키스가 통할 때를 대비한 작은 왕관."
+
+msgid "A candy-coloured dragon, all softness and no fire."
+msgstr "사탕 빛깔 드래곤. 폭신폭신하고 불은 안 뿜어요."
+
+msgid "A frost-white coat, silent as falling snow."
+msgstr "내리는 눈처럼 조용한 새하얀 털."
+
+msgid "Trailing tendrils that glow like a lullaby."
+msgstr "자장가처럼 빛나는 하늘하늘 촉수."
+
+msgid "Gossamer wings and a sprinkle of pixie dust."
+msgstr "얇은 날개와 요정 가루 한 줌."
+
+msgid "Builder Helmet"
+msgstr "공사 헬멧"
+
+msgid "Balance Pole"
+msgstr "균형 막대"
+
+msgid "Shoyu Chef"
+msgstr "간장 셰프"
+
+msgid "Festival Yukata"
+msgstr "축제 유카타"
+
+msgid "Mountain Climber"
+msgstr "등산가"
+
+msgid "Lucky Charm"
+msgstr "행운 부적"
+
+msgid "A bright hard hat and reflective vest for Kinu who mean business."
+msgstr "진지한 키누를 위한 밝은 안전모와 반사 조끼."
+
+msgid "A cheerful performer’s sash and a pole for improbable stacks."
+msgstr "명랑한 곡예사의 띠와 말도 안 되는 쌓기를 위한 막대."
+
+msgid "A tall chef’s toque for a true master of sticky stacking."
+msgstr "끈적한 쌓기의 진정한 달인을 위한 높은 셰프 모자."
+
+msgid "A midnight-blue summer robe with hanabi across the cloth."
+msgstr "천 가득 불꽃놀이가 수놓인 한밤색 여름 유카타."
+
+msgid "A red beanie, tiny pack and plenty of summit spirit."
+msgstr "빨간 비니와 작은 배낭, 정상을 향한 열정 가득."
+
+msgid "A little bell and golden star charms for fortunate Kinu."
+msgstr "운 좋은 키누를 위한 작은 방울과 금별 부적."
+
+msgid "Jelly Cube"
+msgstr "젤리 큐브"
+
+msgid "Rose Delight"
+msgstr "장미 과자"
+
+msgid "Chocolate Square"
+msgstr "초콜릿 조각"
+
+msgid "Burger Stack"
+msgstr "버거 탑"
+
+msgid "Joyful Snack Box"
+msgstr "신나는 간식 상자"
+
+msgid "Sunny Sea Sponge"
+msgstr "햇살 해면"
+
+msgid "Bread Loaf"
+msgstr "식빵"
+
+msgid "Bouncy, wobbly, and topped with a glossy jelly dome."
+msgstr "탱글탱글 말랑하고 반짝이는 젤리 돔을 얹었어요."
+
+msgid "A soft pink sweet dusted in fragrant rose sugar."
+msgstr "향긋한 장미 설탕을 뿌린 분홍빛 말랑 과자."
+
+msgid "Six neat little chocolate tiles, ready to snap apart."
+msgstr "톡 부러뜨릴 준비가 된 여섯 칸 초콜릿."
+
+msgid "A sesame bun, leafy lettuce and a very tidy patty."
+msgstr "참깨 번과 양상추, 아주 반듯한 패티."
+
+msgid "A bright little takeaway box with a fry-shaped crown."
+msgstr "감자튀김 왕관을 쓴 밝은 포장 상자."
+
+msgid "A porous yellow friend in square trousers and a tiny red tie."
+msgstr "네모 바지에 작은 빨간 넥타이를 맨 구멍 숭숭 노란 친구."
+
+msgid "A warm crust, soft centre and three fresh-baked score marks."
+msgstr "따끈한 겉면, 폭신한 속, 갓 구운 칼집 세 줄."
+
+msgid "Cracks mended in gold, more beautiful for the break."
+msgstr "금으로 이은 금, 깨져서 더 아름다워요."
+
+msgid "Iron-banded and brimming with pirate's gold."
+msgstr "쇠띠를 두르고 해적의 금화가 가득해요."
+
+msgid "Split open to reveal a crystal-studded heart."
+msgstr "쪼개 보면 수정이 박힌 속이 드러나요."
+
+msgid "A round plastic shell, twisted open for a surprise."
+msgstr "비틀어 여는 동그란 캡슐. 뭐가 나올까?"
+
+msgid "A festival drum, painted red and ready to boom."
+msgstr "쿵쿵 울릴 준비가 된 붉은 축제 북."
+
+msgid "Layered sponge and cream, one strawberry short of perfect."
+msgstr "스펀지와 크림을 겹겹이. 딸기 하나만 더 있으면 완벽해요."
+
+msgid "A deep blue box scattered with tiny constellations."
+msgstr "작은 별자리를 흩뿌린 짙푸른 상자."
+
+msgid "Rippling water with koi drifting just beneath the surface."
+msgstr "수면 바로 아래 잉어가 떠다니는 일렁이는 물."
+
+msgid "Soft and puffed up, like it drifted down from the sky."
+msgstr "하늘에서 둥실 내려온 듯 폭신폭신."
+
+msgid "Inlaid shell that shimmers with every tilt of the light."
+msgstr "빛의 각도마다 반짝이는 자개 장식."
+
+msgid "Blinking lights and the chime of a claw machine."
+msgstr "깜빡이는 불빛과 인형뽑기 기계 소리."
+
+msgid "A hall beneath the sea, glittering with dragon treasure."
+msgstr "용의 보물로 반짝이는 바닷속 궁전."
+
+msgid "A quiet dome overlooking the grey lunar dust."
+msgstr "회색 달 먼지를 내려다보는 조용한 돔."
+
+msgid "A shrine perched above the clouds, ropes and bells swaying."
+msgstr "구름 위 신사, 줄과 방울이 흔들려요."
+
+msgid "Rolling green rows with a mountain standing watch."
+msgstr "산이 지켜보는 굽이진 초록 차밭."
+
+msgid "A landscape built entirely from sugar and sponge."
+msgstr "설탕과 스펀지로만 만든 풍경."
+
+msgid "Snow lit up in ribbons of green and violet."
+msgstr "초록과 보랏빛 띠로 물든 눈밭."
+
+msgid "Warm sand, gentle waves, and a striped parasol."
+msgstr "따뜻한 모래, 잔잔한 파도, 줄무늬 파라솔."
+
+msgid "Paper lanterns drifting downstream on quiet water."
+msgstr "잔잔한 물 위로 떠내려가는 종이 등불."
+
+msgid "Stone towers and banners snapping in the wind."
+msgstr "돌탑과 바람에 펄럭이는 깃발."
+
+msgid "A rice-ball cap with a neat nori patch."
+msgstr "김을 깔끔하게 붙인 주먹밥 모자."
+
+msgid "Dumpling"
+msgstr "만두"
+
+msgid "Crab"
+msgstr "게"
+
+msgid "Ladybug"
+msgstr "무당벌레"
+
+msgid "Snail"
+msgstr "달팽이"
+
+msgid "Tempura Shrimp"
+msgstr "새우튀김"
+
+msgid "Pufferfish"
+msgstr "복어"
+
+msgid "Hermit Crab"
+msgstr "소라게"
+
+msgid "Firefly"
+msgstr "반딧불이"
+
+msgid "Pumpkin"
+msgstr "호박"
+
+msgid "Snowman"
+msgstr "눈사람"
+
+msgid "Firework"
+msgstr "불꽃놀이"
+
+msgid "Ramen Bowl"
+msgstr "라멘 그릇"
+
+msgid "Narwhal"
+msgstr "일각고래"
+
+msgid "Kraken Hatchling"
+msgstr "아기 크라켄"
+
+msgid "Tsukumogami"
+msgstr "츠쿠모가미"
+
+msgid "Moss"
+msgstr "이끼"
+
+msgid "Driftwood"
+msgstr "유목"
+
+msgid "Coral"
+msgstr "산호"
+
+msgid "Pumpkin Patch"
+msgstr "호박밭"
+
+msgid "Snowdrift"
+msgstr "눈더미"
+
+msgid "Paper Lantern"
+msgstr "종이 등불"
+
+msgid "Abyss"
+msgstr "심해"
+
+msgid "Starforge"
+msgstr "별의 대장간"
+
+msgid "Tidepool Town"
+msgstr "조수 웅덩이 마을"
+
+msgid "Soft folds and a just-steamed glow."
+msgstr "부드러운 주름과 갓 쪄낸 윤기."
+
+msgid "Tiny claws, very serious side-step."
+msgstr "작은 집게로 아주 진지하게 옆걸음."
+
+msgid "A cheerful spotted shell for garden days."
+msgstr "정원에서 노는 날을 위한 명랑한 점박이 등껍질."
+
+msgid "A little shell, moving at its own pace."
+msgstr "작은 껍데기와 함께 내 속도로 천천히."
+
+msgid "Crisp curls and a golden crunch."
+msgstr "바삭하게 말린 황금빛 바삭함."
+
+msgid "Round, prickly, and surprisingly polite."
+msgstr "동그랗고 뾰족하지만 의외로 예의 발라요."
+
+msgid "A borrowed shell with a perfect fit."
+msgstr "빌린 껍데기인데 딱 맞아요."
+
+msgid "A warm little lantern for twilight tumbles."
+msgstr "해 질 녘 데굴데굴을 위한 따뜻한 작은 등불."
+
+msgid "A plump autumn cap, here for the harvest season."
+msgstr "수확철에 찾아온 통통한 가을 모자."
+
+msgid "A frosty cap with a carrot-bright nose."
+msgstr "당근처럼 선명한 코가 달린 차가운 모자."
+
+msgid "A little night sky ready to burst into colour."
+msgstr "금방이라도 알록달록 터질 작은 밤하늘."
+
+msgid "Noodles, broth, and a very cozy brim."
+msgstr "면과 국물, 그리고 아주 포근한 테두리."
+
+msgid "A gentle sea-unicorn with a pearly horn."
+msgstr "진주빛 뿔을 가진 다정한 바다 유니콘."
+
+msgid "A tiny tentacle-cap from the glowiest depths."
+msgstr "가장 빛나는 심해에서 온 작은 촉수 모자."
+
+msgid "An old paper lantern, awake with friendly mischief."
+msgstr "장난기 가득 깨어난 오래된 종이 등불."
+
+msgid "A soft green finish with a quiet forest feel."
+msgstr "고요한 숲 느낌의 부드러운 초록빛."
+
+msgid "Sun-bleached wood washed smooth by the tide."
+msgstr "햇볕에 바래고 파도에 매끈해진 나무."
+
+msgid "Warm reef colours for the sea-set collection."
+msgstr "바다 컬렉션을 위한 따뜻한 산호초 빛깔."
+
+msgid "A harvest-orange box for the autumn shop window."
+msgstr "가을 진열장을 위한 수확빛 주황 상자."
+
+msgid "Pale blue timber tucked under fresh snow."
+msgstr "새 눈 아래 포근히 덮인 연파랑 나무."
+
+msgid "Festival red with a soft candlelit warmth."
+msgstr "축제의 빨강에 은은한 촛불의 온기."
+
+msgid "Deep-sea blue, scattered with bioluminescent life."
+msgstr "빛나는 생물이 흩어진 심해의 파랑."
+
+msgid "Molten metal flecked with fresh-forged stardust."
+msgstr "갓 벼린 별가루가 섞인 녹은 금속."
+
+msgid "An original sunny undersea town of coral homes and kelp gardens."
+msgstr "산호 집과 다시마 정원이 있는 화창한 바닷속 마을."
+
+# Kinu Toss
+
+msgid "Toss"
+msgstr "토스"
+
+msgid "Flick them into the box!"
+msgstr "상자에 튕겨 넣어요!"
+
+msgid "Flick Kinu from the pan into the holes in the box. Six misses and you're out."
+msgstr "팬에서 키누를 튕겨 상자 구멍에 넣어요. 여섯 번 놓치면 끝이에요."
+
+msgid "Slide the pan to line up, then flick up to throw. Kinu have to drop through a hole in the lid and stay in: smaller holes, longer throws and unbroken streaks score more. Each box takes a few Kinu before the next one arrives, further away or harder to hit. Six misses end the run."
+msgstr "팬을 밀어 위치를 맞추고 위로 튕겨 던져요. 키누는 뚜껑 구멍으로 떨어져서 안에 있어야 해요. 구멍이 작을수록, 멀리 던질수록, 연속으로 넣을수록 점수가 높아요. 상자는 키누를 몇 개 받으면 더 멀거나 맞히기 어려운 다음 상자로 바뀌어요. 여섯 번 놓치면 끝이에요."
+
+msgid "Big hole"
+msgstr "큰 구멍"
+
+msgid "Nice"
+msgstr "나이스"
+
+msgid "Small hole"
+msgstr "작은 구멍"
+
+msgid "Lucky Box"
+msgstr "럭키 박스"
+
+msgid "In"
+msgstr "골인"
+
+msgid "Box full! +%d"
+msgstr "상자 가득! +%d"
+
+msgid "Curve Shot"
+msgstr "커브 샷"
+
+msgid "Curve loaded! Flick to throw"
+msgstr "커브 준비 완료! 튕겨서 던져요"
+
+msgid "Heart Kinu! +%d beans"
+msgstr "하트 키누! 콩 +%d"
+
+msgid "Heart Kinu! A miss came back"
+msgstr "하트 키누! 실수 하나가 돌아왔어요"
+
+msgid "Missed! %d misses left"
+msgstr "놓쳤어요! %d번 남음"
+
+msgid "Missed! 1 miss left"
+msgstr "놓쳤어요! 1번 남음"
+
+msgid "On the lid! +%d"
+msgstr "뚜껑 위! +%d"
+
+msgid "Perfect"
+msgstr "퍼펙트"
+
+msgid "Skip Shot"
+msgstr "스킵 샷"
+
+msgid "Standing Kinu"
+msgstr "선 키누"
+
+msgid "Six misses! Great tossing though!"
+msgstr "여섯 번 놓쳤어요! 그래도 멋진 토스였어요!"
+
+msgid "1 Miss Left"
+msgstr "1번 남음"
+
+msgid "%d Misses Left"
+msgstr "%d번 남음"
+
+msgid "Knocked out! -%d"
+msgstr "튕겨 나갔어요! -%d"
+
+# Grand Opening launch event
+msgid "Play a run"
+msgstr "1판 플레이"
+
+msgid "Play on %d different days"
+msgstr "%d일 동안 플레이"
+
+msgid "A Grand Opening exclusive from Kinu Tumble's launch. It will never be sold or given out again."
+msgstr "키누 텀블 출시를 기념한 그랜드 오픈 한정 아이템이에요. 다시는 판매하거나 지급하지 않아요."
+
+msgid "A Grand Opening exclusive. %s by 31 October to keep it forever."
+msgstr "그랜드 오픈 한정. 10월 31일까지 '%s' 조건을 달성하면 영원히 내 거예요."
+
+msgid "All three launch exclusives are yours. Thank you for being here from day one!"
+msgstr "출시 한정 아이템 3개를 모두 모았어요. 첫날부터 함께해 줘서 고마워요!"
+
+msgid "The Grand Opening has closed. Anything you earned is yours to keep."
+msgstr "그랜드 오픈이 끝났어요. 모은 아이템은 계속 간직할 수 있어요."
+
+msgid "Kinu Tumble is open! Earn three launch exclusives before 31 October."
+msgstr "키누 텀블 오픈! 10월 31일까지 출시 한정 아이템 3개를 모아 보세요."
+
+msgid "See the %s Showcase"
+msgstr "%s 쇼케이스 보기"
+
+msgid "Earned items stay in your collection forever. They'll never be sold in the Shop or found in the Kinu Claw."
+msgstr "모은 아이템은 컬렉션에 영원히 남아요. 상점이나 키누 클로에는 나오지 않아요."
+
+msgid "LAUNCH CELEBRATION!"
+msgstr "출시 기념!"
+
+msgid "GRAND OPENING"
+msgstr "그랜드 오픈"
+
+msgid "Earned! It's in your collection."
+msgstr "획득! 컬렉션에 추가됐어요."
+
+msgid "Grand Opening"
+msgstr "그랜드 오픈"
+
+msgid "LAUNCH EXCLUSIVE!"
+msgstr "출시 한정!"
+
+msgid "Launch exclusives"
+msgstr "출시 한정 아이템"
+
+msgid "Launch"
+msgstr "출시 한정"
+
+msgid "Opening Day"
+msgstr "오프닝 데이"
+
+msgid "First Edition"
+msgstr "퍼스트 에디션"
+
+msgid "Pulled the kusudama open on Kinu Tumble's very first day. Confetti everywhere!"
+msgstr "키누 텀블 오픈 첫날 쿠스다마를 터뜨렸어요. 색종이가 가득!"
+
+msgid "White lacquer and gold, tied with the opening-day ribbon. Number one of one."
+msgstr "흰 옻칠과 금장에 오픈 기념 리본을 묶었어요. 세상에 하나뿐인 1호."
+
+msgid "The tofu shop on its very first day, with flowers from well-wishers and confetti in the air."
+msgstr "오픈 첫날의 두부 가게. 축하 화환이 늘어서고 색종이가 흩날려요."
+
+msgid "MISSIONS RESET IN"
+msgstr "미션 초기화까지"
+
+msgid "Resets in %s"
+msgstr "초기화까지 %s"
+
+# Home tour
+msgid "Skip"
+msgstr "건너뛰기"
+
+msgid "Later"
+msgstr "나중에"
+
+msgid "Done"
+msgstr "완료"
+
+msgid "Try it!"
+msgstr "해 보기!"
+
+msgid "Shop & Wardrobe"
+msgstr "상점과 옷장"
+
+msgid "Events"
+msgstr "이벤트"
+
+msgid "Game Modes"
+msgstr "게임 모드"
+
+msgid "Your daily treat, the Grand Opening and the Monthly Showcase live here. A red dot means something is waiting for you."
+msgstr "데일리 선물, 그랜드 오픈, 월간 쇼케이스는 여기 있어요. 빨간 점이 보이면 뭔가 기다리고 있다는 뜻이에요."
+
+msgid "Your daily treat and the Monthly Showcase live here. A red dot means something is waiting for you."
+msgstr "데일리 선물과 월간 쇼케이스는 여기 있어요. 빨간 점이 보이면 뭔가 기다리고 있다는 뜻이에요."
+
+msgid "Switch between Classic, Tower and Toss here."
+msgstr "여기서 클래식, 타워, 토스를 바꿀 수 있어요."
+
+msgid "Classic is all about filling the box. Pile %d Kinu in one run to unlock Tower, and %d for Toss."
+msgstr "클래식은 상자를 채우는 모드예요. 한 판에 키누 %d개를 쌓으면 타워, %d개면 토스가 열려요."
+
+msgid "Win outfits, boxes and rooms. Your first play every day is free!"
+msgstr "옷, 상자, 배경을 뽑아 보세요. 매일 첫 판은 무료예요!"
+
+msgid "Win outfits, boxes and rooms with beans or claw tickets."
+msgstr "콩이나 티켓으로 옷, 상자, 배경을 뽑아 보세요."
+
+msgid "Spend beans on outfits, boxes and rooms in the Shop, then dress up your Kinu in the Wardrobe."
+msgstr "상점에서 콩으로 옷, 상자, 배경을 사고 옷장에서 키누를 꾸며 보세요."
+
+msgid "Everything you can collect, and how to get it. New unlocks wait here with a badge."
+msgstr "모을 수 있는 모든 것과 얻는 방법이 있어요. 새로 열린 건 배지로 알려 줘요."
+
+msgid "Three new missions every day, plus a weekly challenge. Finish them for beans!"
+msgstr "매일 새 미션 3개와 주간 챌린지가 있어요. 완료하고 콩을 받아요!"
+
+# Kinu Toss fire button
+msgid "Fire"
+msgstr "발사"
+
+# Untranslated in-game text found in the 29 Sep audit
+msgid "%d Kinu! Nice!"
+msgstr "키누 %d개! 좋아요!"
+
+msgid "%d Kinu! Going well!"
+msgstr "키누 %d개! 순조로워요!"
+
+msgid "%d Kinu! Lovely pile!"
+msgstr "키누 %d개! 멋진 더미예요!"
+
+msgid "%d Kinu! Incredible!"
+msgstr "키누 %d개! 믿을 수 없어요!"
+
+msgid "%d Kinu! Unbelievable!"
+msgstr "키누 %d개! 말도 안 돼요!"
+
+msgid "%d Kinu! Legendary!"
+msgstr "키누 %d개! 전설급!"
+
+msgid "Nigari"
+msgstr "간수"
+
+msgid "Nigari! Makes crowded Kinu smaller"
+msgstr "간수! 붐비는 키누를 작게 만들어요"
+
+msgid "Tap the bottle to shrink crowded Kinu!"
+msgstr "병을 탭해서 붐비는 키누를 작게 만들어요!"
+
+msgid "%s! %d Kinu"
+msgstr "%s! 키누 %d개"
+
+msgid "Last chance! 1 tumble left"
+msgstr "마지막 기회! 1번 남음"
+
+msgid "Whoops! %d tumbles left"
+msgstr "앗! 기회 %d번 남음"
+
+msgid "That's %d tumbles! Great pile though!"
+msgstr "벌써 %d번 떨어졌어요! 그래도 멋진 더미였어요!"
+
+msgid "%d Kinu! +1 Nigari squirt"
+msgstr "키누 %d개! 간수 +1회"
+
+msgid "One more to beat your best!"
+msgstr "하나만 더 하면 최고 기록!"
+
+msgid "New best! %d Kinu!"
+msgstr "최고 기록! 키누 %d개!"
+
+msgid "Drag to aim  ·  hold Fire to launch"
+msgstr "드래그로 조준 · 발사를 길게 눌러 던지기"
+
+msgid "Streak ×%s"
+msgstr "연속 ×%s"
+
+msgid "Sticky Kinu"
+msgstr "끈적 키누"
+
+msgid "Sticky Kinu! Anything it touches is glued in place"
+msgstr "끈적 키누! 닿는 건 모두 붙어요"
+
+msgid "You're holding one — see the syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."
+msgstr "지금 들고 있는 게 바로 그거예요. 시럽 배지를 확인해 보세요. 닿는 건 모두 붙어서 고정되니, 더미를 붙잡아야 할 곳에 떨어뜨려요."
+
+msgid "Tap the bottle icon to pick it up, aim it over a crowded spot and let go. Nigari makes up to three Kinu smaller and frees up room. You earn another at 20, 35 and 50 Kinu."
+msgstr "병 아이콘을 탭해서 들고, 붐비는 곳 위를 조준해 손을 떼요. 간수는 키누를 최대 3개까지 작게 만들어 공간을 만들어요. 20개, 35개, 50개에서 하나씩 더 받아요."
+
+msgid "Kinu that tumble onto the counter don't count. Six tumbles and the run is over."
+msgstr "받침대로 떨어진 키누는 세지 않아요. 여섯 번 떨어지면 끝이에요."
+
+msgid "Land %d Kinu in a row"
+msgstr "키누 %d개 연속 올리기"
+
+msgid "Land %d Kinu in one run"
+msgstr "한 판에 키누 %d개 올리기"
+
+msgid "RevenueCat couldn't load the App Store products. Please try again."
+msgstr "App Store 상품을 불러오지 못했어요. 다시 시도해 주세요."
+
+msgid "We couldn't confirm the purchase receipt. Please try again later."
+msgstr "구매 영수증을 확인하지 못했어요. 잠시 후 다시 시도해 주세요."
+
+msgid "Purchases restored."
+msgstr "구매를 복원했어요."
+
+msgid "Beans are also earned by playing. One free Kinu Claw play arrives daily.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "콩은 플레이로도 모을 수 있어요. 키누 클로는 매일 한 번 무료예요.\n'구매 복원'은 광고 제거를 되살려주지만, 이미 쓴 콩은 돌아오지 않아요."
+
+msgid "How It Works"
+msgstr "이용 방법"
+
+msgid "Items you already own leave the machine, so every item you win is new. The chances shown are for you, right now."
+msgstr "이미 가진 아이템은 기계에서 빠지니, 뽑는 아이템은 항상 새것이에요. 표시된 확률은 지금 당신 기준이에요."
+
+msgid "Claim!"
+msgstr "받기!"
+
+msgid "＋ Get More"
+msgstr "＋ 더 받기"
+
+msgid "Missed!"
+msgstr "빗나갔어요!"
+
+msgid "Your best: %s"
+msgstr "최고 기록: %s"
+
+msgid "%d Kinu in"
+msgstr "키누 %d개 성공"
+
+msgid "Longest %s"
+msgstr "최장 %s"
+
+msgid "Next: %s at %d Kinu"
+msgstr "다음: %s (키누 %d개)"
+
+msgid "Fill the box. Six tumbles and you're out."
+msgstr "상자를 채워요. 여섯 번 떨어지면 끝!"
+
+msgid "Land Kinu in the tofu box. Anything that bounces out onto the counter is a tumble, and six tumbles end the run. You score the pile you keep."
+msgstr "키누를 두부 상자에 올려요. 받침대로 떨어지면 실수이고, 여섯 번이면 끝나요. 남은 더미가 점수예요."
+
+msgid "Best score"
+msgstr "최고 점수"
+
+msgid "Matched Your Best!"
+msgstr "최고 기록과 같아요!"
+
+msgid "So Close!"
+msgstr "아깝다!"
+
+msgid "Great Run!"
+msgstr "멋진 판!"
+
+msgid "Nice Pile!"
+msgstr "멋진 더미!"
+
+msgid "Best Toss score"
+msgstr "토스 최고 점수"
+
+msgid "Toss boxes filled"
+msgstr "토스로 채운 상자"
+
+msgid "Checking free tickets…"
+msgstr "무료 티켓 확인 중…"
+
+msgid "%d/2 free tickets ready"
+msgstr "무료 티켓 %d/2장이 준비됐어요"
+
+msgid "%d/2 free · refill in %02d:%02d:%02d"
+msgstr "무료 %d/2장 · 충전까지 %02d:%02d:%02d"
+
+msgid "Two free claw tickets refill 24 hours after the first is used. Unused free tickets don't stack."
+msgstr "첫 무료 티켓을 사용한 뒤 24시간이 지나면 2장으로 충전돼요. 사용하지 않은 무료 티켓은 쌓이지 않아요."
+
+msgid "Win outfits, boxes and rooms. Two free claw tickets refill together!"
+msgstr "옷, 상자, 배경을 뽑아 보세요. 무료 클로 티켓 2장이 함께 충전돼요!"
+
+msgid "Beans are also earned by playing. Two free Kinu Claw tickets refill together every 24 hours after the first is used; unused free tickets expire.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "콩은 플레이로도 얻을 수 있어요. 키누 클로 무료 티켓은 첫 장을 사용한 뒤 24시간마다 2장으로 충전되며, 남은 무료 티켓은 이월되지 않아요.\n구매 복원은 광고 제거를 복원하지만, 사용한 소모품은 복원되지 않아요."
+
+# Save and recent UI text
+msgid "iCloud Save"
+msgstr "iCloud 저장"
+
+msgid "Save Conflict"
+msgstr "저장 데이터 충돌"
+
+msgid "Your iPhone and iCloud have different progress. Choose which to keep."
+msgstr "iPhone과 iCloud의 진행 상황이 달라요. 유지할 데이터를 선택해 주세요."
+
+msgid "Keep iPhone Save"
+msgstr "iPhone 저장 유지"
+
+msgid "Use iCloud Save"
+msgstr "iCloud 저장 사용"
+
+msgid "Sync Now"
+msgstr "지금 동기화"
+
+msgid "Get tickets"
+msgstr "티켓 받기"
+
+msgid "%d more to beat your best of %s!"
+msgstr "최고 기록까지 %d만 더! (현재 최고: %s)"
+
+msgid "iCloud sync is available in the iPhone app."
+msgstr "iCloud 동기화는 iPhone 앱에서 사용할 수 있어요."
+
+msgid "Checking iCloud sync…"
+msgstr "iCloud 동기화 확인 중…"
+
+msgid "iCloud sync is unavailable. Progress is saved on this iPhone."
+msgstr "iCloud 동기화를 사용할 수 없어요. 진행 상황은 이 iPhone에 저장돼요."
+
+msgid "Choose which progress to keep.\nThis iPhone: Best %d · %d runs\niCloud: Best %d · %d runs"
+msgstr "유지할 진행 상황을 선택해 주세요.\n이 iPhone: 최고 %d · %d회 플레이\niCloud: 최고 %d · %d회 플레이"
+
+msgid "iCloud progress is ready. Return Home to restore it."
+msgstr "iCloud 진행 상황을 찾았어요. 홈으로 돌아가면 복원돼요."
+
+msgid "just now"
+msgstr "방금"
+
+msgid "1 minute ago"
+msgstr "1분 전"
+
+msgid "%d minutes ago"
+msgstr "%d분 전"
+
+msgid "Progress sent to iCloud sync %s."
+msgstr "%s iCloud에 진행 상황을 보냈어요."
+
+msgid "iCloud has a game save. New progress will sync automatically."
+msgstr "iCloud에 게임 저장 데이터가 있어요. 새 진행 상황은 자동으로 동기화돼요."
+
+msgid "Waiting for the first iCloud sync."
+msgstr "첫 iCloud 동기화를 기다리는 중이에요."
+
+msgid "Last restored from iCloud: %s"
+msgstr "마지막 iCloud 복원: %s"
+
+msgid "Never"
+msgstr "없음"
+
+msgid "Sign in to Game Center to use iCloud saves."
+msgstr "iCloud 저장을 사용하려면 Game Center에 로그인해 주세요."
+
+msgid "iCloud saves are available in the iPhone app."
+msgstr "iCloud 저장은 iPhone 앱에서 사용할 수 있어요."
+
+msgid "Sign in to Game Center and turn on iCloud Drive to back up progress."
+msgstr "Game Center에 로그인하고 iCloud Drive를 켜면 진행 상황을 백업할 수 있어요."
+
+msgid "Checking iCloud for your save…"
+msgstr "iCloud 저장 확인 중…"
+
+msgid "No Game Center iCloud save was found. Progress is only on this iPhone. Back Up Now will create a new cloud save."
+msgstr "Game Center iCloud 저장 데이터를 찾지 못했어요. 진행 상황은 이 iPhone에만 있어요. 「지금 백업」을 누르면 새 클라우드 저장 데이터가 만들어져요."
+
+msgid "Backing up to iCloud…"
+msgstr "iCloud에 백업 중…"
+
+msgid "Waiting to back up recent progress…"
+msgstr "최근 진행 상황을 백업하기 위해 대기 중…"
+
+msgid "Backup sent to Game Center iCloud."
+msgstr "Game Center iCloud에 백업을 보냈어요."
+
+msgid "Waiting for the first iCloud backup…"
+msgstr "첫 iCloud 백업을 기다리는 중이에요…"
+
+msgid "Last downloaded: %s\nLast backed up: %s"
+msgstr "마지막 다운로드: %s\n마지막 백업: %s"
+
+msgid "There is no progress to back up yet. If you expected an older save, do not create a new one."
+msgstr "아직 백업할 진행 상황이 없어요. 이전 저장 데이터가 있어야 한다면 새 저장 데이터를 만들지 마세요."
+
+msgid "iCloud is unavailable. Your progress is still saved on this iPhone."
+msgstr "iCloud를 사용할 수 없어요. 진행 상황은 이 iPhone에 저장돼요."
+
+msgid "Your iCloud save could not be read. This iPhone's save is safe."
+msgstr "iCloud 저장 데이터를 읽지 못했어요. 이 iPhone의 저장 데이터는 안전해요."
+
+msgid "Your iCloud save could not be restored. This iPhone's save is safe."
+msgstr "iCloud 저장 데이터를 복원하지 못했어요. 이 iPhone의 저장 데이터는 안전해요."
+
+msgid "iCloud backup failed. Your progress is still saved on this iPhone."
+msgstr "iCloud 백업에 실패했어요. 진행 상황은 이 iPhone에 저장돼요."
+
+msgid "iCloud backup could not be verified. Your progress is still saved on this iPhone."
+msgstr "iCloud 백업을 확인하지 못했어요. 진행 상황은 이 iPhone에 저장돼요."

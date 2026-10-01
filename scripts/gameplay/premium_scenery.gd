@@ -4,7 +4,7 @@ extends RoomScenery
 ## physics never change, showpieces face the home screen, and anything tall stays outside the
 ## camera's orbit.
 
-const LAYOUTS := ["arcade", "dragon_palace", "moon_base", "sky_shrine", "tea_fields", "sweets", "aurora", "beach", "lantern_river", "castle"]
+const LAYOUTS := ["arcade", "dragon_palace", "moon_base", "sky_shrine", "tea_fields", "sweets", "aurora", "beach", "lantern_river", "castle", "seaside_town"]
 const PASTELS := [Color("ff8fb1"), Color("7fd4e8"), Color("ffd84d"), Color("9ccc5a"), Color("b99cf2"), Color("ffffff")]
 
 func build_layout(layout: String) -> void:
@@ -29,6 +29,199 @@ func build_layout(layout: String) -> void:
 			_lantern_river()
 		"castle":
 			_castle()
+		"seaside_town":
+			_seaside_town()
+
+## A sunlit shallow-reef town. The read has to be "underwater" before it is "town", so the
+## strongest cues come first: light shafts slanting down through the water, tall kelp swaying
+## between the buildings, and bubbles rising the whole height of the scene. The town itself is a
+## clean ring of coral homes at a distance, with the plaza and market facing the home screen.
+func _seaside_town() -> void:
+	turn = MENU_FACING
+	var sand := _c("floor", Color("d9e0c8"))
+	_ground(sand)
+	_horizon(_c("hills", Color("2f7f8e")), 22, 16.0, 30.0)
+	# Sunlight coming down through the surface: wide, faint, leaning the same way throughout.
+	for i in 14:
+		var a := TAU*i/14.0+.2
+		var radius := 26.0+fmod(i*3.1, 9.0)
+		var height := 30.0+fmod(i*2.3, 10.0)
+		_lit("block", Vector3(sin(a)*radius, FLOOR+height*.5, cos(a)*radius), Vector3(3.4+fmod(i*.7, 2.4), height, .3), Color("bdf6ff"), Vector3(.16, a, .2))
+	# Sandbanks and ripple lines on the seabed, so the floor is not one flat colour.
+	for i in 22:
+		var at := _ring_spot(8.0, 30.0)
+		kit.add("fine", at+Vector3(0, .1, 0), Vector3(rng.randf_range(3.0, 6.5), rng.randf_range(.4, 1.0), rng.randf_range(2.6, 5.0)), sand.lightened(.1) if i % 2 else sand.darkened(.07), Vector3(0, rng.randf()*TAU, 0), false)
+	for lane in 2:
+		for step in 26:
+			var a := TAU*step/26.0+lane*.24
+			var radius := 8.4+lane*3.2+sin(step*1.7+lane)*.4
+			kit.add("cylinder", Vector3(sin(a)*radius, FLOOR+.04, cos(a)*radius), Vector3(1.4, .08, 1.0), sand.darkened(.14), Vector3(0, a+.4, 0), false)
+	# The town: one clean ring of coral homes, each turned to face the middle of the room.
+	var home_tones := [Color("ef7f92"), Color("f5a94e"), Color("7f8ed4"), Color("cd7fc2"), Color("ef8c68"), Color("56b3ab"), Color("e5bd52"), Color("ad80cf")]
+	for i in 16:
+		var a := TAU*i/16.0
+		var radius := 25.0+(2.2 if i % 2 else 0.0)
+		_tidepool_home(Vector3(sin(a)*radius, FLOOR, cos(a)*radius), a+PI, home_tones[i % home_tones.size()], 1.15+fmod(i*.11, .3), i % 3)
+	# Kelp: the vertical rhythm that sells the depth, kept out of the play camera's way.
+	for i in 26:
+		var at := _ring_spot(16.0, 30.0)
+		if absf(at.x) < 7.0 and at.z > 6.0 and at.z < 22.0:
+			continue
+		_tidepool_kelp(at, rng.randf_range(8.0, 16.0), i)
+	# The focal plaza: a shell fountain, two market stalls and a pair of small homes behind.
+	var plaza := _featured(Vector3(-9.5, FLOOR, 15.0))
+	kit.add("cylinder", plaza+Vector3(0, .06, 0), Vector3(6.2, .14, 6.2), sand.lightened(.14), Vector3.ZERO, false)
+	kit.add("torus", plaza+Vector3(0, .12, 0), Vector3(6.4, .3, 6.4), Color("e9a878"), Vector3.ZERO, false)
+	for shell in 3:
+		var lift := .5+shell*1.0
+		kit.add("fine", plaza+Vector3(0, lift, 0), Vector3(4.0-shell*1.1, 1.0, 4.0-shell*1.1), Color("fdf0dc").darkened(shell*.04))
+		for rib in 9:
+			var b := PI*rib/8.0
+			kit.add("sphere", plaza+Vector3(cos(b)*(1.9-shell*.55), lift+.3, sin(b)*(1.9-shell*.55)), Vector3(.18, .5, .18), Color("e6c9a4"), Vector3.ZERO, false)
+	_lit("fine", plaza+Vector3(0, 4.0, 0), Vector3(1.1, 1.1, 1.1), Color("b6fff2"))
+	for i in 8:
+		var a := TAU*i/8.0
+		_lit("sphere", plaza+Vector3(sin(a)*3.4, 4.4+fmod(i*.3, 1.4), cos(a)*3.4), Vector3.ONE*.26, Color("d9ffff"))
+	_tidepool_stall(_featured(Vector3(-3.0, FLOOR, 11.0)), .25, Color("f39867"))
+	_tidepool_stall(_featured(Vector3(9.5, FLOOR, 12.0)), -.45, Color("71b8cf"))
+	for i in 4:
+		var a := TAU*i/4.0+.55
+		_tidepool_dock(Vector3(sin(a)*27.0, FLOOR, cos(a)*27.0), a)
+	# Reef, anemones and shells fill the ground between the counter and the town.
+	for i in 44:
+		var at := _ring_spot(7.0, 29.0)
+		if absf(at.x) < 5.5 and at.z > 5.0 and at.z < 19.0:
+			continue
+		_tidepool_reef(at, i)
+	# Bubbles climbing the full height of the room, not just drifting near the floor.
+	for i in 60:
+		var at := _ring_spot(7.0, 30.0)+Vector3(0, 1.0+fmod(i*.79, 16.0), 0)
+		_lit("sphere", at, Vector3.ONE*(.08+fmod(i*.031, .09)), Color("cdfff8"))
+	# Schools of fish threading between the rooftops.
+	for school in 5:
+		var center := _featured(Vector3(-14.0+school*7.0, FLOOR+8.0+(school % 3)*3.0, 22.0-school*1.2))
+		for fish in 6:
+			var at := center+Vector3((fish-2.5)*.9, sin(fish*1.8)*.4, cos(fish*1.3)*.7)
+			var tone: Color = [Color("ffd45c"), Color("ff8fb1"), Color("9ed5ee")][school % 3]
+			kit.add("sphere", at, Vector3(.4, .22, .1), tone, Vector3(0, 0, sin(fish*1.1)*.2), false)
+			kit.add("cone", at+Vector3(-.28, 0, 0), Vector3(.18, .24, .05), tone.darkened(.12), Vector3(0, 0, PI*.5), false)
+
+## A single strand of kelp: a ribbon of leaves twisting up from a holdfast on the seabed.
+func _tidepool_kelp(at: Vector3, height: float, index: int) -> void:
+	var blade: Color = [Color("3f8f63"), Color("4f9c4a"), Color("2f7f6d")][index % 3]
+	kit.add("fine", at+Vector3(0, .3, 0), Vector3(1.1, .7, 1.1), blade.darkened(.2))
+	var lean := fmod(index*.37, .5)-.25
+	var segments := int(height/1.3)
+	for i in segments:
+		var t := i/float(segments)
+		var sway := sin(t*3.2+index)*1.1+lean*height*t
+		var spot := at+Vector3(sway, .4+t*height, cos(t*2.6+index)*.7)
+		kit.add("cylinder", spot, Vector3(.2, 1.5, .2), blade.darkened(.12), Vector3(0, 0, cos(t*3.2+index)*.3))
+		for side in [-1.0, 1.0]:
+			kit.add("sphere", spot+Vector3(side*.7, .2, 0), Vector3(1.5, .5, .22), blade.lightened(.08*(i % 2)), Vector3(0, 0, side*-.5), false)
+
+## One coral home, turned so its front faces `facing`. Every kind shares the same architecture —
+## a body, a roof in a contrasting shell cream that overhangs it, a lintelled door and two framed
+## portholes — so the ring reads as buildings rather than as a row of eggs.
+func _tidepool_home(at: Vector3, facing: float, tone: Color, scale: float, kind: int) -> void:
+	var s := scale
+	var wall := tone.lightened(.12)
+	var roof := Color("f6e6cd").lerp(tone, .18)
+	var turn := Vector3(0, facing, 0)
+	var basis := Basis(Vector3.UP, facing)
+	var front := basis*Vector3(0, 0, 1)
+	match kind:
+		0: # A round coral cottage under a wide scalloped shell roof.
+			kit.add("fine", at+Vector3(0, 2.3*s, 0), Vector3(3.5*s, 4.6*s, 3.2*s), wall)
+			# Two shallow ribbed eaves, like a stack of limpet shells, rather than one dome cap.
+			for eave in 2:
+				var w := (4.5-eave*1.3)*s
+				kit.add("cone", at+Vector3(0, 4.5*s+eave*1.0*s, 0), Vector3(w, 1.1*s, w*.94), roof.darkened(eave*.05))
+				for i in 10:
+					var a := TAU*i/10.0
+					kit.add("sphere", at+Vector3(sin(a)*w*.44, 4.4*s+eave*1.0*s, cos(a)*w*.42), Vector3(.2*s, .5*s, .5*s), roof.darkened(.14), Vector3(0, -a, 0), false)
+			kit.add("cone", at+Vector3(0, 6.3*s, 0), Vector3(.8*s, 1.1*s, .8*s), tone.darkened(.1))
+		1: # A tower of stacked shell tiers, each one stepped in.
+			for tier in 3:
+				var w := (3.6-tier*.8)*s
+				kit.add_rounded_box(at+Vector3(0, 1.1*s+tier*2.0*s, 0), Vector3(w, 2.0*s, w*.92), wall.darkened(tier*.05), turn, true, 5)
+				kit.add("fine", at+Vector3(0, 2.15*s+tier*2.0*s, 0), Vector3(w+1.1*s, .8*s, w*.92+1.0*s), roof)
+			kit.add("cone", at+Vector3(0, 7.2*s, 0), Vector3(1.6*s, 1.9*s, 1.6*s), tone.darkened(.12))
+		_: # A wide bubble workshop with a lean-to annexe on one side.
+			kit.add("fine", at+Vector3(0, 2.0*s, 0), Vector3(4.2*s, 4.0*s, 3.5*s), wall)
+			kit.add("fine", at+Vector3(0, 4.1*s, 0), Vector3(4.8*s, 1.7*s, 4.2*s), roof)
+			kit.add("fine", at+basis*Vector3(-2.7*s, 0, -.3*s)+Vector3(0, 1.3*s, 0), Vector3(2.4*s, 2.6*s, 2.4*s), wall.darkened(.08))
+			kit.add("fine", at+basis*Vector3(-2.7*s, 0, -.3*s)+Vector3(0, 2.6*s, 0), Vector3(3.2*s, .8*s, 3.2*s), roof)
+			kit.add("cylinder", at+basis*Vector3(1.9*s, 0, -.6*s)+Vector3(0, 5.4*s, 0), Vector3(.5*s, 2.2*s, .5*s), tone.darkened(.24))
+			for bubble in 3:
+				_lit("sphere", at+basis*Vector3(1.9*s, 0, -.6*s)+Vector3(0, 6.7*s+bubble*.9*s, 0), Vector3.ONE*(.3-bubble*.06)*s, Color("cdfff8"))
+	# A lintelled door with a step, and two framed portholes well out to either side of it.
+	var doorway := at+front*(2.6*s)+basis*Vector3(-1.1*s, 0, 0)+Vector3(0, 1.0*s, 0)
+	kit.add_rounded_box(doorway, Vector3(1.3*s, 2.0*s, .5*s), tone.darkened(.38), turn, false, 5)
+	kit.add("fine", doorway+Vector3(0, 1.0*s, 0), Vector3(1.3*s, .9*s, .5*s), tone.darkened(.38))
+	kit.add("fine", doorway+front*(.2*s)+Vector3(0, -.95*s, 0), Vector3(2.0*s, .34*s, 1.1*s), roof.darkened(.08))
+	_lit("sphere", doorway+front*(.12*s)+Vector3(0, .85*s, 0), Vector3(.7*s, .7*s, .2*s), Color("ffd98a"))
+	# A balcony running across the front, which also breaks up the wall.
+	var ledge := at+front*(2.35*s)+Vector3(0, 2.05*s, 0)
+	kit.add_rounded_box(ledge, Vector3(4.4*s, .26*s, .9*s), roof, turn, true, 5)
+	for rail in 5:
+		kit.add("cylinder", ledge+basis*Vector3((rail-2)*.9*s, 0, .2*s)+Vector3(0, .5*s, 0), Vector3(.14*s, .8*s, .14*s), roof.darkened(.12))
+	kit.add_rounded_box(ledge+front*(.2*s)+Vector3(0, .9*s, 0), Vector3(4.2*s, .18*s, .22*s), roof.darkened(.12), turn, false, 5)
+	# Portholes at two different heights, both clear of the door.
+	var high := at+front*(2.15*s)+basis*Vector3(1.5*s, 0, 0)+Vector3(0, 3.3*s, 0)
+	kit.add("torus", high, Vector3(1.2*s, .28*s, 1.2*s), roof, turn+Vector3(PI*.5, 0, 0))
+	_lit("sphere", high+front*(-.04*s), Vector3(.84*s, .84*s, .26*s), Color("ffe19b"))
+	var low := at+front*(2.3*s)+basis*Vector3(1.4*s, 0, 0)+Vector3(0, 1.2*s, 0)
+	kit.add_rounded_box(low, Vector3(1.3*s, 1.3*s, .26*s), roof, turn, true, 5)
+	_lit("sphere", low+front*(.06*s), Vector3(.9*s, .9*s, .2*s), Color("ffe19b"))
+	kit.add_rounded_box(low+front*(.1*s), Vector3(.14*s, 1.2*s, .2*s), roof.darkened(.14), turn, false, 4)
+	# A shell mailbox and a tuft of garden anemone by the step.
+	kit.add("fine", at+front*(2.2*s)+basis*Vector3(-3.1*s, 0, 0)+Vector3(0, .7*s, 0), Vector3(.9*s, .8*s, .7*s), Color("fdeccb"))
+	for frond in 4:
+		var a := TAU*frond/4.0
+		kit.add("sphere", at+front*(2.4*s)+basis*Vector3(2.9*s, 0, 0)+Vector3(sin(a)*.3*s, .8*s, cos(a)*.3*s), Vector3(.24*s, 1.4*s, .24*s), Color("ff9d7a"), Vector3(sin(a)*.4, 0, -cos(a)*.4), false)
+
+## A little market stall, its canopy turned to face the shop counter.
+func _tidepool_stall(at: Vector3, facing: float, canopy: Color) -> void:
+	var turn := Vector3(0, facing, 0)
+	var front := Basis(Vector3.UP, facing)*Vector3(0, 0, 1)
+	var across := Basis(Vector3.UP, facing)*Vector3(1, 0, 0)
+	kit.add_rounded_box(at+Vector3(0, 1.15, 0), Vector3(3.6, 2.3, 1.8), Color("8c694e"), turn, true, 5)
+	kit.add("block", at+front*.9+Vector3(0, 2.6, 0), Vector3(4.0, .42, .2), canopy, turn)
+	for stripe in 4:
+		kit.add("block", at+front*.95+across*(-1.4+stripe*.95)+Vector3(0, 2.6, 0), Vector3(.5, .44, .1), canopy.lightened(.32), turn, false)
+	for side in [-1.0, 1.0]:
+		kit.add("cylinder", at+across*(side*1.6)+Vector3(0, 3.3, 0), Vector3(.14, 2.0, .14), Color("76543d"))
+	kit.add("block", at+Vector3(0, 4.3, 0), Vector3(4.2, .3, 2.2), canopy.darkened(.12), turn)
+	for i in 5:
+		kit.add("sphere", at+front*.95+across*(-1.0+i*.5)+Vector3(0, 1.9, 0), Vector3.ONE*.26, [Color("ffcf5c"), Color("77c7b5"), Color("e9879c")][i % 3])
+	for i in 3:
+		kit.add("cone", at+across*(-.7+i*.7)+Vector3(0, 2.55, 0), Vector3(.5, .8, .5), Color("ff9d7a"), turn)
+
+## A short jetty of planks on posts, angled away from the middle of the room.
+func _tidepool_dock(at: Vector3, facing: float) -> void:
+	var turn := Vector3(0, facing, 0)
+	var along := Basis(Vector3.UP, facing)*Vector3(1, 0, 0)
+	for i in 4:
+		kit.add("block", at+along*(i*1.2)+Vector3(0, .14, 0), Vector3(1.1, .2, 3.2), Color("936443"), turn, false)
+		kit.add("cylinder", at+along*(i*1.2)+Basis(Vector3.UP, facing)*Vector3(0, 0, 1.3)+Vector3(0, 1.0, 0), Vector3(.16, 2.0, .16), Color("6c4938"))
+	kit.add("fine", at+along*1.7+Basis(Vector3.UP, facing)*Vector3(0, 0, -1.6)+Vector3(0, .8, 0), Vector3(1.5, .7, .6), Color("69b7c8"), turn)
+
+func _tidepool_reef(at: Vector3, index: int) -> void:
+	var coral: Color = [Color("e97982"), Color("f5aa58"), Color("a77bd2"), Color("72baa6")][index % 4]
+	match index % 3:
+		0:
+			for branch in 4:
+				var tip := at+Vector3(sin(branch*1.9+index)*.7, 1.3+branch*.42, cos(branch*2.3+index)*.6)
+				_rod(at, tip, .13, coral)
+				kit.add("sphere", tip, Vector3.ONE*.25, coral.lightened(.16))
+		1:
+			for blade in 4:
+				kit.add("sphere", at+Vector3((blade-1.5)*.22, 1.0+blade*.25, sin(blade+index)*.22), Vector3(.16, 1.25, .12), Color("41966f"), Vector3(0, 0, (blade-1.5)*.18), false)
+		_:
+			kit.add("sphere", at+Vector3(0, .3, 0), Vector3(1.0, .42, .8), coral)
+			for pearl in 3:
+				kit.add("sphere", at+Vector3((pearl-1)*.34, .72, -.28), Vector3.ONE*.14, coral.lightened(.35), Vector3.ZERO, false)
 
 ## A flat ground disc out to the horizon.
 func _ground(color: Color) -> void:

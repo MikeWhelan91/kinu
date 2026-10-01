@@ -14,6 +14,8 @@ varying vec3 base_color;
 varying vec3 model_normal;
 varying float creased;
 
+#include "res://resources/shaders/box_clip.gdshaderinc"
+
 void vertex() {
 	// Vertex colours are authored in sRGB; alpha marks boxy surfaces whose edges get inked.
 	base_color = flat_color ? override_color : pow(COLOR.rgb, vec3(2.2));
@@ -22,6 +24,9 @@ void vertex() {
 }
 
 void fragment() {
+	if (box_clipped(VERTEX, INV_VIEW_MATRIX)) {
+		discard;
+	}
 	ALBEDO = base_color;
 	if (creased > 0.5) {
 		// On a flat face only one normal axis is non-zero; along a rounded edge two are.

@@ -10,6 +10,19 @@ static var _primitives: Dictionary = {}
 static var _toon_material: ShaderMaterial
 static var _outline_materials: Dictionary = {}
 
+## Kinu Toss throws the length of the room, so while a Toss room is built it clears a lane: any part
+## whose centre falls inside `cull_zone` is left out. `cull_turn` is the angle the scenery being
+## built will be turned to, so the test is made where the part will actually stand. Parts wider
+## than CULL_MAX are floors, walls and skies rather than props, and always stay.
+static var cull_zone := AABB()
+static var cull_turn: float = 0.0
+const CULL_MAX := 14.0
+
+static func _culled(center: Vector3, extent: float) -> bool:
+	if not cull_zone.has_volume() or extent > CULL_MAX:
+		return false
+	return cull_zone.has_point(Basis(Vector3.UP, cull_turn)*center)
+
 var fill := SurfaceTool.new()
 var hull := SurfaceTool.new()
 var hull_used: bool = false
@@ -54,6 +67,14 @@ static func primitive(kind: String) -> Array:
 				mesh.rings = 6
 				mesh.radius = .5
 				mesh.height = 1.0
+			"dome":
+				# A closed half ball, flat face at y = 0 and crown at y = .5.
+				mesh = SphereMesh.new()
+				mesh.radial_segments = 32
+				mesh.rings = 10
+				mesh.radius = .5
+				mesh.height = .5
+				mesh.is_hemisphere = true
 			"cone":
 				mesh = CylinderMesh.new()
 				mesh.top_radius = 0.0
@@ -83,9 +104,15 @@ static func primitive(kind: String) -> Array:
 ## Scale is applied first, then the euler rotation, then the translation.
 func add(kind: String, position: Vector3, scale: Vector3, color: Color, rotation: Vector3 = Vector3.ZERO, outline: bool = true) -> void:
 	var basis := Basis.from_euler(rotation) * Basis.from_scale(scale)
+	# "fine" asks for a smooth silhouette, not for a fixed triangle budget: a blob a few pixels
+	# wide reads exactly the same off the ordinary sphere.
+	if kind == "fine" and _across(scale) < .45:
+		kind = "sphere"
 	add_transformed(kind, Transform3D(basis, position), color, outline)
 
 func add_transformed(kind: String, transform: Transform3D, color: Color, outline: bool = true) -> void:
+	if cull_zone.has_volume() and _culled(transform.origin, maxf(transform.basis.x.length(), maxf(transform.basis.y.length(), transform.basis.z.length()))):
+		return
 	var arrays := primitive(kind)
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
@@ -105,7 +132,9 @@ func add_transformed(kind: String, transform: Transform3D, color: Color, outline
 ## Rounded box / squircle ball (superellipsoid). power 2 = ellipsoid, higher = boxier corners.
 ## Boxy ones flag their vertices (colour alpha) so the toon shader inks their edges.
 func add_rounded_box(position: Vector3, size: Vector3, color: Color, rotation: Vector3 = Vector3.ZERO, outline: bool = true, power: float = 6.0) -> void:
-	var arrays := primitive("fine")
+	if cull_zone.has_volume() and _culled(position, maxf(size.x, maxf(size.y, size.z))):
+		return
+	var arrays := primitive(_squircle_detail(size))
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
 	var basis := Basis.from_euler(rotation)
@@ -123,6 +152,26 @@ func add_rounded_box(position: Vector3, size: Vector3, color: Color, rotation: V
 			hull.set_normal(normal)
 			hull.add_vertex(vertex)
 	hull_used = hull_used or outline
+
+## Picks the sphere a squircle is deformed from, by how big the part is. A stamp mark or a
+## trim strip is a few pixels across, so spending the full 40x24 sphere on one is wasted:
+## small parts drop to coarser spheres for the same silhouette at a fraction of the triangles.
+static func _squircle_detail(size: Vector3) -> String:
+	# The flat faces stay flat at any resolution, so what needs segments is the corner rounding,
+	# and that is set by the part's second-largest dimension: a long thin plank rounds over a
+	# thin cross-section however long it is.
+	var across := _across(size)
+	if across < .3:
+		return "bead"
+	if across < 1.0:
+		return "sphere"
+	return "fine"
+
+## A part's second-largest dimension: how wide it is across the axis that has to round off.
+static func _across(size: Vector3) -> float:
+	var axes := [size.x, size.y, size.z]
+	axes.sort()
+	return axes[1]
 
 static func _signed_pow(value: float, exponent: float) -> float:
 	return signf(value)*pow(absf(value), exponent)
@@ -190,3 +239,28 @@ func commit_hull() -> ArrayMesh:
 	# Merging positions keeps the hull watertight so extruded seams stay closed.
 	hull.index()
 	return hull.commit()
+
+## How many built model templates a cache keeps. Enough for the equipped set-up plus whatever
+## a shop shelf or a reveal is showing, without holding every skin the player has ever scrolled
+## past for the rest of the session.
+const CACHE_KEEP := 6
+
+## Shared backing for the model caches (boxes, tower plates). Each holds a built but
+## unparented template that instances duplicate, so nothing in the scene tree ever frees them and
+## an unbounded cache would keep every skin's meshes alive for the whole session. Evicting the
+## least recently used template is safe for anything already on screen: instances hold their own
+## duplicated nodes, and the meshes inside those are refcounted resources.
+static func cached_model(cache: Dictionary, key: String, build: Callable) -> Node3D:
+	if cache.has(key):
+		# Re-insert so the freshest key sorts last and eviction takes the stalest one.
+		var found: Node3D = cache[key]
+		cache.erase(key)
+		cache[key] = found
+		return found
+	var built: Node3D = build.call()
+	cache[key] = built
+	while cache.size() > CACHE_KEEP:
+		var stalest: Variant = cache.keys()[0]
+		(cache[stalest] as Node3D).free()
+		cache.erase(stalest)
+	return built

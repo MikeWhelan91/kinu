@@ -1,8 +1,8 @@
 class_name ShoyuBottle
 extends Node3D
 ## A little sauce bottle the player aims like a Kinu. Letting go tips it over and squirts onto
-## the Kinu below. The glass and the drops take the colour of whichever sauce it is holding, so
-## Nigari and Koji read apart at a glance in the air as well as on the Next card.
+## the Kinu below. The glass and drops match the active mode's sauce: Nigari in Classic,
+## Shoyu in Tower.
 
 signal squirted(target: KinuBody)
 

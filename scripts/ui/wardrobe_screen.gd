@@ -17,6 +17,7 @@ static func show(app: Node) -> void:
 	, "wardrobe"))
 	var scroll := DragScroll.new()
 	layout.add_child(scroll)
+	KinuShopScreen.remember_scroll(scroll, "wardrobe:"+str(app.wardrobe_tab))
 	var list: VBoxContainer = app._vbox(scroll, 14)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var grid := CardGrid.grid(list)

@@ -54,6 +54,8 @@ import fit from "./kinutumble-fit.json";
    store matches the app; Nunito carries no CJK at all. */
 export type KinuLocale = "en" | "ja" | "ko" | "zh_TW";
 
+export const kinuTumbleCopy = copy as unknown as Record<KinuLocale, [string, string][]>;
+
 export const KINU_LOCALES: { locale: KinuLocale; slug: string; label: string }[] = [
   { locale: "en", slug: "kinutumble", label: "Kinu Tumble" },
   { locale: "ja", slug: "kinutumble-ja", label: "Kinu Tumble — 日本語" },
@@ -606,7 +608,7 @@ const screenFrame = (screen: KinuScreen): Frame => {
 export const kinuTumbleProject = (locale: KinuLocale = "en"): Project => {
   setting = SETTINGS[locale];
   FONT = setting.font;
-  const text = copy[locale] as string[][];
+  const text = kinuTumbleCopy[locale];
   const sizes = fit[locale];
   const headlineSize = Math.min(...sizes.headline);
   const captionSize = Math.min(...sizes.caption.filter((size) => size > 0));

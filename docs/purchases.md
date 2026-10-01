@@ -20,8 +20,10 @@ Prices are fetched from StoreKit and displayed in the customer's currency. No
 fallback dollar price is used for buying. Missing products are disabled and can
 be requested again using Retry. Desktop builds do not simulate transactions.
 
-The Catcher gives one free play each calendar day. That free play is a daily
-entitlement rather than a stored ticket, so unused free plays do not stack.
+The Catcher gives two free tickets per rolling 24-hour cycle, timed by the
+server from the first free play in that cycle. Free tickets appear in the
+displayed balance alongside purchased and won tickets, but refill to two rather
+than stacking. Free tickets are spent before stored tickets.
 One of the three daily missions also grants one ticket when claimed, alongside
 its bean reward. The other two missions remain bean-only, for up to one earned
 ticket per day.

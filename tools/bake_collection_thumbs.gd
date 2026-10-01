@@ -2,6 +2,8 @@ extends Node
 ## Bakes every outfit and box in the catalogue to an individual PNG under resources/kinu/thumbs/.
 ## Run after any catalogue change that adds, removes or reskins an item:
 ##   godot --path . tools/bake_collection_thumbs.tscn
+## Add `-- only=opening_day,first_edition` to bake just those ids (every outfit is still measured,
+## so the shared outfit scale stays the same as a full bake).
 ## (not --headless: headless uses a null renderer here and produces empty images.)
 ## The Kinu Book loads these directly at runtime instead of building a live 3D preview per card.
 
@@ -14,6 +16,10 @@ const SIZE := Vector2i(220, 220)
 const OUTFIT_PADDING := 0.8
 
 func _ready() -> void:
+	var only: Array = []
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("only="):
+			only = Array(arg.trim_prefix("only=").split(","))
 	DirAccess.make_dir_recursive_absolute(OUT_DIR)
 	var catalog: KinuCatalog = load("res://resources/kinu/catalog.tres")
 	var viewport := SubViewport.new()
@@ -53,6 +59,8 @@ func _ready() -> void:
 
 	var count := 0
 	for item in catalog.outfits:
+		if not only.is_empty() and not only.has(item.id):
+			continue
 		var before := viewport.get_children()
 		var model := _build_outfit(catalog, item)
 		viewport.add_child(model)
@@ -67,6 +75,8 @@ func _ready() -> void:
 		count += 1
 		print("baked ", count, " ", item.id)
 	for item in catalog.decor_of("box"):
+		if not only.is_empty() and not only.has(item.id):
+			continue
 		var before := viewport.get_children()
 		_capture_box(viewport, item)
 		await get_tree().process_frame

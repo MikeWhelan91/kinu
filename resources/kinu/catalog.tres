@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="KinuCatalog" load_steps=159 format=3]
+[gd_resource type="Resource" script_class="KinuCatalog" load_steps=162 format=3]
 
 [ext_resource type="Script" path="res://scripts/kinu/kinu_catalog.gd" id="1"]
 [ext_resource type="Script" path="res://scripts/kinu/kinu_shape.gd" id="2"]
@@ -122,7 +122,7 @@ pattern = ""
 
 [sub_resource type="Resource" id="outfit_tanuki"]
 script = ExtResource("4")
-price = 900
+price = 4500
 id = "tanuki"
 display_name = "Tanuki"
 description = "A mischievous forest spirit costume, tail included."
@@ -132,7 +132,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_bunny"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "bunny"
 display_name = "Bunny"
 description = "Soft, floppy ears for extra-snuggly hops."
@@ -142,7 +142,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_bat"]
 script = ExtResource("4")
-price = 1100
+price = 5500
 id = "bat"
 display_name = "Bat"
 description = "Tiny wings for a moonlit flutter."
@@ -152,7 +152,7 @@ rarity = "epic"
 
 [sub_resource type="Resource" id="outfit_fox"]
 script = ExtResource("4")
-price = 700
+price = 3500
 id = "fox"
 display_name = "Fox"
 description = "A clever bushy tail, always up to something."
@@ -162,7 +162,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_frog"]
 script = ExtResource("4")
-price = 320
+price = 1600
 id = "frog"
 display_name = "Frog"
 description = "Cool, damp, and ready to leap."
@@ -179,11 +179,11 @@ description = "A single leaf cap. Autumn's simplest gift."
 hood_color = Color(0.4235, 0.7882, 0.2980, 1)
 style = "leaf"
 goal = "runs"
-goal_amount = 1
+goal_amount = 3
 
 [sub_resource type="Resource" id="outfit_pirate"]
 script = ExtResource("4")
-price = 750
+price = 3750
 id = "pirate"
 display_name = "Pirate"
 description = "A tiny hat and an eyepatch for high-seas snacking."
@@ -193,7 +193,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_ninja"]
 script = ExtResource("4")
-price = 480
+price = 2400
 id = "ninja"
 display_name = "Ninja"
 description = "Silent, stealthy, and sworn to protect the box."
@@ -203,7 +203,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_panda"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "panda"
 display_name = "Panda"
 description = "Round, black-and-white, and endlessly huggable."
@@ -213,7 +213,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_dino"]
 script = ExtResource("4")
-price = 700
+price = 3500
 id = "dino"
 display_name = "Dino"
 description = "Spiky and prehistoric, but still very cuddly."
@@ -230,7 +230,7 @@ description = "A snug little helmet for space-bound snacking."
 hood_color = Color(0.8863, 0.8980, 0.9255, 1)
 style = "astronaut"
 goal = "height"
-goal_amount = 350
+goal_amount = 900
 
 [sub_resource type="Resource" id="outfit_ghost"]
 script = ExtResource("4")
@@ -241,11 +241,11 @@ description = "A friendly boo under a floaty sheet."
 hood_color = Color(0.9412, 0.9333, 0.9725, 1)
 style = "ghost"
 goal = "flavours"
-goal_amount = 10
+goal_amount = 20
 
 [sub_resource type="Resource" id="outfit_shark"]
 script = ExtResource("4")
-price = 750
+price = 3750
 id = "shark"
 display_name = "Shark"
 description = "All fin, no bite. Promise."
@@ -255,7 +255,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_strawberry"]
 script = ExtResource("4")
-price = 360
+price = 1800
 id = "strawberry"
 display_name = "Strawberry"
 description = "Sweet, red, and freckled with seeds."
@@ -265,7 +265,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_tiger"]
 script = ExtResource("4")
-price = 700
+price = 3500
 id = "tiger"
 display_name = "Tiger"
 description = "Bold stripes for a fierce little roar."
@@ -282,7 +282,7 @@ description = "Curled horns and a proud little tail."
 hood_color = Color(0.3255, 0.5686, 0.3373, 1)
 style = "dragon"
 goal = "best"
-goal_amount = 62
+goal_amount = 110
 
 [sub_resource type="Resource" id="flavour_yuzu"]
 script = ExtResource("3")
@@ -513,7 +513,7 @@ id = "lacquer"
 display_name = "Red Lacquer"
 description = "Glossy red lacquer, polished to a mirror shine."
 kind = "box"
-price = 1150
+price = 5750
 palette = {
 "wood": Color(0.8118, 0.2314, 0.1882, 1),
 "wood_dark": Color(0.1686, 0.1020, 0.0902, 1),
@@ -530,7 +530,7 @@ id = "sakura"
 display_name = "Sakura"
 description = "Painted with drifting cherry blossom petals."
 kind = "box"
-price = 1400
+price = 7000
 palette = {
 "wood": Color(1.0000, 0.8275, 0.8745, 1),
 "wood_dark": Color(0.9137, 0.5608, 0.6706, 1),
@@ -547,7 +547,7 @@ id = "stone"
 display_name = "Stone"
 description = "Cool, solid stone, worn smooth over time."
 kind = "box"
-price = 1650
+price = 8250
 palette = {
 "wood": Color(0.7882, 0.7686, 0.7333, 1),
 "wood_dark": Color(0.5569, 0.5294, 0.4863, 1),
@@ -564,7 +564,7 @@ id = "goldbox"
 display_name = "Gold"
 description = "Gilded edges fit for a treasure hoard."
 kind = "box"
-price = 2500
+price = 12500
 palette = {
 "wood": Color(0.9686, 0.7882, 0.2824, 1),
 "wood_dark": Color(0.7882, 0.5725, 0.1647, 1),
@@ -606,7 +606,7 @@ id = "night"
 display_name = "Night Market"
 description = "Lanterns and stalls, glowing long after sundown."
 kind = "room"
-price = 1500
+price = 7500
 palette = {
 "lantern_glow": true,
 "awning": [Color(0.7216, 0.1961, 0.2275, 1), Color(0.1843, 0.3529, 0.6588, 1)],
@@ -809,7 +809,7 @@ description = "Fresh from the shell, still a little wobbly."
 hood_color = Color(0.9843, 0.9647, 0.9176, 1)
 style = "hatchling"
 goal = "total"
-goal_amount = 100
+goal_amount = 400
 
 [sub_resource type="Resource" id="outfit_parcel"]
 script = ExtResource("4")
@@ -820,7 +820,7 @@ description = "Wrapped up snug, ready to be delivered with love."
 hood_color = Color(0.8510, 0.6588, 0.4235, 1)
 style = "parcel"
 goal = "best"
-goal_amount = 25
+goal_amount = 75
 
 [sub_resource type="Resource" id="outfit_onsen"]
 script = ExtResource("4")
@@ -835,7 +835,7 @@ goal_amount = 25
 
 [sub_resource type="Resource" id="outfit_nigiri"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "nigiri"
 display_name = "Salmon Nigiri"
 description = "A neat little rice pillow, nori sash and all."
@@ -845,7 +845,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_bee"]
 script = ExtResource("4")
-price = 480
+price = 2400
 id = "bee"
 display_name = "Bee"
 description = "Buzzing stripes and see-through little wings."
@@ -862,11 +862,11 @@ description = "Round, lucky, and always bouncing back."
 hood_color = Color(0.8157, 0.2275, 0.2471, 1)
 style = "daruma"
 goal = "clean"
-goal_amount = 31
+goal_amount = 95
 
 [sub_resource type="Resource" id="outfit_tako"]
 script = ExtResource("4")
-price = 850
+price = 4250
 id = "tako"
 display_name = "Tako"
 description = "A cheerful octopus cap with dangling little legs."
@@ -876,7 +876,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_kappa"]
 script = ExtResource("4")
-price = 900
+price = 4500
 id = "kappa"
 display_name = "Kappa"
 description = "A river spirit's dish-shaped cap, kept nice and damp."
@@ -908,7 +908,7 @@ id = "candy"
 display_name = "Candy Stripe"
 description = "Peppermint stripes, sweet enough to lick."
 kind = "box"
-price = 720
+price = 3600
 palette = {
 "wood": Color(1.0000, 0.6235, 0.7490, 1.0000),
 "wood_dark": Color(0.8980, 0.3451, 0.5412, 1.0000),
@@ -926,7 +926,7 @@ id = "gift"
 display_name = "Gift Box"
 description = "Ribboned shut, like a present waiting to be opened."
 kind = "box"
-price = 800
+price = 4000
 palette = {
 "wood": Color(0.6627, 0.8471, 0.9490, 1.0000),
 "wood_dark": Color(0.4353, 0.7020, 0.8667, 1.0000),
@@ -944,7 +944,7 @@ id = "jubako"
 display_name = "Jubako"
 description = "Stacked lacquered tiers for a New Year's feast."
 kind = "box"
-price = 2000
+price = 10000
 palette = {
 "wood": Color(0.1647, 0.1333, 0.1490, 1.0000),
 "wood_dark": Color(0.8902, 0.7137, 0.3098, 1.0000),
@@ -979,7 +979,7 @@ id = "neon"
 display_name = "Neon"
 description = "Buzzing with electric colour, straight off the arcade floor."
 kind = "box"
-price = 2400
+price = 12000
 palette = {
 "wood": Color(0.1725, 0.1412, 0.2784, 1.0000),
 "wood_dark": Color(1.0000, 0.3098, 0.6902, 1.0000),
@@ -996,7 +996,7 @@ id = "bamboo_grove"
 display_name = "Bamboo Grove"
 description = "Tall green stalks swaying in a gentle hush."
 kind = "room"
-price = 1250
+price = 6250
 palette = {
 "hills": Color(0.4980, 0.6588, 0.3765, 1),
 "canopy": [Color(0.4980, 0.7216, 0.2902, 1), Color(0.6431, 0.8118, 0.4157, 1), Color(0.3725, 0.6039, 0.2275, 1)],
@@ -1027,7 +1027,7 @@ id = "autumn_temple"
 display_name = "Autumn Temple"
 description = "Red leaves settling over old wooden eaves."
 kind = "room"
-price = 1750
+price = 8750
 palette = {
 "hills": Color(0.6902, 0.4706, 0.2902, 1),
 "torii": true,
@@ -1058,7 +1058,7 @@ id = "onsen"
 display_name = "Onsen"
 description = "Steam rising off a warm, mineral-scented bath."
 kind = "room"
-price = 2000
+price = 10000
 palette = {
 "pine": Color(0.3098, 0.4784, 0.3333, 1),
 "water": Color(0.4980, 0.7961, 0.8392, 1),
@@ -1088,7 +1088,7 @@ id = "festival"
 display_name = "Summer Festival"
 description = "Paper lanterns, drumbeats, and the smell of grilled snacks."
 kind = "room"
-price = 2500
+price = 12500
 palette = {
 "awning": [Color(0.8863, 0.2902, 0.2902, 1), Color(0.2275, 0.4824, 0.8353, 1), Color(0.9490, 0.6392, 0.2275, 1)],
 "hills": Color(0.2902, 0.2078, 0.3882, 1),
@@ -1149,7 +1149,7 @@ id = "neon_alley"
 display_name = "Neon Rooftop"
 description = "A skyline glowing pink and blue after dark."
 kind = "room"
-price = 3150
+price = 15750
 palette = {
 "windows": [Color(1.0000, 0.8314, 0.4196, 1), Color(0.4980, 0.9412, 1.0000, 1), Color(1.0000, 0.5608, 0.8196, 1)],
 "plaster": Color(0.1647, 0.1412, 0.2588, 1),
@@ -1214,12 +1214,12 @@ display_name = "Lucky Cat"
 description = "One paw raised, calling good fortune your way."
 hood_color = Color(1.0000, 0.9804, 0.9490, 1.0000)
 style = "maneki"
-crane_only = true
 rarity = "legendary"
+showcase = "2026-10"
 
 [sub_resource type="Resource" id="outfit_samurai"]
 script = ExtResource("4")
-price = 1350
+price = 6750
 id = "samurai"
 display_name = "Samurai"
 description = "A small suit of armour, worn with quiet pride."
@@ -1229,7 +1229,7 @@ rarity = "epic"
 
 [sub_resource type="Resource" id="outfit_koi"]
 script = ExtResource("4")
-price = 1200
+price = 6000
 id = "koi"
 display_name = "Koi"
 description = "Rippling scales in the colours of a garden pond."
@@ -1239,7 +1239,7 @@ rarity = "epic"
 
 [sub_resource type="Resource" id="outfit_axolotl"]
 script = ExtResource("4")
-price = 1050
+price = 5250
 id = "axolotl"
 display_name = "Axolotl"
 description = "Frilly gills and a permanent, gummy smile."
@@ -1249,7 +1249,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_kimono"]
 script = ExtResource("4")
-price = 1250
+price = 6250
 id = "kimono"
 display_name = "Kimono"
 description = "A sash-tied robe patterned for a festival stroll."
@@ -1259,7 +1259,7 @@ rarity = "epic"
 
 [sub_resource type="Resource" id="outfit_oni"]
 script = ExtResource("4")
-price = 1150
+price = 5750
 id = "oni"
 display_name = "Oni"
 description = "Small horns and a grin that's more mischief than menace."
@@ -1269,7 +1269,7 @@ rarity = "epic"
 
 [sub_resource type="Resource" id="outfit_capybara"]
 script = ExtResource("4")
-price = 1000
+price = 5000
 id = "capybara"
 display_name = "Yuzu Capybara"
 description = "Unbothered, citrus-scented, and perfectly zen."
@@ -1279,7 +1279,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_chick"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "chick"
 display_name = "Baby Chick"
 description = "Downy yellow fluff, fresh out of the nest."
@@ -1290,7 +1290,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_shiba"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "shiba"
 display_name = "Shiba Pup"
 description = "A curled tail and the world's proudest grin."
@@ -1301,7 +1301,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_calico"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "calico"
 display_name = "Calico Kitty"
 description = "Patchwork fur and a whole lot of purring."
@@ -1312,7 +1312,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_bear_cub"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "bear_cub"
 display_name = "Honey Bear"
 description = "Sticky-pawed and always sniffing out something sweet."
@@ -1323,7 +1323,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_hamster"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "hamster"
 display_name = "Hamster"
 description = "Cheeks stuffed full, just in case."
@@ -1334,7 +1334,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_penguin"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "penguin"
 display_name = "Baby Penguin"
 description = "A waddly little tuxedo, fresh off the ice."
@@ -1345,7 +1345,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_duckling"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "duckling"
 display_name = "Duckling"
 description = "Soft yellow down and a very determined waddle."
@@ -1356,7 +1356,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_seal"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "seal"
 display_name = "Mochi Seal"
 description = "Round, smooth, and built entirely for flopping."
@@ -1367,7 +1367,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_otter"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "otter"
 display_name = "Little Otter"
 description = "A floaty little paddler with a taste for snacks."
@@ -1378,7 +1378,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_red_panda"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "red_panda"
 display_name = "Red Panda"
 description = "A rusty coat and a tail made for wrapping up warm."
@@ -1389,7 +1389,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_mushroom"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "mushroom"
 display_name = "Mushroom Cap"
 description = "A speckled forest-floor cap, sprouted overnight."
@@ -1400,7 +1400,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_peach"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "peach"
 display_name = "Peachy"
 description = "Blushed pink and irresistibly soft."
@@ -1411,7 +1411,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_lemon"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "lemon"
 display_name = "Lemon Drop"
 description = "Zesty, sunny, and a little bit sour."
@@ -1422,7 +1422,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_cupcake"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "cupcake"
 display_name = "Cupcake"
 description = "Frosted on top with a cherry for good measure."
@@ -1433,7 +1433,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_pudding"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "pudding"
 display_name = "Purin Pudding"
 description = "Wobbly, caramel-topped, and endlessly jiggly."
@@ -1444,7 +1444,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_boba"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "boba"
 display_name = "Boba Tea"
 description = "Milky sweetness with tapioca pearls sinking to the bottom."
@@ -1455,7 +1455,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_melonpan"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "melonpan"
 display_name = "Melonpan"
 description = "A crackly sugar crust over a soft, sweet bun."
@@ -1466,7 +1466,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_donut"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "donut"
 display_name = "Sprinkle Donut"
 description = "Glazed, ringed, and scattered with sprinkles."
@@ -1477,7 +1477,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_marshmallow"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "marshmallow"
 display_name = "Marshmallow"
 description = "Pillowy soft and ready for the campfire."
@@ -1488,7 +1488,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_taiyaki"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "taiyaki"
 display_name = "Taiyaki"
 description = "A warm fish-shaped cake, filled with something sweet."
@@ -1499,7 +1499,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_cloud"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "cloud_outfit"
 display_name = "Tiny Cloud"
 description = "A puff of soft, drifting sky."
@@ -1510,7 +1510,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_star"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "star_outfit"
 display_name = "Twinkle Star"
 description = "A little points-and-all night-sky sparkle."
@@ -1521,7 +1521,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_moon"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "moon_outfit"
 display_name = "Sleepy Moon"
 description = "A crescent cap for the drowsiest of Kinu."
@@ -1532,7 +1532,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_sunflower"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "sunflower"
 display_name = "Sunflower"
 description = "Bright petals that always face the light."
@@ -1543,7 +1543,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_daisy"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "daisy"
 display_name = "Daisy Chain"
 description = "A ring of little white blooms, woven by hand."
@@ -1554,7 +1554,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_sailor"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "sailor"
 display_name = "Tiny Sailor"
 description = "A crisp collar and cap for smooth sailing."
@@ -1565,7 +1565,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_raincoat"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "raincoat"
 display_name = "Puddle Pal"
 description = "A cheerful yellow slicker for splashing through puddles."
@@ -1576,7 +1576,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_overalls"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "overalls"
 display_name = "Berry Overalls"
 description = "Cosy dungarees with a pocketful of berries."
@@ -1587,7 +1587,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_artist"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "artist"
 display_name = "Little Artist"
 description = "A paint-splattered smock and a beret, tilted just so."
@@ -1598,7 +1598,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_sleepy_cap"]
 script = ExtResource("4")
-price = 440
+price = 2200
 id = "sleepy_cap"
 display_name = "Sleepy Cap"
 description = "A soft nightcap for the cosiest of naps."
@@ -1726,7 +1726,7 @@ description = "A bright hard hat and reflective vest for Kinu who mean business.
 hood_color = Color(1.0000, 0.7608, 0.1804, 1)
 style = "builder"
 goal = "best"
-goal_amount = 10
+goal_amount = 35
 
 [sub_resource type="Resource" id="outfit_acrobat"]
 script = ExtResource("4")
@@ -1737,7 +1737,7 @@ description = "A cheerful performer’s sash and a pole for improbable stacks."
 hood_color = Color(0.8902, 0.2745, 0.3137, 1)
 style = "acrobat"
 goal = "clean"
-goal_amount = 8
+goal_amount = 60
 
 [sub_resource type="Resource" id="outfit_chef"]
 script = ExtResource("4")
@@ -1748,18 +1748,18 @@ description = "A tall chef’s toque for a true master of sticky stacking."
 hood_color = Color(0.9843, 0.9412, 0.8549, 1)
 style = "chef"
 goal = "glazed"
-goal_amount = 10
+goal_amount = 60
 
 [sub_resource type="Resource" id="outfit_yukata"]
 script = ExtResource("4")
 price = 0
 id = "yukata"
-display_name = "Firework Yukata"
-description = "A midnight-blue festival robe scattered with tiny blooms."
+display_name = "Festival Yukata"
+description = "A midnight-blue summer robe with hanabi across the cloth."
 hood_color = Color(0.2118, 0.3098, 0.6118, 1)
 style = "yukata"
 goal = "streak"
-goal_amount = 8
+goal_amount = 80
 
 [sub_resource type="Resource" id="outfit_climber"]
 script = ExtResource("4")
@@ -1770,7 +1770,7 @@ description = "A red beanie, tiny pack and plenty of summit spirit."
 hood_color = Color(0.2902, 0.5373, 0.3882, 1)
 style = "climber"
 goal = "height"
-goal_amount = 500
+goal_amount = 1300
 
 [sub_resource type="Resource" id="outfit_lucky_charm"]
 script = ExtResource("4")
@@ -1785,7 +1785,7 @@ goal_amount = 10
 
 [sub_resource type="Resource" id="outfit_jelly_cube"]
 script = ExtResource("4")
-price = 360
+price = 1800
 id = "jelly_cube"
 display_name = "Jelly Cube"
 description = "Bouncy, wobbly, and topped with a glossy jelly dome."
@@ -1795,7 +1795,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_rose_delight"]
 script = ExtResource("4")
-price = 520
+price = 2600
 id = "rose_delight"
 display_name = "Rose Delight"
 description = "A soft pink sweet dusted in fragrant rose sugar."
@@ -1805,7 +1805,7 @@ rarity = "common"
 
 [sub_resource type="Resource" id="outfit_chocolate_square"]
 script = ExtResource("4")
-price = 650
+price = 3250
 id = "chocolate_square"
 display_name = "Chocolate Square"
 description = "Six neat little chocolate tiles, ready to snap apart."
@@ -1815,7 +1815,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_burger"]
 script = ExtResource("4")
-price = 720
+price = 3600
 id = "burger"
 display_name = "Burger Stack"
 description = "A sesame bun, leafy lettuce and a very tidy patty."
@@ -1825,7 +1825,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_snack_box"]
 script = ExtResource("4")
-price = 900
+price = 4500
 id = "snack_box"
 display_name = "Joyful Snack Box"
 description = "A bright little takeaway box with a fry-shaped crown."
@@ -1835,7 +1835,7 @@ rarity = "rare"
 
 [sub_resource type="Resource" id="outfit_sea_sponge"]
 script = ExtResource("4")
-price = 1250
+price = 6250
 id = "sea_sponge"
 display_name = "Sunny Sea Sponge"
 description = "A porous yellow friend in square trousers and a tiny red tie."
@@ -1845,7 +1845,7 @@ rarity = "epic"
 
 [sub_resource type="Resource" id="outfit_bread_loaf"]
 script = ExtResource("4")
-price = 460
+price = 2300
 id = "bread_loaf"
 display_name = "Bread Loaf"
 description = "A warm crust, soft centre and three fresh-baked score marks."
@@ -1904,8 +1904,8 @@ palette = {
 "stamp_mark": Color(1.0000, 0.9647, 0.8863, 1.0000)
 }
 effect = "geode"
-crane_only = true
 rarity = "legendary"
+showcase = "2026-09"
 
 [sub_resource type="Resource" id="box_gachapon"]
 script = ExtResource("5")
@@ -1931,7 +1931,7 @@ id = "taiko"
 display_name = "Taiko Drum"
 description = "A festival drum, painted red and ready to boom."
 kind = "box"
-price = 1750
+price = 8750
 palette = {
 "wood": Color(0.5608, 0.2275, 0.1647, 1.0000),
 "wood_dark": Color(0.1686, 0.1020, 0.0902, 1.0000),
@@ -1948,7 +1948,7 @@ id = "shortcake"
 display_name = "Shortcake"
 description = "Layered sponge and cream, one strawberry short of perfect."
 kind = "box"
-price = 1500
+price = 0
 palette = {
 "wood": Color(0.9686, 0.8941, 0.7529, 1.0000),
 "wood_dark": Color(1.0000, 0.7020, 0.7843, 1.0000),
@@ -1960,6 +1960,7 @@ palette = {
 }
 effect = "shortcake"
 rarity = "rare"
+showcase = "2026-12"
 
 [sub_resource type="Resource" id="box_starry"]
 script = ExtResource("5")
@@ -1967,7 +1968,7 @@ id = "starry"
 display_name = "Starry Night"
 description = "A deep blue box scattered with tiny constellations."
 kind = "box"
-price = 2250
+price = 11250
 palette = {
 "wood": Color(0.1137, 0.1373, 0.3216, 1.0000),
 "wood_dark": Color(0.9490, 0.7569, 0.3059, 1.0000),
@@ -1984,7 +1985,7 @@ id = "koi_pond"
 display_name = "Koi Pond"
 description = "Rippling water with koi drifting just beneath the surface."
 kind = "box"
-price = 1900
+price = 9500
 palette = {
 "wood": Color(0.6588, 0.8706, 0.9412, 1.0000),
 "wood_dark": Color(0.3725, 0.7216, 0.4157, 1.0000),
@@ -2001,7 +2002,7 @@ id = "cloud"
 display_name = "Cloud"
 description = "Soft and puffed up, like it drifted down from the sky."
 kind = "box"
-price = 1600
+price = 8000
 palette = {
 "wood": Color(0.6627, 0.8471, 0.9608, 1.0000),
 "wood_dark": Color(1.0000, 1.0000, 1.0000, 1.0000),
@@ -2018,7 +2019,7 @@ id = "raden"
 display_name = "Mother of Pearl"
 description = "Inlaid shell that shimmers with every tilt of the light."
 kind = "box"
-price = 2400
+price = 12000
 palette = {
 "wood": Color(0.1020, 0.0784, 0.0941, 1.0000),
 "wood_dark": Color(0.9490, 0.7569, 0.3059, 1.0000),
@@ -2114,8 +2115,8 @@ palette = {
 }
 effect = "stars"
 layout = "moon_base"
-crane_only = true
 rarity = "legendary"
+showcase = "2026-11"
 
 [sub_resource type="Resource" id="room_sky_shrine"]
 script = ExtResource("5")
@@ -2153,7 +2154,7 @@ id = "tea_fields"
 display_name = "Fuji Tea Fields"
 description = "Rolling green rows with a mountain standing watch."
 kind = "room"
-price = 2250
+price = 11250
 palette = {
 "plaster": Color(0.9529, 0.9176, 0.8471, 1.0000),
 "post": Color(0.3529, 0.2275, 0.1569, 1.0000),
@@ -2184,7 +2185,7 @@ id = "sweets"
 display_name = "Wagashi Land"
 description = "A landscape built entirely from sugar and sponge."
 kind = "room"
-price = 2750
+price = 13750
 palette = {
 "plaster": Color(1.0000, 0.9412, 0.9647, 1.0000),
 "post": Color(1.0000, 0.5608, 0.6941, 1.0000),
@@ -2211,7 +2212,7 @@ id = "aurora"
 display_name = "Aurora Snowfield"
 description = "Snow lit up in ribbons of green and violet."
 kind = "room"
-price = 3000
+price = 15000
 palette = {
 "plaster": Color(0.8627, 0.9098, 0.9608, 1.0000),
 "post": Color(0.2275, 0.2902, 0.4157, 1.0000),
@@ -2241,7 +2242,7 @@ id = "beach"
 display_name = "Summer Beach"
 description = "Warm sand, gentle waves, and a striped parasol."
 kind = "room"
-price = 2400
+price = 12000
 palette = {
 "plaster": Color(1.0000, 0.9725, 0.9098, 1.0000),
 "post": Color(0.2471, 0.6627, 0.9608, 1.0000),
@@ -2269,7 +2270,7 @@ id = "lantern_river"
 display_name = "Lantern River"
 description = "Paper lanterns drifting downstream on quiet water."
 kind = "room"
-price = 3250
+price = 0
 palette = {
 "plaster": Color(0.2275, 0.2000, 0.3137, 1.0000),
 "post": Color(0.1098, 0.1020, 0.1804, 1.0000),
@@ -2294,6 +2295,7 @@ palette = {
 effect = "fireworks"
 layout = "lantern_river"
 rarity = "epic"
+showcase = "2027-02"
 
 [sub_resource type="Resource" id="room_castle"]
 script = ExtResource("5")
@@ -2301,7 +2303,7 @@ id = "castle"
 display_name = "Castle Keep"
 description = "Stone towers and banners snapping in the wind."
 kind = "room"
-price = 3500
+price = 17500
 palette = {
 "plaster": Color(0.9843, 0.9725, 0.9412, 1.0000),
 "post": Color(0.2902, 0.2039, 0.1569, 1.0000),
@@ -2325,10 +2327,330 @@ effect = "petals"
 layout = "castle"
 rarity = "epic"
 
+[sub_resource type="Resource" id="outfit_onigiri"]
+script = ExtResource("4")
+id = "onigiri"
+display_name = "Onigiri"
+description = "A rice-ball cap with a neat nori patch."
+price = 2200
+hood_color = Color(0.97, 0.95, 0.86, 1)
+style = "onigiri"
+rarity = "common"
+
+[sub_resource type="Resource" id="outfit_dumpling"]
+script = ExtResource("4")
+id = "dumpling"
+display_name = "Dumpling"
+description = "Soft folds and a just-steamed glow."
+price = 2200
+hood_color = Color(0.96, 0.86, 0.68, 1)
+style = "dumpling"
+rarity = "common"
+
+[sub_resource type="Resource" id="outfit_crab"]
+script = ExtResource("4")
+id = "crab"
+display_name = "Crab"
+description = "Tiny claws, very serious side-step."
+price = 2200
+hood_color = Color(0.88, 0.25, 0.20, 1)
+style = "crab"
+rarity = "common"
+
+[sub_resource type="Resource" id="outfit_ladybug"]
+script = ExtResource("4")
+id = "ladybug"
+display_name = "Ladybug"
+description = "A cheerful spotted shell for garden days."
+price = 2200
+hood_color = Color(0.91, 0.18, 0.20, 1)
+style = "ladybug"
+rarity = "common"
+
+[sub_resource type="Resource" id="outfit_snail"]
+script = ExtResource("4")
+id = "snail"
+display_name = "Snail"
+description = "A little shell, moving at its own pace."
+price = 2200
+hood_color = Color(0.54, 0.74, 0.35, 1)
+style = "snail"
+rarity = "common"
+
+[sub_resource type="Resource" id="outfit_tempura_shrimp"]
+script = ExtResource("4")
+id = "tempura_shrimp"
+display_name = "Tempura Shrimp"
+description = "Crisp curls and a golden crunch."
+price = 4250
+hood_color = Color(0.91, 0.51, 0.17, 1)
+style = "tempura_shrimp"
+rarity = "rare"
+
+[sub_resource type="Resource" id="outfit_pufferfish"]
+script = ExtResource("4")
+id = "pufferfish"
+display_name = "Pufferfish"
+description = "Round, prickly, and surprisingly polite."
+price = 4250
+hood_color = Color(0.95, 0.75, 0.19, 1)
+style = "pufferfish"
+rarity = "rare"
+
+[sub_resource type="Resource" id="outfit_hermit_crab"]
+script = ExtResource("4")
+id = "hermit_crab"
+display_name = "Hermit Crab"
+description = "A borrowed shell with a perfect fit."
+price = 0
+hood_color = Color(0.92, 0.45, 0.32, 1)
+style = "hermit_crab"
+crane_only = true
+rarity = "rare"
+
+[sub_resource type="Resource" id="outfit_firefly"]
+script = ExtResource("4")
+id = "firefly"
+display_name = "Firefly"
+description = "A warm little lantern for twilight tumbles."
+price = 0
+hood_color = Color(0.26, 0.47, 0.28, 1)
+style = "firefly"
+crane_only = true
+rarity = "rare"
+
+[sub_resource type="Resource" id="outfit_pumpkin"]
+script = ExtResource("4")
+id = "pumpkin"
+display_name = "Pumpkin"
+description = "A plump autumn cap, here for the harvest season."
+price = 4500
+hood_color = Color(0.95, 0.50, 0.12, 1)
+style = "pumpkin"
+rarity = "rare"
+
+[sub_resource type="Resource" id="outfit_snowman"]
+script = ExtResource("4")
+id = "snowman"
+display_name = "Snowman"
+description = "A frosty cap with a carrot-bright nose."
+price = 4500
+hood_color = Color(0.93, 0.97, 1, 1)
+style = "snowman"
+available = false
+rarity = "rare"
+
+[sub_resource type="Resource" id="outfit_firework"]
+script = ExtResource("4")
+id = "firework"
+display_name = "Firework"
+description = "A little night sky ready to burst into colour."
+price = 6000
+hood_color = Color(0.15, 0.22, 0.46, 1)
+style = "firework"
+rarity = "epic"
+
+[sub_resource type="Resource" id="outfit_ramen_bowl"]
+script = ExtResource("4")
+id = "ramen_bowl"
+display_name = "Ramen Bowl"
+description = "Noodles, broth, and a very cozy brim."
+price = 0
+hood_color = Color(0.95, 0.80, 0.55, 1)
+style = "ramen_bowl"
+rarity = "epic"
+showcase = "2027-01"
+
+[sub_resource type="Resource" id="outfit_narwhal"]
+script = ExtResource("4")
+id = "narwhal"
+display_name = "Narwhal"
+description = "A gentle sea-unicorn with a pearly horn."
+price = 6000
+hood_color = Color(0.45, 0.70, 0.90, 1)
+style = "narwhal"
+rarity = "epic"
+
+[sub_resource type="Resource" id="outfit_kraken_hatchling"]
+script = ExtResource("4")
+id = "kraken_hatchling"
+display_name = "Kraken Hatchling"
+description = "A tiny tentacle-cap from the glowiest depths."
+price = 0
+hood_color = Color(0.46, 0.26, 0.68, 1)
+style = "kraken_hatchling"
+crane_only = true
+rarity = "legendary"
+
+[sub_resource type="Resource" id="outfit_tsukumogami"]
+script = ExtResource("4")
+id = "tsukumogami"
+display_name = "Tsukumogami"
+description = "An old paper lantern, awake with friendly mischief."
+price = 0
+hood_color = Color(0.93, 0.56, 0.18, 1)
+style = "tsukumogami"
+crane_only = true
+rarity = "legendary"
+
+[sub_resource type="Resource" id="box_moss"]
+script = ExtResource("5")
+id = "moss"
+display_name = "Moss"
+description = "A soft green finish with a quiet forest feel."
+kind = "box"
+price = 3600
+palette = {"wood": Color(0.40, 0.60, 0.34, 1), "wood_dark": Color(0.23, 0.40, 0.23, 1), "wood_light": Color(0.58, 0.77, 0.42, 1), "stamp": Color(0.94, 0.86, 0.58, 1)}
+effect = "moss"
+rarity = "common"
+
+[sub_resource type="Resource" id="box_driftwood"]
+script = ExtResource("5")
+id = "driftwood"
+display_name = "Driftwood"
+description = "Sun-bleached wood washed smooth by the tide."
+kind = "box"
+price = 7000
+palette = {"wood": Color(0.61, 0.48, 0.35, 1), "wood_dark": Color(0.36, 0.27, 0.20, 1), "wood_light": Color(0.76, 0.64, 0.49, 1), "stamp": Color(0.28, 0.63, 0.71, 1)}
+effect = "driftwood"
+rarity = "rare"
+
+[sub_resource type="Resource" id="box_coral"]
+script = ExtResource("5")
+id = "coral"
+display_name = "Coral"
+description = "Warm reef colours for the sea-set collection."
+kind = "box"
+price = 9500
+palette = {"wood": Color(0.94, 0.39, 0.38, 1), "wood_dark": Color(0.59, 0.18, 0.25, 1), "wood_light": Color(1, 0.60, 0.48, 1), "stamp": Color(1, 0.87, 0.55, 1)}
+effect = "coral"
+rarity = "epic"
+
+[sub_resource type="Resource" id="box_pumpkin_patch"]
+script = ExtResource("5")
+id = "pumpkin_patch"
+display_name = "Pumpkin Patch"
+description = "A harvest-orange box for the autumn shop window."
+kind = "box"
+price = 7000
+palette = {"wood": Color(0.77, 0.31, 0.10, 1), "wood_dark": Color(0.35, 0.20, 0.10, 1), "wood_light": Color(0.96, 0.53, 0.15, 1), "stamp": Color(0.36, 0.58, 0.22, 1)}
+effect = "pumpkin_patch"
+rarity = "rare"
+
+[sub_resource type="Resource" id="box_snowdrift"]
+script = ExtResource("5")
+id = "snowdrift"
+display_name = "Snowdrift"
+description = "Pale blue timber tucked under fresh snow."
+kind = "box"
+price = 7000
+palette = {"wood": Color(0.69, 0.82, 0.90, 1), "wood_dark": Color(0.38, 0.55, 0.67, 1), "wood_light": Color(0.91, 0.97, 1, 1), "stamp": Color(0.40, 0.64, 0.84, 1)}
+available = false
+effect = "snowdrift"
+rarity = "rare"
+
+[sub_resource type="Resource" id="box_paper_lantern"]
+script = ExtResource("5")
+id = "paper_lantern"
+display_name = "Paper Lantern"
+description = "Festival red with a soft candlelit warmth."
+kind = "box"
+price = 9500
+palette = {"wood": Color(0.78, 0.16, 0.15, 1), "wood_dark": Color(0.31, 0.08, 0.10, 1), "wood_light": Color(0.96, 0.41, 0.27, 1), "stamp": Color(1, 0.83, 0.39, 1)}
+effect = "paper_lantern"
+rarity = "epic"
+
+[sub_resource type="Resource" id="box_abyss"]
+script = ExtResource("5")
+id = "abyss"
+display_name = "Abyss"
+description = "Deep-sea blue, scattered with bioluminescent life."
+kind = "box"
+price = 0
+palette = {"wood": Color(0.04, 0.14, 0.25, 1), "wood_dark": Color(0.02, 0.06, 0.13, 1), "wood_light": Color(0.07, 0.25, 0.36, 1), "stamp": Color(0.23, 0.89, 0.85, 1)}
+effect = "abyss"
+crane_only = true
+rarity = "legendary"
+
+[sub_resource type="Resource" id="box_starforge"]
+script = ExtResource("5")
+id = "starforge"
+display_name = "Starforge"
+description = "Molten metal flecked with fresh-forged stardust."
+kind = "box"
+price = 0
+palette = {"wood": Color(0.18, 0.16, 0.20, 1), "wood_dark": Color(0.05, 0.04, 0.07, 1), "wood_light": Color(0.38, 0.24, 0.18, 1), "stamp": Color(1, 0.72, 0.27, 1)}
+effect = "starforge"
+crane_only = true
+rarity = "legendary"
+
+[sub_resource type="Resource" id="room_seaside_town"]
+script = ExtResource("5")
+id = "seaside_town"
+display_name = "Tidepool Town"
+description = "An original sunny undersea town of coral homes and kelp gardens."
+kind = "room"
+price = 0
+palette = {"plaster": Color(0.74, 0.92, 0.95, 1), "post": Color(0.15, 0.45, 0.52, 1), "wood": Color(0.93, 0.70, 0.42, 1), "wood_deep": Color(0.52, 0.32, 0.24, 1), "paper": Color(1, 0.94, 0.78, 1), "noren": Color(0.95, 0.45, 0.40, 1), "lantern": Color(1, 0.88, 0.52, 1), "floor": Color(0.85, 0.88, 0.78, 1), "floor_line": Color(0.68, 0.74, 0.64, 1), "hills": Color(0.17, 0.54, 0.60, 1), "background": Color(0.10, 0.52, 0.66, 1), "ambient": Color(0.44, 0.86, 0.96, 1), "sun": Color(0.82, 1, 0.98, 1), "sun_energy": 0.82, "ambient_energy": 0.52}
+effect = "bubbles"
+layout = "seaside_town"
+crane_only = true
+rarity = "legendary"
+
+[sub_resource type="Resource" id="outfit_opening_day"]
+script = ExtResource("4")
+price = 0
+id = "opening_day"
+display_name = "Opening Day"
+description = "Pulled the kusudama open on Kinu Tumble's very first day. Confetti everywhere!"
+hood_color = Color(0.9529, 0.3882, 0.3294, 1.0000)
+style = "opening_day"
+rarity = "legendary"
+event = "grand_opening"
+
+[sub_resource type="Resource" id="box_first_edition"]
+script = ExtResource("5")
+id = "first_edition"
+display_name = "First Edition"
+description = "White lacquer and gold, tied with the opening-day ribbon. Number one of one."
+kind = "box"
+price = 0
+palette = {
+"wood": Color(0.9725, 0.9490, 0.9098, 1.0000),
+"wood_dark": Color(0.7843, 0.2157, 0.2275, 1.0000),
+"wood_light": Color(1.0000, 0.9804, 0.9490, 1.0000),
+"stamp": Color(0.9608, 0.7569, 0.3059, 1.0000),
+"stamp_mark": Color(0.7843, 0.2157, 0.2275, 1.0000),
+"ribbon": Color(0.8471, 0.2510, 0.2471, 1.0000)
+}
+effect = "first_edition"
+rarity = "legendary"
+event = "grand_opening"
+
+[sub_resource type="Resource" id="room_grand_opening"]
+script = ExtResource("5")
+id = "grand_opening"
+display_name = "Grand Opening"
+description = "The tofu shop on its very first day, with flowers from well-wishers and confetti in the air."
+kind = "room"
+price = 0
+palette = {
+"plaster": Color(1.0000, 0.9569, 0.8863, 1.0000),
+"noren": Color(0.8471, 0.2510, 0.2471, 1.0000),
+"lantern": Color(0.9255, 0.2902, 0.2353, 1.0000),
+"background": Color(1.0000, 0.8902, 0.7216, 1.0000),
+"ambient": Color(1.0000, 0.9451, 0.8627, 1.0000),
+"sun": Color(1.0000, 0.9569, 0.8863, 1.0000)
+}
+effect = "confetti"
+layout = "grand_opening"
+rarity = "legendary"
+event = "grand_opening"
+
 [resource]
 script = ExtResource("1")
 shapes = Array[ExtResource("2")]([SubResource("shape_block"), SubResource("shape_slab"), SubResource("shape_long"), SubResource("shape_tall"), SubResource("shape_ball")])
 flavours = Array[ExtResource("3")]([SubResource("flavour_silken"), SubResource("flavour_fried"), SubResource("flavour_sesame"), SubResource("flavour_matcha"), SubResource("flavour_sakura"), SubResource("flavour_tamago"), SubResource("flavour_kinako"), SubResource("flavour_yuzu"), SubResource("flavour_ume"), SubResource("flavour_mango"), SubResource("flavour_hojicha"), SubResource("flavour_blueberry"), SubResource("flavour_wasabi"), SubResource("flavour_mint"), SubResource("flavour_onigiri"), SubResource("flavour_ube"), SubResource("flavour_azuki"), SubResource("flavour_chocolate"), SubResource("flavour_kabocha"), SubResource("flavour_jelly"), SubResource("flavour_ramune"), SubResource("flavour_hanabi")])
 finishes = Array[ExtResource("3")]([SubResource("flavour_wood"), SubResource("flavour_marble"), SubResource("flavour_gold"), SubResource("flavour_crystal"), SubResource("flavour_galaxy")])
-outfits = Array[ExtResource("4")]([SubResource("outfit_leaf"), SubResource("outfit_frog"), SubResource("outfit_bunny"), SubResource("outfit_fox"), SubResource("outfit_tanuki"), SubResource("outfit_bat"), SubResource("outfit_strawberry"), SubResource("outfit_panda"), SubResource("outfit_ghost"), SubResource("outfit_ninja"), SubResource("outfit_dino"), SubResource("outfit_tiger"), SubResource("outfit_pirate"), SubResource("outfit_dragon"), SubResource("outfit_shark"), SubResource("outfit_astronaut"), SubResource("outfit_hatchling"), SubResource("outfit_parcel"), SubResource("outfit_onsen"), SubResource("outfit_nigiri"), SubResource("outfit_bee"), SubResource("outfit_daruma"), SubResource("outfit_tako"), SubResource("outfit_kappa"), SubResource("outfit_kitsune"), SubResource("outfit_phoenix"), SubResource("outfit_unicorn"), SubResource("outfit_maneki"), SubResource("outfit_samurai"), SubResource("outfit_koi"), SubResource("outfit_axolotl"), SubResource("outfit_kimono"), SubResource("outfit_oni"), SubResource("outfit_capybara"), SubResource("outfit_chick"), SubResource("outfit_shiba"), SubResource("outfit_calico"), SubResource("outfit_bear_cub"), SubResource("outfit_hamster"), SubResource("outfit_penguin"), SubResource("outfit_duckling"), SubResource("outfit_seal"), SubResource("outfit_otter"), SubResource("outfit_red_panda"), SubResource("outfit_mushroom"), SubResource("outfit_peach"), SubResource("outfit_lemon"), SubResource("outfit_cupcake"), SubResource("outfit_pudding"), SubResource("outfit_boba"), SubResource("outfit_melonpan"), SubResource("outfit_donut"), SubResource("outfit_marshmallow"), SubResource("outfit_taiyaki"), SubResource("outfit_cloud"), SubResource("outfit_star"), SubResource("outfit_moon"), SubResource("outfit_sunflower"), SubResource("outfit_daisy"), SubResource("outfit_sailor"), SubResource("outfit_raincoat"), SubResource("outfit_overalls"), SubResource("outfit_artist"), SubResource("outfit_sleepy_cap"), SubResource("outfit_magical_girl"), SubResource("outfit_moon_princess"), SubResource("outfit_candy_witch"), SubResource("outfit_celestial_bunny"), SubResource("outfit_sakura_deer"), SubResource("outfit_royal_frog"), SubResource("outfit_pastel_dragon"), SubResource("outfit_snow_fox"), SubResource("outfit_jellyfish"), SubResource("outfit_fairy"), SubResource("outfit_builder"), SubResource("outfit_acrobat"), SubResource("outfit_chef"), SubResource("outfit_yukata"), SubResource("outfit_climber"), SubResource("outfit_lucky_charm"), SubResource("outfit_jelly_cube"), SubResource("outfit_rose_delight"), SubResource("outfit_chocolate_square"), SubResource("outfit_burger"), SubResource("outfit_snack_box"), SubResource("outfit_sea_sponge"), SubResource("outfit_bread_loaf"), SubResource("outfit_pattern_wood"), SubResource("outfit_pattern_marble"), SubResource("outfit_pattern_crystal"), SubResource("outfit_pattern_galaxy"), SubResource("outfit_pattern_gold")])
-decor = Array[ExtResource("5")]([SubResource("box_hinoki"), SubResource("box_wicker"), SubResource("box_bamboo"), SubResource("box_candy"), SubResource("box_gift"), SubResource("box_lacquer"), SubResource("box_sakura"), SubResource("box_stone"), SubResource("box_jubako"), SubResource("box_ice"), SubResource("box_neon"), SubResource("box_goldbox"), SubResource("box_kintsugi"), SubResource("box_treasure"), SubResource("box_geode"), SubResource("box_gachapon"), SubResource("box_taiko"), SubResource("box_shortcake"), SubResource("box_starry"), SubResource("box_koi_pond"), SubResource("box_cloud"), SubResource("box_raden"), SubResource("room_shop"), SubResource("room_bamboo_grove"), SubResource("room_night"), SubResource("room_autumn_temple"), SubResource("room_winter"), SubResource("room_onsen"), SubResource("room_sakura_street"), SubResource("room_festival"), SubResource("room_moon_viewing"), SubResource("room_neon_alley"), SubResource("room_arcade"), SubResource("room_dragon_palace"), SubResource("room_moon_base"), SubResource("room_sky_shrine"), SubResource("room_tea_fields"), SubResource("room_sweets"), SubResource("room_aurora"), SubResource("room_beach"), SubResource("room_lantern_river"), SubResource("room_castle")])
+outfits = Array[ExtResource("4")]([SubResource("outfit_leaf"), SubResource("outfit_frog"), SubResource("outfit_bunny"), SubResource("outfit_fox"), SubResource("outfit_tanuki"), SubResource("outfit_bat"), SubResource("outfit_strawberry"), SubResource("outfit_panda"), SubResource("outfit_ghost"), SubResource("outfit_ninja"), SubResource("outfit_dino"), SubResource("outfit_tiger"), SubResource("outfit_pirate"), SubResource("outfit_dragon"), SubResource("outfit_shark"), SubResource("outfit_astronaut"), SubResource("outfit_hatchling"), SubResource("outfit_parcel"), SubResource("outfit_onsen"), SubResource("outfit_nigiri"), SubResource("outfit_bee"), SubResource("outfit_daruma"), SubResource("outfit_tako"), SubResource("outfit_kappa"), SubResource("outfit_kitsune"), SubResource("outfit_phoenix"), SubResource("outfit_unicorn"), SubResource("outfit_maneki"), SubResource("outfit_samurai"), SubResource("outfit_koi"), SubResource("outfit_axolotl"), SubResource("outfit_kimono"), SubResource("outfit_oni"), SubResource("outfit_capybara"), SubResource("outfit_chick"), SubResource("outfit_shiba"), SubResource("outfit_calico"), SubResource("outfit_bear_cub"), SubResource("outfit_hamster"), SubResource("outfit_penguin"), SubResource("outfit_duckling"), SubResource("outfit_seal"), SubResource("outfit_otter"), SubResource("outfit_red_panda"), SubResource("outfit_mushroom"), SubResource("outfit_peach"), SubResource("outfit_lemon"), SubResource("outfit_cupcake"), SubResource("outfit_pudding"), SubResource("outfit_boba"), SubResource("outfit_melonpan"), SubResource("outfit_donut"), SubResource("outfit_marshmallow"), SubResource("outfit_taiyaki"), SubResource("outfit_cloud"), SubResource("outfit_star"), SubResource("outfit_moon"), SubResource("outfit_sunflower"), SubResource("outfit_daisy"), SubResource("outfit_sailor"), SubResource("outfit_raincoat"), SubResource("outfit_overalls"), SubResource("outfit_artist"), SubResource("outfit_sleepy_cap"), SubResource("outfit_magical_girl"), SubResource("outfit_moon_princess"), SubResource("outfit_candy_witch"), SubResource("outfit_celestial_bunny"), SubResource("outfit_sakura_deer"), SubResource("outfit_royal_frog"), SubResource("outfit_pastel_dragon"), SubResource("outfit_snow_fox"), SubResource("outfit_jellyfish"), SubResource("outfit_fairy"), SubResource("outfit_builder"), SubResource("outfit_acrobat"), SubResource("outfit_chef"), SubResource("outfit_yukata"), SubResource("outfit_climber"), SubResource("outfit_lucky_charm"), SubResource("outfit_jelly_cube"), SubResource("outfit_rose_delight"), SubResource("outfit_chocolate_square"), SubResource("outfit_burger"), SubResource("outfit_snack_box"), SubResource("outfit_sea_sponge"), SubResource("outfit_bread_loaf"), SubResource("outfit_onigiri"), SubResource("outfit_dumpling"), SubResource("outfit_crab"), SubResource("outfit_ladybug"), SubResource("outfit_snail"), SubResource("outfit_tempura_shrimp"), SubResource("outfit_pufferfish"), SubResource("outfit_hermit_crab"), SubResource("outfit_firefly"), SubResource("outfit_pumpkin"), SubResource("outfit_snowman"), SubResource("outfit_firework"), SubResource("outfit_ramen_bowl"), SubResource("outfit_narwhal"), SubResource("outfit_kraken_hatchling"), SubResource("outfit_tsukumogami"), SubResource("outfit_opening_day"), SubResource("outfit_pattern_wood"), SubResource("outfit_pattern_marble"), SubResource("outfit_pattern_crystal"), SubResource("outfit_pattern_galaxy"), SubResource("outfit_pattern_gold")])
+decor = Array[ExtResource("5")]([SubResource("box_hinoki"), SubResource("box_wicker"), SubResource("box_bamboo"), SubResource("box_candy"), SubResource("box_gift"), SubResource("box_lacquer"), SubResource("box_sakura"), SubResource("box_stone"), SubResource("box_jubako"), SubResource("box_ice"), SubResource("box_neon"), SubResource("box_goldbox"), SubResource("box_kintsugi"), SubResource("box_treasure"), SubResource("box_geode"), SubResource("box_gachapon"), SubResource("box_taiko"), SubResource("box_shortcake"), SubResource("box_starry"), SubResource("box_koi_pond"), SubResource("box_cloud"), SubResource("box_raden"), SubResource("box_moss"), SubResource("box_driftwood"), SubResource("box_coral"), SubResource("box_pumpkin_patch"), SubResource("box_snowdrift"), SubResource("box_paper_lantern"), SubResource("box_abyss"), SubResource("box_starforge"), SubResource("box_first_edition"), SubResource("room_shop"), SubResource("room_bamboo_grove"), SubResource("room_night"), SubResource("room_autumn_temple"), SubResource("room_winter"), SubResource("room_onsen"), SubResource("room_sakura_street"), SubResource("room_festival"), SubResource("room_moon_viewing"), SubResource("room_neon_alley"), SubResource("room_arcade"), SubResource("room_dragon_palace"), SubResource("room_moon_base"), SubResource("room_sky_shrine"), SubResource("room_tea_fields"), SubResource("room_sweets"), SubResource("room_aurora"), SubResource("room_beach"), SubResource("room_lantern_river"), SubResource("room_castle"), SubResource("room_seaside_town"), SubResource("room_grand_opening")])

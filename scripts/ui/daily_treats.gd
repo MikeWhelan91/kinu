@@ -73,9 +73,9 @@ static func amount_text(index: int) -> String:
 static func headline_text(index: int) -> String:
 	var reward: Dictionary = DailyCalendar.REWARDS[index]
 	if str(reward.kind) == "beans":
-		return "+%d BEANS" % int(reward.amount)
+		return NestTheme.t("+%d BEANS") % int(reward.amount)
 	if str(reward.kind) == "tickets":
-		return "%d CLAW TICKET%s" % [int(reward.amount), "" if int(reward.amount) == 1 else "S"]
+		return NestTheme.t("1 CLAW TICKET") if int(reward.amount) == 1 else NestTheme.t("%d CLAW TICKETS") % int(reward.amount)
 	return "CLAW TREASURE"
 
 static func icon_for(index: int, reach: float) -> Control:
@@ -191,7 +191,7 @@ func _streak(stack: Node, current: int, checked: int) -> void:
 		pip.lit = index < checked
 		pip.live = index == current
 		pips.add_child(pip)
-	caption(stack, "DAY %d OF 7" % mini(7, (checked+1) if current >= 0 else maxi(1, checked)), 15, GOLD)
+	caption(stack, NestTheme.t("DAY %d OF 7") % mini(7, (checked+1) if current >= 0 else maxi(1, checked)), 15, GOLD)
 
 ## Today's prize, lit from behind and never quite still.
 func _spotlight(app: Node, stack: Node, current: int, checked: int) -> void:
@@ -256,7 +256,7 @@ func _day_card(parent: Node, index: int, current: int, checked: int) -> void:
 	body.add_theme_constant_override("separation", 1)
 	card.add_child(body)
 	var ink := NestTheme.INK if live else (DONE_INK if done else Color("e4d2f5"))
-	caption(body, "DAY %d" % (index+1), 12, ink)
+	caption(body, NestTheme.t("DAY %d") % (index+1), 12, ink)
 	var icon_row := CenterContainer.new()
 	icon_row.custom_minimum_size.y = 28
 	body.add_child(icon_row)
@@ -325,14 +325,14 @@ func _countdown(app: Node, stack: Node) -> void:
 	body.add_theme_constant_override("separation", 0)
 	card.add_child(body)
 	caption(body, "NEXT TREAT IN", 12, Color("d9c2ef"))
-	var clock := caption(body, DailyCalendar.countdown_text().replace("Next treat in ", ""), 30, GOLD_BRIGHT)
+	var clock := caption(body, DailyCalendar.countdown_clock(), 30, GOLD_BRIGHT)
 	var timer := Timer.new()
 	timer.wait_time = 1.0
 	timer.timeout.connect(func() -> void:
 		if DailyCalendar.ready():
 			DailyCalendar.show(app)
 		else:
-			clock.text = DailyCalendar.countdown_text().replace("Next treat in ", ""))
+			clock.text = DailyCalendar.countdown_clock())
 	add_child(timer)
 	timer.start()
 
@@ -354,28 +354,58 @@ class DailyBean extends Control:
 		draw_circle(c+Vector2(-size.x*.17, -size.y*.14), size.y*.075, Color(1, 1, 1, .8))
 
 class MysteryGift extends Control:
-	## The Day 7 stand-in on the strip: a wrapped box, since the real prize is a surprise.
+	## The Day 7 stand-in on the strip and the treat's rail button: a wrapped present, since the
+	## real prize is a surprise. Inked like everything else, so it holds up at any size.
+	const PAPER := Color("ff6fa5")
+	const LID := Color("ff8dba")
+	const RIBBON := Color("ffd166")
 	func _init(reach: float = 24.0) -> void:
 		custom_minimum_size = Vector2(reach, reach)
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	func _draw() -> void:
 		if size.x <= 0.0 or size.y <= 0.0:
 			return
-		var body := Rect2(Vector2(size.x*.12, size.y*.36), Vector2(size.x*.76, size.y*.54))
-		var box := StyleBoxFlat.new()
-		box.bg_color = Color("ff6fa5")
-		box.border_color = NestTheme.INK
-		box.set_border_width_all(2)
-		box.set_corner_radius_all(maxi(2, int(size.y*.10)))
-		box.anti_aliasing = true
-		draw_style_box(box, body)
-		draw_rect(Rect2(Vector2(size.x*.43, body.position.y), Vector2(size.x*.14, body.size.y)), Color("ffe08a"))
+		var s := minf(size.x, size.y)
+		var o := (size-Vector2(s, s))*.5
+		var ink := maxf(1.5, s*.05)
+		var body := Rect2(o+Vector2(s*.16, s*.46), Vector2(s*.68, s*.44))
+		var lid := Rect2(o+Vector2(s*.10, s*.34), Vector2(s*.80, s*.16))
+		var band := s*.14
+		_block(body, PAPER, ink, s*.06)
+		_band(Rect2(Vector2(o.x+s*.5-band*.5, body.position.y+ink*.5), Vector2(band, body.size.y-ink)), ink)
+		_block(lid, LID, ink, s*.05)
+		_band(Rect2(Vector2(o.x+s*.5-band*.5, lid.position.y+ink*.5), Vector2(band, lid.size.y-ink)), ink)
+		# Two loops tipped out from the knot, then the knot over their ends.
+		var knot := o+Vector2(s*.5, s*.33)
 		for side in [-1.0, 1.0]:
-			draw_colored_polygon(PackedVector2Array([
-				Vector2(size.x*.5, size.y*.37),
-				Vector2(size.x*(.5+side*.3), size.y*.14),
-				Vector2(size.x*(.5+side*.32), size.y*.36)]), Color("ffe08a"))
-		draw_circle(Vector2(size.x*.5, size.y*.34), maxf(2.0, size.y*.09), Color("fff4df"))
+			_loop(knot+Vector2(side*s*.16, -s*.07), s*.17, s*.10, side*-.45, ink)
+		draw_circle(knot, s*.075+ink*.5, NestTheme.INK)
+		draw_circle(knot, s*.075-ink*.4, RIBBON)
+	## A rounded, ink-bordered panel.
+	func _block(rect: Rect2, fill: Color, ink: float, radius: float) -> void:
+		var style := StyleBoxFlat.new()
+		style.bg_color = fill
+		style.border_color = NestTheme.INK
+		style.set_border_width_all(int(round(ink)))
+		style.set_corner_radius_all(maxi(2, int(radius)))
+		style.anti_aliasing = true
+		draw_style_box(style, rect)
+	## The ribbon running down a panel, inked along both edges.
+	func _band(rect: Rect2, ink: float) -> void:
+		draw_rect(rect, RIBBON)
+		draw_line(rect.position, rect.position+Vector2(0, rect.size.y), NestTheme.INK, ink*.8, true)
+		draw_line(rect.position+Vector2(rect.size.x, 0), rect.end, NestTheme.INK, ink*.8, true)
+	## One loop of the bow: an inked ellipse turned by `tilt`.
+	func _loop(center: Vector2, rx: float, ry: float, tilt: float, ink: float) -> void:
+		var points := PackedVector2Array()
+		for i in 24:
+			var a := TAU*i/24.0
+			points.append(center+Vector2(cos(a)*rx, sin(a)*ry).rotated(tilt))
+		draw_colored_polygon(points, RIBBON)
+		points.append(points[0])
+		draw_polyline(points, NestTheme.INK, ink, true)
+		# The fold inside the loop.
+		draw_arc(center, minf(rx, ry)*.45, 0, TAU, 16, Color(NestTheme.INK, .55), ink*.6, true)
 
 class Pip extends Control:
 	## One notch of the streak bar; the live notch keeps blinking until the treat is taken.
@@ -458,13 +488,15 @@ class Bob extends CenterContainer:
 	## A gentle tilt and swell on the spotlit prize. Containers reset a child's position and size
 	## every layout pass but leave rotation and scale alone, so the drift rides on those.
 	var _time := 0.0
+	## Multiplies the swell, so a reveal can grow the prize in from nothing.
+	var pop := 1.0
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	func _process(delta: float) -> void:
 		_time += delta
 		pivot_offset = size*.5
 		rotation = sin(_time*1.4)*.08
-		scale = Vector2.ONE*(1.0+.045*sin(_time*2.3))
+		scale = Vector2.ONE*maxf(.001, pop*(1.0+.045*sin(_time*2.3)))
 
 class Sparkles extends Control:
 	## Slow drifting glints over the whole sheet, the way a prize cabinet catches the light.

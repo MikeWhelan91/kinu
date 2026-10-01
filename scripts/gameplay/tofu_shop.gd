@@ -19,8 +19,18 @@ const PAPER := Color("fff8e8")
 const INDIGO := Color("3a5aa8")
 const LANTERN := Color("ec4a3c")
 
+## Room layouts built as the shop interior rather than outdoor scenery. "grand_opening" is the
+## same shop dressed for its first day.
+const INTERIORS := ["", "grand_opening"]
+
 ## The equipped room theme. Null uses the default tofu-shop palette.
 var decor: KinuDecor
+## Built for Kinu Toss: the room is built with a lane cut through it behind the counter, so nothing
+## stands in the throw or pokes through the long table. Works for any room, since it only needs
+## to know where the lane is.
+var lane: bool = false
+## The Toss lane, from the back of the counter to just short of the far wall, above the floor.
+const LANE := AABB(Vector3(-4.4, -COUNTER_HEIGHT+.2, -13.8), Vector3(8.8, 14.0, 13.8-COUNTER_HALF))
 var steam: Array[MeshInstance3D] = []
 var particles: Array[Dictionary] = []
 
@@ -62,9 +72,14 @@ func _ready() -> void:
 	add_child(sun)
 	add_child(_counter())
 	var layout := decor.layout if decor else ""
-	add_child(_room() if layout == "" else RoomScenery.build(self, layout))
+	if lane:
+		MeshKit.cull_zone = LANE
+		MeshKit.cull_turn = 0.0
+	add_child(_room() if layout in INTERIORS else RoomScenery.build(self, layout))
+	MeshKit.cull_zone = AABB()
+	MeshKit.cull_turn = 0.0
 	_counter_collision()
-	if layout == "":
+	if layout in INTERIORS:
 		_build_steam()
 	_build_particles(decor.effect if decor else "")
 
@@ -144,7 +159,92 @@ func _room() -> Node3D:
 		(lantern_node.get_node("Fill") as MeshInstance3D).material_override = glow
 	add_child(lantern_node)
 	_stove(kit, Vector3(-9.5, floor_y, -9.5))
+	if decor and decor.layout == "grand_opening":
+		_grand_opening(kit)
 	return kit.build(.06, false)
+
+## Opening day: a red-and-white kohaku curtain round the lower walls, bunting between the posts,
+## hanawa flower stands from well-wishers along the walls, and a split kusudama over the door with
+## its banner hanging down.
+func _grand_opening(kit: MeshKit) -> void:
+	var floor_y := -COUNTER_HEIGHT
+	var red := Color("d8403f")
+	var white := Color("fff7ec")
+	var gold := Color("f5c14e")
+	var flags := [red, white, Color("ffd84d"), Color("7fd4e8"), Color("ff8fb1"), Color("9ccc5a")]
+	for side in 4:
+		var angle := side*PI*.5
+		var basis := Basis(Vector3.UP, angle)
+		var rotation := Vector3(0, angle, 0)
+		var at := func(x: float, y: float, inset: float) -> Vector3:
+			return basis*Vector3(x, floor_y+y, -ROOM_HALF+inset)
+		# Kohaku maku over the wainscot, gathered under a braided cord with tassels.
+		kit.add_rounded_box(at.call(0.0, 1.7, .3), Vector3(ROOM_HALF*2-.6, 3.1, .06), red, rotation, false, 10.0)
+		for stripe in 10:
+			kit.add_rounded_box(at.call(-ROOM_HALF+1.5+stripe*3.0, 1.7, .36), Vector3(1.5, 3.1, .06), white, rotation, false, 10.0)
+		kit.add_rounded_box(at.call(0.0, 3.3, .42), Vector3(ROOM_HALF*2-.6, .18, .18), Color("2b1a17"), rotation, true, 10.0)
+		for tassel in 5:
+			var x := -ROOM_HALF+3.0+tassel*6.0
+			kit.add("sphere", at.call(x, 3.2, .5), Vector3(.34, .3, .34), gold)
+			kit.add("cone", at.call(x, 2.72, .5), Vector3(.34, .8, .34), red, Vector3(PI, 0, 0))
+		# Bunting: a swag of flags between each pair of posts, under the top beam.
+		for swag in 5:
+			var from := -ROOM_HALF+swag*6.0+.4
+			for flag in 7:
+				var t := (flag+.5)/7.0
+				var sag := sin(t*PI)*.9
+				var tone: Color = flags[(flag+swag*2) % flags.size()]
+				kit.add("cone", at.call(from+t*5.2, 8.9-sag, .6), Vector3(.62, .7, .06), tone, rotation+Vector3(0, 0, PI), false)
+			for knot in 8:
+				var t := knot/7.0
+				kit.add("bead", at.call(from+t*5.2, 9.3-sin(t*PI)*.9, .6), Vector3(.1, .1, .1), Color("2b1a17"), Vector3.ZERO, false)
+		# Hanawa from well-wishers, standing in front of the walls either side of the middle.
+		for x in [-9.0, 9.0]:
+			if side == 0 or (side == 1 and x < 0) or (side == 2 and x > 0) or side == 3:
+				_hanawa(kit, at.call(x, 0.0, 2.2), rotation, flags[(side+int(x > 0)) % 3 + 2])
+	# The ceremonial kusudama over the door, split open with its banner unrolled beneath.
+	var over := Vector3(0, floor_y+13.4, -ROOM_HALF+1.4)
+	var r := .9
+	var open := .6
+	kit.add("cylinder", over+Vector3(0, r+1.3, 0), Vector3(.06, 2.6, .06), Color("2b1a17"), Vector3.ZERO, false)
+	for s in [-1.0, 1.0]:
+		# Hinged at the top: each half swings out and down, its open face turned to the floor.
+		var roll: float = -s*(PI*.5-open)
+		var base: Vector3 = over+Vector3(s*r*sin(open), r*(1.0-cos(open)), 0)
+		kit.add("dome", base, Vector3.ONE*r*2, gold, Vector3(0, 0, roll))
+		kit.add("cylinder", base+Basis.from_euler(Vector3(0, 0, roll))*Vector3.DOWN*.03, Vector3(r*1.8, .04, r*1.8), red, Vector3(0, 0, roll), false)
+	# The unrolled banner stops above the door's beam, so the noren stays in full view. It carries
+	# the shop's own mark: a white tofu square on a red disc.
+	kit.add_rounded_box(over+Vector3(0, -1.95, .1), Vector3(1.5, 2.9, .06), white, Vector3.ZERO, true, 10.0)
+	for edge in [-1.0, 1.0]:
+		kit.add_rounded_box(over+Vector3(edge*.62, -1.95, .15), Vector3(.14, 2.9, .04), red, Vector3.ZERO, false, 10.0)
+	kit.add("cylinder", over+Vector3(0, -1.7, .16), Vector3(.8, .04, .8), red, Vector3(PI*.5, 0, 0), false)
+	kit.add_rounded_box(over+Vector3(0, -1.7, .2), Vector3(.34, .34, .04), white, Vector3.ZERO, false, 8.0)
+	for streamer in 6:
+		var x := (streamer-2.5)*.34
+		kit.add_rounded_box(over+Vector3(x, -1.0-fmod(streamer*.7, .5), -.1), Vector3(.12, 1.6+fmod(streamer*.9, .6), .03), flags[streamer % flags.size()], Vector3(0, 0, x*.2), false, 4.0)
+
+## A hanawa: a tall round wreath of paper flowers on a tripod, sent to wish a new shop well.
+func _hanawa(kit: MeshKit, base: Vector3, rotation: Vector3, tone: Color) -> void:
+	var basis := Basis.from_euler(rotation)
+	var up := Vector3.UP
+	for leg in [-1.0, 1.0]:
+		kit.add("cylinder", base+basis*Vector3(leg*.55, 2.1, 0), Vector3(.1, 4.3, .1), Color("8a5532"), rotation+Vector3(0, 0, leg*.12))
+	kit.add("cylinder", base+basis*Vector3(0, 1.9, -.5), Vector3(.1, 3.9, .1), Color("8a5532"), rotation+Vector3(-.25, 0, 0))
+	var middle := base+up*5.0
+	var petals := [tone, Color("fff7ec"), tone.lightened(.3), Color("ffd84d")]
+	for ring in 2:
+		var radius := 1.25-ring*.55
+		var count := 16-ring*6
+		for i in count:
+			var a := TAU*i/count
+			kit.add("fine", middle+basis*Vector3(cos(a)*radius, sin(a)*radius, .1+ring*.12), Vector3.ONE*(.62-ring*.08), petals[(i+ring) % petals.size()])
+	kit.add("cylinder", middle+basis*Vector3(0, 0, .28), Vector3(.9, .06, .9), Color("fff7ec"), rotation+Vector3(PI*.5, 0, 0))
+	kit.add("sphere", middle+basis*Vector3(0, 0, .33), Vector3(.42, .42, .08), Color("d8403f"), rotation, false)
+	# The tall card naming the sender hangs below the wreath.
+	kit.add_rounded_box(base+basis*Vector3(0, 2.6, .12), Vector3(.5, 2.8, .06), Color("fff7ec"), rotation, true, 10.0)
+	for tail in [-1.0, 1.0]:
+		kit.add_rounded_box(base+basis*Vector3(tail*.5, 3.6, .2), Vector3(.16, 1.8, .03), Color("d8403f"), rotation+Vector3(0, 0, tail*.15), false, 4.0)
 
 func _shoji(kit: MeshKit, at: Callable, rotation: Vector3, x: float) -> void:
 	kit.add_rounded_box(at.call(x, 6.2, .2), Vector3(5.2, 5.6, .1), _c("paper", PAPER), rotation, true, 10.0)

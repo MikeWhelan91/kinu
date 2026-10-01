@@ -40,6 +40,8 @@ const CHUTE_CLEAR := .35
 const CLOSED := .14
 const OPEN := -.62
 const GRIP := Vector3(0, -.66, 0)
+## The finger hinges sit outside a capsule's .46 radius. Their hooked tips curl onto its sides.
+const FINGER_SPREAD := .66
 
 const SOFT_GLASS := preload("res://resources/shaders/toon_glass_soft.gdshader")
 const PINK := Color("b9a6f0")
@@ -368,6 +370,13 @@ func _build_claw() -> void:
 	kit.add("cone", Vector3(0, .35, 0), Vector3(.5, .3, .5), CHROME.darkened(.08))
 	kit.add("torus", Vector3(0, -.08, 0), Vector3(.7, .5, .7), KinuModel.GOLD, Vector3.ZERO, false)
 	kit.add("sphere", Vector3(0, -.14, 0), Vector3(.26, .16, .26), CHROME.darkened(.18))
+	# Bridge the wider finger hinges back to the head. Without these, the prongs
+	# clear the capsule but look as if they float beside the claw.
+	for i in 3:
+		var angle := TAU*i/3.0
+		var axis := Basis(Vector3.UP, angle)
+		kit.add_rounded_box(axis*Vector3(0, -.12, FINGER_SPREAD*.62), Vector3(.13, .13, FINGER_SPREAD*.9), CHROME, Vector3(0, angle, 0), true, 6)
+		kit.add("sphere", axis*Vector3(0, -.12, FINGER_SPREAD), Vector3.ONE*.13, KinuModel.GOLD)
 	claw.add_child(_shiny(kit.build(.025)))
 	var light := MeshInstance3D.new()
 	var bead := SphereMesh.new()
@@ -384,7 +393,7 @@ func _build_claw() -> void:
 	for i in 3:
 		var pivot := Node3D.new()
 		pivot.rotation.y = TAU*i/3.0
-		pivot.position = Basis(Vector3.UP, TAU*i/3.0)*Vector3(0, -.12, .2)
+		pivot.position = Basis(Vector3.UP, TAU*i/3.0)*Vector3(0, -.12, FINGER_SPREAD)
 		claw.add_child(pivot)
 		var finger := Node3D.new()
 		finger.rotation.x = CLOSED
@@ -650,7 +659,9 @@ func drop() -> void:
 	var capsule := _nearest_capsule()
 	if capsule == null:
 		capsule = _spawn_capsule(claw.position-Vector3(0, 2.0, 0))
-	var reach := Vector3(lerpf(claw.position.x, capsule.position.x, .85), capsule.position.y-GRIP.y+.06, lerpf(claw.position.z, capsule.position.z, .85))
+	# Centre the open fingers over the selected capsule before closing. The old partial
+	# travel made the ball slide through a prong during the grab.
+	var reach := Vector3(capsule.position.x, capsule.position.y-GRIP.y+.06, capsule.position.z)
 	var lower := create_tween()
 	lower.tween_property(claw, "position", reach, .95).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_motor_auto = true

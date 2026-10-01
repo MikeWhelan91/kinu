@@ -1472,6 +1472,25 @@ function TextInspector({
         <button className={layer.italic ? "on" : ""} onClick={() => patch({ italic: !layer.italic })} title="Italic"><i style={{ fontStyle: "italic" }}>I</i></button>
         <button className={layer.rule ? "on" : ""} onClick={() => patch({ rule: !layer.rule })} title="Small dash before the text">▬</button>
       </div>
+      <label className="toggle">
+        <input
+          type="checkbox"
+          checked={Boolean(layer.outline)}
+          onChange={(e) => patch({ outline: e.target.checked ? Math.max(layer.outline ?? 0, 8) : 0 })}
+        />
+        Ink outline
+      </label>
+      {layer.outline ? (
+        <Range
+          label="Outline thickness"
+          value={layer.outline}
+          min={1}
+          max={30}
+          step={1}
+          suffix="px"
+          onChange={(outline) => patch({ outline })}
+        />
+      ) : null}
       <button className="wide" onClick={() => patch({ size: fitSize(layer) })}>
         Fit the text to its box
       </button>

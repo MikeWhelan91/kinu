@@ -1629,3 +1629,1502 @@ msgstr "自己ベスト更新！"
 
 msgid "Tickets won"
 msgstr "獲得したチケット"
+
+# Monthly Showcase
+
+msgid "January"
+msgstr "1月"
+
+msgid "February"
+msgstr "2月"
+
+msgid "March"
+msgstr "3月"
+
+msgid "April"
+msgstr "4月"
+
+msgid "May"
+msgstr "5月"
+
+msgid "June"
+msgstr "6月"
+
+msgid "July"
+msgstr "7月"
+
+msgid "August"
+msgstr "8月"
+
+msgid "September"
+msgstr "9月"
+
+msgid "October"
+msgstr "10月"
+
+msgid "November"
+msgstr "11月"
+
+msgid "December"
+msgstr "12月"
+
+msgid "Jan"
+msgstr "1月"
+
+msgid "Feb"
+msgstr "2月"
+
+msgid "Mar"
+msgstr "3月"
+
+msgid "Apr"
+msgstr "4月"
+
+msgid "Jun"
+msgstr "6月"
+
+msgid "Jul"
+msgstr "7月"
+
+msgid "Aug"
+msgstr "8月"
+
+msgid "Sep"
+msgstr "9月"
+
+msgid "Oct"
+msgstr "10月"
+
+msgid "Nov"
+msgstr "11月"
+
+msgid "Dec"
+msgstr "12月"
+
+msgid "{month} {year}"
+msgstr "{year}年{month}"
+
+msgid "{day} {month}"
+msgstr "{month}{day}日"
+
+msgid "{start}–{end} {month}"
+msgstr "{month}{start}–{end}日"
+
+msgid "%s SHOWCASE"
+msgstr "%sのショーケース"
+
+msgid "MONTHLY SHOWCASE"
+msgstr "マンスリーショーケース"
+
+msgid "NEW THIS MONTH!"
+msgstr "今月の新登場！"
+
+msgid "THIS MONTH'S EXCLUSIVE"
+msgstr "今月の限定アイテム"
+
+msgid "EARNED THIS MONTH!"
+msgstr "今月ゲット！"
+
+msgid "Showcase exclusive"
+msgstr "ショーケース限定"
+
+msgid "Showcase"
+msgstr "ショーケース"
+
+msgid "Kinu outfit"
+msgstr "きぐるみ"
+
+msgid "Box"
+msgstr "箱"
+
+msgid "Room"
+msgstr "おへや"
+
+msgid "Never sold in the Shop or found in the Kinu Claw."
+msgstr "ショップやきぬクローには登場しません。"
+
+msgid "WEEK %d"
+msgstr "第%d週"
+
+msgid "DONE"
+msgstr "クリア"
+
+msgid "NOW"
+msgstr "挑戦中"
+
+msgid "MISSED"
+msgstr "未達成"
+
+msgid "SOON"
+msgstr "もうすぐ"
+
+msgid "THIS WEEK'S CHALLENGE"
+msgstr "今週のチャレンジ"
+
+msgid "%d / %d weeks"
+msgstr "%d / %d週"
+
+msgid "Last day!"
+msgstr "最終日！"
+
+msgid "%d days left"
+msgstr "あと%d日"
+
+msgid "Finish all %d to win it. Each one also pays beans and a claw ticket."
+msgstr "%d週すべてクリアでもらえます。毎週まめとクローのチケットももらえます。"
+
+msgid "DONE FOR THIS WEEK"
+msgstr "今週はクリア！"
+
+msgid "Week %d's challenge opens on %s."
+msgstr "第%d週のチャレンジは%sにスタート。"
+
+msgid "MISSED A WEEK"
+msgstr "1週間のがしました"
+
+msgid "A week closed unfinished, so %s can't be earned this month. Next month's showcase starts on the 1st."
+msgstr "クリアできなかった週があるため、今月は%sをもらえません。来月のショーケースは1日に始まります。"
+
+msgid "SHOWCASE COMPLETE"
+msgstr "ショーケース達成"
+
+msgid "SHOWCASE COMPLETE!"
+msgstr "ショーケース達成！"
+
+msgid "%s is yours. A new showcase arrives on the 1st."
+msgstr "%sをゲット！1日に新しいショーケースが始まります。"
+
+msgid "LET'S GO!"
+msgstr "レッツゴー！"
+
+msgid "A new showcase starts on the 1st of every month."
+msgstr "毎月1日に新しいショーケースが始まります。"
+
+msgid "No showcase this month. Check back on the 1st!"
+msgstr "今月のショーケースはありません。1日にまた見てね！"
+
+msgid "Earned!"
+msgstr "ゲット！"
+
+msgid "Missed"
+msgstr "のがした"
+
+msgid "Coming in the %s Monthly Showcase. Finish that month's weekly challenges to earn it."
+msgstr "%sのマンスリーショーケースに登場。その月のウィークリーチャレンジをすべてクリアするともらえます。"
+
+msgid "This month's Showcase reward. Finish every weekly challenge in %s to earn it."
+msgstr "今月のショーケース報酬。%sのウィークリーチャレンジをすべてクリアするともらえます。"
+
+msgid "The %s Monthly Showcase reward. It isn't sold in the Shop or found in the Kinu Claw."
+msgstr "%sのマンスリーショーケース報酬。ショップやきぬクローでは手に入りません。"
+
+msgid "WEEKLY CHALLENGE"
+msgstr "ウィークリーチャレンジ"
+
+msgid "The new weekly challenge opens when the server resets. Check back shortly."
+msgstr "新しいウィークリーチャレンジはサーバーのリセット後に始まります。少ししてからもう一度確認してください。"
+
+msgid "Land %d Kinu this week"
+msgstr "今週%d個のせる"
+
+msgid "Play %d runs this week"
+msgstr "今週%d回あそぶ"
+
+msgid "Finish %d clean runs this week"
+msgstr "今週落とさずに%d回クリア"
+
+msgid "Glaze %d Kinu with shoyu this week"
+msgstr "今週しょうゆを%d個のきぬにかける"
+
+msgid "Play for %d minutes this week"
+msgstr "今週%d分あそぶ"
+
+msgid "Spin the box %d full turns this week"
+msgstr "今週箱を%d回転させる"
+
+# Daily Treats and catalogue text
+
+msgid "DAILY TREATS"
+msgstr "デイリーごほうび"
+
+msgid "★  7 DAYS · 7 PRIZES  ★"
+msgstr "★  7日間・7つのごほうび  ★"
+
+msgid "DAY %d OF 7"
+msgstr "7日中%d日目"
+
+msgid "DAY %d"
+msgstr "%d日目"
+
+msgid "TODAY'S TREAT"
+msgstr "今日のごほうび"
+
+msgid "COLLECTED TODAY"
+msgstr "今日はうけとり済み"
+
+msgid "+%d BEANS"
+msgstr "まめ+%d"
+
+msgid "1 CLAW TICKET"
+msgstr "クローチケット1枚"
+
+msgid "%d CLAW TICKETS"
+msgstr "クローチケット%d枚"
+
+msgid "CLAW TREASURE"
+msgstr "クローのおたから"
+
+msgid "★  TODAY · GRAND PRIZE  ★"
+msgstr "★  今日・大当たり  ★"
+
+msgid "★  DAY 7 · GRAND PRIZE  ★"
+msgstr "★  7日目・大当たり  ★"
+
+msgid "Kinu Claw Treasure"
+msgstr "きぬクローのおたから"
+
+msgid "A cosmetic only the claw can drop."
+msgstr "クローでしか出ない、きせかえアイテム。"
+
+msgid "Collected — back to Day 1 tomorrow!"
+msgstr "うけとり済み — 明日は1日目から！"
+
+msgid "CLAIM MY TREAT!"
+msgstr "ごほうびをもらう！"
+
+msgid "CHECKING…"
+msgstr "かくにん中…"
+
+msgid "See you tomorrow!"
+msgstr "また明日ね！"
+
+msgid "Maybe later"
+msgstr "あとで"
+
+msgid "Miss a day and the calendar restarts at Day 1."
+msgstr "1日でも休むと1日目からやりなおしです。"
+
+msgid "NEXT TREAT IN"
+msgstr "次のごほうびまで"
+
+msgid "NEXT TREAT"
+msgstr "次のごほうび"
+
+msgid "Next treat in %s"
+msgstr "次のごほうびまで %s"
+
+msgid "Today's treat is ready!"
+msgstr "今日のごほうびが届いたよ！"
+
+msgid "DAILY TREAT READY"
+msgstr "デイリーごほうび到着"
+
+msgid "Claim it!"
+msgstr "もらおう！"
+
+msgid "Tap to open your reward"
+msgstr "タップしてごほうびをあける"
+
+msgid "Come back for your next treat"
+msgstr "次のごほうびもお楽しみに"
+
+msgid "A little prize is waiting!"
+msgstr "ちいさなごほうびが待ってるよ！"
+
+msgid "TREAT READY!"
+msgstr "ごほうび到着！"
+
+msgid "Couldn't check your daily treat. Please try again while online."
+msgstr "デイリーごほうびを確認できませんでした。オンラインでもう一度お試しください。"
+
+msgid "Kinu's everyday shape. Sturdy on every side."
+msgstr "いつものきぬ。どの面もどっしり。"
+
+msgid "A flat, sleepy Kinu. The best base there is."
+msgstr "ぺたんと眠たいきぬ。土台にぴったり。"
+
+msgid "Stretched out for a nap. Great for bridging gaps."
+msgstr "のびーっとお昼寝中。すきまをつなぐのが得意。"
+
+msgid "Standing up proud. Saves space, but wobbles."
+msgstr "胸をはって立つきぬ。場所をとらないけど、ぐらぐら。"
+
+msgid "Rolled into a ball. Loves to roll away."
+msgstr "まんまるきぬ。ころころ転がるのが大好き。"
+
+msgid "A mischievous forest spirit costume, tail included."
+msgstr "いたずら好きな森の精のきぐるみ。しっぽつき。"
+
+msgid "Soft, floppy ears for extra-snuggly hops."
+msgstr "ふんわりたれ耳で、ぴょんぴょんもふもふ。"
+
+msgid "Tiny wings for a moonlit flutter."
+msgstr "月夜にぱたぱた、ちいさな羽。"
+
+msgid "A clever bushy tail, always up to something."
+msgstr "ふさふさしっぽのかしこいきつね。いつも何かたくらみ中。"
+
+msgid "Cool, damp, and ready to leap."
+msgstr "ひんやりしっとり、いつでもジャンプOK。"
+
+msgid "A single leaf cap. Autumn's simplest gift."
+msgstr "葉っぱ1枚のぼうし。秋のいちばん素朴なおくりもの。"
+
+msgid "A tiny hat and an eyepatch for high-seas snacking."
+msgstr "ちいさな帽子と眼帯で、大海原のおやつタイム。"
+
+msgid "Silent, stealthy, and sworn to protect the box."
+msgstr "音もなくしのびより、箱を守ると誓った忍者。"
+
+msgid "Round, black-and-white, and endlessly huggable."
+msgstr "まんまる白黒、いつまでもぎゅっとしたい。"
+
+msgid "Spiky and prehistoric, but still very cuddly."
+msgstr "とげとげの太古の生きもの。でもやっぱりもふもふ。"
+
+msgid "A snug little helmet for space-bound snacking."
+msgstr "宇宙でおやつを食べるための、ぴったりヘルメット。"
+
+msgid "A friendly boo under a floaty sheet."
+msgstr "ふわふわシーツの下から、やさしく「ばあ！」"
+
+msgid "All fin, no bite. Promise."
+msgstr "ヒレだけ、かみつかないよ。約束。"
+
+msgid "Sweet, red, and freckled with seeds."
+msgstr "あまくて赤くて、つぶつぶの種いっぱい。"
+
+msgid "Bold stripes for a fierce little roar."
+msgstr "くっきりしましまで、ちいさく「がおー」。"
+
+msgid "Curled horns and a proud little tail."
+msgstr "くるんとした角と、じまんのしっぽ。"
+
+msgid "A warm woodgrain finish, carved with care."
+msgstr "ていねいに彫った、あたたかい木目仕上げ。"
+
+msgid "Cool swirls of stone, polished smooth."
+msgstr "つるつるに磨いた、ひんやり石のうずまき模様。"
+
+msgid "Faceted and glinting like cut glass."
+msgstr "カットガラスのようにきらきら輝く。"
+
+msgid "A little pocket of starlight, swirled in."
+msgstr "星の光をくるっととじこめて。"
+
+msgid "Gleaming and precious, fit for a treasure box."
+msgstr "ぴかぴかで大切な、たから箱にふさわしい輝き。"
+
+msgid "Plain cypress wood, warm and simple."
+msgstr "シンプルでぬくもりのあるひのき。"
+
+msgid "Woven slats that smell faintly of rice."
+msgstr "ほんのりごはんの香りがする、編んだせいろ。"
+
+msgid "Glossy red lacquer, polished to a mirror shine."
+msgstr "鏡のようにみがいた、つやつやの朱塗り。"
+
+msgid "Painted with drifting cherry blossom petals."
+msgstr "ひらひら舞う桜の花びらを描いて。"
+
+msgid "Cool, solid stone, worn smooth over time."
+msgstr "長い時間でなめらかになった、ひんやり丈夫な石。"
+
+msgid "Gilded edges fit for a treasure hoard."
+msgstr "おたからの山にふさわしい、金ぶちの箱。"
+
+msgid "The cosy little shop where it all began."
+msgstr "すべてがはじまった、ちいさなとうふ屋さん。"
+
+msgid "Lanterns and stalls, glowing long after sundown."
+msgstr "日が暮れても灯りがともる、ちょうちんと屋台。"
+
+msgid "A frosty hush and a blanket of fresh snow."
+msgstr "しんと冷えた静けさと、ふかふかの新雪。"
+
+msgid "A lane lined with blossoms, petals drifting on the breeze."
+msgstr "花びらが風に舞う、桜並木の小道。"
+
+msgid "Fresh from the shell, still a little wobbly."
+msgstr "からから出たばかりで、まだちょっとよちよち。"
+
+msgid "Wrapped up snug, ready to be delivered with love."
+msgstr "ぴったり包んで、愛をこめてお届け準備OK。"
+
+msgid "A tiny towel for a well-earned soak."
+msgstr "がんばったあとの温泉に、ちいさなタオル。"
+
+msgid "A neat little rice pillow, nori sash and all."
+msgstr "のりの帯をしめた、きれいなしゃりまくら。"
+
+msgid "Buzzing stripes and see-through little wings."
+msgstr "ぶんぶんしましまと、すけすけの羽。"
+
+msgid "Round, lucky, and always bouncing back."
+msgstr "まるくて縁起がよくて、何度でも起きあがる。"
+
+msgid "A cheerful octopus cap with dangling little legs."
+msgstr "ぶらぶら足がかわいい、元気なたこのぼうし。"
+
+msgid "A river spirit's dish-shaped cap, kept nice and damp."
+msgstr "しっとり保った、川の精のお皿ぼうし。"
+
+msgid "A humble woven basket, sturdy and simple."
+msgstr "素朴でじょうぶな、編みかご。"
+
+msgid "Peppermint stripes, sweet enough to lick."
+msgstr "なめたくなるほどあまい、ペパーミントのしましま。"
+
+msgid "Ribboned shut, like a present waiting to be opened."
+msgstr "リボンでとじた、あけるのを待つプレゼント。"
+
+msgid "Stacked lacquered tiers for a New Year's feast."
+msgstr "お正月のごちそう用、かさねた漆のお重。"
+
+msgid "Cool and glassy, like it was carved from a glacier."
+msgstr "氷河からけずりだしたような、ひんやり透明な箱。"
+
+msgid "Buzzing with electric colour, straight off the arcade floor."
+msgstr "ゲームセンターから飛びだした、ビリビリ電気色。"
+
+msgid "Tall green stalks swaying in a gentle hush."
+msgstr "静けさの中でゆれる、背の高い青竹。"
+
+msgid "Red leaves settling over old wooden eaves."
+msgstr "古い木の軒に、赤い葉がふりつもる。"
+
+msgid "Steam rising off a warm, mineral-scented bath."
+msgstr "ほかほかの温泉から、湯気がゆらゆら。"
+
+msgid "Paper lanterns, drumbeats, and the smell of grilled snacks."
+msgstr "ちょうちん、たいこの音、屋台のいいにおい。"
+
+msgid "A quiet platform for watching the full moon rise."
+msgstr "満月がのぼるのをながめる、静かなお月見台。"
+
+msgid "A skyline glowing pink and blue after dark."
+msgstr "夜になるとピンクと青に光る街並み。"
+
+msgid "Nine tails' worth of old, playful magic."
+msgstr "しっぽ9本ぶんの、いたずらな古い魔法。"
+
+msgid "Feathers that glow like the last embers of a fire."
+msgstr "残り火のように光る羽。"
+
+msgid "A single spiralled horn and a shimmering mane."
+msgstr "くるくるの1本角と、きらめくたてがみ。"
+
+msgid "One paw raised, calling good fortune your way."
+msgstr "片手をあげて、しあわせをおいでおいで。"
+
+msgid "A small suit of armour, worn with quiet pride."
+msgstr "静かなほこりをまとった、ちいさなよろい。"
+
+msgid "Rippling scales in the colours of a garden pond."
+msgstr "お庭の池の色をした、ゆらめくうろこ。"
+
+msgid "Frilly gills and a permanent, gummy smile."
+msgstr "ひらひらのえらと、いつものにっこり笑顔。"
+
+msgid "A sash-tied robe patterned for a festival stroll."
+msgstr "お祭りのおさんぽにぴったりの、帯をしめた着物。"
+
+msgid "Small horns and a grin that's more mischief than menace."
+msgstr "ちいさな角と、こわいよりいたずらっぽい笑顔。"
+
+msgid "Unbothered, citrus-scented, and perfectly zen."
+msgstr "何があってものんびり、ゆずの香りで無の境地。"
+
+msgid "Baby Chick"
+msgstr "ひよこ"
+
+msgid "Shiba Pup"
+msgstr "こしば"
+
+msgid "Calico Kitty"
+msgstr "みけねこ"
+
+msgid "Honey Bear"
+msgstr "はちみつくま"
+
+msgid "Hamster"
+msgstr "ハムスター"
+
+msgid "Baby Penguin"
+msgstr "こぺんぎん"
+
+msgid "Duckling"
+msgstr "こがも"
+
+msgid "Mochi Seal"
+msgstr "もちあざらし"
+
+msgid "Little Otter"
+msgstr "ちびラッコ"
+
+msgid "Red Panda"
+msgstr "レッサーパンダ"
+
+msgid "Mushroom Cap"
+msgstr "きのこぼうし"
+
+msgid "Peachy"
+msgstr "もも"
+
+msgid "Lemon Drop"
+msgstr "レモンドロップ"
+
+msgid "Cupcake"
+msgstr "カップケーキ"
+
+msgid "Purin Pudding"
+msgstr "プリン"
+
+msgid "Boba Tea"
+msgstr "タピオカミルクティー"
+
+msgid "Melonpan"
+msgstr "メロンパン"
+
+msgid "Sprinkle Donut"
+msgstr "カラフルドーナツ"
+
+msgid "Marshmallow"
+msgstr "マシュマロ"
+
+msgid "Taiyaki"
+msgstr "たいやき"
+
+msgid "Tiny Cloud"
+msgstr "ちいさなくも"
+
+msgid "Twinkle Star"
+msgstr "きらきらぼし"
+
+msgid "Sleepy Moon"
+msgstr "ねむねむおつきさま"
+
+msgid "Sunflower"
+msgstr "ひまわり"
+
+msgid "Daisy Chain"
+msgstr "デイジーのかんむり"
+
+msgid "Tiny Sailor"
+msgstr "ちびセーラー"
+
+msgid "Puddle Pal"
+msgstr "みずたまりっこ"
+
+msgid "Berry Overalls"
+msgstr "ベリーのオーバーオール"
+
+msgid "Little Artist"
+msgstr "ちいさな画家"
+
+msgid "Sleepy Cap"
+msgstr "おやすみぼうし"
+
+msgid "Downy yellow fluff, fresh out of the nest."
+msgstr "巣立ったばかりの、黄色いふわふわ。"
+
+msgid "A curled tail and the world's proudest grin."
+msgstr "くるんとしっぽと、世界一じまんげな笑顔。"
+
+msgid "Patchwork fur and a whole lot of purring."
+msgstr "つぎはぎ模様の毛並みと、たっぷりのゴロゴロ。"
+
+msgid "Sticky-pawed and always sniffing out something sweet."
+msgstr "手はべたべた、いつもあまいものをくんくん。"
+
+msgid "Cheeks stuffed full, just in case."
+msgstr "念のため、ほっぺにぱんぱんつめこみ中。"
+
+msgid "A waddly little tuxedo, fresh off the ice."
+msgstr "氷の上からやってきた、よちよちタキシード。"
+
+msgid "Soft yellow down and a very determined waddle."
+msgstr "やわらかい黄色の羽毛と、やる気まんまんのよちよち歩き。"
+
+msgid "Round, smooth, and built entirely for flopping."
+msgstr "まるくてつるつる、ごろんとするために生まれた体。"
+
+msgid "A floaty little paddler with a taste for snacks."
+msgstr "おやつ好きの、ぷかぷかおよぎ上手。"
+
+msgid "A rusty coat and a tail made for wrapping up warm."
+msgstr "さび色の毛並みと、くるまってあったかいしっぽ。"
+
+msgid "A speckled forest-floor cap, sprouted overnight."
+msgstr "ひと晩でにょきっと生えた、水玉もようの森のきのこ。"
+
+msgid "Blushed pink and irresistibly soft."
+msgstr "ほんのりピンクで、たまらなくやわらか。"
+
+msgid "Zesty, sunny, and a little bit sour."
+msgstr "さわやかで明るくて、ちょっぴりすっぱい。"
+
+msgid "Frosted on top with a cherry for good measure."
+msgstr "クリームたっぷり、おまけにさくらんぼ。"
+
+msgid "Wobbly, caramel-topped, and endlessly jiggly."
+msgstr "カラメルがけで、ぷるぷるがとまらない。"
+
+msgid "Milky sweetness with tapioca pearls sinking to the bottom."
+msgstr "ミルクのあまさに、底にしずむタピオカ。"
+
+msgid "A crackly sugar crust over a soft, sweet bun."
+msgstr "カリカリの砂糖の皮に、ふわふわあまいパン。"
+
+msgid "Glazed, ringed, and scattered with sprinkles."
+msgstr "つやつやのわっかに、カラフルなスプリンクル。"
+
+msgid "Pillowy soft and ready for the campfire."
+msgstr "まくらみたいにふわふわ、たき火の準備OK。"
+
+msgid "A warm fish-shaped cake, filled with something sweet."
+msgstr "あまいものがつまった、あったかいお魚のおかし。"
+
+msgid "A puff of soft, drifting sky."
+msgstr "ふんわりただよう、空のひとかけら。"
+
+msgid "A little points-and-all night-sky sparkle."
+msgstr "とんがりまでまるごと、夜空のきらめき。"
+
+msgid "A crescent cap for the drowsiest of Kinu."
+msgstr "いちばんねむたいきぬのための、三日月ぼうし。"
+
+msgid "Bright petals that always face the light."
+msgstr "いつも光のほうを向く、明るい花びら。"
+
+msgid "A ring of little white blooms, woven by hand."
+msgstr "ちいさな白い花をひとつずつ編んだ輪っか。"
+
+msgid "A crisp collar and cap for smooth sailing."
+msgstr "ぱりっとしたえりと帽子で、順風満帆。"
+
+msgid "A cheerful yellow slicker for splashing through puddles."
+msgstr "水たまりをばしゃばしゃ歩く、元気な黄色いレインコート。"
+
+msgid "Cosy dungarees with a pocketful of berries."
+msgstr "ポケットにベリーいっぱいの、あったかオーバーオール。"
+
+msgid "A paint-splattered smock and a beret, tilted just so."
+msgstr "絵の具だらけのスモックと、ななめにかぶったベレー帽。"
+
+msgid "A soft nightcap for the cosiest of naps."
+msgstr "いちばん心地いいお昼寝のための、やわらかナイトキャップ。"
+
+msgid "Magical Kinu"
+msgstr "まほうのきぬ"
+
+msgid "Moon Princess"
+msgstr "月のおひめさま"
+
+msgid "Candy Witch"
+msgstr "キャンディまじょ"
+
+msgid "Celestial Bunny"
+msgstr "星空うさぎ"
+
+msgid "Sakura Deer"
+msgstr "さくらじか"
+
+msgid "Frog Prince"
+msgstr "かえるの王子さま"
+
+msgid "Pastel Dragon"
+msgstr "パステルドラゴン"
+
+msgid "Snow Fox"
+msgstr "ゆききつね"
+
+msgid "Dream Jellyfish"
+msgstr "ゆめくらげ"
+
+msgid "Kinu Fairy"
+msgstr "きぬの妖精"
+
+msgid "A sparkling bow and a wand full of wishes."
+msgstr "きらきらリボンと、ねがいがつまったステッキ。"
+
+msgid "A silvery gown fit for ruling the night sky."
+msgstr "夜空をおさめるのにふさわしい、銀色のドレス。"
+
+msgid "A pointed hat stitched from spun sugar."
+msgstr "わたあめでぬいあげた、とんがり帽子。"
+
+msgid "Starlit ears that shimmer under a midnight sky."
+msgstr "真夜中の空の下でかがやく、星あかりの耳。"
+
+msgid "Little antlers dusted in drifting cherry blossom."
+msgstr "舞う桜をまとった、ちいさな角。"
+
+msgid "A tiny crown, just in case that kiss works."
+msgstr "キスがきいたときのための、ちいさな王冠。"
+
+msgid "A candy-coloured dragon, all softness and no fire."
+msgstr "キャンディ色のドラゴン。ふわふわで火はふかないよ。"
+
+msgid "A frost-white coat, silent as falling snow."
+msgstr "ふる雪のように静かな、真っ白な毛並み。"
+
+msgid "Trailing tendrils that glow like a lullaby."
+msgstr "子守唄のように光る、ゆらゆらの触手。"
+
+msgid "Gossamer wings and a sprinkle of pixie dust."
+msgstr "うすい羽と、ひとふりの妖精の粉。"
+
+msgid "Builder Helmet"
+msgstr "工事ヘルメット"
+
+msgid "Balance Pole"
+msgstr "バランス棒"
+
+msgid "Shoyu Chef"
+msgstr "しょうゆシェフ"
+
+msgid "Festival Yukata"
+msgstr "お祭りゆかた"
+
+msgid "Mountain Climber"
+msgstr "山のぼり"
+
+msgid "Lucky Charm"
+msgstr "おまもり"
+
+msgid "A bright hard hat and reflective vest for Kinu who mean business."
+msgstr "本気のきぬのための、あざやかなヘルメットと反射ベスト。"
+
+msgid "A cheerful performer’s sash and a pole for improbable stacks."
+msgstr "陽気な曲芸師のたすきと、ありえない積み方のためのバランス棒。"
+
+msgid "A tall chef’s toque for a true master of sticky stacking."
+msgstr "べたべた積みの達人のための、背の高いコック帽。"
+
+msgid "A midnight-blue summer robe with hanabi across the cloth."
+msgstr "花火がひろがる、夜空色の夏のゆかた。"
+
+msgid "A red beanie, tiny pack and plenty of summit spirit."
+msgstr "赤いニット帽とちいさなリュック、山頂をめざす気持ちいっぱい。"
+
+msgid "A little bell and golden star charms for fortunate Kinu."
+msgstr "しあわせなきぬのための、ちいさな鈴と金の星のおまもり。"
+
+msgid "Jelly Cube"
+msgstr "ゼリーキューブ"
+
+msgid "Rose Delight"
+msgstr "ローズのおかし"
+
+msgid "Chocolate Square"
+msgstr "板チョコ"
+
+msgid "Burger Stack"
+msgstr "ハンバーガー"
+
+msgid "Joyful Snack Box"
+msgstr "わくわくおやつボックス"
+
+msgid "Sunny Sea Sponge"
+msgstr "おひさま海綿"
+
+msgid "Bread Loaf"
+msgstr "食パン"
+
+msgid "Bouncy, wobbly, and topped with a glossy jelly dome."
+msgstr "ぷるんぷるんで、つやつやゼリーのドームのせ。"
+
+msgid "A soft pink sweet dusted in fragrant rose sugar."
+msgstr "香りのいいバラの砂糖をまぶした、ピンクのやわらかおかし。"
+
+msgid "Six neat little chocolate tiles, ready to snap apart."
+msgstr "パキッとわれる、6つのきれいなチョコのかけら。"
+
+msgid "A sesame bun, leafy lettuce and a very tidy patty."
+msgstr "ごまのバンズとレタス、とってもきちんとしたパティ。"
+
+msgid "A bright little takeaway box with a fry-shaped crown."
+msgstr "ポテトの王冠をかぶった、明るいテイクアウトボックス。"
+
+msgid "A porous yellow friend in square trousers and a tiny red tie."
+msgstr "しかくいズボンと赤いネクタイの、あなだらけの黄色いおともだち。"
+
+msgid "A warm crust, soft centre and three fresh-baked score marks."
+msgstr "あったかい耳とふわふわの中、焼きたての切れ目が3本。"
+
+msgid "Cracks mended in gold, more beautiful for the break."
+msgstr "ひびを金でつないで、割れる前より美しく。"
+
+msgid "Iron-banded and brimming with pirate's gold."
+msgstr "鉄のたがをはめた、海賊の金貨でいっぱいの箱。"
+
+msgid "Split open to reveal a crystal-studded heart."
+msgstr "ぱかっとわると、中には結晶がびっしり。"
+
+msgid "A round plastic shell, twisted open for a surprise."
+msgstr "くるっとひねってあける、まるいカプセル。何が出るかな？"
+
+msgid "A festival drum, painted red and ready to boom."
+msgstr "赤くぬった、どーんとひびくお祭りだいこ。"
+
+msgid "Layered sponge and cream, one strawberry short of perfect."
+msgstr "スポンジとクリームの層。いちごがあとひとつで完ぺき。"
+
+msgid "A deep blue box scattered with tiny constellations."
+msgstr "ちいさな星座をちりばめた、深い青の箱。"
+
+msgid "Rippling water with koi drifting just beneath the surface."
+msgstr "水面のすぐ下を鯉がおよぐ、ゆらめく水。"
+
+msgid "Soft and puffed up, like it drifted down from the sky."
+msgstr "空からふわりとおりてきたような、ふっくらやわらか。"
+
+msgid "Inlaid shell that shimmers with every tilt of the light."
+msgstr "かたむけるたびに光がゆらめく、貝殻の螺鈿。"
+
+msgid "Blinking lights and the chime of a claw machine."
+msgstr "ちかちかの光と、クレーンゲームの音。"
+
+msgid "A hall beneath the sea, glittering with dragon treasure."
+msgstr "竜のおたからがきらめく、海の底の宮殿。"
+
+msgid "A quiet dome overlooking the grey lunar dust."
+msgstr "灰色の月の砂を見わたす、静かなドーム。"
+
+msgid "A shrine perched above the clouds, ropes and bells swaying."
+msgstr "雲の上の神社。しめなわと鈴がゆれている。"
+
+msgid "Rolling green rows with a mountain standing watch."
+msgstr "山が見守る、なだらかな緑の茶畑。"
+
+msgid "A landscape built entirely from sugar and sponge."
+msgstr "お砂糖とスポンジだけでできた景色。"
+
+msgid "Snow lit up in ribbons of green and violet."
+msgstr "緑とむらさきのオーロラにてらされた雪原。"
+
+msgid "Warm sand, gentle waves, and a striped parasol."
+msgstr "あったかい砂浜、おだやかな波、しましまのパラソル。"
+
+msgid "Paper lanterns drifting downstream on quiet water."
+msgstr "静かな川をながれていく灯ろう。"
+
+msgid "Stone towers and banners snapping in the wind."
+msgstr "石の塔と、風にはためく旗。"
+
+msgid "A rice-ball cap with a neat nori patch."
+msgstr "きれいにのりをまいた、おにぎりぼうし。"
+
+msgid "Dumpling"
+msgstr "ぎょうざ"
+
+msgid "Crab"
+msgstr "カニ"
+
+msgid "Ladybug"
+msgstr "てんとう虫"
+
+msgid "Snail"
+msgstr "かたつむり"
+
+msgid "Tempura Shrimp"
+msgstr "えびてん"
+
+msgid "Pufferfish"
+msgstr "ふぐ"
+
+msgid "Hermit Crab"
+msgstr "やどかり"
+
+msgid "Firefly"
+msgstr "ほたる"
+
+msgid "Pumpkin"
+msgstr "かぼちゃ"
+
+msgid "Snowman"
+msgstr "ゆきだるま"
+
+msgid "Firework"
+msgstr "花火"
+
+msgid "Ramen Bowl"
+msgstr "ラーメン"
+
+msgid "Narwhal"
+msgstr "イッカク"
+
+msgid "Kraken Hatchling"
+msgstr "ちびクラーケン"
+
+msgid "Tsukumogami"
+msgstr "つくもがみ"
+
+msgid "Moss"
+msgstr "こけ"
+
+msgid "Driftwood"
+msgstr "流木"
+
+msgid "Coral"
+msgstr "サンゴ"
+
+msgid "Pumpkin Patch"
+msgstr "かぼちゃ畑"
+
+msgid "Snowdrift"
+msgstr "ふきだまり"
+
+msgid "Paper Lantern"
+msgstr "ちょうちん"
+
+msgid "Abyss"
+msgstr "深海"
+
+msgid "Starforge"
+msgstr "星のかじ場"
+
+msgid "Tidepool Town"
+msgstr "いそべタウン"
+
+msgid "Soft folds and a just-steamed glow."
+msgstr "やわらかなひだと、蒸したてのつや。"
+
+msgid "Tiny claws, very serious side-step."
+msgstr "ちいさなハサミで、まじめに横歩き。"
+
+msgid "A cheerful spotted shell for garden days."
+msgstr "お庭で遊ぶ日の、元気な水玉のせなか。"
+
+msgid "A little shell, moving at its own pace."
+msgstr "ちいさなからで、マイペースにすすむ。"
+
+msgid "Crisp curls and a golden crunch."
+msgstr "カリッとまるまって、黄金色のサクサク。"
+
+msgid "Round, prickly, and surprisingly polite."
+msgstr "まるくてとげとげ、でも意外とおぎょうぎいい。"
+
+msgid "A borrowed shell with a perfect fit."
+msgstr "借りものなのに、サイズぴったりの貝殻。"
+
+msgid "A warm little lantern for twilight tumbles."
+msgstr "たそがれ時のころころに、あったかい小さな灯り。"
+
+msgid "A plump autumn cap, here for the harvest season."
+msgstr "収穫の季節にやってきた、まるまる秋のぼうし。"
+
+msgid "A frosty cap with a carrot-bright nose."
+msgstr "にんじん色のお鼻がついた、ひんやりぼうし。"
+
+msgid "A little night sky ready to burst into colour."
+msgstr "いまにも色とりどりにはじける、ちいさな夜空。"
+
+msgid "Noodles, broth, and a very cozy brim."
+msgstr "めんとスープと、とってもぬくぬくなふち。"
+
+msgid "A gentle sea-unicorn with a pearly horn."
+msgstr "真珠色の角をもつ、やさしい海のユニコーン。"
+
+msgid "A tiny tentacle-cap from the glowiest depths."
+msgstr "いちばん光る深海からきた、ちいさな触手ぼうし。"
+
+msgid "An old paper lantern, awake with friendly mischief."
+msgstr "目をさました古いちょうちん。人なつこいいたずら好き。"
+
+msgid "A soft green finish with a quiet forest feel."
+msgstr "静かな森の空気をまとった、やわらかな緑。"
+
+msgid "Sun-bleached wood washed smooth by the tide."
+msgstr "日にさらされ、波にみがかれた流木。"
+
+msgid "Warm reef colours for the sea-set collection."
+msgstr "海のコレクションにぴったりの、あたたかなサンゴ礁の色。"
+
+msgid "A harvest-orange box for the autumn shop window."
+msgstr "秋のショーウィンドウをかざる、収穫色のオレンジの箱。"
+
+msgid "Pale blue timber tucked under fresh snow."
+msgstr "新雪にうもれた、うすい青色の木。"
+
+msgid "Festival red with a soft candlelit warmth."
+msgstr "お祭りの赤に、ろうそくのやさしいぬくもり。"
+
+msgid "Deep-sea blue, scattered with bioluminescent life."
+msgstr "光る生きものがちらばる、深海の青。"
+
+msgid "Molten metal flecked with fresh-forged stardust."
+msgstr "きたえたての星くずがまじる、とけた金属。"
+
+msgid "An original sunny undersea town of coral homes and kelp gardens."
+msgstr "サンゴのおうちと海藻のお庭がある、明るい海の底の町。"
+
+# Kinu Toss
+
+msgid "Toss"
+msgstr "トス"
+
+msgid "Flick them into the box!"
+msgstr "箱にはじいて入れよう！"
+
+msgid "Flick Kinu from the pan into the holes in the box. Six misses and you're out."
+msgstr "パンからきぬをはじいて、箱の穴に入れよう。6回はずすとおしまい。"
+
+msgid "Slide the pan to line up, then flick up to throw. Kinu have to drop through a hole in the lid and stay in: smaller holes, longer throws and unbroken streaks score more. Each box takes a few Kinu before the next one arrives, further away or harder to hit. Six misses end the run."
+msgstr "パンをすべらせてねらいを合わせ、上にはじいて投げよう。きぬはふたの穴から落ちて、中にとどまらないといけません。穴が小さいほど、遠くから投げるほど、連続で決めるほど高得点。箱はきぬを何個か受けとると、もっと遠いか、ねらいにくい次の箱にかわります。6回はずすとおしまい。"
+
+msgid "Big hole"
+msgstr "大きい穴"
+
+msgid "Nice"
+msgstr "ナイス"
+
+msgid "Small hole"
+msgstr "小さい穴"
+
+msgid "Lucky Box"
+msgstr "ラッキーボックス"
+
+msgid "In"
+msgstr "イン"
+
+msgid "Box full! +%d"
+msgstr "箱がいっぱい！+%d"
+
+msgid "Curve Shot"
+msgstr "カーブショット"
+
+msgid "Curve loaded! Flick to throw"
+msgstr "カーブ準備OK！はじいて投げよう"
+
+msgid "Heart Kinu! +%d beans"
+msgstr "ハートきぬ！まめ+%d"
+
+msgid "Heart Kinu! A miss came back"
+msgstr "ハートきぬ！ミスが1つもどった"
+
+msgid "Missed! %d misses left"
+msgstr "はずれ！あと%d回"
+
+msgid "Missed! 1 miss left"
+msgstr "はずれ！あと1回"
+
+msgid "On the lid! +%d"
+msgstr "ふたの上！+%d"
+
+msgid "Perfect"
+msgstr "パーフェクト"
+
+msgid "Skip Shot"
+msgstr "スキップショット"
+
+msgid "Standing Kinu"
+msgstr "立ちきぬ"
+
+msgid "Six misses! Great tossing though!"
+msgstr "6回はずれ！でもナイストス！"
+
+msgid "1 Miss Left"
+msgstr "あと1回"
+
+msgid "%d Misses Left"
+msgstr "あと%d回"
+
+msgid "Knocked out! -%d"
+msgstr "はじき出された！-%d"
+
+# Grand Opening launch event
+msgid "Play a run"
+msgstr "1回あそぶ"
+
+msgid "Play on %d different days"
+msgstr "%d日あそぶ"
+
+msgid "A Grand Opening exclusive from Kinu Tumble's launch. It will never be sold or given out again."
+msgstr "きぬタンブルのリリースを記念したグランドオープン限定アイテム。もう二度と販売・配布されません。"
+
+msgid "A Grand Opening exclusive. %s by 31 October to keep it forever."
+msgstr "グランドオープン限定。10月31日までに「%s」でずっと自分のものに。"
+
+msgid "All three launch exclusives are yours. Thank you for being here from day one!"
+msgstr "リリース限定アイテムを3つともゲット！初日から遊んでくれてありがとう！"
+
+msgid "The Grand Opening has closed. Anything you earned is yours to keep."
+msgstr "グランドオープンは終了しました。ゲットしたアイテムはずっとあなたのものです。"
+
+msgid "Kinu Tumble is open! Earn three launch exclusives before 31 October."
+msgstr "きぬタンブル、オープン！10月31日までにリリース限定アイテムを3つゲットしよう。"
+
+msgid "See the %s Showcase"
+msgstr "%sのショーケースを見る"
+
+msgid "Earned items stay in your collection forever. They'll never be sold in the Shop or found in the Kinu Claw."
+msgstr "ゲットしたアイテムはずっとコレクションに残ります。ショップやきぬクローには登場しません。"
+
+msgid "LAUNCH CELEBRATION!"
+msgstr "リリース記念！"
+
+msgid "GRAND OPENING"
+msgstr "グランドオープン"
+
+msgid "Earned! It's in your collection."
+msgstr "ゲット！コレクションに入りました。"
+
+msgid "Grand Opening"
+msgstr "グランドオープン"
+
+msgid "LAUNCH EXCLUSIVE!"
+msgstr "リリース限定！"
+
+msgid "Launch exclusives"
+msgstr "限定アイテム"
+
+msgid "Launch"
+msgstr "リリース限定"
+
+msgid "Opening Day"
+msgstr "オープニングデー"
+
+msgid "First Edition"
+msgstr "ファーストエディション"
+
+msgid "Pulled the kusudama open on Kinu Tumble's very first day. Confetti everywhere!"
+msgstr "きぬタンブルのオープン初日にくす玉を割ったよ。紙ふぶきがいっぱい！"
+
+msgid "White lacquer and gold, tied with the opening-day ribbon. Number one of one."
+msgstr "白い漆と金に、オープン記念のリボン。世界にひとつの第1号。"
+
+msgid "The tofu shop on its very first day, with flowers from well-wishers and confetti in the air."
+msgstr "オープン初日のとうふ屋さん。お祝いの花輪が並び、紙ふぶきが舞っています。"
+
+msgid "MISSIONS RESET IN"
+msgstr "ミッションのリセットまで"
+
+msgid "Resets in %s"
+msgstr "リセットまで %s"
+
+# Home tour
+msgid "Skip"
+msgstr "スキップ"
+
+msgid "Later"
+msgstr "あとで"
+
+msgid "Done"
+msgstr "OK"
+
+msgid "Try it!"
+msgstr "やってみる！"
+
+msgid "Shop & Wardrobe"
+msgstr "ショップと衣装だな"
+
+msgid "Events"
+msgstr "イベント"
+
+msgid "Game Modes"
+msgstr "ゲームモード"
+
+msgid "Your daily treat, the Grand Opening and the Monthly Showcase live here. A red dot means something is waiting for you."
+msgstr "デイリーごほうび、グランドオープン、マンスリーショーケースはここ。赤い点がついたら、何かが待っているよ。"
+
+msgid "Your daily treat and the Monthly Showcase live here. A red dot means something is waiting for you."
+msgstr "デイリーごほうびとマンスリーショーケースはここ。赤い点がついたら、何かが待っているよ。"
+
+msgid "Switch between Classic, Tower and Toss here."
+msgstr "ここでクラシック、タワー、トスを切りかえられるよ。"
+
+msgid "Classic is all about filling the box. Pile %d Kinu in one run to unlock Tower, and %d for Toss."
+msgstr "クラシックは箱をいっぱいにするモード。1回で%d個積むとタワー、%d個でトスが解放されるよ。"
+
+msgid "Win outfits, boxes and rooms. Your first play every day is free!"
+msgstr "きぐるみや箱、おへやが当たるよ。毎日さいしょの1回は無料！"
+
+msgid "Win outfits, boxes and rooms with beans or claw tickets."
+msgstr "まめかチケットで、きぐるみや箱、おへやを当てよう。"
+
+msgid "Spend beans on outfits, boxes and rooms in the Shop, then dress up your Kinu in the Wardrobe."
+msgstr "ショップでまめを使って、きぐるみや箱、おへやを買おう。衣装だなできぬをおめかし！"
+
+msgid "Everything you can collect, and how to get it. New unlocks wait here with a badge."
+msgstr "集められるものと、その手に入れかたがぜんぶここに。新しいものにはマークがつくよ。"
+
+msgid "Three new missions every day, plus a weekly challenge. Finish them for beans!"
+msgstr "毎日3つの新しいミッションと、ウィークリーチャレンジ。クリアしてまめをゲット！"
+
+# Kinu Toss fire button
+msgid "Fire"
+msgstr "発射"
+
+# Untranslated in-game text found in the 29 Sep audit
+msgid "%d Kinu! Nice!"
+msgstr "%d個！いいね！"
+
+msgid "%d Kinu! Going well!"
+msgstr "%d個！いい調子！"
+
+msgid "%d Kinu! Lovely pile!"
+msgstr "%d個！すてきな山！"
+
+msgid "%d Kinu! Incredible!"
+msgstr "%d個！信じられない！"
+
+msgid "%d Kinu! Unbelievable!"
+msgstr "%d個！ありえない！"
+
+msgid "%d Kinu! Legendary!"
+msgstr "%d個！伝説級！"
+
+msgid "Nigari"
+msgstr "にがり"
+
+msgid "Nigari! Makes crowded Kinu smaller"
+msgstr "にがり！ぎゅうぎゅうのきぬを小さくする"
+
+msgid "Tap the bottle to shrink crowded Kinu!"
+msgstr "ボトルをタップして、ぎゅうぎゅうのきぬを小さくしよう！"
+
+msgid "%s! %d Kinu"
+msgstr "%s！%d個"
+
+msgid "Last chance! 1 tumble left"
+msgstr "ラストチャンス！のこり1回"
+
+msgid "Whoops! %d tumbles left"
+msgstr "おっと！のこり%d回"
+
+msgid "That's %d tumbles! Great pile though!"
+msgstr "%d回落ちちゃった！でもいい山だったよ！"
+
+msgid "%d Kinu! +1 Nigari squirt"
+msgstr "%d個！にがり+1回"
+
+msgid "One more to beat your best!"
+msgstr "あと1個で自己ベスト！"
+
+msgid "New best! %d Kinu!"
+msgstr "自己ベスト！%d個！"
+
+msgid "Drag to aim  ·  hold Fire to launch"
+msgstr "ドラッグでねらう ・ 発射を長押しで投げる"
+
+msgid "Streak ×%s"
+msgstr "連続 ×%s"
+
+msgid "Sticky Kinu"
+msgstr "ねばねばきぬ"
+
+msgid "Sticky Kinu! Anything it touches is glued in place"
+msgstr "ねばねばきぬ！さわったものをくっつける"
+
+msgid "You're holding one — see the syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."
+msgstr "いま持っているのがそれ。シロップのマークが目印だよ。さわったものはくっついて動かなくなるから、山を支えたいところに落とそう。"
+
+msgid "Tap the bottle icon to pick it up, aim it over a crowded spot and let go. Nigari makes up to three Kinu smaller and frees up room. You earn another at 20, 35 and 50 Kinu."
+msgstr "ボトルアイコンをタップして持ち、ぎゅうぎゅうの場所の上でねらってはなそう。にがりはきぬを最大3個まで小さくして、すきまを作るよ。20個、35個、50個でもう1回もらえるよ。"
+
+msgid "Kinu that tumble onto the counter don't count. Six tumbles and the run is over."
+msgstr "台に落ちたきぬは数えないよ。6回落ちたらおしまい。"
+
+msgid "Land %d Kinu in a row"
+msgstr "%d個連続でのせる"
+
+msgid "Land %d Kinu in one run"
+msgstr "1回で%d個のせる"
+
+msgid "RevenueCat couldn't load the App Store products. Please try again."
+msgstr "App Storeの商品を読み込めませんでした。もう一度お試しください。"
+
+msgid "We couldn't confirm the purchase receipt. Please try again later."
+msgstr "購入を確認できませんでした。しばらくしてからもう一度お試しください。"
+
+msgid "Purchases restored."
+msgstr "購入を復元しました。"
+
+msgid "Beans are also earned by playing. One free Kinu Claw play arrives daily.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "まめはプレイでも手に入るよ。きぬクローは毎日1回無料！\n「購入を復元」で広告削除は元に戻せるけど、使ったまめは戻らないよ。"
+
+msgid "How It Works"
+msgstr "しくみ"
+
+msgid "Items you already own leave the machine, so every item you win is new. The chances shown are for you, right now."
+msgstr "持っているアイテムはマシンから消えるので、当たるものはいつも新しいものだよ。表示の確率は、今のあなた向けです。"
+
+msgid "Claim!"
+msgstr "受け取る！"
+
+msgid "＋ Get More"
+msgstr "＋ もっと手に入れる"
+
+msgid "Missed!"
+msgstr "はずれ！"
+
+msgid "Your best: %s"
+msgstr "自己ベスト：%s"
+
+msgid "%d Kinu in"
+msgstr "%d個入った"
+
+msgid "Longest %s"
+msgstr "最長 %s"
+
+msgid "Next: %s at %d Kinu"
+msgstr "つぎ：%s（%d個で解放）"
+
+msgid "Fill the box. Six tumbles and you're out."
+msgstr "箱をいっぱいにしよう。6回落ちたらおしまい。"
+
+msgid "Land Kinu in the tofu box. Anything that bounces out onto the counter is a tumble, and six tumbles end the run. You score the pile you keep."
+msgstr "きぬをとうふの箱にのせよう。台にこぼれたらミスで、6回でおしまい。残った山がスコアになるよ。"
+
+msgid "Best score"
+msgstr "ベストスコア"
+
+msgid "Matched Your Best!"
+msgstr "自己ベストに並んだ！"
+
+msgid "So Close!"
+msgstr "おしい！"
+
+msgid "Great Run!"
+msgstr "ナイスラン！"
+
+msgid "Nice Pile!"
+msgstr "いい山！"
+
+msgid "Best Toss score"
+msgstr "トスのベストスコア"
+
+msgid "Toss boxes filled"
+msgstr "トスでうめた箱"
+
+msgid "Checking free tickets…"
+msgstr "無料チケットを確認中…"
+
+msgid "%d/2 free tickets ready"
+msgstr "無料チケット %d/2枚が使えます"
+
+msgid "%d/2 free · refill in %02d:%02d:%02d"
+msgstr "無料 %d/2枚 · 補充まで %02d:%02d:%02d"
+
+msgid "Two free claw tickets refill 24 hours after the first is used. Unused free tickets don't stack."
+msgstr "最初の無料チケットを使ってから24時間後に2枚補充されます。未使用分は持ち越せません。"
+
+msgid "Win outfits, boxes and rooms. Two free claw tickets refill together!"
+msgstr "きぐるみや箱、おへやが当たるよ。無料チケットは2枚まとめて補充されるよ！"
+
+msgid "Beans are also earned by playing. Two free Kinu Claw tickets refill together every 24 hours after the first is used; unused free tickets expire.\nRestore Purchases recovers Remove Ads; spent consumables aren't restored."
+msgstr "まめはプレイでも手に入るよ。きぬクローの無料チケットは最初の1枚を使ってから24時間後に2枚補充され、未使用分は持ち越せないよ。\n「購入を復元」で広告削除は元に戻せるけど、使った消耗品は戻らないよ。"
+
+# Save and recent UI text
+msgid "iCloud Save"
+msgstr "iCloudセーブ"
+
+msgid "Save Conflict"
+msgstr "セーブの競合"
+
+msgid "Your iPhone and iCloud have different progress. Choose which to keep."
+msgstr "iPhoneとiCloudの進行状況が異なります。残す方を選んでください。"
+
+msgid "Keep iPhone Save"
+msgstr "iPhoneのセーブを残す"
+
+msgid "Use iCloud Save"
+msgstr "iCloudのセーブを使う"
+
+msgid "Sync Now"
+msgstr "今すぐ同期"
+
+msgid "Get tickets"
+msgstr "チケットを入手"
+
+msgid "%d more to beat your best of %s!"
+msgstr "あと%dで自己ベスト%sを更新！"
+
+msgid "iCloud sync is available in the iPhone app."
+msgstr "iCloud同期はiPhoneアプリで利用できます。"
+
+msgid "Checking iCloud sync…"
+msgstr "iCloud同期を確認中…"
+
+msgid "iCloud sync is unavailable. Progress is saved on this iPhone."
+msgstr "iCloud同期を利用できません。進行状況はこのiPhoneに保存されています。"
+
+msgid "Choose which progress to keep.\nThis iPhone: Best %d · %d runs\niCloud: Best %d · %d runs"
+msgstr "残す進行状況を選んでください。\nこのiPhone：ベスト%d・%d回プレイ\niCloud：ベスト%d・%d回プレイ"
+
+msgid "iCloud progress is ready. Return Home to restore it."
+msgstr "iCloudの進行状況が見つかりました。ホームに戻ると復元します。"
+
+msgid "just now"
+msgstr "たった今"
+
+msgid "1 minute ago"
+msgstr "1分前"
+
+msgid "%d minutes ago"
+msgstr "%d分前"
+
+msgid "Progress sent to iCloud sync %s."
+msgstr "進行状況を%sにiCloudへ送信しました。"
+
+msgid "iCloud has a game save. New progress will sync automatically."
+msgstr "iCloudにセーブがあります。新しい進行状況は自動で同期されます。"
+
+msgid "Waiting for the first iCloud sync."
+msgstr "最初のiCloud同期を待っています。"
+
+msgid "Last restored from iCloud: %s"
+msgstr "最後にiCloudから復元：%s"
+
+msgid "Never"
+msgstr "なし"
+
+msgid "Sign in to Game Center to use iCloud saves."
+msgstr "iCloudセーブを使うにはGame Centerにサインインしてください。"
+
+msgid "iCloud saves are available in the iPhone app."
+msgstr "iCloudセーブはiPhoneアプリで利用できます。"
+
+msgid "Sign in to Game Center and turn on iCloud Drive to back up progress."
+msgstr "Game Centerにサインインし、iCloud Driveをオンにすると進行状況をバックアップできます。"
+
+msgid "Checking iCloud for your save…"
+msgstr "iCloudのセーブを確認中…"
+
+msgid "No Game Center iCloud save was found. Progress is only on this iPhone. Back Up Now will create a new cloud save."
+msgstr "Game CenterのiCloudセーブが見つかりません。進行状況はこのiPhoneにのみあります。「今すぐバックアップ」で新しいクラウドセーブを作成します。"
+
+msgid "Backing up to iCloud…"
+msgstr "iCloudへバックアップ中…"
+
+msgid "Waiting to back up recent progress…"
+msgstr "最新の進行状況をバックアップするまで待機中…"
+
+msgid "Backup sent to Game Center iCloud."
+msgstr "Game CenterのiCloudへバックアップを送信しました。"
+
+msgid "Waiting for the first iCloud backup…"
+msgstr "最初のiCloudバックアップを待っています…"
+
+msgid "Last downloaded: %s\nLast backed up: %s"
+msgstr "最後のダウンロード：%s\n最後のバックアップ：%s"
+
+msgid "There is no progress to back up yet. If you expected an older save, do not create a new one."
+msgstr "まだバックアップする進行状況がありません。以前のセーブがあるはずなら、新しいセーブを作成しないでください。"
+
+msgid "iCloud is unavailable. Your progress is still saved on this iPhone."
+msgstr "iCloudを利用できません。進行状況はこのiPhoneに保存されています。"
+
+msgid "Your iCloud save could not be read. This iPhone's save is safe."
+msgstr "iCloudのセーブを読み込めませんでした。このiPhoneのセーブは安全です。"
+
+msgid "Your iCloud save could not be restored. This iPhone's save is safe."
+msgstr "iCloudのセーブを復元できませんでした。このiPhoneのセーブは安全です。"
+
+msgid "iCloud backup failed. Your progress is still saved on this iPhone."
+msgstr "iCloudへのバックアップに失敗しました。進行状況はこのiPhoneに保存されています。"
+
+msgid "iCloud backup could not be verified. Your progress is still saved on this iPhone."
+msgstr "iCloudバックアップを確認できませんでした。進行状況はこのiPhoneに保存されています。"

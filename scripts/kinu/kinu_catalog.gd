@@ -7,6 +7,20 @@ extends Resource
 ## Special looks (gold, crystal...) worn through pattern outfits; Lucky Kinu are always gold.
 @export var finishes: Array[KinuFlavour] = []
 @export var decor: Array[KinuDecor] = []
+## My Kinu parts, defined in KinuParts rather than this resource.
+var parts: Array[KinuPart]:
+	get:
+		return KinuParts.all()
+
+func part(id: String) -> KinuPart:
+	return KinuParts.find(id)
+
+func parts_for(slot: String) -> Array[KinuPart]:
+	var items: Array[KinuPart] = []
+	for item in parts:
+		if item.slot == slot:
+			items.append(item)
+	return items
 
 func finish(id: String) -> KinuFlavour:
 	for item in finishes:

@@ -13,7 +13,7 @@ var _remote_owned: Dictionary = {}
 func _ready() -> void:
 	if not Rewards.configured():
 		return
-	_key_pattern.compile("^(outfit|box|room):[a-z0-9_]+$")
+	_key_pattern.compile("^(outfit|part|box|room):[a-z0-9_]+$")
 	_timer = Timer.new()
 	_timer.one_shot = true
 	_timer.timeout.connect(_flush)

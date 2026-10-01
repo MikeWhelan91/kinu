@@ -112,9 +112,8 @@ func _build_dock() -> void:
 	dock.add_theme_constant_override("separation", 4)
 	add_child(dock)
 	var catalog: KinuCatalog = app.run.catalog
-	var look: KinuFlavour = catalog.pattern(str(Save.data.outfit))
 	var mascot := KinuPreview.new()
-	mascot.setup(catalog.shapes[0], look if look else catalog.flavours[0], true, Vector2i(104, 104), "happy", catalog.outfit(str(Save.data.outfit)))
+	mascot.setup(catalog.shapes[0], MyKinu.mascot_flavour(catalog), true, Vector2i(104, 104), "happy", MyKinu.worn_outfit(catalog), false, false, MyKinu.worn_parts(catalog))
 	mascot.fit_model(1.08, true)
 	var mascot_holder := VBoxContainer.new()
 	mascot_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -159,7 +159,7 @@ func _rebuild_ghost() -> void:
 	if not is_instance_valid(run.active):
 		return
 	var body := run.active
-	var model := KinuModel.build(body.shape, body.look, body.outfit)
+	var model := KinuModel.build(body.shape, body.look, body.outfit, "calm", body.parts)
 	model.name = "KinuGhost"
 	model.transform = Transform3D(Basis.from_scale(Vector3.ONE*body.body_scale), Vector3.ZERO)*body.fit
 	_ghost.add_child(model)

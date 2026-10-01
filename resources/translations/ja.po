@@ -3128,3 +3128,313 @@ msgstr "iCloudへのバックアップに失敗しました。進行状況はこ
 
 msgid "iCloud backup could not be verified. Your progress is still saved on this iPhone."
 msgstr "iCloudバックアップを確認できませんでした。進行状況はこのiPhoneに保存されています。"
+
+# My Kinu
+msgid "My Kinu"
+msgstr "マイきぬ"
+
+msgid "Flavour"
+msgstr "味"
+
+msgid "Body"
+msgstr "からだ"
+
+msgid "Hat"
+msgstr "ぼうし"
+
+msgid "Arms"
+msgstr "うで"
+
+msgid "Glasses"
+msgstr "めがね"
+
+msgid "%s\nLv %d"
+msgstr "%s\nLv %d"
+
+msgid "This slot opens at level %d. Parts you own now are ready to wear then."
+msgstr "このスロットはレベル%dで開きます。持っているパーツはそのとき着られます。"
+
+msgid "Level %d"
+msgstr "レベル%d"
+
+msgid "%d / %d XP · Next: %s"
+msgstr "%d / %d XP・次：%s"
+
+msgid "Every Kinu in your runs looks like this"
+msgstr "プレイ中のきぬはみんなこの姿"
+
+msgid "Wear My Kinu"
+msgstr "マイきぬを着る"
+
+msgid "%s slot"
+msgstr "%sスロット"
+
+msgid "Lv %d"
+msgstr "Lv %d"
+
+msgid "Nothing"
+msgstr "なし"
+
+msgid "Parts"
+msgstr "パーツ"
+
+msgid "Parts dress My Kinu. Wear them once their slot opens."
+msgstr "パーツでマイきぬを着せかえ。スロットが開いたら着られます。"
+
+msgid "%s · Lv %d"
+msgstr "%s・Lv %d"
+
+msgid "Open My Kinu"
+msgstr "マイきぬを開く"
+
+msgid "Buy"
+msgstr "買う"
+
+msgid "Wear it from My Kinu level %d."
+msgstr "マイきぬのレベル%dから着られます。"
+
+msgid "My Kinu · Lv %d"
+msgstr "マイきぬ・Lv %d"
+
+msgid "Tap To Dress Up"
+msgstr "タップで着せかえ"
+
+msgid "My Kinu +%d XP · Level %d"
+msgstr "マイきぬ +%d XP・レベル%d"
+
+msgid "My Kinu reached level %d!"
+msgstr "マイきぬがレベル%dになった！"
+
+msgid "New slot: %s"
+msgstr "新しいスロット：%s"
+
+msgid "New part: %s"
+msgstr "新しいパーツ：%s"
+
+msgid "+%d Catcher tickets"
+msgstr "クローチケット+%d枚"
+
+msgid "+%d level-up beans"
+msgstr "レベルアップのまめ+%d"
+
+msgid "Meet My Kinu! Dress it up in the Wardrobe."
+msgstr "マイきぬ登場！衣装だなで着せかえよう。"
+
+msgid "New My Kinu flavour: %s"
+msgstr "マイきぬの新しい味：%s"
+
+msgid "New My Kinu part"
+msgstr "マイきぬの新しいパーツ"
+
+msgid "Kinu Claw-only part"
+msgstr "きぬクロー限定パーツ"
+
+msgid "My Kinu Parts"
+msgstr "マイきぬパーツ"
+
+msgid "Reach My Kinu level %d to earn this."
+msgstr "マイきぬをレベル%dにするともらえます。"
+
+msgid "Free when My Kinu's %s slot opens at level %d."
+msgstr "マイきぬの%sスロットがレベル%dで開くと無料でもらえます。"
+
+msgid "Worn below the face, so My Kinu's flavour still shows."
+msgstr "顔の下に着るので、マイきぬの味はそのまま見えます。"
+
+msgid "Sits on top of every Kinu you drop."
+msgstr "落とすきぬみんなの頭にのります。"
+
+msgid "Little arms for every Kinu you drop."
+msgstr "落とすきぬみんなに小さなうでを。"
+
+msgid "Sits over the eyes of every Kinu you drop."
+msgstr "落とすきぬみんなの目にかけます。"
+
+msgid "Comfy Tee"
+msgstr "ゆったりTシャツ"
+
+msgid "Sky Tee"
+msgstr "そらいろTシャツ"
+
+msgid "Sailor Stripes"
+msgstr "マリンボーダー"
+
+msgid "Cosy Scarf"
+msgstr "ぬくぬくマフラー"
+
+msgid "Berry Bow Tie"
+msgstr "ベリー蝶ネクタイ"
+
+msgid "Café Apron"
+msgstr "カフェエプロン"
+
+msgid "Mint Hoodie"
+msgstr "ミントパーカー"
+
+msgid "Denim Dungarees"
+msgstr "デニムのサロペット"
+
+msgid "Ballet Tutu"
+msgstr "バレエのチュチュ"
+
+msgid "Swim Ring"
+msgstr "うきわ"
+
+msgid "Club Jersey"
+msgstr "クラブジャージ"
+
+msgid "Work Overalls"
+msgstr "作業つなぎ"
+
+msgid "Shoyu Bib"
+msgstr "しょうゆエプロン"
+
+msgid "Knit Sweater"
+msgstr "ニットセーター"
+
+msgid "Starry Scarf"
+msgstr "星空マフラー"
+
+msgid "Golden Sash"
+msgstr "金の帯"
+
+msgid "Little Beanie"
+msgstr "ちいさなニット帽"
+
+msgid "Sunny Cap"
+msgstr "おひさまキャップ"
+
+msgid "Painter Beret"
+msgstr "画家のベレー帽"
+
+msgid "Party Hat"
+msgstr "パーティー帽"
+
+msgid "Ribbon Bow"
+msgstr "リボン"
+
+msgid "Bucket Hat"
+msgstr "バケットハット"
+
+msgid "Top Hat"
+msgstr "シルクハット"
+
+msgid "Chef's Hat"
+msgstr "コック帽"
+
+msgid "Flower Crown"
+msgstr "花かんむり"
+
+msgid "Straw Hat"
+msgstr "麦わら帽子"
+
+msgid "Witch Hat"
+msgstr "魔女の帽子"
+
+msgid "Royal Crown"
+msgstr "王さまの冠"
+
+msgid "Halo"
+msgstr "天使の輪"
+
+msgid "Champion Cap"
+msgstr "チャンピオンキャップ"
+
+msgid "Lucky Clover"
+msgstr "四つ葉のクローバー"
+
+msgid "Sun Hat"
+msgstr "日よけ帽子"
+
+msgid "Bunny Headband"
+msgstr "うさみみカチューシャ"
+
+msgid "Cat Headband"
+msgstr "ねこみみカチューシャ"
+
+msgid "Propeller Cap"
+msgstr "プロペラ帽"
+
+msgid "Little Arms"
+msgstr "ちいさなうで"
+
+msgid "Cosy Mittens"
+msgstr "ぬくぬくミトン"
+
+msgid "Cartoon Gloves"
+msgstr "まんがの手袋"
+
+msgid "Hello Wave"
+msgstr "やあ！のポーズ"
+
+msgid "Red Balloon"
+msgstr "赤いふうせん"
+
+msgid "Boxing Gloves"
+msgstr "ボクシンググローブ"
+
+msgid "Cheer Pom-poms"
+msgstr "チアのポンポン"
+
+msgid "Little Wings"
+msgstr "ちいさな羽"
+
+msgid "Bubble Wand"
+msgstr "シャボン玉スティック"
+
+msgid "Sparklers"
+msgstr "線香花火"
+
+msgid "Steady Mitts"
+msgstr "しっかりミトン"
+
+msgid "Climber Gloves"
+msgstr "クライマー手袋"
+
+msgid "Victory Flag"
+msgstr "勝利の旗"
+
+msgid "Golden Wings"
+msgstr "金の羽"
+
+msgid "Round Specs"
+msgstr "まるめがね"
+
+msgid "Red Frames"
+msgstr "赤ぶちめがね"
+
+msgid "Star Glasses"
+msgstr "星のめがね"
+
+msgid "Heart Glasses"
+msgstr "ハートのめがね"
+
+msgid "Thick Frames"
+msgstr "太ぶちめがね"
+
+msgid "Cool Shades"
+msgstr "クールなサングラス"
+
+msgid "Monocle"
+msgstr "片めがね"
+
+msgid "Swim Goggles"
+msgstr "水泳ゴーグル"
+
+msgid "3D Glasses"
+msgstr "3Dめがね"
+
+msgid "Cat-eye Glasses"
+msgstr "キャットアイめがね"
+
+msgid "Taster's Specs"
+msgstr "味見のめがね"
+
+msgid "Planner Glasses"
+msgstr "計画家のめがね"
+
+msgid "Golden Specs"
+msgstr "金のめがね"
+
+msgid "Star Shades"
+msgstr "星のサングラス"

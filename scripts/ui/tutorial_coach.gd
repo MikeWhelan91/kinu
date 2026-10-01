@@ -37,9 +37,8 @@ func build(owner: Node, safe_bottom: float) -> void:
 	mascot_holder.alignment = BoxContainer.ALIGNMENT_END
 	dock.add_child(mascot_holder)
 	var catalog: KinuCatalog = app.run.catalog
-	var look: KinuFlavour = catalog.pattern(str(Save.data.outfit))
 	var mascot := KinuPreview.new()
-	mascot.setup(catalog.shapes[0], look if look else catalog.flavours[0], true, Vector2i(118, 118), "happy", catalog.outfit(str(Save.data.outfit)))
+	mascot.setup(catalog.shapes[0], MyKinu.mascot_flavour(catalog), true, Vector2i(118, 118), "happy", MyKinu.worn_outfit(catalog), false, false, MyKinu.worn_parts(catalog))
 	mascot.fit_model(1.08, true)
 	mascot_holder.add_child(mascot)
 	var bubble := SpeechBubble.new()

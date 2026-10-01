@@ -1,5 +1,6 @@
-Godot 4.7.2-stable (official)
-Checks: 2747
-Failures: 0
+Godot 4.7-stable (official)
+Checks: 3561
+Failures: 1
 Best bot tower: 45
-Simulated seconds: 193.55
+Simulated seconds: 221.633333333333
+an old save's marked daily mission is cleared on open

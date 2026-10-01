@@ -43,6 +43,7 @@ var run_time: float = 0.0
 var squirts_used: int = 0
 var glazed: int = 0
 var new_flavours: int = 0
+var run_id: String = ""
 ## Successful placements at the most recent discovery, used to keep discoveries feeling special.
 var last_new_flavour_placed: int = -NEW_FLAVOUR_GAP
 var shape_counts: Dictionary = {}
@@ -348,8 +349,9 @@ func show_menu() -> void:
 ## Builds one gripped home-screen arrangement at `origin`, from [shape, flavour, offset, yaw] rows.
 func _tableau(group: String, origin: Vector3, pile: Array) -> void:
 	for entry in pile:
-		# The home tableau previews the actual run: every Kinu wears the equipped outfit.
-		var body := make_body(_shape(entry[0]), _flavour(entry[1]))
+		# The home tableau previews the actual run: every Kinu wears the equipped outfit, or is
+		# My Kinu's flavour wearing its parts.
+		var body := make_body(_shape(entry[0]), MyKinu.base(catalog) if MyKinu.active() else _flavour(entry[1]))
 		body.position = origin+(entry[2] as Vector3)
 		body.rotation.y = entry[3]
 		body.scored = true
@@ -428,6 +430,8 @@ static func best_for(id: String) -> int:
 
 func begin() -> void:
 	mode = chosen_mode()
+	# Identifies this run's results so its My Kinu XP can only ever be paid once.
+	run_id = "%d-%d-%d" % [int(Time.get_unix_time_from_system()), Time.get_ticks_usec(), rng.randi()]
 	refresh_decor(mode == "toss")
 	_clear()
 	_set_stage()
@@ -521,6 +525,9 @@ func choose_next() -> void:
 ## Pick familiar flavours normally, then occasionally draw from the unseen pool once the run has
 ## warmed up. The active check prevents two discoveries being queued back-to-back.
 func _choose_flavour() -> KinuFlavour:
+	# My Kinu is one flavour: every Kinu dropped is its chosen base.
+	if MyKinu.active():
+		return MyKinu.base(catalog)
 	var pool := flavour_mix()
 	var known: Array[KinuFlavour] = []
 	var unseen: Array[KinuFlavour] = []
@@ -584,7 +591,7 @@ func _weighted(weights: Array[float]) -> int:
 ## The pattern a Kinu of this flavour wears, or null. A flavour not found yet always shows itself,
 ## so the "New flavour" moment matches what lands in the box.
 func pattern_for(flavour: KinuFlavour) -> KinuFlavour:
-	return catalog.pattern(str(Save.data.outfit)) if Save.flavour_found(flavour) else null
+	return MyKinu.worn_pattern(catalog) if Save.flavour_found(flavour) else null
 
 ## Every Kinu wears the equipped outfit: a costume, or a pattern outfit's look over its flavour.
 func make_body(shape: KinuShape, flavour: KinuFlavour, special: String = "", wear_outfit: bool = true, play_scale: float = 1.0) -> KinuBody:
@@ -592,7 +599,8 @@ func make_body(shape: KinuShape, flavour: KinuFlavour, special: String = "", wea
 	var finish: KinuFlavour = pattern_for(flavour) if wear_outfit else null
 	if special == "lucky":
 		finish = catalog.finish("gold")
-	body.setup(shape, flavour, catalog.outfit(str(Save.data.outfit)) if wear_outfit else null, finish, minf(play_scale, TINY_SCALE) if special == "tiny" else play_scale)
+	var parts: Array[KinuPart] = MyKinu.worn_parts(catalog) if wear_outfit else ([] as Array[KinuPart])
+	body.setup(shape, flavour, MyKinu.worn_outfit(catalog) if wear_outfit else null, finish, minf(play_scale, TINY_SCALE) if special == "tiny" else play_scale, parts)
 	if special == "sticky":
 		body.make_sticky()
 	body.mark_special(special)
@@ -1124,7 +1132,7 @@ func _rebuild_landing_ghost() -> void:
 		shadow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		marker.add_child(shadow)
 		return
-	var ghost := KinuModel.build(active.shape, active.look, active.outfit)
+	var ghost := KinuModel.build(active.shape, active.look, active.outfit, "calm", active.parts)
 	ghost.name = "KinuGhost"
 	ghost.transform = Transform3D(Basis.from_scale(Vector3.ONE*active.body_scale), Vector3.ZERO)*active.fit
 	marker.add_child(ghost)
@@ -1309,7 +1317,7 @@ func end() -> void:
 
 ## Everything the results screen, lifetime stats and daily missions need about this run.
 func summary() -> Dictionary:
-	return {"mode": mode, "pile": placed if mode == "toss" else pile_count(), "boxes": boxes_filled, "distance": longest_cm, "score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "dressed": str(Save.data.outfit) != "", "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
+	return {"mode": mode, "pile": placed if mode == "toss" else pile_count(), "boxes": boxes_filled, "distance": longest_cm, "score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "run_id": run_id, "dressed": MyKinu.dressed(catalog), "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
 
 func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if menu_mode or state == "over":

@@ -3128,3 +3128,313 @@ msgstr "iCloud 備份失敗。進度仍儲存在這支 iPhone 上。"
 
 msgid "iCloud backup could not be verified. Your progress is still saved on this iPhone."
 msgstr "無法驗證 iCloud 備份。進度仍儲存在這支 iPhone 上。"
+
+# My Kinu
+msgid "My Kinu"
+msgstr "我的小絹"
+
+msgid "Flavour"
+msgstr "口味"
+
+msgid "Body"
+msgstr "身體"
+
+msgid "Hat"
+msgstr "帽子"
+
+msgid "Arms"
+msgstr "手臂"
+
+msgid "Glasses"
+msgstr "眼鏡"
+
+msgid "%s\nLv %d"
+msgstr "%s\nLv %d"
+
+msgid "This slot opens at level %d. Parts you own now are ready to wear then."
+msgstr "這個欄位在等級 %d 開放。已擁有的配件到時就能穿上。"
+
+msgid "Level %d"
+msgstr "等級 %d"
+
+msgid "%d / %d XP · Next: %s"
+msgstr "%d / %d XP・下一個：%s"
+
+msgid "Every Kinu in your runs looks like this"
+msgstr "遊戲中的小絹都會是這個模樣"
+
+msgid "Wear My Kinu"
+msgstr "穿上我的小絹"
+
+msgid "%s slot"
+msgstr "%s欄位"
+
+msgid "Lv %d"
+msgstr "Lv %d"
+
+msgid "Nothing"
+msgstr "不穿"
+
+msgid "Parts"
+msgstr "配件"
+
+msgid "Parts dress My Kinu. Wear them once their slot opens."
+msgstr "用配件打扮我的小絹。欄位開放後就能穿上。"
+
+msgid "%s · Lv %d"
+msgstr "%s・Lv %d"
+
+msgid "Open My Kinu"
+msgstr "打開我的小絹"
+
+msgid "Buy"
+msgstr "購買"
+
+msgid "Wear it from My Kinu level %d."
+msgstr "我的小絹等級 %d 起可以穿上。"
+
+msgid "My Kinu · Lv %d"
+msgstr "我的小絹・Lv %d"
+
+msgid "Tap To Dress Up"
+msgstr "點一下打扮"
+
+msgid "My Kinu +%d XP · Level %d"
+msgstr "我的小絹 +%d XP・等級 %d"
+
+msgid "My Kinu reached level %d!"
+msgstr "我的小絹升到等級 %d！"
+
+msgid "New slot: %s"
+msgstr "新欄位：%s"
+
+msgid "New part: %s"
+msgstr "新配件：%s"
+
+msgid "+%d Catcher tickets"
+msgstr "夾爪代幣 +%d 枚"
+
+msgid "+%d level-up beans"
+msgstr "升級豆豆 +%d"
+
+msgid "Meet My Kinu! Dress it up in the Wardrobe."
+msgstr "我的小絹登場！到衣櫃幫它打扮吧。"
+
+msgid "New My Kinu flavour: %s"
+msgstr "我的小絹新口味：%s"
+
+msgid "New My Kinu part"
+msgstr "我的小絹新配件"
+
+msgid "Kinu Claw-only part"
+msgstr "小絹夾爪限定配件"
+
+msgid "My Kinu Parts"
+msgstr "我的小絹配件"
+
+msgid "Reach My Kinu level %d to earn this."
+msgstr "我的小絹升到等級 %d 就能獲得。"
+
+msgid "Free when My Kinu's %s slot opens at level %d."
+msgstr "我的小絹的%s欄位在等級 %d 開放時免費獲得。"
+
+msgid "Worn below the face, so My Kinu's flavour still shows."
+msgstr "穿在臉的下方，所以我的小絹的口味依然看得見。"
+
+msgid "Sits on top of every Kinu you drop."
+msgstr "戴在每個落下的小絹頭上。"
+
+msgid "Little arms for every Kinu you drop."
+msgstr "讓每個落下的小絹都有小手臂。"
+
+msgid "Sits over the eyes of every Kinu you drop."
+msgstr "戴在每個落下的小絹眼睛上。"
+
+msgid "Comfy Tee"
+msgstr "舒適T恤"
+
+msgid "Sky Tee"
+msgstr "天空藍T恤"
+
+msgid "Sailor Stripes"
+msgstr "水手條紋"
+
+msgid "Cosy Scarf"
+msgstr "暖暖圍巾"
+
+msgid "Berry Bow Tie"
+msgstr "莓果領結"
+
+msgid "Café Apron"
+msgstr "咖啡廳圍裙"
+
+msgid "Mint Hoodie"
+msgstr "薄荷連帽衫"
+
+msgid "Denim Dungarees"
+msgstr "丹寧吊帶褲"
+
+msgid "Ballet Tutu"
+msgstr "芭蕾舞裙"
+
+msgid "Swim Ring"
+msgstr "游泳圈"
+
+msgid "Club Jersey"
+msgstr "球隊球衣"
+
+msgid "Work Overalls"
+msgstr "工作吊帶褲"
+
+msgid "Shoyu Bib"
+msgstr "醬油圍兜"
+
+msgid "Knit Sweater"
+msgstr "針織毛衣"
+
+msgid "Starry Scarf"
+msgstr "星空圍巾"
+
+msgid "Golden Sash"
+msgstr "金色腰帶"
+
+msgid "Little Beanie"
+msgstr "小毛帽"
+
+msgid "Sunny Cap"
+msgstr "陽光棒球帽"
+
+msgid "Painter Beret"
+msgstr "畫家貝雷帽"
+
+msgid "Party Hat"
+msgstr "派對帽"
+
+msgid "Ribbon Bow"
+msgstr "蝴蝶結"
+
+msgid "Bucket Hat"
+msgstr "漁夫帽"
+
+msgid "Top Hat"
+msgstr "高禮帽"
+
+msgid "Chef's Hat"
+msgstr "廚師帽"
+
+msgid "Flower Crown"
+msgstr "花冠"
+
+msgid "Straw Hat"
+msgstr "草帽"
+
+msgid "Witch Hat"
+msgstr "魔女帽"
+
+msgid "Royal Crown"
+msgstr "皇冠"
+
+msgid "Halo"
+msgstr "天使光環"
+
+msgid "Champion Cap"
+msgstr "冠軍棒球帽"
+
+msgid "Lucky Clover"
+msgstr "幸運草"
+
+msgid "Sun Hat"
+msgstr "遮陽帽"
+
+msgid "Bunny Headband"
+msgstr "兔耳髮箍"
+
+msgid "Cat Headband"
+msgstr "貓耳髮箍"
+
+msgid "Propeller Cap"
+msgstr "竹蜻蜓帽"
+
+msgid "Little Arms"
+msgstr "小手臂"
+
+msgid "Cosy Mittens"
+msgstr "暖暖連指手套"
+
+msgid "Cartoon Gloves"
+msgstr "卡通手套"
+
+msgid "Hello Wave"
+msgstr "揮手打招呼"
+
+msgid "Red Balloon"
+msgstr "紅氣球"
+
+msgid "Boxing Gloves"
+msgstr "拳擊手套"
+
+msgid "Cheer Pom-poms"
+msgstr "啦啦隊彩球"
+
+msgid "Little Wings"
+msgstr "小翅膀"
+
+msgid "Bubble Wand"
+msgstr "泡泡棒"
+
+msgid "Sparklers"
+msgstr "仙女棒"
+
+msgid "Steady Mitts"
+msgstr "穩穩連指手套"
+
+msgid "Climber Gloves"
+msgstr "攀岩手套"
+
+msgid "Victory Flag"
+msgstr "勝利旗"
+
+msgid "Golden Wings"
+msgstr "金色翅膀"
+
+msgid "Round Specs"
+msgstr "圓框眼鏡"
+
+msgid "Red Frames"
+msgstr "紅框眼鏡"
+
+msgid "Star Glasses"
+msgstr "星星眼鏡"
+
+msgid "Heart Glasses"
+msgstr "愛心眼鏡"
+
+msgid "Thick Frames"
+msgstr "粗框眼鏡"
+
+msgid "Cool Shades"
+msgstr "酷炫墨鏡"
+
+msgid "Monocle"
+msgstr "單片眼鏡"
+
+msgid "Swim Goggles"
+msgstr "泳鏡"
+
+msgid "3D Glasses"
+msgstr "3D眼鏡"
+
+msgid "Cat-eye Glasses"
+msgstr "貓眼眼鏡"
+
+msgid "Taster's Specs"
+msgstr "試吃眼鏡"
+
+msgid "Planner Glasses"
+msgstr "計畫家眼鏡"
+
+msgid "Golden Specs"
+msgstr "金框眼鏡"
+
+msgid "Star Shades"
+msgstr "星星墨鏡"

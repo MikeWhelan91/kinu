@@ -30,12 +30,19 @@ ticket per day.
 
 ## Catcher balance
 
-- A normal play has a fixed 6% cosmetic chance, regardless of catalogue size.
-- Cosmetic wins roll rarity at 78% common, 17% rare, 4% epic and 1% legendary,
+- A normal play has a fixed 15% cosmetic chance, regardless of catalogue size.
+  It rose from 10% when My Kinu parts joined the machine; the extra share comes
+  out of bean prizes only.
+- Cosmetic wins roll rarity at 55% common, 25% rare, 13% epic and 7% legendary,
   renormalising only if a rarity has no unowned prizes left.
-- After 19 consecutive bean prizes, play 20 is guaranteed to be an unowned item.
-- Owned cosmetics leave the pool. Forty Catcher-exclusive outfits currently
-  provide 30 common and 10 rare designs, all visible in the Kinu Book.
+- After 9 consecutive plays without an item, play 10 is guaranteed to be an
+  unowned item (previously play 15).
+- Owned cosmetics leave the pool. The pool holds shop and Catcher-only outfits,
+  boxes and rooms, plus the 32 shop My Kinu parts and 8 Catcher-only parts. Part
+  starters, level rewards and goal parts are never in the machine.
+- With these settings `tools/simulate_claw_economy.py` (two free plays a day)
+  puts the median time to collect the whole pool, parts included, at 243 days,
+  against 259 days for the smaller pool at the old 10% / play-15 settings.
 
 Remove Ads is wired for delivery, refund handling, and restoration, but sales
 are disabled with `Store.ADS_ENABLED` until a real ad integration is present.

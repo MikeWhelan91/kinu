@@ -312,14 +312,12 @@ static func pause(app: Node) -> void:
 ## The sign's Kinu wears the player's outfit and takes the look of the given piece, if any.
 static func _mascot(app: Node, body: KinuBody, mood: String) -> CenterContainer:
 	var shape: KinuShape = app.run.catalog.shapes[0]
-	var look: KinuFlavour = app.run.catalog.pattern(str(Save.data.outfit))
-	if not look:
-		look = app.run.catalog.flavours[0]
+	var look: KinuFlavour = MyKinu.mascot_flavour(app.run.catalog)
 	if is_instance_valid(body):
 		shape = body.shape
 		look = body.look
 	var mascot := KinuPreview.new()
-	mascot.setup(shape,look,true,Vector2i(200,130),mood,app.run.catalog.outfit(str(Save.data.outfit)))
+	mascot.setup(shape,look,true,Vector2i(200,130),mood,MyKinu.worn_outfit(app.run.catalog),false,false,MyKinu.worn_parts(app.run.catalog))
 	mascot.fit_model(1.1,true)
 	var row := CenterContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -426,9 +424,39 @@ static func results(app: Node, stats: Dictionary) -> void:
 	var bean_label := bean_pill.find_children("*","Label",true,false)
 	if not bean_label.is_empty():
 		_count_up(app,bean_label[0],earned,beat,func(value: int) -> String: return NestTheme.t("+%d beans")%value)
+	# My Kinu's XP from this run, then what any new level brought.
+	var growth: Dictionary = stats.get("my_kinu", {})
+	if not growth.is_empty():
+		var xp_box: VBoxContainer = app._vbox(column,2)
+		xp_box.name = "MyKinuXP"
+		var after := int(growth.level_after)
+		var progress := MyKinu.progress_for(MyKinu.xp())
+		app._center_label(xp_box,NestTheme.t("My Kinu +%d XP · Level %d")%[int(growth.xp),after],15,NestTheme.MUTED)
+		xp_box.add_child(NestTheme.progress(progress[0],progress[1]))
+		beat += .24
+		_reveal(app,xp_box,beat)
 	var news: Array[String] = []
+	if not growth.is_empty() and int(growth.level_after) > int(growth.level_before):
+		news.append(NestTheme.t("My Kinu reached level %d!")%int(growth.level_after))
+		var gifts: Dictionary = growth.rewards
+		for slot in gifts.slots:
+			news.append(NestTheme.t("New slot: %s")%NestTheme.t(MyKinu.SLOT_NAMES[slot]))
+		var names: Array[String] = []
+		for part in gifts.parts:
+			names.append(part.display_name)
+		if not names.is_empty():
+			news.append(NestTheme.t("New part: %s")%NestTheme.t_join(names))
+		if int(gifts.tickets) > 0:
+			news.append(NestTheme.t("+%d Catcher tickets")%int(gifts.tickets))
+		if int(gifts.beans) > 0:
+			news.append(NestTheme.t("+%d level-up beans")%int(gifts.beans))
+	# My Kinu is introduced once, on the results of the first run that has it.
+	if not bool(Save.data.my_kinu.intro_seen):
+		Save.data.my_kinu.intro_seen = true
+		Save.persist()
+		news.append(NestTheme.t("Meet My Kinu! Dress it up in the Wardrobe."))
 	if not unlocked.is_empty():
-		news.append(NestTheme.t("New flavour: %s")%NestTheme.t_join(unlocked))
+		news.append(NestTheme.t("New My Kinu flavour: %s")%NestTheme.t_join(unlocked) if MyKinu.active() else NestTheme.t("New flavour: %s")%NestTheme.t_join(unlocked))
 	if not rewards.is_empty():
 		news.append(NestTheme.t("Earned: %s")%NestTheme.t_join(rewards))
 	for id in new_modes:

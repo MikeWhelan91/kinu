@@ -89,7 +89,9 @@ static func show(app: Node, layout: VBoxContainer) -> void:
 	var by_outfit := []
 	for id in Save.data.outfit_best:
 		var outfit := catalog.outfit(id) if id != "" else null
-		if outfit or id == "":
+		if id == MyKinu.RECORD_KEY:
+			by_outfit.append(["My Kinu", int(Save.data.outfit_best[id])])
+		elif outfit or id == "":
 			by_outfit.append([outfit.display_name if outfit else "No Outfit", int(Save.data.outfit_best[id])])
 	_best_board(app, list, "Best Pile By Outfit", by_outfit)
 

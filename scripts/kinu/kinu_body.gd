@@ -25,6 +25,8 @@ var flavour: KinuFlavour
 ## What the Kinu looks like: its flavour, or the costume finish being worn over it.
 var look: KinuFlavour
 var outfit: KinuOutfit
+## My Kinu parts drawn over this Kinu. Visual only, like the outfit.
+var parts: Array[KinuPart] = []
 ## Extra transform on the visual: identity, or KinuModel.ghost_fit for a Kinu wearing the ghost.
 var fit := Transform3D.IDENTITY
 ## "", "lucky" or "heart". A floating badge marks special Kinu until they settle.
@@ -68,7 +70,7 @@ var last_position := Vector3.ZERO
 var last_velocity := Vector3.ZERO
 var breath_phase: float = 0.0
 
-func setup(kinu_shape: KinuShape, kinu_flavour: KinuFlavour, kinu_outfit: KinuOutfit = null, finish: KinuFlavour = null, size_scale: float = 1.0) -> void:
+func setup(kinu_shape: KinuShape, kinu_flavour: KinuFlavour, kinu_outfit: KinuOutfit = null, finish: KinuFlavour = null, size_scale: float = 1.0, kinu_parts: Array[KinuPart] = []) -> void:
 	shape = kinu_shape
 	body_scale = SCALE*size_scale
 	flavour = kinu_flavour
@@ -86,7 +88,10 @@ func setup(kinu_shape: KinuShape, kinu_flavour: KinuFlavour, kinu_outfit: KinuOu
 	collision_layer = 2
 	collision_mask = 3
 	freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
-	visual = KinuModel.build(shape, look, outfit)
+	parts.clear()
+	if not outfit:
+		parts.assign(kinu_parts)
+	visual = KinuModel.build(shape, look, outfit, "calm", parts)
 	if outfit and outfit.style == "ghost":
 		fit = KinuModel.ghost_fit(shape)
 	add_child(visual)

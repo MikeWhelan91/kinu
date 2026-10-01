@@ -24,7 +24,18 @@ static func home(app: Node) -> void:
 	front.decor = app.run.room.decor
 	app.screen.add_child(front)
 	app.screen.move_child(front,1)
-	var play = _home_action_button("Play", NestTheme.SUN, func() -> void:
+	# Play is the home screen's hero: the same prize-cabinet style as My Kinu and the Claw, in sun
+	# gold, with a pulsing play badge.
+	var play := GachaButton.new()
+	play.name = "Play"
+	play.icon_kind = "play"
+	play.centered = true
+	play.title_size = 36
+	play.title_text = NestTheme.t("Play")
+	play.top_color = Color("ffe066")
+	play.bottom_color = Color("f59e1b")
+	play.edge_color = Color("8a5310")
+	_gacha_press(play,"tap",func() -> void:
 		Sound.play("homeplay")
 		app._start()
 		# The shop front parts over the new play screen as the game begins.
@@ -37,7 +48,7 @@ static func home(app: Node) -> void:
 		_curtain_button(exit,"Wardrobe","wardrobe",Callable(),1)
 		_curtain_button(exit,"Kinu Book","book",Callable(),2)
 		_curtain_button(exit,"Daily","daily",Callable(),3)
-	,82,"",true)
+	)
 	# Each noren panel doubles as a navigation tab, making the controls part of the shop front.
 	_curtain_button(front,"Shop","shop",app._shop,0,"cashregister")
 	_curtain_button(front,"Wardrobe","wardrobe",app._wardrobe,1,"wardrobe")
@@ -373,7 +384,8 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> f
 	panel.add_child(stack)
 	var head := HBoxContainer.new()
 	head.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	head.add_theme_constant_override("separation",8)
+	head.alignment = BoxContainer.ALIGNMENT_CENTER
+	head.add_theme_constant_override("separation",14)
 	stack.add_child(head)
 	var face := KinuPreview.new()
 	face.setup(app.run.catalog.shapes[0],MyKinu.base(app.run.catalog),true,Vector2i(58,48),"happy",null,true,false,MyKinu.equipped(app.run.catalog))
@@ -383,7 +395,6 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> f
 	names.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	names.alignment = BoxContainer.ALIGNMENT_CENTER
 	names.add_theme_constant_override("separation",-4)
-	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(names)
 	names.add_child(NestTheme.label(NestTheme.t("My Kinu"),14,NestTheme.MUTED))
 	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,22,Color("8f6bea"))

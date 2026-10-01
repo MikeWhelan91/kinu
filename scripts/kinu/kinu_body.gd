@@ -206,6 +206,11 @@ func stick() -> void:
 	grip.call_deferred()
 	poke(2.0)
 
+## Glue only binds onto the pile: the other Kinu must already be gripped in place, and neither
+## may have fallen. Two Kinu meeting mid-fall would otherwise freeze together off the board.
+func can_glue_to(other: KinuBody) -> bool:
+	return (sticky or other.sticky) and other.gripped and not fallen and not other.fallen and has_vertical_glue_contact(other)
+
 ## Glue belongs on the horizontal faces. The generous threshold tolerates the squash of an impact,
 ## while keeping a side brush or a leaning collision as normal physics.
 func has_vertical_glue_contact(other: KinuBody) -> bool:
@@ -341,7 +346,7 @@ static func is_over_support(com: Vector2, points: PackedVector2Array) -> bool:
 func _contact(other: Node) -> void:
 	if other.is_in_group(TofuShop.GROUND_GROUP):
 		touched_ground = true
-	elif not freeze and not stuck and age > .05 and other is KinuBody and has_vertical_glue_contact(other) and (sticky or other.sticky):
+	elif not freeze and not stuck and age > .05 and other is KinuBody and can_glue_to(other):
 		# Syrup binds top-to-bottom only. A Sticky Kinu can make a dependable ledge, but side
 		# collisions remain real physics instead of creating accidental floating scaffolds.
 		stick()

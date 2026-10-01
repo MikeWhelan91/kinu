@@ -701,8 +701,10 @@ func _physics_process(delta: float) -> void:
 			end()
 		return
 	for body in bodies:
-		# Ground contact counts even for a gripped (frozen) piece resting against the nest.
-		if not body.fallen and body != active and (body.touched_ground or (not body.freeze and is_fallen(body))):
+		# Ground contact counts even for a gripped (frozen) piece resting against the nest, and so
+		# does ending up off the plate or out of the box: a piece frozen there by glue or a grip
+		# is still off the pile.
+		if not body.fallen and body != active and (body.touched_ground or is_fallen(body)):
 			_fall(body)
 			if state == "falling":
 				return

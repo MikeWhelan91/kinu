@@ -230,6 +230,8 @@ class GachaIcon extends Control:
 				_again(s, t)
 			"home":
 				_home(s, t)
+			"play":
+				_play(s, t)
 			_:
 				_kinu(s, t)
 
@@ -250,6 +252,20 @@ class GachaIcon extends Control:
 		_outlined(MyKinuScreen.rounded_points(cube, s*.06), owner_button.kinu_color, 2.5)
 		for side in [-1.0, 1.0]:
 			draw_circle(centre+Vector2(side*s*.05, -s*.01), s*.022, NestTheme.INK)
+
+	## A glossy play badge that breathes, with a ring of light pulsing out from it.
+	func _play(s: float, t: float) -> void:
+		var centre := Vector2(s*.5, s*.5)
+		var beat := .5+.5*sin(t*3.0)
+		var r := s*(.38+.02*beat)
+		draw_arc(centre, r+s*.06+s*.06*fmod(t*.8, 1.0), 0, TAU, 40, Color(1, 1, 1, .5*(1.0-fmod(t*.8, 1.0))), 3.0, true)
+		draw_circle(centre+Vector2(0, 3), r, Color(0, 0, 0, .2))
+		draw_circle(centre, r+2.5, NestTheme.INK)
+		draw_circle(centre, r, NestTheme.CREAM)
+		draw_circle(centre, r*.8, Color("ff6b8f"))
+		draw_arc(centre, r*.62, PI*1.1, PI*1.55, 10, Color(1, 1, 1, .6), 3.0, true)
+		var tri := PackedVector2Array([centre+Vector2(-r*.26, -r*.38), centre+Vector2(r*.44, 0), centre+Vector2(-r*.26, r*.38)])
+		_outlined(tri, NestTheme.CREAM, 2.5)
 
 	## A little shop front with a noren curtain.
 	func _home(s: float, t: float) -> void:

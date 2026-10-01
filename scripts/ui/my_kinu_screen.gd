@@ -221,14 +221,10 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 	var catalog: KinuCatalog = app.run.catalog
 	app._new_screen("my_kinu", true)
 	var layout: VBoxContainer = app._header("My Kinu", back)
-	var scroll := DragScroll.new()
-	layout.add_child(scroll)
-	KinuShopScreen.remember_scroll(scroll, "my_kinu")
-	var list: VBoxContainer = app._vbox(scroll, 16)
-	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	layout.add_theme_constant_override("separation", 10)
+	# The showcase and the slot sockets stay put; only the item list below them scrolls.
 	var hero := _hero(app, catalog)
-	list.add_child(hero)
-	scroll.drag_exclusion = hero.find_child("MyKinuPreview", true, false) as Control
+	layout.add_child(hero)
 	if not MyKinu.active():
 		var wear := NestTheme.button("Wear My Kinu In Runs", func() -> void:
 			MyKinu.wear(catalog, true)
@@ -236,9 +232,16 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 			show(app)
 		, true, "wardrobe")
 		wear.name = "WearMyKinu"
-		wear.custom_minimum_size.y = 64
-		list.add_child(wear)
-	list.add_child(_sockets(app, catalog))
+		wear.custom_minimum_size.y = 56
+		layout.add_child(wear)
+	layout.add_child(_sockets(app, catalog))
+	var scroll := DragScroll.new()
+	scroll.name = "MyKinuItems"
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layout.add_child(scroll)
+	KinuShopScreen.remember_scroll(scroll, "my_kinu:"+tab)
+	var list: VBoxContainer = app._vbox(scroll, 14)
+	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	list.add_child(_section_title(catalog))
 	var grid := GridContainer.new()
 	grid.columns = 3
@@ -278,14 +281,14 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 ## The showcase card: live model on the pedestal, shape switcher, nameplate and level progress.
 static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 	var screen_size: Vector2 = app.get_viewport().get_visible_rect().size
-	var stage_height := float(clampi(int(screen_size.y*.33), 250, 330))
+	var stage_height := float(clampi(int(screen_size.y*.23), 170, 240))
 	var card := ShowcaseCard.new()
 	card.name = "MyKinuHero"
 	card.stage_height = stage_height
 	card.level = MyKinu.level()
 	card.badge = MyKinu.badge()
 	card.glow = MyKinu.base(catalog).color.lightened(.25)
-	card.custom_minimum_size = Vector2(0, stage_height+150)
+	card.custom_minimum_size = Vector2(0, stage_height+122)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.clip_contents = false
 	var shape: KinuShape = catalog.shapes[shape_index % catalog.shapes.size()]
@@ -352,10 +355,10 @@ static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 	plate.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	plate.offset_left = 30
 	plate.offset_right = -30
-	plate.offset_top = -138
-	plate.offset_bottom = -28
+	plate.offset_top = -112
+	plate.offset_bottom = -22
 	card.add_child(plate)
-	var name := NestTheme.headline(NestTheme.t("My Kinu"), 30, NestTheme.CREAM)
+	var name := NestTheme.headline(NestTheme.t("My Kinu"), 24, NestTheme.CREAM)
 	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	plate.add_child(name)
 	var subtitle := NestTheme.label(NestTheme.t("%s Kinu")%NestTheme.t(MyKinu.base(catalog).display_name)+"  ·  "+NestTheme.t(shape.display_name), 15, SKY_TEXT)
@@ -414,7 +417,7 @@ static func _sockets(app: Node, catalog: KinuCatalog) -> Control:
 		button.name = "Tab_"+id
 		button.focus_mode = Control.FOCUS_NONE
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.custom_minimum_size = Vector2(0, 104)
+		button.custom_minimum_size = Vector2(0, 86)
 		button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		for state in ["normal", "hover", "pressed", "focus"]:
 			button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
@@ -433,7 +436,7 @@ static func _sockets(app: Node, catalog: KinuCatalog) -> Control:
 		button.add_child(column)
 		var socket := PanelContainer.new()
 		socket.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		socket.custom_minimum_size = Vector2(0, 68)
+		socket.custom_minimum_size = Vector2(0, 58)
 		var style := StyleBoxFlat.new()
 		style.bg_color = Color("fffaf0") if open else Color("e9dccb")
 		style.set_corner_radius_all(20)
@@ -482,7 +485,7 @@ static func _socket_art(catalog: KinuCatalog, id: String, open: bool) -> Control
 		var empty := NestTheme.label("+", 28, Color(NestTheme.MUTED, .7))
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		return empty
-	var mini := part_preview(catalog, part, Vector2i(64, 60))
+	var mini := part_preview(catalog, part, Vector2i(56, 52))
 	mini.fit_model(1.0)
 	return mini
 

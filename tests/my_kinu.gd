@@ -246,7 +246,33 @@ func _appearance() -> void:
 	check(dressed.outfit.id == "frog" and dressed.parts.is_empty() and not dressed.visual.has_node("Parts"), "outfit runs never show parts")
 	run.free()
 
+## Sticky glue only binds onto the settled pile, never between two Kinu still in the air or onto
+## one that has already fallen, which used to freeze tumbled Kinu off the board uncounted.
+func _glue() -> void:
+	var shape: KinuShape = catalog.shapes[0]
+	var sticky := KinuBody.new()
+	sticky.setup(shape, catalog.flavours[0])
+	sticky.make_sticky()
+	var other := KinuBody.new()
+	other.setup(shape, catalog.flavours[0])
+	other.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+	sticky.freeze = true
+	other.freeze = true
+	add_child(sticky)
+	add_child(other)
+	sticky.global_position = Vector3(0, 21.0, 0)
+	other.global_position = Vector3(0, 20.0, 0)
+	other.gripped = false
+	check(not sticky.can_glue_to(other), "a sticky Kinu does not glue to one that is still moving")
+	other.grip()
+	check(sticky.can_glue_to(other), "a sticky Kinu glues onto a settled Kinu below it")
+	other.fallen = true
+	check(not sticky.can_glue_to(other), "a sticky Kinu never glues to a fallen Kinu")
+	sticky.free()
+	other.free()
+
 func _physics() -> void:
+	_glue()
 	# Every part on its own, plus a full four-slot look.
 	var loadouts: Array = []
 	var everything: Array[KinuPart] = []

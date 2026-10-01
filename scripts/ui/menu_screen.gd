@@ -902,11 +902,12 @@ static func results(app: Node, stats: Dictionary) -> void:
 	if bean_value:
 		_count_up(app,bean_value,earned,beat,func(value: int) -> String: return "+%d"%value)
 	beat = _results_kinu_xp(app,column,beat)
+	# One row per unlock, so a big run reads as a list of wins rather than one long sentence.
 	var news: Array[String] = []
-	if not unlocked.is_empty():
-		news.append(NestTheme.t("New My Kinu flavour: %s")%NestTheme.t_join(unlocked) if MyKinu.active() else NestTheme.t("New flavour: %s")%NestTheme.t_join(unlocked))
-	if not rewards.is_empty():
-		news.append(NestTheme.t("Earned: %s")%NestTheme.t_join(rewards))
+	for flavour_name in unlocked:
+		news.append(NestTheme.t("New My Kinu flavour: %s")%NestTheme.t(flavour_name) if MyKinu.active() else NestTheme.t("New flavour: %s")%NestTheme.t(flavour_name))
+	for reward_name in rewards:
+		news.append(NestTheme.t("Earned: %s")%NestTheme.t(reward_name))
 	for id in new_modes:
 		news.append(NestTheme.t("New mode: %s")%NestTheme.t(MODE_NAMES[id]))
 	if missions_done > 0:
@@ -915,7 +916,7 @@ static func results(app: Node, stats: Dictionary) -> void:
 		var news_row := _reward_row(line)
 		column.add_child(news_row)
 		# Each piece of good news lands on its own beat, so three unlocks feel like three wins.
-		beat += .26
+		beat += .26 if news.size() <= 4 else .16
 		_reveal(app,news_row,beat,"special")
 	# What the next run is for. Naming the very next flavour and how close it is turns "play again"
 	# into a specific goal instead of a button.
@@ -978,8 +979,63 @@ static func results(app: Node, stats: Dictionary) -> void:
 	for button in [menu,catcher]:
 		button.custom_minimum_size.y = 70
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_scroll_hint(app,scroll,card)
 	if record:
 		app._confetti()
+
+## A soft fade along the bottom of the results card and a bouncing "More below" tag, shown only
+## while there is more of the card to scroll to, so a big run's rewards are never missed.
+static func _scroll_hint(app: Node, scroll: ScrollContainer, card: FancyCard) -> void:
+	var hint := Control.new()
+	hint.name = "ResultsMoreHint"
+	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hint.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	hint.offset_top = scroll.offset_bottom-64
+	hint.offset_bottom = scroll.offset_bottom
+	app.content.add_child(hint)
+	var fade := TextureRect.new()
+	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(card.bottom_color, 0.0))
+	gradient.set_color(1, Color(card.bottom_color, .95))
+	var texture := GradientTexture2D.new()
+	texture.gradient = gradient
+	texture.fill_from = Vector2(0, 0)
+	texture.fill_to = Vector2(0, 1)
+	fade.texture = texture
+	fade.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	var inner := card.custom_minimum_size.x-26
+	fade.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	fade.offset_left = -inner*.5
+	fade.offset_right = inner*.5
+	fade.offset_top = -64
+	fade.offset_bottom = 0
+	hint.add_child(fade)
+	var tag := NestTheme.pill(NestTheme.t("More below"),15,NestTheme.CREAM)
+	(tag.get_theme_stylebox("panel") as StyleBoxFlat).bg_color = Color("8f6bea")
+	var tag_row := CenterContainer.new()
+	tag_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tag_row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
+	tag_row.offset_top = -40
+	tag_row.offset_bottom = -6
+	tag_row.add_child(tag)
+	hint.add_child(tag_row)
+	var bounce := tag_row.create_tween().set_loops()
+	bounce.tween_property(tag_row,"position:y",tag_row.position.y-5,.45).set_trans(Tween.TRANS_SINE)
+	bounce.tween_property(tag_row,"position:y",tag_row.position.y,.45).set_trans(Tween.TRANS_SINE)
+	hint.visible = false
+	var refresh := func() -> void:
+		if not is_instance_valid(scroll) or not is_instance_valid(hint):
+			return
+		var bar := scroll.get_v_scroll_bar()
+		var more: bool = bar.max_value-bar.page > 8 and scroll.scroll_vertical < bar.max_value-bar.page-8
+		if more != hint.visible:
+			hint.visible = more
+	var clock := Timer.new()
+	clock.wait_time = .1
+	clock.autostart = true
+	clock.timeout.connect(refresh)
+	hint.add_child(clock)
 
 const MODE_NAMES := {"classic": "Classic", "tower": "Tower", "toss": "Toss"}
 const MODE_BLURBS := {"classic": "Fill the box. Six tumbles and you're out.", "tower": "No box, just a plate. Build as tall as you can.", "toss": "Flick Kinu from the pan into the holes in the box. Six misses and you're out."}

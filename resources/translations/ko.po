@@ -3648,3 +3648,6 @@ msgstr "최장"
 
 msgid "Height"
 msgstr "높이"
+
+msgid "More below"
+msgstr "아래에 더 있어요"

@@ -4,3 +4,4 @@ build/
 *.tmp
 *.bak
 export_credentials.cfg
+__pycache__/

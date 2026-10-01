@@ -1,216 +1,275 @@
-# My Kinu: design proposal
+# My Kinu: design
 
-Status: **proposal, awaiting decisions** (see [Decisions needed](#decisions-needed)). Nothing here is implemented.
+Status: **decisions agreed 1 October 2026; ready for stage 1.** Nothing here is implemented yet.
 
-My Kinu is one personal Kinu per player. It levels up from play, unlocks equipment slots (body, hat, arms first), and wears parts the player earns or buys. In the Wardrobe the player picks either **My Kinu** or one of the existing complete outfits. Every Kinu dropped in a run then wears that look. Customisation is visual only.
+My Kinu is one personal Kinu per player. It levels up from play and unlocks four equipment slots: **body, hat, arms and glasses**. The player picks a favourite **flavour as its base** and wears parts over it. In the Wardrobe the player chooses either **My Kinu** or one of the existing complete outfits.
+
+- **My Kinu worn:** every Kinu dropped in a run is the chosen base flavour, wearing the equipped parts. Shapes still vary.
+- **An outfit or No Outfit worn:** runs behave exactly as today, with mixed flavours, in-run discovery and costumes.
+
+Customisation is visual only. It never changes hitboxes, mass, friction, bounce or centre of mass.
 
 ## 1. What exists today
 
 | Area | Where | What matters for My Kinu |
 |---|---|---|
-| Outfit data | `scripts/kinu/kinu_outfit.gd`, `resources/kinu/catalog.tres` (109 outfits) | Complete looks. A *costume* has a `style`, built procedurally. A *pattern outfit* has a `finish` (gold, crystal…) that replaces the body look. Source fields: `price`, `goal`, `crane_only`, `showcase`, `event`, `rarity`, `available`. |
-| Rendering | `KinuModel.build(shape, flavour, outfit, mood)` in `scripts/kinu/kinu_model.gd` | Body mesh cached per `shape/flavour`, costume per `shape/outfit`. Non-`BARE_STYLES` costumes hide the body and add an `ExposedFace` patch in the flavour colour. One style, one monolithic builder; no notion of parts. Side "paw" spheres (`_outfit`, ~line 421) are the nearest thing to arms; base Kinu has none. |
-| Physics | `KinuBody.setup` in `scripts/kinu/kinu_body.gd` | Mass, friction, bounce, hitbox and centre of mass all come from `KinuShape` only. The outfit only changes `visual`. The ghost sheet's `fit` is a visual transform. **Customisation already cannot touch physics if it stays inside `visual`.** |
-| Equipped look | `Save.data.outfit` (one id) | Read in about 10 places: `NestRun.make_body` / `pattern_for`, `toss_play.gd`, the landing ghost, the results/pause mascot, `home_tour.gd`, `tutorial_coach.gd`, the next-piece card in `main.gd`, `outfit_best` records, and `summary().dressed` for the daily "dressed" mission. |
-| Flavours | `kinu_flavour.gd`, 27 flavours | Flavour is **gameplay-visible**: the "New flavour" discovery moment, daily "land N *flavour*" missions, flavour unlocks by best pile. `pattern_for` deliberately applies a pattern outfit only to flavours the player has *found*, so a discovery always shows its true look. |
-| Specials | `make_body` | Lucky forces the gold finish over any outfit. Tiny scales the body. Sticky adds `KinuModel.sticky_coat(shape, outfit)`. Heart adds a badge. |
-| Ownership | `Save.data.owned` (`"kind:id"`), `Save.owns`, `Save.buy` | Kinds are `outfit`, `box` and `room`. Goal items count as owned once their stat is met. Catcher, showcase and event items are owned only when granted. |
-| Shop / Wardrobe | `scripts/ui/kinu_shop.gd`, `scripts/ui/wardrobe_screen.gd` | Shared tabs: Outfits, Boxes, Rooms. The Wardrobe lists owned items plus "No Outfit"; tapping opens a live spin preview with **Wear**. |
-| Catcher | `scripts/systems/kinu_catcher.gd` | 6% cosmetic chance, rarity roll, owned items leave the pool, pity at 20. These odds are published in `docs/purchases.md`. |
-| Run end | `run.end()` → `finished` → `main._results` → `NestMenuScreen.results` → `Save.finish_run` | `finish_run` is the **only** place lifetime progress is recorded. Pause → Restart / Main Menu never reach it (comment at `menu_screen.gd:304`). `end()` guards against running twice. Beans are added by a separate `add_earned_beans` call after `finish_run`. |
-| Save | `scripts/systems/save_manager.gd`, version 5 | `load_data` starts from `defaults()` and copies only known, validated keys, so unknown keys are dropped. Migrations are `version < N` blocks. |
-| Cloud | `cloud_kvs_service.gd`, iCloud KVS, about 2.4 KB snapshot | The snapshot is the whole save minus session and debug keys, so new fields travel automatically. `cloud_snapshot_valid` rejects snapshots from a newer save version. |
-| Supabase inventory | `scripts/systems/inventory_sync.gd`, `supabase/migrations/20260930040000_player_inventory.sql` | Both the client regex and a DB `CHECK` allow only `^(outfit|box|room):`. A new kind is silently not synced until both change. |
+| Outfit data | `scripts/kinu/kinu_outfit.gd`, `resources/kinu/catalog.tres` | 109 complete looks: 40 sold in the shop, 47 Catcher-only, 19 goals, 2 showcase, 1 event. A *costume* is a procedural `style`. A *pattern outfit* has a `finish` (wood, marble, gold, crystal, galaxy) that restyles the body. |
+| Rendering | `KinuModel.build(shape, flavour, outfit, mood)` | Body mesh cached per `shape/flavour`, costume per `shape/outfit`. Each style is one monolithic builder; there are no parts. Base Kinu has no arms; suits add side paw spheres (`_outfit`, ~line 421). |
+| Physics | `KinuBody.setup` | Mass, friction, bounce, hitbox and centre of mass all come from `KinuShape`. Outfits and flavours only change `visual`; `KinuFlavour` has no physical fields. The ghost `fit` is a visual transform. |
+| Equipped look | `Save.data.outfit` | Read in about 10 places: `make_body`/`pattern_for`, Toss, the landing ghost, the next-piece card, the results/pause mascot, the home tour, the tutorial coach, `outfit_best`, and `summary().dressed`. |
+| Flavours | `kinu_flavour.gd`; `NestRun._choose_flavour` | 22 flavours. A flavour unlocks into the spawn mix at a best Classic pile (`unlock_kinu`, 0–70) and is *discovered* when it first drops. Daily "land N *flavour*" missions draw from unlocked flavours. The Kinu Book has a flavour mix toggle (`excluded_flavours`) and a "Find N flavours" goal. |
+| Ownership | `Save.data.owned`, `Save.owns`, `Save.buy` | Keys look like `"kind:id"`, with kinds `outfit`, `box` and `room`. Goal items count as owned once their stat is met. |
+| Run end | `run.end()` → `main._results` → `NestMenuScreen.results` → `Save.finish_run` | `finish_run` is the only place progress is recorded. Pause → Restart / Main Menu never reach it. `end()` refuses to run twice. |
+| Save / cloud | `save_manager.gd` v5; iCloud KVS (about 2.4 KB) | `load_data` copies only known, validated keys. The cloud snapshot is the whole save. `cloud_snapshot_valid` rejects newer versions. |
+| Supabase inventory | `inventory_sync.gd`, `20260930040000_player_inventory.sql` | The client regex and a DB `CHECK` allow only `outfit|box|room`. |
+| Catcher | `kinu_catcher.gd` | **Code:** 10% cosmetic, rarity weights 55/25/13/7, guarantee every 15 plays. `docs/purchases.md` still says 6% / 78-17-4-1 / 20 and is stale; fix it in stage 5. |
 
 ## 2. Player flow
 
-1. **Introduction.** After the player's first finished run (or right away for existing players after the update), the results screen shows "Meet My Kinu" with a Level 1 badge. The body slot is open with a free starter item.
-2. **Results screen.** Every finished run shows an XP bar filling, and a level-up banner when one happens. A level that opens a slot says so ("Hat slot unlocked!") with a **Customise** shortcut. Level rewards (parts, beans) appear in the existing rewards list.
-3. **Wardrobe.** A pinned **My Kinu** card sits first in the Outfits tab, before "No Outfit" and the owned outfits. It shows the assembled look and the level. Tapping it opens the My Kinu screen with a **Wear My Kinu** button. Tapping any other outfit works exactly as now. One card is marked "Wearing".
-4. **My Kinu screen.** A live spin preview at the top, a level and XP bar, and a row of slot chips. Locked slots show "Lv N". Below is a grid of owned parts for the chosen slot, plus "Nothing" for that slot. A flavour/shape preview toggle cycles the preview through shapes and a few found flavours, so the player sees the look across what will actually drop. "Get more in the Shop" links to the Parts tab.
-5. **Shop.** A new **Parts** tab, filtered by slot. Parts for locked slots are visible but marked "Unlocks at Lv N" (see decision D5).
-6. **In a run.** If My Kinu is selected, every Kinu dropped (Classic, Tower, Toss), the landing ghost, the next-piece card and the mascots all render the assembled parts over each Kinu's own shape and flavour.
+1. **Introduction.** New players start with **No Outfit**. After their first finished run, results show "Meet My Kinu". Existing players see it on their first results after updating, with their back-dated level. Nobody's look changes until they choose My Kinu.
+2. **Results.** Every finished run shows the XP gained and the bar filling. A level-up shows its reward ("Glasses slot unlocked!", a part, beans) with a **Customise** button.
+3. **Wardrobe.** A pinned **My Kinu** card comes first in the Outfits tab, before "No Outfit" and the owned outfits. It shows the assembled look on the chosen base and the level. **Wear My Kinu** selects it; tapping any outfit selects that, exactly as today. The previous outfit is remembered.
+4. **My Kinu screen.**
+   - A live spin preview, the level and XP bar, and a "next reward" line.
+   - Five chips: **Flavour**, Body, Hat, Arms, Glasses. Locked chips show "Lv N".
+   - The Flavour chip lists unlocked flavours; locked ones show "Pile N Kinu".
+   - Each slot lists owned parts plus "Nothing". A shape toggle previews the look on all five shapes.
+   - **Get More** opens the shop's Parts tab.
+5. **Shop.** A new **Parts** tab with slot filter chips. Parts for slots not yet unlocked **can be bought**. They show "Wear from Lv N" and go into the inventory.
+6. **Catcher.** Parts join the prize pool (see §6).
+7. **Kinu Book.** Goal parts sit alongside goal outfits. A flavour's detail panel gains **Use as My Kinu flavour**.
+8. **In a run (My Kinu).** Every dropped Kinu is the base flavour wearing the parts. This applies in Classic, Tower and Toss, and to the landing ghost, the next card and the mascots.
+   - **Lucky** Kinu still turn gold, keeping the parts, so they stay recognisable.
+   - **Tiny**, **Sticky** and **Heart** behave as today.
 
-## 3. Slot unlock order
+## 3. Flavours as My Kinu bases
 
-The proposed default keeps the early levels quick and puts the three requested slots first:
+Flavours **replace** colour in My Kinu runs. The flavour is the base, and accessories go over it. The existing flavour systems map onto this as follows:
+
+| System | In My Kinu runs | In outfit / No Outfit runs |
+|---|---|---|
+| Base choice | `my_kinu.flavour`, any **unlocked** flavour (best pile ≥ `unlock_kinu`); default Silken. | — |
+| Spawning | `_choose_flavour()` returns the base. Shape and special rolls are unchanged. | Unchanged mix |
+| Unlocking | Unchanged: best Classic pile thresholds. Results already list newly unlocked flavours; in My Kinu runs they read "New My Kinu flavour". | Unchanged |
+| Discovery (`discovered`) | Unlocked = found. Newly unlocked flavours are added to `discovered` at results, and choosing My Kinu adds any unlocked but unseen flavours. "Find N flavours" goals keep progressing. | Unchanged in-run discovery |
+| Daily "land N *flavour*" missions | Count Kinu landed while that flavour is the base. This works automatically, because `flavour_counts` records the base. The mission becomes a nudge to try a flavour, and is always doable because it draws from unlocked flavours. | Unchanged |
+| Flavour mix toggle | Not used. The Kinu Book shows "My Kinu uses one flavour". | Unchanged |
+| Finishes (wood, marble, gold, crystal, galaxy) | Not bases; they stay pattern outfits. They could become premium bases later. | Unchanged |
+
+Rendering rules:
+
+- **Body parts are garments** (overalls, shirts, scarves, aprons) over the flavour-coloured tofu, like today's bare costumes. A body part never recolours the tofu; the base flavour does that.
+- **Glass and jelly bases never make parts transparent.** Parts use the opaque fabric material.
+- **Light-face flavours** (Galaxy-style dark bases) keep pale features. Glasses use a frame colour that contrasts with the base.
+
+## 4. Slots, levels and rewards
 
 | Level | Unlock |
 |---|---|
-| 1 | **Body** slot + free starter body item |
+| 1 | Flavour choice + **Body** slot + free starter body part |
 | 2 | **Hat** slot + free starter hat |
 | 4 | **Arms** slot + free starter arms |
-| 7 | Face accessory (glasses, blush stickers, mask) *(optional, later content)* |
-| 10 | Back (cape, wings, backpack) *(optional)* |
-| 14 | Tail *(optional)* |
-| Every other level | Beans, or a part from that level's reward table |
+| 6 | **Glasses** slot + free starter glasses |
 
-Body, hat and arms are the committed scope. Later slots are listed only so the save format and UI leave room for them.
+**After glasses there is no level cap.** Every level keeps paying out:
 
-## 4. XP rules
+- **Beans every level:** `100 + 10·L`, capped at 400 per level.
+- **Every 5th level:** one **level-exclusive part**. These are never sold and never in the Catcher. They are shown in the Kinu Book as "Reach Lv N". About 10 ship at launch, and more can be added over time. Once all are owned, the reward is **2 Catcher tickets**.
+- **Every 10th level:** the level badge frame changes (bronze 10, silver 20, gold 30, sakura 40, rainbow 50+). This is purely cosmetic prestige on the My Kinu card and results.
 
-**Grant point.** XP is computed and added **inside `Save.finish_run`**, in the same `persist()` as runs, best and stats. That path only runs when a run reaches results, so:
+Level-up bean rewards add about 10% to a regular player's daily beans in the early levels and about 5% later.
 
-- Pause → Restart and Pause → Main Menu grant nothing, because they never call `finish_run`.
-- Quitting the app mid-run grants nothing.
-- Each run grants once. As a guard against any future second call (re-rendering results, a revive feature), `NestRun.begin()` stamps a `run_id` into the summary. `finish_run` records it in `my_kinu.last_run`, and a repeated id grants nothing.
+## 5. XP
 
-**Formula** (to tune with `tools/economy_sim.gd`):
+**Granted once, only when a run reaches results.** XP is computed inside `Save.finish_run`, in the same `persist()` as runs, best and stats.
+
+- Pause → Restart, Pause → Main Menu and closing the app mid-run never call `finish_run`, so they grant nothing.
+- `NestRun.begin()` stamps a `run_id` into the summary. `finish_run` stores it in `my_kinu.last_run`, so a repeated summary grants 0.
+- XP is earned in every look (outfit, No Outfit or My Kinu). Play is play.
+- XP and boosts are **never** sold, and missions, the Catcher and daily treats never grant XP.
 
 ```
-xp = placed                         # 1 per Kinu actually landed, every mode
-   + (10 if placed >= 5 else 0)     # finish bonus, only for a real attempt
-   + (10 if new mode best else 0)
+xp = placed                          # 1 per Kinu actually landed, any mode
+   + (10 if placed >= 5 else 0)      # finish bonus, only for a real attempt
+   + (10 if new best for the mode else 0)
 ```
 
-- `placed` already exists in every mode's summary and measures actual play. Instantly losing a run earns almost nothing.
-- Toss `placed` may run at a different rate per minute than Classic. The simulation should check that XP per minute is within about ±25% across modes.
-- No XP from purchases, the Catcher, missions or daily treats. **XP is earned only by playing** (see D8).
-- Tutorial runs that reach results count.
-
-**Level curve.** XP to go from level L to L+1 is `60 + 20·(L−1)`. With a typical 25–35 XP per run:
+To reach level L+1 takes `60 + 20·(L−1)` XP. Level is derived from total XP and never stored. At a typical 25–40 XP per run:
 
 | Level | Cumulative XP | ≈ runs |
 |---|---|---|
-| 2 | 60 | 2 |
-| 4 | 240 | 7 |
+| 2 (hat) | 60 | 2 |
+| 4 (arms) | 240 | 7 |
+| 6 (glasses) | 500 | 15 |
 | 10 | 1,260 | 36 |
 | 20 | 4,560 | 130 |
 
-Level is derived from total XP and never stored separately, so it can't drift. The cap is open (see D9).
+**Back-dated XP for existing players:** `min(stats.total, 240)`. That is 1 XP per Kinu landed in their lifetime, capped at level 4, so veterans start with body, hat and arms and earn glasses by playing. Levels reached this way grant their starter parts but no back-dated beans.
 
-## 5. Item ownership model
+**Toss check:** Toss `placed` counts differently from Classic. In stage 1 I'll compare XP per minute across modes on a few recorded runs, and add a per-mode multiplier if Toss is more than 25% off.
 
-- **New resource `KinuPart`**: `id`, `slot` (`body`/`hat`/`arms`/…), `display_name`, `description`, `style` (builder key), colours, and the same source fields as `KinuOutfit`: `price`, `rarity`, `goal`/`goal_amount`, `crane_only`, `showcase`, `event`, `available`. It also gets a new `level` field for level rewards. It is stored in `KinuCatalog.parts`.
-- **Ownership** reuses `Save.data.owned` with a new kind: `"part:<id>"`. `Save.owns("part", id)` follows the same rules as outfits (goal parts owned once met, Catcher/showcase/event/level parts owned when granted). Part ids are globally unique, so the key does not need the slot.
-- **Starter parts** (one per slot, price 0) are owned automatically. Level-reward parts are granted into `owned` in the `finish_run` that reaches that level, so they persist and sync like any other item.
-- **Equipping** goes through a new `Save.equip_part(slot, id)` and is never routed through `Save.buy`. `buy` sets `data[kind] = id`, which does not fit slots. A part can be equipped only if it is owned **and** its slot is unlocked. `""` means the slot is empty.
-- **Existing outfits stay complete looks.** They are not split into parts. Every current `outfit:*` entry and the current `outfit` selection are untouched.
+## 6. Economy (D7)
 
-### Save shape (version 6)
+### Income
+
+These are estimates from the game's reward constants, because Godot isn't available in this environment to run `economy_sim.gd`. Stage 5 re-checks them with the sim.
+
+| Player | Runs | Missions | Calendar | Weekly | Catcher (free) | ≈ per day |
+|---|---|---|---|---|---|---|
+| Casual (3 runs, pile ~20) | ~400 | ~400 | ~215 | ~107 | ~220 | **~1,350** |
+| Regular (5 runs, pile ~30) | ~975 | ~675 | ~215 | ~107 | ~220 | **~2,200** |
+
+Shop outfit prices today:
+
+- Common: 1,600–2,600 (median 2,200).
+- Rare: 3,250–5,250 (median 4,250).
+- Epic: 5,500–6,750 (median 6,000).
+
+A common outfit takes about one day of regular play.
+
+### Part prices
+
+Each part costs about **30% of an outfit of the same rarity**. A full four-part look then costs about 1.3 outfits, which is fair because parts mix and match across looks. One common part is about half a day of casual play, which gives a steady purchase between outfits.
+
+| Rarity | Part price | Same-rarity outfit median |
+|---|---|---|
+| Common | 600–800 (≈700) | 2,200 |
+| Rare | 1,150–1,400 (≈1,300) | 4,250 |
+| Epic | 1,700–2,000 (≈1,900) | 6,000 |
+| Legendary | Catcher only | Catcher only |
+
+### Launch set
+
+| Slot | Starter | Shop | Catcher-only | Level reward | Goal |
+|---|---|---|---|---|---|
+| Body | 1 | 8 | 2 | 3 | 3 |
+| Hat | 1 | 9 | 3 | 3 | 3 |
+| Arms | 1 | 7 | 2 | 2 | 2 |
+| Glasses | 1 | 8 | 1 | 2 | 2 |
+
+That makes 32 shop parts (16 common, 10 rare, 6 epic). All of them together cost about 35,600 beans: roughly 16 days for a regular player or 26 for a casual one. This adds about 23% to today's shop sink of about 152,000 beans.
+
+### Catcher with parts (D5)
+
+Adding 40 parts (32 shop parts that can also be won, plus 8 Catcher-only: 4 rare, 4 legendary) stretches collection time. These figures come from `tools/simulate_claw_economy.py`, with 2 free plays a day:
+
+| Setting | Catcher-only median | Whole pool median |
+|---|---|---|
+| Today (10%, guarantee 15) | 147 days | 259 days |
+| +40 parts, unchanged odds | 189 days | 343 days |
+| +40 parts, 14% / guarantee 12 | 182 days | 281 days |
+| **+40 parts, 15% / guarantee 10** | **175 days** | **259 days** |
+
+**Proposal:** `COSMETIC_ODDS` goes from 10 to **15** and `LUCKY_EVERY` from 15 to **10**. Beans take the remainder, so this is exactly "lowering the bean odds to accommodate". Bean prizes fall from about 81% to about 76% of plays. Time to complete the whole pool stays the same as today.
+
+Rarity weights (55/25/13/7) and the jackpot are unchanged. The Odds page re-renders automatically from the table. `docs/purchases.md` gets corrected.
+
+## 7. Ownership and save model
+
+**New resource `KinuPart`** with these fields:
+
+- `id`, `slot` (`body`/`hat`/`arms`/`glasses`), `display_name`, `description`, `style`, colours.
+- The same source fields as `KinuOutfit`: `price`, `rarity`, `goal`/`goal_amount`, `crane_only`, `showcase`, `event`, `available`.
+- New `level` (0, or the level that awards it) and `starter`.
+
+Parts are stored in `KinuCatalog.parts`.
+
+**Ownership:**
+
+- `Save.data.owned` gains the kind `"part:<id>"`. `Save.owns("part", id)` follows the outfit rules, and starters count as owned.
+- Buying ignores slot lock (D5). **Equipping** needs ownership **and** an unlocked slot, and goes through a new `Save.equip_part(slot, id)`. It never uses `Save.buy`, which writes `data[kind]`.
+- Level parts are added to `owned` inside the `finish_run` that reaches the level.
+
+**Save version 6:**
 
 ```jsonc
-"look": "outfit",                  // "outfit" | "my_kinu"; what runs wear
-"outfit": "frog",                  // unchanged; remembered while My Kinu is worn
+"look": "outfit",                 // "outfit" | "my_kinu"; "outfit" with outfit "" is No Outfit
+"outfit": "frog",                 // unchanged, remembered while My Kinu is worn
 "my_kinu": {
   "xp": 0,
-  "equipped": {"body": "", "hat": "", "arms": ""},
-  "last_run": "",                  // idempotency guard
-  "seen_level": 1                  // for "new slot" banners and the fresh dot
+  "flavour": "silken",
+  "equipped": {"body": "", "hat": "", "arms": "", "glasses": ""},
+  "last_run": "",                 // idempotency guard
+  "seen_level": 1,                // drives level-up banners and fresh dots
+  "intro_seen": false
 }
 ```
 
-`load_data` validates each key:
+**Migration (`version < 6`):**
 
-- `xp` is clamped to 0…2^31.
-- `equipped` keeps only known slots with String ids. An unknown id falls back to `""` at render time, not at load, so a newer catalogue on another device isn't wiped.
-- `look` must be one of the two values.
+- Add `look: "outfit"` and the `my_kinu` defaults.
+- `xp = min(stats.total, 240)`, with starter parts granted for the levels reached.
+- `owned`, `outfit`, `outfit_best`, `discovered`, goal and Catcher ownership, and purchases are **untouched**.
 
-## 6. Body customisation, flavours and shapes
+**Validation:**
 
-**This is the main open decision (D1). I have not assumed an answer.**
+- `xp` is clamped.
+- `flavour` must be a String, falling back to Silken at render time if it is unknown or locked.
+- `equipped` keeps known slots with String ids. Unknown ids fall back to `""` at **render** time, so a newer catalogue on another device is not wiped.
 
-Constraints from the current code:
+**Records and missions (D10):**
 
-- Flavour colour is the player's only cue for flavour missions and the discovery moment. `pattern_for` already protects undiscovered flavours from being restyled.
-- Existing non-bare costumes hide the body but keep the **face opening in the flavour colour** (`ExposedFace`). The costume review calls this out as deliberate.
-- Lucky Kinu must stay gold: catching them is a mission and a stat.
+- My Kinu runs record `outfit_best["@my_kinu"]`. `@` can't collide with an outfit id, which is `[a-z0-9_]`. Records shows a single **My Kinu** row.
+- `summary().dressed` is true for My Kinu when at least one part is equipped, so the daily "dressed" mission counts it.
 
-Options for what a **body** item does:
+**Cloud and Supabase:**
 
-| | Option | Flavour legibility | Customisation feel | Notes |
-|---|---|---|---|---|
-| A | **Preserve.** Body items are garments (overalls, shirt, apron, scarf wrap) and surface patterns layered over the flavour-coloured tofu, like today's `BARE_STYLES`. | Full | Medium | Lowest risk. Builds on the overalls/pirate code path. |
-| B | **Replace on found flavours only.** The body item sets the body colour and finish, like a pattern outfit. Undiscovered flavours keep their own look. | Lost for found flavours (missions get harder) | High | Same rule `pattern_for` uses. Flavour missions would need an on-piece badge. |
-| C | **Tint.** Blend the custom colour with the flavour colour and keep the flavour's surface pattern (speckles, petals, stars). | Partial | Medium-high | Needs per-flavour contrast checks; dark flavours (Galaxy) tint poorly. |
-| D | **Player choice.** A "Keep flavour colours" toggle on the My Kinu screen chooses between A and B. | Player's choice | High | Most UI and test work: two render paths. |
+- New fields travel in the iCloud snapshot automatically (a few hundred bytes).
+- A new Supabase migration adds `part` to the `CHECK` and to `inventory_catalog`, and the client regex in `inventory_sync.gd` is updated. Ship the migration first.
+- `xp` stays local and on iCloud. It is not in Supabase.
 
-Whichever option is picked, these rules apply:
+**Downgrade:** an older build drops `look`/`my_kinu` from a local v6 save on its next write. iCloud is protected because old builds reject v6 snapshots. This is acceptable for TestFlight; note it in the release notes.
 
-- **Lucky** stays gold. Hat and arms still show, so Lucky reads as "my Kinu, but gold".
-- **Undiscovered flavours** always show their true colour, matching `pattern_for`.
-- **Glass and jelly flavours** never make parts transparent; parts use the opaque fabric material, as costumes do.
-- **Light-face flavours** keep pale features.
+## 8. Rendering and shapes
 
-**Shapes.** There are five shapes: block, slab, long, tall and ball. Each has a different size and roundness, and each is its own hitbox.
+- `KinuModel.build` takes an **appearance**: a complete outfit as today, or My Kinu (base flavour + parts).
+- Each part style has one builder that works on all five shapes, sized from `shape.size` the way costumes are:
+  - **Hats** anchor at `h.y*1.08`.
+  - **Arms** sit at the sides where suit paws sit.
+  - **Body** garments wrap with `Face`.
+  - **Glasses** sit on the face anchors, which are shared with the eyes (as panda patches do), and follow `eye_y` on tall Kinu.
+- A part may adapt per shape but may never be missing on any shape.
+- Hats are capped at about 0.35 × shape height, so stacks still read clearly.
+- **Performance:** at run start, the equipped parts are merged into one mesh per shape, cached as `shape/loadout-hash`. A My Kinu Kinu then costs the same draw calls as a costume today. `tests/performance` verifies this.
+- **Physics guarantee:** parts are added only under `KinuBody.visual`. A test asserts that the hitbox points, mass, friction, bounce and centre of mass are identical for every loadout and base flavour, against No Outfit.
 
-- Every part must have a builder that renders on all five shapes, sized from `shape.size` the way costumes are: hats anchored at `h.y*1.08`, arms at the sides like the paw spheres, body garments wrapped with `Face`.
-- A part may adapt per shape (a beret on *long* sits off-centre), but it may never be missing on any shape.
-- Tiny Kinu scale with the body. The sticky coat and glaze keep using the shape outline.
-- Visual protrusion: hats and arms stick out past the hitbox the way ears and wings already do. Hats are capped at about 0.35 × shape height so a stacked pile still reads clearly. The landing ghost shows parts, so the player sees the same silhouette they drop.
+## Build stages
 
-**Physics guarantee.** Parts live only under `KinuBody.visual`. `KinuBody.setup` keeps taking mass, friction, hitbox and centre of mass from `KinuShape` alone. A test asserts all four are identical with and without every loadout.
-
-## 7. Risks and compatibility
-
-- **Existing players:** `owned`, `outfit`, `outfit_best` and every goal or Catcher ownership are preserved. The v5→v6 migration only adds `look: "outfit"` and `my_kinu` defaults, so nobody's look changes on update.
-- **Downgrade:** an older build loading a v6 save drops `my_kinu` and `look` on its next save, because `load_data` ignores unknown keys. iCloud is protected because `cloud_snapshot_valid` rejects a newer version, but a local TestFlight downgrade would reset My Kinu. This is acceptable; note it in release notes.
-- **Supabase:** add `part` to the client regex in `inventory_sync.gd` **and** to the DB `CHECK`, using a new migration file. Also add part rows to `inventory_catalog` (`tools/generate_inventory_catalog.py`). Ship the migration before the client.
-- **Catcher:** adding parts to the pool dilutes the per-item odds that `docs/purchases.md` publishes and changes how soon the pity guarantee completes a collection (D6).
-- **Performance:** each Kinu would gain up to six mesh instances (three parts plus outlines). Merge the equipped parts into one mesh per shape when the run starts, cached as `shape/loadout-hash`, so a My Kinu Kinu costs the same draw calls as a costume today. Verify with `tests/performance.tscn`.
-
-## Decisions needed
-
-| # | Decision | My recommendation |
-|---|---|---|
-| **D1** | Does a custom body colour **replace** or **preserve** flavour colours (options A–D in §6)? | **A (preserve)** for the first release; consider C later. |
-| D2 | Body, hat and arms at levels 1/2/4, or all three open at level 1? Do you want slots after arms? | 1/2/4; extra slots later. |
-| D3 | Existing players: start at level 1, or get retroactive XP from lifetime `stats.total` (capped, for example at level 5)? | Retroactive, capped at level 4, so veterans start with all three slots. |
-| D4 | Default `look` for **new** players: My Kinu or No Outfit? | My Kinu once introduced after the first run. Existing players stay on their current outfit. |
-| D5 | Can parts for still-locked slots be bought or won? | Visible but not buyable; excluded from the Catcher until unlocked. |
-| D6 | Should parts enter the Kinu Catcher pool? This changes the published odds. | Not in the first release. Add later with a docs/odds update. |
-| D7 | Shop prices and rarities for parts, relative to outfits (outfits are priced as complete looks). | Each part about 30–40% of a same-rarity outfit. Confirm with the economy sim. |
-| D8 | Is XP ever purchasable or boostable (XP packs, double-XP events)? | No. Play only, as specified. |
-| D9 | Level cap, and rewards after the last slot. | No cap. Beans every level, and a part reward every 5 levels. |
-| D10 | Does My Kinu with at least one part count for the daily "dressed" mission? How does Records → best by outfit show it? | Yes. Show one "My Kinu" row in Records. |
-
-## Build stages (after decisions)
-
-Each stage is shippable behind `look == "outfit"` (no visible change) until stage 4 exposes the selection.
+The order is chosen so that nothing is visible to players until stage 4 exposes the Wardrobe card.
 
 1. **Save migration and XP core**
-   - `KinuPart` resource and `KinuCatalog.parts`.
-   - Save v6: `look`, `my_kinu`, validation in `load_data`, the migration block, and the D3 retroactive XP.
-   - `Save.owns`/`equip_part` for kind `part`.
-   - XP and level-reward grants inside `finish_run`, with the `run_id` guard. `xp_gained` and `level_before/after` added to the results data.
+   - `KinuPart` and `catalog.parts` (starters only).
+   - Save v6, `load_data` validation, migration and back-dated XP.
+   - `owns`/`equip_part`/`set_look`/`set_base`.
+   - XP, level and level rewards inside `finish_run`, with the `run_id` guard.
    - Tests in `tests/my_kinu.gd`:
      - A finished run grants once; replaying the summary grants 0.
      - Pause → Restart and Pause → Main Menu grant 0.
-     - A v5 save keeps every `owned` entry, `outfit` and `outfit_best`.
-     - Cloud snapshots round-trip v6, and a v5 snapshot migrates.
-     - Update `tests/cloud_save` and `tests/integration`.
+     - A v5 save keeps every `owned` entry, `outfit` and `outfit_best`, and gets capped XP.
+     - v6 iCloud snapshots round-trip.
+   - Update `tests/cloud_save` and `tests/integration`.
 2. **Character rendering**
-   - Let `KinuModel.build` accept an appearance: a complete outfit, or parts plus the D1 rule.
-   - Per-slot builders for the starter set of 3–4 parts per slot on all five shapes.
-   - Merged-mesh cache.
-   - Lucky, Tiny, Sticky and glaze compatibility.
-   - Tests:
-     - A `tests/parts.gd` grid like `tests/costumes.gd`: parts × shapes × moods × flavours and finishes.
-     - The physics-invariance test.
-     - A `tools/parts_sheet` render.
-     - `tests/performance`.
-3. **Customisation screen**
-   - My Kinu screen: preview, level and XP bar, slot chips with lock state, part grid and equip.
-   - Shape/flavour preview cycling.
-   - Fresh dots for new parts and slots.
-   - `tests/ui` click navigation, and `tests/visual -- screen=my_kinu` at 393×852 and 360×640.
-4. **Run appearance selection**
-   - Replace direct `Save.data.outfit` reads with one `Save.current_appearance()`, covering:
-     - `make_body`
-     - Toss
-     - the landing ghost
-     - the next card
-     - the mascots, home tour and tutorial coach
-     - `summary().dressed`
-     - `outfit_best`/Records
-   - Add the Wardrobe My Kinu card and the "Wearing" state.
+   - The appearance type and `KinuModel.build` support.
+   - Builders for the launch starter parts plus a first batch for each slot.
+   - The merged-mesh cache; Lucky, Tiny, Sticky and glaze compatibility.
+   - `tests/parts.gd`: parts × 5 shapes × 6 moods × all base flavours, in the style of `tests/costumes.gd`.
+   - The physics-invariance test, `tools/parts_sheet`, and `tests/performance`.
+3. **Run appearance selection**
+   - `Save.current_appearance()` replaces the direct `Save.data.outfit` reads: `make_body`, Toss, the ghost, the next card, the mascots, the home tour, the tutorial coach, `dressed`, `outfit_best` and Records.
+   - `_choose_flavour` returns the base in My Kinu runs, with the discovery sync from §3.
+   - A test confirms every outfit and No Outfit run is unchanged.
+4. **Customisation screen and Wardrobe card**
+   - The My Kinu screen: flavour and slot chips, part grid, previews and fresh dots.
+   - The Wardrobe My Kinu card and "Wearing" state.
+   - The results XP bar, level-up banner and intro.
+   - Kinu Book "Use as My Kinu flavour".
+   - `tests/ui` navigation, and `tests/visual -- screen=my_kinu` at 393×852 and 360×640.
 5. **Shop and reward integration**
-   - Shop Parts tab.
-   - Level-up banner and rewards on results.
-   - Kinu Book entries for goal or level parts.
-   - Supabase migration (`part` kind and catalogue rows) plus the client regex.
-   - Analytics events (level up, equip, look switch).
-   - Translations (ja, ko, zh_TW).
-   - Run `tools/economy_sim.gd` and update `docs/purchases.md` if D6 changes the Catcher.
+   - The Parts tab with lock labels.
+   - The remaining launch parts with the §6 prices.
+   - Goal and level-exclusive parts in the Kinu Book.
+   - Catcher pool changes (15% / guarantee 10), `tools/simulate_claw_economy.py` updated to include parts, and `docs/purchases.md` corrected.
+   - The Supabase migration and client regex.
+   - Analytics (level up, equip, base change, look switch) and translations (ja, ko, zh_TW).
 
-Stages 1 and 2 can proceed in parallel. Stage 4 depends on both, and stages 3 and 5 on stage 4.
+The work runs in order 1 → 2 → 3 → 4 → 5. Stages 1 and 2 can be developed in parallel.

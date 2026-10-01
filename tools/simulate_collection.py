@@ -20,7 +20,7 @@ CATALOG = ROOT / "resources/kinu/catalog.tres"
 PARTS = ROOT / "scripts/kinu/kinu_parts.gd"
 
 # Kinu Claw (scripts/systems/kinu_catcher.gd)
-COSMETIC = 0.10
+COSMETIC = 0.15
 TICKET_SHARE = 0.09
 JACKPOT = (15000, 0.0003)
 BEAN_PRIZES = [(50, 40), (100, 30), (200, 16), (400, 8), (1000, 3)]

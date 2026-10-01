@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "resources/kinu/catalog.tres"
 PARTS = ROOT / "scripts/kinu/kinu_parts.gd"
 # Matches KinuCatcher.COSMETIC_ODDS; tickets keep their own fixed slice of every other play.
-COSMETIC = 0.10
+COSMETIC = 0.15
 TICKET_SLICE = 0.09
 TIERS = ("common", "rare", "epic", "legendary")
 WEIGHTS = (55, 25, 13, 7)

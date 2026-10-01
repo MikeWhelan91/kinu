@@ -30,7 +30,7 @@ ticket per day.
 
 ## Catcher balance
 
-- A normal play has a fixed 10% cosmetic chance, regardless of catalogue size.
+- A normal play has a fixed 15% cosmetic chance, regardless of catalogue size.
 - Cosmetic wins roll rarity at 55% common, 25% rare, 13% epic and 7% legendary,
   renormalising only if a rarity has no unowned prizes left.
 - After 14 consecutive plays without an item, play 15 is guaranteed to be an
@@ -44,13 +44,13 @@ Full table for a fresh player (195 items in the pool):
 
 | Prize | Chance |
 |---|---|
-| Any item | 10.00% |
-| · Common (72 items) | 5.50%, about 0.076% each |
-| · Rare (66 items) | 2.50%, about 0.038% each |
-| · Epic (35 items) | 1.30%, about 0.037% each |
-| · Legendary (22 items) | 0.70%, about 0.032% each |
+| Any item | 15.00% |
+| · Common (72 items) | 8.25%, about 0.115% each |
+| · Rare (66 items) | 3.75%, about 0.057% each |
+| · Epic (35 items) | 1.95%, about 0.056% each |
+| · Legendary (22 items) | 1.05%, about 0.048% each |
 | Tickets | 9.00% (1: 5.58%, 2: 2.43%, 3: 0.99%) |
-| Beans | 80.97% (50: 33.39%, 100: 25.04%, 200: 13.36%, 400: 6.68%, 1,000: 2.50%) |
+| Beans | 75.97% (50: 31.33%, 100: 23.50%, 200: 12.53%, 400: 6.27%, 1,000: 2.35%) |
 | 15,000-bean jackpot | 0.03% |
 
 The in-game Odds page recalculates this over the items a player still lacks.
@@ -60,7 +60,7 @@ single tuning knob; Lucky, Heart and Gold catch bonuses are never scaled. My Kin
 levels past 50 pay 1 Catcher ticket every 5 levels. `tools/simulate_collection.py --trials 200` models the whole economy
 (runs, missions, calendar, weekly, Claw, shop, My Kinu levels and goals) and puts
 the median time to collect everything a player can reach at about 290 days for
-casual players (3 runs a day), 129 days for regular (6) and 105 days for
+casual players (3 runs a day), 113 days for regular (6) and 91 days for
 dedicated (12). These are simulated play patterns, not guaranteed rewards.
 
 Remove Ads is wired for delivery, refund handling, and restoration, but sales

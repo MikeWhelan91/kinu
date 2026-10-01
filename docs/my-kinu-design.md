@@ -31,7 +31,7 @@ Customisation is visual only. It never changes hitboxes, mass, friction, bounce 
 | Run end | `run.end()` → `main._results` → `NestMenuScreen.results` → `Save.finish_run` | `finish_run` is the only place progress is recorded. Pause → Restart / Main Menu never reach it. `end()` refuses to run twice. |
 | Save / cloud | `save_manager.gd` v5; iCloud KVS (about 2.4 KB) | `load_data` copies only known, validated keys. The cloud snapshot is the whole save. `cloud_snapshot_valid` rejects newer versions. |
 | Supabase inventory | `inventory_sync.gd`, `20260930040000_player_inventory.sql` | The client regex and a DB `CHECK` allow only `outfit|box|room`. |
-| Catcher | `kinu_catcher.gd` | **Code:** 10% cosmetic, rarity weights 55/25/13/7, guarantee every 15 plays. `docs/purchases.md` still says 6% / 78-17-4-1 / 20 and is stale; fix it in stage 5. |
+| Catcher | `kinu_catcher.gd` | **Code:** 15% cosmetic, rarity weights 55/25/13/7, guarantee every 15 plays. `docs/purchases.md` still says 6% / 78-17-4-1 / 20 and is stale; fix it in stage 5. |
 
 ## 2. Player flow
 
@@ -174,14 +174,14 @@ the Kinu hitbox or mass.
 ### Catcher with parts (D5)
 
 The current Catcher contains 71 parts: 53 shop parts that can also be won, and 18
-Catcher-only parts (10 rare, 8 legendary). Its code uses a **10%** cosmetic chance,
+Catcher-only parts (10 rare, 8 legendary). Its code uses a **15%** cosmetic chance,
 rarity weights **55/25/13/7**, and an unowned cosmetic guarantee on play 15 after
 fourteen non-cosmetic results. Two free plays refill daily. Tickets take 9% of plays;
-the 15,000-bean jackpot takes 0.03%; regular bean prizes take the remaining 80.97%.
+the 15,000-bean jackpot takes 0.03%; regular bean prizes take the remaining 75.97%.
 Owned cosmetics leave the pool. The full table is in `docs/purchases.md`.
 Run payouts are at their original rates, and levels past 50 pay 1 ticket every 5 levels.
 `tools/simulate_collection.py --trials 200` puts the median time to collect
-everything reachable at about 290 days (casual), 129 (regular) and 105 (dedicated).
+everything reachable at about 290 days (casual), 113 (regular) and 91 (dedicated).
 These are simulations of stated play patterns, not guaranteed times for a player.
 
 ## 7. Ownership and save model

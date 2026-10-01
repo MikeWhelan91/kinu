@@ -56,7 +56,7 @@ static func home(app: Node) -> void:
 	if Save.fresh_count() > 0:
 		# Unlocks from recent runs wait in the Kinu Book until they've been looked at.
 		var book_badge := NestTheme.count_badge(Save.fresh_count())
-		book_badge.position = Vector2(14,-44)
+		book_badge.position = Vector2(20,-30)
 		for child in front.get_children():
 			if child.get_meta("curtain_panel",-1) == 2:
 				child.add_child(book_badge)
@@ -66,7 +66,7 @@ static func home(app: Node) -> void:
 	var daily_ready := KinuProgress.claimable() + (1 if KinuProgress.weekly_claimable() else 0)
 	if daily_ready > 0:
 		var daily_badge := NestTheme.count_badge(daily_ready)
-		daily_badge.position = Vector2(15, -34)
+		daily_badge.position = Vector2(20, -30)
 		daily_curtain.add_child(daily_badge)
 	# The bottom controls sit together on a quiet lacquered control tray. The shop is already
 	# visually busy, so this deliberately uses fine pinstriping rather than the thick, toy-block
@@ -639,6 +639,17 @@ static func _curtain_button(front: ShopFront, title: String, icon: String, callb
 	art.position = Vector2(-26,-26)
 	art.size = Vector2(52,52)
 	holder.add_child(art)
+	# The tab's name rides just above its emblem, on the same swaying holder as the icon.
+	var name_label := NestTheme.headline(NestTheme.t(title),13,Color.WHITE)
+	name_label.name = "CurtainTitle"
+	name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_label.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	name_label.add_theme_constant_override("outline_size",5)
+	name_label.add_theme_constant_override("shadow_offset_y",2)
+	name_label.position = Vector2(-60,-ShopFront.EMBLEM_RADIUS-24)
+	name_label.size = Vector2(120,20)
+	holder.add_child(name_label)
 	front._layout_navigation()
 	return holder
 

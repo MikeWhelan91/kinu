@@ -208,10 +208,52 @@ func _refresh() -> void:
 ## bean redenomination produces make routine rather than rare.
 static func _fit_wallet(button: Button, amount: Label, plus: Label) -> void:
 	var font := amount.get_theme_font("font")
-	var gap := 3.0+10.0
+	var gap := 12.0+11.0
 	var text_width := font.get_string_size(amount.text, HORIZONTAL_ALIGNMENT_LEFT, -1, amount.get_theme_font_size("font_size")).x
 	var plus_width := plus.get_theme_font("font").get_string_size(plus.text, HORIZONTAL_ALIGNMENT_LEFT, -1, plus.get_theme_font_size("font_size")).x
-	button.custom_minimum_size.x = maxf(116.0, 46.0+text_width+gap+plus_width)
+	button.custom_minimum_size.x = maxf(120.0, 48.0+text_width+gap+plus_width+6.0)
+
+## The wallet's backing: a glossy cream capsule with a deeper bottom lip, a gold coin socket on
+## the left that the bean or ticket sits in, and a gold "+" bubble on the right.
+class WalletSkin extends Control:
+	var owner_button: Button
+
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		show_behind_parent = true
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		if is_instance_valid(owner_button):
+			owner_button.button_down.connect(queue_redraw)
+			owner_button.button_up.connect(queue_redraw)
+			owner_button.mouse_entered.connect(queue_redraw)
+			owner_button.mouse_exited.connect(queue_redraw)
+
+	func _draw() -> void:
+		var pressed := is_instance_valid(owner_button) and owner_button.is_pressed()
+		var drop := 1.0 if pressed else 3.5
+		var body := Rect2(Vector2(0, 1 if pressed else 0), Vector2(size.x, size.y-4))
+		var r := body.size.y*.5
+		draw_colored_polygon(MyKinuScreen.rounded_points(Rect2(body.position+Vector2(0, drop), body.size), r), NestTheme.INK)
+		var capsule := MyKinuScreen.rounded_points(body, r)
+		var colors := PackedColorArray()
+		for point in capsule:
+			colors.append(Color("fffdf6").lerp(Color("f6e6c8"), clampf((point.y-body.position.y)/body.size.y, 0, 1)))
+		draw_polygon(capsule, colors)
+		draw_line(body.position+Vector2(r, body.size.y*.2), Vector2(body.end.x-r*1.8, body.position.y+body.size.y*.2), Color(1, 1, 1, .9), 2.5, true)
+		var edge := capsule.duplicate()
+		edge.append(capsule[0])
+		draw_polyline(edge, NestTheme.INK, 3.0, true)
+		# Coin socket for the icon.
+		var socket := Vector2(r, body.get_center().y)
+		draw_circle(socket, r-5, Color("ffe9a6"))
+		draw_arc(socket, r-5, 0, TAU, 32, Color("e8b245"), 2.5, true)
+		draw_arc(socket, r-9, PI*1.05, PI*1.6, 10, Color(1, 1, 1, .8), 2.0, true)
+		# Gold "+" bubble.
+		var bubble := Vector2(body.end.x-r+1, body.get_center().y)
+		var bubble_r := r-7
+		draw_circle(bubble+Vector2(0, 1.5), bubble_r, Color("b8690a"))
+		draw_circle(bubble, bubble_r, Color("ffc83d"))
+		draw_arc(bubble, bubble_r*.6, PI*1.1, PI*1.6, 8, Color(1, 1, 1, .7), 2.0, true)
 
 class WalletButton extends Button:
 	var amount_label: Label
@@ -221,31 +263,32 @@ class WalletButton extends Button:
 		name = "BeanWallet"
 		# Reserve room for the gold add button so it remains inside the wallet at every balance.
 		custom_minimum_size = Vector2(116, 44)
-		for state in ["normal", "hover", "pressed"]:
-			var style := NestTheme.box(NestTheme.CREAM, 24, NestTheme.INK, 4)
-			style.content_margin_left = 40
-			style.content_margin_right = 14
-			style.content_margin_top = 5
-			style.content_margin_bottom = 5
-			add_theme_stylebox_override(state, style)
-		var bean := BeanIcon.new(26)
-		bean.position = Vector2(9, 9)
+		for state in ["normal", "hover", "pressed", "focus"]:
+			add_theme_stylebox_override(state, StyleBoxEmpty.new())
+		focus_mode = Control.FOCUS_NONE
+		var skin := WalletSkin.new()
+		skin.owner_button = self
+		add_child(skin)
+		var bean := BeanIcon.new(28)
+		bean.position = Vector2(8, 8)
 		bean.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(bean)
 		var amount_row := HBoxContainer.new()
 		amount_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		amount_row.alignment = BoxContainer.ALIGNMENT_END
-		amount_row.add_theme_constant_override("separation", 3)
+		amount_row.add_theme_constant_override("separation", 12)
 		amount_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		# Leave a deliberate breathing gap after the artwork; the ticket is wider than the bean.
 		amount_row.offset_left = 46
-		amount_row.offset_right = -10
+		amount_row.offset_right = -11
 		amount_row.offset_top = 4
 		amount_row.offset_bottom = -3
 		add_child(amount_row)
 		amount_label = NestTheme.label("", 22)
 		amount_row.add_child(amount_label)
-		plus_label = NestTheme.label("+", 25, NestTheme.SUN)
+		plus_label = NestTheme.label("+", 24, NestTheme.CREAM)
+		plus_label.add_theme_color_override("font_outline_color", Color("b8690a"))
+		plus_label.add_theme_constant_override("outline_size", 5)
 		amount_row.add_child(plus_label)
 		Save.changed.connect(_refresh)
 		_refresh()
@@ -264,32 +307,35 @@ class TicketWalletButton extends Button:
 		name = "TicketWallet"
 		# Every metric matches the bean wallet above it, so the pair reads as one stack.
 		custom_minimum_size = Vector2(116, 44)
-		for state in ["normal", "hover", "pressed"]:
-			var style := NestTheme.box(NestTheme.CREAM, 24, NestTheme.INK, 4)
-			style.content_margin_left = 40
-			style.content_margin_right = 14
-			style.content_margin_top = 5
-			style.content_margin_bottom = 5
-			add_theme_stylebox_override(state, style)
+		for state in ["normal", "hover", "pressed", "focus"]:
+			add_theme_stylebox_override(state, StyleBoxEmpty.new())
+		focus_mode = Control.FOCUS_NONE
+		var skin := WalletSkin.new()
+		skin.owner_button = self
+		add_child(skin)
 		# A ticket is wider than it is tall, so it is sized by height and centred in the same
 		# left margin the bean icon uses.
-		var ticket := TicketIcon.new(22)
-		ticket.position = Vector2(8, 11)
+		var ticket := TicketIcon.new(20)
+		ticket.position = Vector2(6, 12)
+		ticket.pivot_offset = Vector2(16, 10)
+		ticket.rotation = -.18
 		ticket.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(ticket)
 		var amount_row := HBoxContainer.new()
 		amount_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		amount_row.alignment = BoxContainer.ALIGNMENT_END
-		amount_row.add_theme_constant_override("separation", 3)
+		amount_row.add_theme_constant_override("separation", 12)
 		amount_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		amount_row.offset_left = 46
-		amount_row.offset_right = -10
+		amount_row.offset_right = -11
 		amount_row.offset_top = 4
 		amount_row.offset_bottom = -3
 		add_child(amount_row)
 		amount_label = NestTheme.label("", 22)
 		amount_row.add_child(amount_label)
-		plus_label = NestTheme.label("+", 25, NestTheme.SUN)
+		plus_label = NestTheme.label("+", 24, NestTheme.CREAM)
+		plus_label.add_theme_color_override("font_outline_color", Color("b8690a"))
+		plus_label.add_theme_constant_override("outline_size", 5)
 		amount_row.add_child(plus_label)
 		Save.changed.connect(_refresh)
 		_refresh()

@@ -44,6 +44,8 @@ func _ready() -> void:
 		"beans": app._bean_shop()
 		"tickets": app._bean_shop("tickets")
 		"home_my_kinu":
+			Save.data.beans = 8137
+			Save.data.tickets = 12
 			Save.data.best = 30
 			Save.data.my_kinu.xp = 560
 			Save.data.my_kinu.home_seen_xp = 560

@@ -5,8 +5,8 @@ extends RefCounted
 ## it double as the slot tabs, and the grid below lists everything that slot can wear.
 
 const TABS := ["flavour", "body", "hat", "arms", "glasses"]
-const VELVET_TOP := Color("2c2758")
-const VELVET_BOTTOM := Color("5e2f6f")
+const VELVET_TOP := Color("5a3a2c")
+const VELVET_BOTTOM := Color("3b241b")
 const GOLD := Color("f6c869")
 const GOLD_DEEP := Color("c98a2e")
 const GOLD_LIGHT := Color("fff1c4")

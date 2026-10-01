@@ -5,8 +5,8 @@ extends RefCounted
 ## it double as the slot tabs, and the grid below lists everything that slot can wear.
 
 const TABS := ["flavour", "body", "hat", "arms", "glasses"]
-const VELVET_TOP := Color("5a3a2c")
-const VELVET_BOTTOM := Color("3b241b")
+const VELVET_TOP := Color("dff2ff")
+const VELVET_BOTTOM := Color("a9d4f0")
 const GOLD := Color("f6c869")
 const GOLD_DEEP := Color("c98a2e")
 const GOLD_LIGHT := Color("fff1c4")
@@ -34,7 +34,11 @@ static func ellipse_points(center: Vector2, radius: Vector2, steps: int = 48) ->
 		points.append(center+Vector2(cos(angle)*radius.x, sin(angle)*radius.y))
 	return points
 
-## The showcase: velvet backdrop in a gold frame, a spotlight on a pedestal, drifting motes and the
+## Text on the light sky backdrop.
+const SKY_TEXT := Color("2f5878")
+const NEXT_TEXT := Color("b0670f")
+
+## The showcase: sky backdrop in a gold frame, a spotlight on a pedestal, drifting motes and the
 ## level medallion. The live model sits on the pedestal; buttons and labels are real children.
 class ShowcaseCard extends Control:
 	var phase := 0.0
@@ -94,7 +98,7 @@ class ShowcaseCard extends Control:
 			var y: float = fposmod(float(mote[1])-phase*float(mote[2]), 1.0)
 			var x: float = float(mote[0])+sin(phase*.7+float(mote[4]))*.015
 			var fade := sin(y*PI)
-			draw_circle(Vector2(x*size.x, 16+y*(stage_height-40)), float(mote[3]), Color(MyKinuScreen.GOLD_LIGHT, .55*fade))
+			draw_circle(Vector2(x*size.x, 16+y*(stage_height-40)), float(mote[3]), Color(1, 1, 1, .8*fade))
 		_pedestal()
 		_sparkles()
 		# Gold frame: a heavy ink edge, a gold inner rule and diamond corner studs.
@@ -190,7 +194,7 @@ class XpBar extends Control:
 	func _draw() -> void:
 		var track := Rect2(Vector2.ZERO, size)
 		var radius := size.y*.5
-		draw_colored_polygon(MyKinuScreen.rounded_points(track, radius), Color(0, 0, 0, .35))
+		draw_colored_polygon(MyKinuScreen.rounded_points(track, radius), Color(1, 1, 1, .75))
 		var amount := clampf(value/maxf(maximum, 1), 0, 1)
 		if amount > 0:
 			var fill := Rect2(Vector2.ZERO, Vector2(maxf(size.y, size.x*amount), size.y))
@@ -202,7 +206,7 @@ class XpBar extends Control:
 			draw_line(Vector2(radius, size.y*.3), Vector2(fill.size.x-radius, size.y*.3), Color(1, 1, 1, .55), 2.0, true)
 		var outline := MyKinuScreen.rounded_points(track, radius)
 		outline.append(outline[0])
-		draw_polyline(outline, Color(MyKinuScreen.GOLD, .8), 1.5, true)
+		draw_polyline(outline, NestTheme.INK, 2.0, true)
 
 static func show(app: Node, back_to: Callable = Callable()) -> void:
 	if back_to.is_valid():
@@ -300,15 +304,15 @@ static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 		arrow.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		for state in ["normal", "hover", "pressed"]:
 			var style := StyleBoxFlat.new()
-			style.bg_color = Color(1, 1, 1, .1 if state == "normal" else .22 if state == "hover" else .3)
+			style.bg_color = Color(1, 1, 1, .7 if state == "normal" else .9 if state == "hover" else 1.0)
 			style.set_corner_radius_all(24)
-			style.border_color = Color(GOLD, .85)
-			style.set_border_width_all(2)
+			style.border_color = NestTheme.INK
+			style.set_border_width_all(3)
 			style.anti_aliasing = true
 			arrow.add_theme_stylebox_override(state, style)
 		arrow.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 		for colour in ["font_color", "font_hover_color", "font_pressed_color"]:
-			arrow.add_theme_color_override(colour, GOLD_LIGHT)
+			arrow.add_theme_color_override(colour, NestTheme.INK)
 		arrow.custom_minimum_size = Vector2(46, 46)
 		arrow.size = Vector2(46, 46)
 		arrow.set_anchors_preset(Control.PRESET_CENTER_LEFT if side < 0 else Control.PRESET_CENTER_RIGHT)
@@ -330,7 +334,7 @@ static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 		)
 		card.add_child(arrow)
 	# Top-right: the current state of the look.
-	var state_chip := _chip(NestTheme.t("Worn in runs") if MyKinu.active() else NestTheme.t("Not worn"), GOLD if MyKinu.active() else Color(1, 1, 1, .5))
+	var state_chip := _chip(NestTheme.t("Worn in runs") if MyKinu.active() else NestTheme.t("Not worn"), GOLD_DEEP if MyKinu.active() else NestTheme.MUTED)
 	state_chip.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	state_chip.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	state_chip.offset_top = 26
@@ -346,10 +350,10 @@ static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 	plate.offset_top = -138
 	plate.offset_bottom = -28
 	card.add_child(plate)
-	var name := NestTheme.headline(NestTheme.t("My Kinu"), 30, GOLD_LIGHT)
+	var name := NestTheme.headline(NestTheme.t("My Kinu"), 30, NestTheme.CREAM)
 	name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	plate.add_child(name)
-	var subtitle := NestTheme.label(NestTheme.t("%s Kinu")%NestTheme.t(MyKinu.base(catalog).display_name)+"  ·  "+NestTheme.t(shape.display_name), 15, Color(GOLD_LIGHT, .8))
+	var subtitle := NestTheme.label(NestTheme.t("%s Kinu")%NestTheme.t(MyKinu.base(catalog).display_name)+"  ·  "+NestTheme.t(shape.display_name), 15, SKY_TEXT)
 	subtitle.name = "MyKinuLevel"
 	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	plate.add_child(subtitle)
@@ -357,10 +361,10 @@ static func _hero(app: Node, catalog: KinuCatalog) -> Control:
 	var progress := MyKinu.progress_for(MyKinu.xp())
 	var numbers := HBoxContainer.new()
 	numbers.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var xp_text := NestTheme.label(NestTheme.t("%d / %d XP")%[progress[0], progress[1]], 13, GOLD_LIGHT)
+	var xp_text := NestTheme.label(NestTheme.t("%d / %d XP")%[progress[0], progress[1]], 13, SKY_TEXT)
 	xp_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	numbers.add_child(xp_text)
-	var next_text := NestTheme.label(NestTheme.t("Next: %s")%next_reward(level+1), 13, GOLD)
+	var next_text := NestTheme.label(NestTheme.t("Next: %s")%next_reward(level+1), 13, NEXT_TEXT)
 	next_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	next_text.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	next_text.clip_text = true
@@ -380,7 +384,7 @@ static func _chip(text: String, tone: Color) -> PanelContainer:
 	var chip := PanelContainer.new()
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0, 0, 0, .28)
+	style.bg_color = Color(1, 1, 1, .75)
 	style.border_color = tone
 	style.set_border_width_all(2)
 	style.set_corner_radius_all(14)
@@ -390,7 +394,7 @@ static func _chip(text: String, tone: Color) -> PanelContainer:
 	style.content_margin_bottom = 4
 	style.anti_aliasing = true
 	chip.add_theme_stylebox_override("panel", style)
-	chip.add_child(NestTheme.label(text, 13, tone.lightened(.2)))
+	chip.add_child(NestTheme.label(text, 13, NestTheme.INK))
 	return chip
 
 ## Five equipment sockets showing what is worn in each slot. They are also the slot tabs.

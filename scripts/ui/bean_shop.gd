@@ -213,8 +213,8 @@ static func _fit_wallet(button: Button, amount: Label, plus: Label) -> void:
 	var plus_width := plus.get_theme_font("font").get_string_size(plus.text, HORIZONTAL_ALIGNMENT_LEFT, -1, plus.get_theme_font_size("font_size")).x
 	button.custom_minimum_size.x = maxf(120.0, 48.0+text_width+gap+plus_width+6.0)
 
-## The wallet's backing: a glossy cream capsule with a deeper bottom lip, a gold coin socket on
-## the left that the bean or ticket sits in, and a gold "+" bubble on the right.
+## The wallet's backing: a glossy cream capsule with a deeper bottom lip and a gold "+" bubble
+## on the right. The bean or ticket sits straight on the capsule.
 class WalletSkin extends Control:
 	var owner_button: Button
 
@@ -243,17 +243,18 @@ class WalletSkin extends Control:
 		var edge := capsule.duplicate()
 		edge.append(capsule[0])
 		draw_polyline(edge, NestTheme.INK, 3.0, true)
-		# Coin socket for the icon.
-		var socket := Vector2(r, body.get_center().y)
-		draw_circle(socket, r-5, Color("ffe9a6"))
-		draw_arc(socket, r-5, 0, TAU, 32, Color("e8b245"), 2.5, true)
-		draw_arc(socket, r-9, PI*1.05, PI*1.6, 10, Color(1, 1, 1, .8), 2.0, true)
 		# Gold "+" bubble.
 		var bubble := Vector2(body.end.x-r+1, body.get_center().y)
 		var bubble_r := r-7
 		draw_circle(bubble+Vector2(0, 1.5), bubble_r, Color("b8690a"))
 		draw_circle(bubble, bubble_r, Color("ffc83d"))
 		draw_arc(bubble, bubble_r*.6, PI*1.1, PI*1.6, 8, Color(1, 1, 1, .7), 2.0, true)
+		var arm := bubble_r*.52
+		var arms := [Vector2(arm, 0), Vector2(0, arm)]
+		for along in arms:
+			draw_line(bubble-along+Vector2(0, 1), bubble+along+Vector2(0, 1), Color("b8690a"), 5.0, true)
+		for along in arms:
+			draw_line(bubble-along, bubble+along, NestTheme.CREAM, 3.2, true)
 
 class WalletButton extends Button:
 	var amount_label: Label
@@ -289,6 +290,8 @@ class WalletButton extends Button:
 		plus_label = NestTheme.label("+", 24, NestTheme.CREAM)
 		plus_label.add_theme_color_override("font_outline_color", Color("b8690a"))
 		plus_label.add_theme_constant_override("outline_size", 5)
+		# The skin draws the plus centred in its bubble; the label only reserves its space.
+		plus_label.modulate.a = 0.0
 		amount_row.add_child(plus_label)
 		Save.changed.connect(_refresh)
 		_refresh()
@@ -336,6 +339,8 @@ class TicketWalletButton extends Button:
 		plus_label = NestTheme.label("+", 24, NestTheme.CREAM)
 		plus_label.add_theme_color_override("font_outline_color", Color("b8690a"))
 		plus_label.add_theme_constant_override("outline_size", 5)
+		# The skin draws the plus centred in its bubble; the label only reserves its space.
+		plus_label.modulate.a = 0.0
 		amount_row.add_child(plus_label)
 		Save.changed.connect(_refresh)
 		_refresh()

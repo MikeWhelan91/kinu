@@ -3636,3 +3636,15 @@ msgstr "%d / %d XP"
 
 msgid "Next: %s"
 msgstr "다음: %s"
+
+msgid "Your very own Kinu! It levels up as you play and opens slots for new parts. Dress it up and every Kinu you drop wears the look. A red badge means new parts are waiting."
+msgstr "나만의 키누! 플레이할수록 레벨이 오르고 새 파츠 슬롯이 열려요. 꾸며 주면 떨어뜨리는 모든 키누가 그 모습이 돼요. 빨간 배지는 새 파츠가 기다린다는 뜻이에요."
+
+msgid "Kinu In"
+msgstr "들어간 키누"
+
+msgid "Longest"
+msgstr "최장"
+
+msgid "Height"
+msgstr "높이"

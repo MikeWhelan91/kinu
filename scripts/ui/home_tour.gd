@@ -172,6 +172,7 @@ func _steps() -> Array:
 		[["Daily"], NestTheme.t("Daily Missions"), NestTheme.t("Three new missions every day, plus a weekly challenge. Finish them for beans!")],
 		[["EventRail"], NestTheme.t("Events"), rail_text],
 		[["ModePicker"], NestTheme.t("Game Modes"), modes_text],
+		[["MyKinuHome"], NestTheme.t("My Kinu"), NestTheme.t("Your very own Kinu! It levels up as you play and opens slots for new parts. Dress it up and every Kinu you drop wears the look. A red badge means new parts are waiting.")],
 		[["Catcher"], NestTheme.t("Kinu Claw"), ""],
 	]
 	# A stop whose target isn't on this home screen is left out rather than pointing at nothing.

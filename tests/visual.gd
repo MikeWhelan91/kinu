@@ -295,6 +295,25 @@ func _ready() -> void:
 		"results":
 			app.initial_best = 0
 			app._results({"score":12,"placed":14,"height":6.4})
+		"results_tower":
+			Save.data.mode_best = {"tower": 780}
+			Save.data.mode = "tower"
+			app._start()
+			app.initial_best = 780
+			app._results({"mode":"tower","score":290,"pile":3,"placed":3,"height":2.9})
+		"home_tour_my_kinu":
+			Save.data.runs = 3
+			Save.data.home_tour = false
+			Save.data.my_kinu.intro_seen = true
+			await app._home()
+			await get_tree().create_timer(.4).timeout
+			HomeTour.start(app)
+			await get_tree().create_timer(.4).timeout
+			var tour: HomeTour = app.modal as HomeTour
+			if tour:
+				for i in tour.steps.size():
+					if tour.steps[i][0][0] == "MyKinuHome":
+						tour._show_step(i, true)
 	await get_tree().create_timer(2 if mode == "my_kinu_home_progress" else 1).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://docs/"+mode+suffix+".png")

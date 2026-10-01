@@ -9,8 +9,11 @@ const RIM_DEEP := Color("c9871f")
 const SWEEP_PERIOD := 3.4
 const SWEEP_TIME := .6
 
-## "my_kinu" or "claw": which illustration to draw.
+## "my_kinu", "claw", "again", "home" or "" (no illustration): which illustration to draw.
 var icon_kind := "my_kinu"
+## Centres the title (and subtitle) rather than setting them beside the art.
+var centered := false
+var title_size := 19
 var top_color := Color("9b7bff")
 var bottom_color := Color("6a45d8")
 var edge_color := Color("3d2380")
@@ -34,18 +37,21 @@ func _ready() -> void:
 	clip_contents = false
 	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
 		add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	var art := GachaIcon.new()
-	art.name = "GachaIcon"
-	art.owner_button = self
-	add_child(art)
+	if icon_kind != "":
+		var art := GachaIcon.new()
+		art.name = "GachaIcon"
+		art.owner_button = self
+		add_child(art)
 	var text := VBoxContainer.new()
 	text.name = "Text"
 	text.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	text.alignment = BoxContainer.ALIGNMENT_CENTER
 	text.add_theme_constant_override("separation", 1)
 	add_child(text)
-	var title := NestTheme.label(title_text, 19, NestTheme.CREAM)
+	var title := NestTheme.label(title_text, title_size, NestTheme.CREAM)
 	title.name = "Title"
+	if centered:
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_color_override("font_outline_color", edge_color)
 	title.add_theme_constant_override("outline_size", 7)
 	title.add_theme_color_override("font_shadow_color", Color(edge_color, .6))
@@ -54,6 +60,8 @@ func _ready() -> void:
 	if subtitle_text != "":
 		var subtitle := NestTheme.label(subtitle_text, 13, Color(1, 1, 1, .95))
 		subtitle.name = "Subtitle"
+		if centered:
+			subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		subtitle.add_theme_color_override("font_outline_color", Color(edge_color, .8))
 		subtitle.add_theme_constant_override("outline_size", 4)
 		text.add_child(subtitle)
@@ -79,23 +87,32 @@ func _ready() -> void:
 func _layout() -> void:
 	pivot_offset = size*.5
 	var art := get_node_or_null("GachaIcon") as Control
-	var icon_size := size.y-10
+	var icon_size := minf(size.y-10, 64.0) if centered else size.y-10
 	if art:
 		art.size = Vector2(icon_size, icon_size)
 		# Kept inside the rim: nothing pokes over the cabinet's edge.
-		art.position = Vector2(6, 5)
+		art.position = Vector2(6 if not centered else 14, (size.y-icon_size)*.5)
 	var text := get_node_or_null("Text") as Control
 	if text:
-		var left := icon_size+8
+		var left := 10.0 if art == null else icon_size+8
+		if centered and art:
+			# A centred title keeps the art on the left but balances the space on the right.
+			text.position = Vector2(left, 6)
+			text.size = Vector2(maxf(size.x-left*2, 10), size.y-14)
+			_fit_title(text)
+			return
 		text.position = Vector2(left, 6)
 		text.size = Vector2(maxf(size.x-left-10, 10), size.y-14)
-		var title := text.get_node_or_null("Title") as Label
-		if title:
-			# Shrink long or translated titles to fit rather than spilling past the rim.
-			var font_size := 19
-			while font_size > 13 and NestTheme.font.get_string_size(title.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > text.size.x-4:
-				font_size -= 1
-			title.add_theme_font_size_override("font_size", font_size)
+		_fit_title(text)
+
+## Shrinks long or translated titles to fit rather than spilling past the rim.
+func _fit_title(text: Control) -> void:
+	var title := text.get_node_or_null("Title") as Label
+	if title:
+		var font_size := title_size
+		while font_size > 13 and NestTheme.font.get_string_size(title.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x > text.size.x-4:
+			font_size -= 1
+		title.add_theme_font_size_override("font_size", font_size)
 
 func _squash(target: float) -> void:
 	var tween := create_tween()
@@ -206,10 +223,46 @@ class GachaIcon extends Control:
 		var t := owner_button.phase
 		# A glow disc behind the art.
 		draw_circle(Vector2(s*.5, s*.56), s*.4, Color(1, 1, 1, .18))
-		if owner_button.icon_kind == "claw":
-			_claw(s, t)
-		else:
-			_kinu(s, t)
+		match owner_button.icon_kind:
+			"claw":
+				_claw(s, t)
+			"again":
+				_again(s, t)
+			"home":
+				_home(s, t)
+			_:
+				_kinu(s, t)
+
+	## A circular replay arrow turning round a little Kinu.
+	func _again(s: float, t: float) -> void:
+		var centre := Vector2(s*.5, s*.5)
+		var spin := t*1.4
+		var r := s*.34
+		draw_arc(centre, r, spin, spin+TAU*.78, 32, NestTheme.INK, s*.13, true)
+		draw_arc(centre, r, spin, spin+TAU*.78, 32, NestTheme.CREAM, s*.07, true)
+		var tip_angle := spin+TAU*.78
+		var tip := centre+Vector2(cos(tip_angle), sin(tip_angle))*r
+		var forward := Vector2(-sin(tip_angle), cos(tip_angle))
+		var out := Vector2(cos(tip_angle), sin(tip_angle))
+		var head := PackedVector2Array([tip+forward*s*.14, tip+out*s*.13-forward*s*.04, tip-out*s*.13-forward*s*.04])
+		_outlined(head, NestTheme.CREAM, 2.5)
+		var cube := Rect2(centre-Vector2(s*.13, s*.11), Vector2(s*.26, s*.22))
+		_outlined(MyKinuScreen.rounded_points(cube, s*.06), owner_button.kinu_color, 2.5)
+		for side in [-1.0, 1.0]:
+			draw_circle(centre+Vector2(side*s*.05, -s*.01), s*.022, NestTheme.INK)
+
+	## A little shop front with a noren curtain.
+	func _home(s: float, t: float) -> void:
+		var roof := PackedVector2Array([Vector2(s*.12, s*.42), Vector2(s*.5, s*.14), Vector2(s*.88, s*.42)])
+		var house := Rect2(Vector2(s*.2, s*.38), Vector2(s*.6, s*.46))
+		_outlined(MyKinuScreen.rounded_points(house, s*.04), Color("fff3dc"))
+		_outlined(roof, Color("d8434f"), 3.0)
+		var cloth := Rect2(Vector2(s*.3, s*.48), Vector2(s*.4, s*.16))
+		for i in 3:
+			var strip := Rect2(cloth.position+Vector2(cloth.size.x/3.0*i+1, 0), Vector2(cloth.size.x/3.0-2, cloth.size.y+sin(t*2.0+i)*s*.015))
+			_outlined(MyKinuScreen.rounded_points(strip, 2), Color("3f6fb6"), 2.0)
+		var door := Rect2(Vector2(s*.42, s*.64), Vector2(s*.16, s*.2))
+		_outlined(MyKinuScreen.rounded_points(door, 2), Color("c9894c"), 2.0)
 
 	func _outlined(points: PackedVector2Array, fill: Color, width: float = 2.5) -> void:
 		draw_colored_polygon(points, fill)

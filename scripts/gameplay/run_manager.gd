@@ -1355,7 +1355,7 @@ static func beans_for(score: int, record: bool) -> int:
 
 ## Every mode's base run payout is scaled by this, so the bean economy can be tuned in one place.
 ## Lucky, Heart and Gold catches are bonuses on top and are not scaled.
-const RUN_BEAN_SCALE := 0.7
+const RUN_BEAN_SCALE := 1.0
 
 static func scaled_run_beans(beans: int) -> int:
 	return int(round(beans*RUN_BEAN_SCALE))

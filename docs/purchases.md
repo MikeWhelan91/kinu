@@ -55,12 +55,12 @@ Full table for a fresh player (195 items in the pool):
 
 The in-game Odds page recalculates this over the items a player still lacks.
 
-Run payouts are scaled by `NestRun.RUN_BEAN_SCALE` (0.7). Lucky, Heart and Gold
-catch bonuses are not scaled. My Kinu levels past 50 pay 1 Catcher ticket every
-5 levels. `tools/simulate_collection.py --trials 200` models the whole economy
+Run payouts use `NestRun.RUN_BEAN_SCALE` (currently 1.0, the original rates) as a
+single tuning knob; Lucky, Heart and Gold catch bonuses are never scaled. My Kinu
+levels past 50 pay 1 Catcher ticket every 5 levels. `tools/simulate_collection.py --trials 200` models the whole economy
 (runs, missions, calendar, weekly, Claw, shop, My Kinu levels and goals) and puts
 the median time to collect everything a player can reach at about 290 days for
-casual players (3 runs a day), 134 days for regular (6) and 112 days for
+casual players (3 runs a day), 129 days for regular (6) and 105 days for
 dedicated (12). These are simulated play patterns, not guaranteed rewards.
 
 Remove Ads is wired for delivery, refund handling, and restoration, but sales

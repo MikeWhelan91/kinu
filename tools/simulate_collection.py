@@ -34,7 +34,7 @@ WEEKLY_BEANS, WEEKLY_TICKETS = 750, 1
 PART_PRICES = {"common": [600, 700, 800], "rare": [1150, 1300, 1400], "epic": [1700, 1900, 2000]}
 LEVEL_PART_EVERY, SPARE_TICKETS = 5, 1
 # NestRun.RUN_BEAN_SCALE: base run payouts are scaled; Lucky catches are not.
-RUN_BEAN_SCALE = 0.7
+RUN_BEAN_SCALE = 1.0
 
 # Player profiles. pile/placed are a typical run, best is where their best pile settles, and
 # missions is how many of the three daily missions they finish (one of the three pays a ticket).

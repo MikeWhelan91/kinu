@@ -179,9 +179,9 @@ rarity weights **55/25/13/7**, and an unowned cosmetic guarantee on play 15 afte
 fourteen non-cosmetic results. Two free plays refill daily. Tickets take 9% of plays;
 the 15,000-bean jackpot takes 0.03%; regular bean prizes take the remaining 80.97%.
 Owned cosmetics leave the pool. The full table is in `docs/purchases.md`.
-Run payouts are scaled to 70%, and levels past 50 pay 1 ticket every 5 levels.
+Run payouts are at their original rates, and levels past 50 pay 1 ticket every 5 levels.
 `tools/simulate_collection.py --trials 200` puts the median time to collect
-everything reachable at about 290 days (casual), 134 (regular) and 112 (dedicated).
+everything reachable at about 290 days (casual), 129 (regular) and 105 (dedicated).
 These are simulations of stated play patterns, not guaranteed times for a player.
 
 ## 7. Ownership and save model

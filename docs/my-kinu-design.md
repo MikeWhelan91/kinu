@@ -174,16 +174,15 @@ the Kinu hitbox or mass.
 ### Catcher with parts (D5)
 
 The current Catcher contains 71 parts: 53 shop parts that can also be won, and 18
-Catcher-only parts (10 rare, 8 legendary). Its code uses a **15%** cosmetic chance,
-rarity weights **55/25/13/7**, and an unowned cosmetic guarantee on play 10 after
-nine non-cosmetic results. Two free plays refill daily. Tickets take 9% of plays;
-the 15,000-bean jackpot takes 0.03%; regular bean prizes take the remaining 75.97%.
-Owned cosmetics leave the pool. The in-game Odds page recalculates the current pool.
-`tools/simulate_claw_economy.py --trials 200` gave a roughly 287-day median to
-collect the full pool with two free plays a day, weekly tickets and attendance rewards,
-assuming the player buys none of the shop cosmetics. Claw-only rewards took about
-217 days in the same simulation.
-This is a simulation of its stated play pattern, not a guaranteed time for a player.
+Catcher-only parts (10 rare, 8 legendary). Its code uses a **10%** cosmetic chance,
+rarity weights **55/25/13/7**, and an unowned cosmetic guarantee on play 15 after
+fourteen non-cosmetic results. Two free plays refill daily. Tickets take 9% of plays;
+the 15,000-bean jackpot takes 0.03%; regular bean prizes take the remaining 80.97%.
+Owned cosmetics leave the pool. The full table is in `docs/purchases.md`.
+Run payouts are scaled to 70%, and levels past 50 pay 1 ticket every 5 levels.
+`tools/simulate_collection.py --trials 200` puts the median time to collect
+everything reachable at about 290 days (casual), 134 (regular) and 112 (dedicated).
+These are simulations of stated play patterns, not guaranteed times for a player.
 
 ## 7. Ownership and save model
 

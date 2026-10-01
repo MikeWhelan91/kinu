@@ -19,7 +19,7 @@ const RECORD_BONUS := 10
 ## Every LEVEL_PART_EVERY levels grants that level's exclusive part, or these tickets once a
 ## level has none.
 const LEVEL_PART_EVERY := 5
-const SPARE_TICKETS := 2
+const SPARE_TICKETS := 1
 ## Badge frames climb every ten levels.
 const BADGES := [[50, "rainbow"], [40, "sakura"], [30, "gold"], [20, "silver"], [10, "bronze"]]
 

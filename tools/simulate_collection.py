@@ -20,19 +20,21 @@ CATALOG = ROOT / "resources/kinu/catalog.tres"
 PARTS = ROOT / "scripts/kinu/kinu_parts.gd"
 
 # Kinu Claw (scripts/systems/kinu_catcher.gd)
-COSMETIC = 0.15
+COSMETIC = 0.10
 TICKET_SHARE = 0.09
 JACKPOT = (15000, 0.0003)
 BEAN_PRIZES = [(50, 40), (100, 30), (200, 16), (400, 8), (1000, 3)]
 TICKET_PRIZES = [(1, 62), (2, 27), (3, 11)]
 TIER_WEIGHTS = {"common": 55, "rare": 25, "epic": 13, "legendary": 7}
-PITY = 10
+PITY = 15
 FREE_PLAYS = 2
 # Daily calendar (scripts/systems/daily_calendar.gd): beans and tickets by day, day 7 = Claw item.
 CALENDAR = [("beans", 150), ("beans", 200), ("tickets", 1), ("beans", 250), ("beans", 300), ("tickets", 2), ("item", 1)]
 WEEKLY_BEANS, WEEKLY_TICKETS = 750, 1
 PART_PRICES = {"common": [600, 700, 800], "rare": [1150, 1300, 1400], "epic": [1700, 1900, 2000]}
-LEVEL_PART_EVERY, SPARE_TICKETS = 5, 2
+LEVEL_PART_EVERY, SPARE_TICKETS = 5, 1
+# NestRun.RUN_BEAN_SCALE: base run payouts are scaled; Lucky catches are not.
+RUN_BEAN_SCALE = 0.7
 
 # Player profiles. pile/placed are a typical run, best is where their best pile settles, and
 # missions is how many of the three daily missions they finish (one of the three pays a ticket).
@@ -97,7 +99,7 @@ def level_for(xp):
 
 
 def beans_for_run(score):
-    return score * 5 + score // 10 * 10
+    return round((score * 5 + score // 10 * 10) * RUN_BEAN_SCALE)
 
 
 def stat_value(goal, stats, profile):

@@ -30,20 +30,38 @@ ticket per day.
 
 ## Catcher balance
 
-- A normal play has a fixed 15% cosmetic chance, regardless of catalogue size.
-  It rose from 10% when My Kinu parts joined the machine; the extra share comes
-  out of bean prizes only.
+- A normal play has a fixed 10% cosmetic chance, regardless of catalogue size.
 - Cosmetic wins roll rarity at 55% common, 25% rare, 13% epic and 7% legendary,
   renormalising only if a rarity has no unowned prizes left.
-- After 9 consecutive plays without an item, play 10 is guaranteed to be an
-  unowned item (previously play 15).
-- Owned cosmetics leave the pool. The pool holds shop and Catcher-only outfits,
-  boxes and rooms, plus the 53 shop My Kinu parts and 18 Catcher-only parts. Part
-  starters, level rewards and goal parts are never in the machine.
-- With these settings `tools/simulate_claw_economy.py --trials 200` (two free
-  plays a day, weekly and attendance tickets, no shop purchases) puts the median
-  time to collect the whole pool at 287 days, and the Claw-only subset at 217 days.
-  These are simulated play patterns, not guaranteed rewards.
+- After 14 consecutive plays without an item, play 15 is guaranteed to be an
+  unowned item.
+- Owned cosmetics leave the pool, so every item won is new. The pool holds shop
+  and Catcher-only outfits, boxes and rooms, plus the 53 shop My Kinu parts and
+  18 Catcher-only parts. Part starters, level rewards and goal parts are never in
+  the machine.
+
+Full table for a fresh player (195 items in the pool):
+
+| Prize | Chance |
+|---|---|
+| Any item | 10.00% |
+| · Common (72 items) | 5.50%, about 0.076% each |
+| · Rare (66 items) | 2.50%, about 0.038% each |
+| · Epic (35 items) | 1.30%, about 0.037% each |
+| · Legendary (22 items) | 0.70%, about 0.032% each |
+| Tickets | 9.00% (1: 5.58%, 2: 2.43%, 3: 0.99%) |
+| Beans | 80.97% (50: 33.39%, 100: 25.04%, 200: 13.36%, 400: 6.68%, 1,000: 2.50%) |
+| 15,000-bean jackpot | 0.03% |
+
+The in-game Odds page recalculates this over the items a player still lacks.
+
+Run payouts are scaled by `NestRun.RUN_BEAN_SCALE` (0.7). Lucky, Heart and Gold
+catch bonuses are not scaled. My Kinu levels past 50 pay 1 Catcher ticket every
+5 levels. `tools/simulate_collection.py --trials 200` models the whole economy
+(runs, missions, calendar, weekly, Claw, shop, My Kinu levels and goals) and puts
+the median time to collect everything a player can reach at about 290 days for
+casual players (3 runs a day), 134 days for regular (6) and 112 days for
+dedicated (12). These are simulated play patterns, not guaranteed rewards.
 
 Remove Ads is wired for delivery, refund handling, and restoration, but sales
 are disabled with `Store.ADS_ENABLED` until a real ad integration is present.

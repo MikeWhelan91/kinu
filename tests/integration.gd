@@ -468,7 +468,7 @@ func _ready() -> void:
 	dressed.queue_free()
 
 	# Soybeans: earned per Kinu piled, spent on outfits, which then dress every Kinu.
-	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(25,false)==145 and NestRun.beans_for(25,true)==170,"beans scale with the pile and reward a new best")
+	check(NestRun.beans_for(0,false)==0 and NestRun.beans_for(25,false)==102 and NestRun.beans_for(25,true)==119,"beans scale with the pile and reward a new best")
 	# Beans were restated in a larger unit: an older save's balance has to move with the prices.
 	check(Save.BEAN_REDENOMINATION == 5 and KinuCatcher.BEANS[0].amount == 50,"the smallest claw prize is a round 50 beans")
 	check(Array(NestRun.unlocks_between(run.catalog.flavours,9,23))==["Yuzu","Ume","Mango","Hojicha"],"results name flavours unlocked by a new best pile")

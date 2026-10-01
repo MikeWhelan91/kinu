@@ -9,7 +9,7 @@ extends RefCounted
 ## that play is drawn from items only.
 
 const TICKET_COST := 1
-const LUCKY_EVERY := 10
+const LUCKY_EVERY := 15
 ## Free tickets refill as a pair and never carry over into the next cycle.
 const FREE_DAILY_TICKETS := 2
 const HISTORY := 20
@@ -39,10 +39,9 @@ static func refresh_free_status() -> Dictionary:
 ## First roll a fixed cosmetic hit, then rarity, then an unowned item in that rarity. Keeping the
 ## hit rate separate means a growing catalogue never silently makes cosmetics more common.
 const TIERS := ["common", "rare", "epic", "legendary"]
-## Raised from 10% with a guarantee every 15 plays when My Kinu's parts joined the machine, so the
-## median time to collect the whole pool stays about where it was (243 days against 259, per
-## tools/simulate_claw_economy.py).
-const COSMETIC_ODDS := 15.0
+## 10% items with a guarantee every 15 plays. Collection pace across the whole economy is checked
+## with tools/simulate_collection.py.
+const COSMETIC_ODDS := 10.0
 const TIER_WEIGHTS := {"common": 55.0, "rare": 25.0, "epic": 13.0, "legendary": 7.0}
 ## Beans take whatever is left once cosmetics, tickets and the jackpot have taken their cut. Each
 ## weight is a split of that remainder, so retuning any of the others moves beans and nothing else.

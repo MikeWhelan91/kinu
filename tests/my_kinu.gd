@@ -318,7 +318,7 @@ func _rendering() -> void:
 
 func _catcher() -> void:
 	Save.load_data({})
-	check(KinuCatcher.COSMETIC_ODDS == 15.0 and KinuCatcher.LUCKY_EVERY == 10, "the Catcher's cosmetic share and guarantee make room for parts")
+	check(KinuCatcher.COSMETIC_ODDS == 10.0 and KinuCatcher.LUCKY_EVERY == 15, "the Catcher gives items 10% of the time with a guarantee every 15 plays")
 	var parts_in := 0
 	for entry in KinuCatcher.table(catalog):
 		if entry.kind == "part":

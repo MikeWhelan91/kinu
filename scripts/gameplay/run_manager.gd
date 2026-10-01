@@ -1351,7 +1351,14 @@ static func _cheer(reached: int) -> String:
 
 ## Soybeans for a run: 5 per Kinu on the pile, 10 more for every 10, and 25 more for a new best.
 static func beans_for(score: int, record: bool) -> int:
-	return score*5+score/10*10+(25 if record else 0)
+	return scaled_run_beans(score*5+score/10*10+(25 if record else 0))
+
+## Every mode's base run payout is scaled by this, so the bean economy can be tuned in one place.
+## Lucky, Heart and Gold catches are bonuses on top and are not scaled.
+const RUN_BEAN_SCALE := 0.7
+
+static func scaled_run_beans(beans: int) -> int:
+	return int(round(beans*RUN_BEAN_SCALE))
 
 ## Soybeans for any mode. Tower pays 5 beans per 10 cm. Toss scores in the thousands, so its rate
 ## is set to land a good run near what a good Classic pile pays rather than on the size of its
@@ -1360,9 +1367,9 @@ static func beans_for_run(stats: Dictionary, record: bool) -> int:
 	var score := int(stats.get("score", 0))
 	match str(stats.get("mode", "classic")):
 		"tower":
-			return score/10*5+score/100*10+(25 if record else 0)
+			return scaled_run_beans(score/10*5+score/100*10+(25 if record else 0))
 		"toss":
-			return score/100+int(stats.get("boxes", 0))*10+(25 if record else 0)
+			return scaled_run_beans(score/100+int(stats.get("boxes", 0))*10+(25 if record else 0))
 	return beans_for(score, record)
 
 ## Height of what's standing on the plate right now, in cm.

@@ -143,9 +143,13 @@ func _ready() -> void:
 			app.book_tab = "collection"
 			app._collection()
 		"wardrobe":
-			Save.data.owned = ["outfit:frog","outfit:bunny","box:gift","room:onsen"]
+			Save.data.owned = ["outfit:frog","outfit:bunny","box:gift","room:onsen","part:top_hat","part:cool_shades"]
 			Save.data.runs = 3
 			Save.data.outfit = "frog"
+			Save.data.best = 20
+			Save.data.my_kinu.xp = 520
+			Save.data.my_kinu.flavour = "kinako"
+			Save.data.my_kinu.equipped = {"body": "comfy_tee", "hat": "top_hat", "arms": "little_arms", "glasses": "cool_shades"}
 			app._wardrobe()
 		"daily":
 			KinuProgress.today()[0].progress = 999

@@ -23,6 +23,8 @@ static func show(app: Node) -> void:
 	var grid := CardGrid.grid(list)
 	var catalog: KinuCatalog = app.run.catalog
 	var kind := KinuShopScreen.kind_of(app.wardrobe_tab)
+	if kind == "outfit":
+		_my_kinu_card(app, grid, catalog)
 	if NONE_TITLES.has(kind):
 		_card(app, grid, kind, "", NONE_TITLES[kind], KinuShopScreen.kinu_preview(catalog.flavours[0], null, true), null)
 	for item in KinuShopScreen.items(catalog, kind):
@@ -62,9 +64,30 @@ static func _card(app: Node, grid: GridContainer, kind: String, id: String, titl
 	cards.append(card)
 	_style(card)
 
+## My Kinu leads the outfits: the player's own Kinu in its chosen flavour and parts. Tapping it
+## opens the My Kinu screen, where it is dressed and worn.
+static func _my_kinu_card(app: Node, grid: GridContainer, catalog: KinuCatalog) -> void:
+	var preview := KinuPreview.new()
+	preview.setup(catalog.shapes[0], MyKinu.base(catalog), true, Vector2i(170, 124), "happy", null, true, false, MyKinu.equipped(catalog))
+	# The same wide framing as the outfit cards beside it, so every Kinu on the shelf matches in size.
+	var built := CardGrid.card(grid, preview, NestTheme.t("My Kinu"), Color("cdeefc"), func() -> void:
+		MyKinuScreen.show(app, func() -> void: show(app))
+	, 210, "wardrobe", 200, 19)
+	built.button.name = "MyKinuCard"
+	var level := NestTheme.pill(NestTheme.t("Lv %d")%MyKinu.level(), 13, NestTheme.CREAM)
+	(level.get_theme_stylebox("panel") as StyleBoxFlat).bg_color = Color("8f6bea")
+	CardGrid.corner_badge(built.stage, level)
+	var card := {"kind": "my_kinu", "id": "", "button": built.button, "status": built.status}
+	cards.append(card)
+	_style(card)
+
 static func _style(card: Dictionary) -> void:
 	for child in card.status.get_children():
 		child.queue_free()
+	if card.kind == "my_kinu":
+		NestTheme.style_card(card.button, "active" if MyKinu.active() else "plain")
+		card.status.add_child(NestTheme.pill("Wearing", 15) if MyKinu.active() else NestTheme.pill("Tap To Dress Up", 15, NestTheme.MUTED))
+		return
 	var using: bool = str(Save.data[card.kind]) == card.id and not (card.kind == "outfit" and MyKinu.active())
 	var wearable: bool = card.kind == "outfit"
 	NestTheme.style_card(card.button, "active" if using else "plain")

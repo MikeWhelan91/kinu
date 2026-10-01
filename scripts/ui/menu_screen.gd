@@ -340,11 +340,100 @@ static func _show_kinu_home_progress(app: Node) -> bool:
 				_kinu_reward_burst(progress_modal,card))
 	return true
 
+## My Kinu's growth on the results card: XP earned since it was last shown (one run, or a chain of
+## Play Again runs), the meter filling through any level-ups, and what those levels gave. Showing it
+## here acknowledges it, so the home screen does not replay it.
+static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> float:
+	var to_xp := MyKinu.xp()
+	var from_xp := clampi(int(Save.data.my_kinu.get("home_seen_xp",to_xp)),0,to_xp)
+	var intro := not bool(Save.data.my_kinu.intro_seen)
+	if to_xp == from_xp and not intro:
+		return beat
+	var before_level := MyKinu.level_for(from_xp)
+	var after_level := MyKinu.level_for(to_xp)
+	var panel := PanelContainer.new()
+	panel.name = "ResultsKinuXP"
+	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(1,1,1,.72)
+	style.border_color = Color("8f6bea")
+	style.set_border_width_all(3)
+	style.border_width_bottom = 5
+	style.set_corner_radius_all(18)
+	style.content_margin_left = 10
+	style.content_margin_right = 12
+	style.content_margin_top = 6
+	style.content_margin_bottom = 8
+	style.anti_aliasing = true
+	panel.add_theme_stylebox_override("panel",style)
+	column.add_child(panel)
+	var stack := VBoxContainer.new()
+	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stack.add_theme_constant_override("separation",4)
+	panel.add_child(stack)
+	var head := HBoxContainer.new()
+	head.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	head.add_theme_constant_override("separation",8)
+	stack.add_child(head)
+	var face := KinuPreview.new()
+	face.setup(app.run.catalog.shapes[0],MyKinu.base(app.run.catalog),true,Vector2i(58,48),"happy",null,true,false,MyKinu.equipped(app.run.catalog))
+	face.fit_model(1.05)
+	head.add_child(face)
+	var names := VBoxContainer.new()
+	names.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	names.alignment = BoxContainer.ALIGNMENT_CENTER
+	names.add_theme_constant_override("separation",-4)
+	names.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(names)
+	names.add_child(NestTheme.label(NestTheme.t("My Kinu"),14,NestTheme.MUTED))
+	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,22,Color("8f6bea"))
+	level_label.name = "ResultsKinuLevel"
+	names.add_child(level_label)
+	var earned_label := NestTheme.headline(NestTheme.t("+%d XP")%(to_xp-from_xp),28,Color("ffd34a"))
+	earned_label.name = "ResultsKinuGain"
+	earned_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	head.add_child(earned_label)
+	var before_progress := MyKinu.progress_for(from_xp)
+	var meter := FancyCard.XpMeter.new()
+	meter.name = "ResultsKinuMeter"
+	meter.level = before_level
+	meter.max_value = before_progress[1]
+	meter.value = before_progress[0]
+	meter.custom_minimum_size.y = 34
+	stack.add_child(meter)
+	var final_progress := MyKinu.progress_for(to_xp)
+	var next_label := NestTheme.label(NestTheme.t("%d / %d XP · Next: %s")%[final_progress[0],final_progress[1],MyKinuScreen.next_reward(after_level+1)],13,MyKinuScreen.SKY_TEXT)
+	next_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	stack.add_child(next_label)
+	var gifts: Array[String] = []
+	if after_level > before_level:
+		var rewards := _kinu_rewards_between(before_level,after_level)
+		gifts.append(NestTheme.t("My Kinu reached level %d!")%after_level)
+		for slot in rewards.slots:
+			gifts.append(NestTheme.t("New slot: %s")%NestTheme.t(MyKinu.SLOT_NAMES[slot]))
+		for part in rewards.parts:
+			gifts.append(NestTheme.t("New part: %s")%NestTheme.t(part.display_name))
+		if int(rewards.tickets) > 0:
+			gifts.append(NestTheme.t("+%d Catcher tickets")%int(rewards.tickets))
+		gifts.append(NestTheme.t("+%d level-up beans")%int(rewards.beans))
+	elif intro:
+		gifts.append(NestTheme.t("Meet My Kinu! Dress it up in the Wardrobe."))
+	beat += .3
+	_reveal(app,panel,beat,"special")
+	var finished := _animate_kinu_xp(app,meter,level_label,earned_label,from_xp,to_xp,beat+.15)
+	for gift in gifts:
+		var row := _reward_row(gift)
+		stack.add_child(row)
+		_reveal(app,row,finished,"")
+	Save.acknowledge_kinu_progress()
+	return beat
+
 ## A small stat tile for the results card: an icon, the value and its name.
 static func _stat_tile(title: String, value: String, icon: String) -> PanelContainer:
 	var tile := PanelContainer.new()
 	tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tile.custom_minimum_size = Vector2(118, 0)
+	tile.custom_minimum_size = Vector2(124, 0)
+	tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(1, 1, 1, .82)
 	style.border_color = NestTheme.INK
@@ -359,6 +448,7 @@ static func _stat_tile(title: String, value: String, icon: String) -> PanelConta
 	tile.add_theme_stylebox_override("panel", style)
 	var line := HBoxContainer.new()
 	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.alignment = BoxContainer.ALIGNMENT_CENTER
 	line.add_theme_constant_override("separation", 8)
 	tile.add_child(line)
 	var art: Control
@@ -776,8 +866,13 @@ static func results(app: Node, stats: Dictionary) -> void:
 	# Stat tiles: what this run measured, and the beans it paid.
 	var tiles := HBoxContainer.new()
 	tiles.alignment = BoxContainer.ALIGNMENT_CENTER
-	tiles.add_theme_constant_override("separation",8)
-	column.add_child(tiles)
+	tiles.add_theme_constant_override("separation",10)
+	var tiles_row := MarginContainer.new()
+	tiles_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side in ["margin_left","margin_right"]:
+		tiles_row.add_theme_constant_override(side,22)
+	tiles_row.add_child(tiles)
+	column.add_child(tiles_row)
 	match mode:
 		"tower":
 			tiles.add_child(_stat_tile("Kinu",str(int(stats.get("pile",0))),"kinu"))
@@ -790,11 +885,12 @@ static func results(app: Node, stats: Dictionary) -> void:
 	var bean_tile := _stat_tile("Beans","+%d"%earned,"beans")
 	tiles.add_child(bean_tile)
 	beat += .3
-	_reveal(app,tiles,beat,"cashregister")
+	_reveal(app,tiles_row,beat,"cashregister")
 	# Beans tick up alongside the score, so the payout reads as something being counted out.
 	var bean_value := bean_tile.find_child("Value",true,false) as Label
 	if bean_value:
 		_count_up(app,bean_value,earned,beat,func(value: int) -> String: return "+%d"%value)
+	beat = _results_kinu_xp(app,column,beat)
 	var news: Array[String] = []
 	if not unlocked.is_empty():
 		news.append(NestTheme.t("New My Kinu flavour: %s")%NestTheme.t_join(unlocked) if MyKinu.active() else NestTheme.t("New flavour: %s")%NestTheme.t_join(unlocked))

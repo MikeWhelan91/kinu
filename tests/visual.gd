@@ -298,9 +298,13 @@ func _ready() -> void:
 		"results_tower":
 			Save.data.mode_best = {"tower": 780}
 			Save.data.mode = "tower"
+			# Close to level 5, so this run's XP crosses a level and shows its rewards.
+			Save.data.my_kinu.xp = 330
+			Save.data.my_kinu.home_seen_xp = 330
+			Save.data.my_kinu.intro_seen = true
 			app._start()
 			app.initial_best = 780
-			app._results({"mode":"tower","score":290,"pile":3,"placed":3,"height":2.9})
+			app._results({"mode":"tower","score":290,"pile":8,"placed":12,"height":2.9,"run_id":"visual-tower"})
 		"home_tour_my_kinu":
 			Save.data.runs = 3
 			Save.data.home_tour = false
@@ -314,7 +318,7 @@ func _ready() -> void:
 				for i in tour.steps.size():
 					if tour.steps[i][0][0] == "MyKinuHome":
 						tour._show_step(i, true)
-	await get_tree().create_timer(2 if mode == "my_kinu_home_progress" else 1).timeout
+	await get_tree().create_timer(3 if mode in ["my_kinu_home_progress", "results_tower"] else 1).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://docs/"+mode+suffix+".png")
 	print("CAPTURE ",mode," ",get_viewport().get_visible_rect())

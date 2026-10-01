@@ -399,9 +399,11 @@ static func _hat(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 					var leaf: Vector3 = (Vector3(sin(a)*.1, 0, cos(a)*.1)+Vector3(cos(a), 0, -sin(a))*float(lobe)*.035)*s+Vector3(0, y+.2*s, 0)
 					kit.add("sphere", leaf, Vector3(.13, .05, .13)*s, c, Vector3(0, a, .3))
 		"bunny_band", "cat_band":
-			kit.add("cylinder", Vector3(0, y+.01, 0), Vector3(.05, minf(shape.size.x, 1.1)*.9, .05), c, Vector3(0, 0, PI*.5))
+			# The band arches over the head along its own curve, so it hugs a ball as well as a block.
+			_arch(kit, shape, h.y*.2, 1.04, .055, c)
 			for side in [-1.0, 1.0]:
-				var ear := Vector3(side*w*.38, y, 0)
+				var ear_x: float = side*w*.38
+				var ear := Vector3(ear_x, _surface_y(shape, ear_x, 1.04)-.01, 0)
 				if part.style == "bunny_band":
 					kit.add("sphere", ear+Vector3(0, .24*s, 0), Vector3(.17, .5, .1)*s, c, Vector3(0, 0, side*-.15))
 					kit.add("sphere", ear+Vector3(0, .24*s, .03), Vector3(.09, .36, .05)*s, accent, Vector3(0, 0, side*-.15), false)
@@ -423,16 +425,39 @@ static func _hat(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 		"headphones":
 			var ear_y := h.y*.55
 			var ear_x := _reach(shape,ear_y).x
-			var band_y := y+.1
-			var cup_top := ear_y+.23*s*.5
-			kit.add_rounded_box(Vector3(0,band_y,0),Vector3(ear_x*2+.08,.06,.07),c,Vector3.ZERO,true,4)
+			# One continuous band arching over the head from cup to cup, just clear of the surface.
+			_arch(kit, shape, ear_y, 1.1, .065, c)
 			for side in [-1.0,1.0]:
-				# Bridge the headband to each ear cup so the three pieces read as
-				# one pair of headphones from the front and while spinning.
-				kit.add_rounded_box(Vector3(side*(ear_x+.03),(band_y+cup_top)*.5,0),
-					Vector3(.08,band_y-cup_top+.08,.09),c,Vector3.ZERO,true,4)
 				kit.add_rounded_box(Vector3(side*(ear_x+.03),ear_y,0),Vector3(.12,.23,.2)*s,accent,Vector3.ZERO,true,4)
 				kit.add_rounded_box(Vector3(side*(ear_x+.09),ear_y,0),Vector3(.035,.12,.13)*s,c,Vector3.ZERO,false,3)
+
+## Height of the shape's top surface (grown by `grow`) above x, in the front-to-back middle.
+static func _surface_y(shape: KinuShape, x: float, grow: float = 1.0) -> float:
+	var a := shape.size*.5*grow
+	var k := shape.roundness
+	return a.y*pow(maxf(1.0-pow(absf(x/a.x), k), 0.0), 1.0/k)
+
+## A band arching over the head from one side at height `from_y` to the other, following the
+## shape's own outline (grown by `grow`) so it sits snugly on every Kinu shape.
+static func _arch(kit: MeshKit, shape: KinuShape, from_y: float, grow: float, thickness: float, color: Color) -> void:
+	var a := shape.size*.5*grow
+	var k := shape.roundness
+	var start := asin(clampf(_spow(clampf(from_y/a.y, -1, 1), k*.5), -1, 1))
+	var points: Array[Vector3] = []
+	var steps := 40
+	for i in steps+1:
+		var t := lerpf(start, PI-start, float(i)/steps)
+		points.append(Vector3(_spow(cos(t), 2.0/k)*a.x, _spow(sin(t), 2.0/k)*a.y, 0))
+	for i in steps:
+		var from := points[i]
+		var to := points[i+1]
+		var length := from.distance_to(to)
+		if length < .0001:
+			continue
+		var up := (to-from)/length
+		var side := up.cross(Vector3.BACK).normalized()
+		var basis := Basis(side, up, side.cross(up)).orthonormalized()*Basis.from_scale(Vector3(thickness, length+thickness*.6, thickness))
+		kit.add_transformed("cylinder", Transform3D(basis, (from+to)*.5), color)
 
 # ---------- Arms ----------
 

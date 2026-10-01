@@ -3612,3 +3612,27 @@ msgstr "オーロラ蝶メガネ"
 
 msgid "Golden Visor"
 msgstr "黄金バイザー"
+
+msgid "New"
+msgstr "NEW"
+
+msgid "Worn in runs"
+msgstr "プレイで着用中"
+
+msgid "Not worn"
+msgstr "未着用"
+
+msgid "Worn"
+msgstr "着用中"
+
+msgid "Hats"
+msgstr "ぼうし"
+
+msgid "Wear My Kinu In Runs"
+msgstr "プレイでマイきぬを着る"
+
+msgid "%d / %d XP"
+msgstr "%d / %d XP"
+
+msgid "Next: %s"
+msgstr "次：%s"

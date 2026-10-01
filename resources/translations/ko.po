@@ -3612,3 +3612,27 @@ msgstr "오로라 나비 안경"
 
 msgid "Golden Visor"
 msgstr "황금 바이저"
+
+msgid "New"
+msgstr "NEW"
+
+msgid "Worn in runs"
+msgstr "플레이 중 착용"
+
+msgid "Not worn"
+msgstr "미착용"
+
+msgid "Worn"
+msgstr "착용 중"
+
+msgid "Hats"
+msgstr "모자"
+
+msgid "Wear My Kinu In Runs"
+msgstr "플레이에서 마이 키누 입기"
+
+msgid "%d / %d XP"
+msgstr "%d / %d XP"
+
+msgid "Next: %s"
+msgstr "다음: %s"

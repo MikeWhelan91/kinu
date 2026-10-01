@@ -92,6 +92,9 @@ static func grant_levels(from: int, to: int) -> Dictionary:
 			if slot_level(slot) == reached:
 				rewards.slots.append(slot)
 				equip_starter(slot)
+				var free := starter(slot)
+				if free and not Save.debug_unlocked():
+					Save.mark_fresh("part:"+free.id)
 		if reached % LEVEL_PART_EVERY == 0:
 			var part := level_part(reached)
 			if part == null:
@@ -118,6 +121,18 @@ static func equip_starter(slot: String, state: Dictionary = {}) -> void:
 	var part := starter(slot)
 	if part and str(target.equipped.get(slot, "")) == "":
 		target.equipped[slot] = part.id
+
+## Parts the player has been given but not looked at yet, in slots they can already wear. These
+## badge the home My Kinu button until the slot is opened on the My Kinu screen.
+static func fresh_parts(slot: String = "") -> int:
+	var count := 0
+	for key in Save.data.fresh:
+		if not str(key).begins_with("part:"):
+			continue
+		var part := KinuParts.find(str(key).trim_prefix("part:"))
+		if part and (slot == "" or part.slot == slot) and slot_unlocked(part.slot) and Save.owns("part", part.id, part.price):
+			count += 1
+	return count
 
 # ---------- What runs wear ----------
 

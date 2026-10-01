@@ -96,21 +96,39 @@ static func home(app: Node) -> void:
 	play_stack.add_child(play)
 	# My Kinu is the player's progression hub, so it sits beside the prize counter on Home.
 	var secondary := HBoxContainer.new()
-	secondary.add_theme_constant_override("separation",8)
+	secondary.add_theme_constant_override("separation",10)
 	play_stack.add_child(secondary)
-	var my_kinu := _home_action_button("My Kinu",Color("8069bb"),func() -> void:
-		MyKinuScreen.show(app,app._home)
-	,68,"wardrobe",false,"wardrobe")
+	# Both are prize-machine cabinets with their own illustration popping over the top edge.
+	var my_kinu := GachaButton.new()
 	my_kinu.name = "MyKinuHome"
-	my_kinu.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	my_kinu.icon_kind = "my_kinu"
+	my_kinu.title_text = NestTheme.t("My Kinu")
+	var level_progress := MyKinu.progress_for(MyKinu.xp())
+	my_kinu.subtitle_text = NestTheme.t("Level %d")%MyKinu.level()
+	my_kinu.progress = float(level_progress[0])/maxf(1.0,float(level_progress[1]))
+	my_kinu.kinu_color = MyKinu.base(app.run.catalog).color
+	my_kinu.top_color = Color("a98bff")
+	my_kinu.bottom_color = Color("6b46d9")
+	my_kinu.edge_color = Color("3b2283")
+	# New parts the player has not looked at yet, in slots they can wear.
+	my_kinu.badge = MyKinu.fresh_parts()
+	_gacha_press(my_kinu,"wardrobe",func() -> void: MyKinuScreen.show(app,app._home))
 	secondary.add_child(my_kinu)
-	var catcher := _home_action_button("Kinu Claw", Color("ef5e97"), func() -> void:
-		KinuCatcherScreen.show(app)
-	,68,"claw",false,"cashregister")
+	var catcher := GachaButton.new()
 	catcher.name = "Catcher"
-	catcher.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_dress_prize_button(catcher)
+	catcher.icon_kind = "claw"
+	catcher.title_text = NestTheme.t("Kinu Claw")
+	var free_plays := KinuCatcher.free_remaining()
+	catcher.subtitle_text = NestTheme.t("%d free plays")%free_plays if free_plays > 0 else NestTheme.t("%d tickets")%int(Save.data.tickets)
+	catcher.ribbon = NestTheme.t("FREE") if free_plays > 0 else ""
+	catcher.top_color = Color("ff86b4")
+	catcher.bottom_color = Color("e2457f")
+	catcher.edge_color = Color("8d2a55")
+	_gacha_press(catcher,"cashregister",func() -> void: KinuCatcherScreen.show(app))
 	secondary.add_child(catcher)
+	for button in [my_kinu,catcher]:
+		button.custom_minimum_size.y = 78
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	# The event rail stands on the left edge halfway between the curtains' hems and the tray, where
 	# live games keep their event buttons: clear of both, and in easy reach.
 	var rail := EventRail.build(app)
@@ -993,6 +1011,15 @@ static func _style_mode_plaque(button: Button, selected: bool, unlocked: bool) -
 	if label is Label:
 		label.add_theme_color_override("font_color", NestTheme.INK if selected else Color("e3c7ad"))
 	button.modulate = Color(1,1,1,1) if unlocked else Color(.86,.82,.8,.85)
+
+## Wires a GachaButton like NestTheme.button: a sound, and no press at the end of a scroll drag.
+static func _gacha_press(button: Button, sound: String, callback: Callable) -> void:
+	button.pressed.connect(func() -> void:
+		if NestTheme.scroll_dragging:
+			return
+		Sound.play(sound)
+		callback.call()
+	)
 
 ## Home actions read as clean painted arcade controls: a single label, a fine outline, and no
 ## cartoon text outline fighting the already illustrated room behind them.

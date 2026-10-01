@@ -211,6 +211,11 @@ class XpBar extends Control:
 static func show(app: Node, back_to: Callable = Callable()) -> void:
 	if back_to.is_valid():
 		back = back_to
+		# Opening the screen afresh goes straight to a slot with new parts waiting in it.
+		for slot in MyKinu.SLOTS:
+			if MyKinu.fresh_parts(slot) > 0:
+				tab = slot
+				break
 	if not back.is_valid():
 		back = app._show_wardrobe
 	var catalog: KinuCatalog = app.run.catalog
@@ -446,6 +451,15 @@ static func _sockets(app: Node, catalog: KinuCatalog) -> Control:
 		socket.add_child(holder)
 		holder.add_child(_socket_art(catalog, id, open))
 		var title := "Flavour" if id == "flavour" else str(MyKinu.SLOT_NAMES[id])
+		var unseen := 0 if id == "flavour" else MyKinu.fresh_parts(id)
+		if unseen > 0 and not selected:
+			var dot := NestTheme.count_badge(unseen)
+			dot.name = "NewParts"
+			dot.position = Vector2(-4, -8)
+			button.add_child(dot)
+			dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+			dot.offset_left = -22
+			dot.offset_top = -8
 		var caption := NestTheme.label(NestTheme.t(title) if open else NestTheme.t("Lv %d")%MyKinu.slot_level(id), 13, NestTheme.INK if selected else NestTheme.MUTED)
 		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		caption.clip_text = true
@@ -623,7 +637,14 @@ static func _parts(app: Node, catalog: KinuCatalog, grid: GridContainer, slot: S
 				show(app)
 		)
 		built.button.name = "Part_"+(id if id != "" else "none_"+slot)
-		if part:
+		if part and Save.is_fresh("part:"+id):
+			var tag := _chip(NestTheme.t("New"), Color("e5383b"))
+			(tag.get_theme_stylebox("panel") as StyleBoxFlat).bg_color = Color("e5383b")
+			(tag.get_child(0) as Label).add_theme_color_override("font_color", NestTheme.CREAM)
+			tag.set_anchors_preset(Control.PRESET_TOP_LEFT)
+			tag.offset_left = 6
+			tag.offset_top = 6
+			built.stage.add_child(tag)
 			Save.clear_fresh("part:"+id)
 
 ## A My Kinu preview wearing only `part` (or nothing), on the player's chosen flavour.

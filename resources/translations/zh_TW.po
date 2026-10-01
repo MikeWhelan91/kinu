@@ -3612,3 +3612,27 @@ msgstr "極光蝴蝶眼鏡"
 
 msgid "Golden Visor"
 msgstr "黃金護目鏡"
+
+msgid "New"
+msgstr "NEW"
+
+msgid "Worn in runs"
+msgstr "遊戲中穿著"
+
+msgid "Not worn"
+msgstr "未穿著"
+
+msgid "Worn"
+msgstr "穿著中"
+
+msgid "Hats"
+msgstr "帽子"
+
+msgid "Wear My Kinu In Runs"
+msgstr "在遊戲中穿上我的小絹"
+
+msgid "%d / %d XP"
+msgstr "%d / %d XP"
+
+msgid "Next: %s"
+msgstr "下一個：%s"

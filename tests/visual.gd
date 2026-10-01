@@ -43,6 +43,16 @@ func _ready() -> void:
 	match mode:
 		"beans": app._bean_shop()
 		"tickets": app._bean_shop("tickets")
+		"home_my_kinu":
+			Save.data.best = 30
+			Save.data.my_kinu.xp = 560
+			Save.data.my_kinu.home_seen_xp = 560
+			Save.data.my_kinu.intro_seen = true
+			Save.data.my_kinu.flavour = "matcha"
+			Save.data.owned = ["part:top_hat", "part:cool_shades"]
+			Save.data.fresh = ["part:top_hat", "part:cool_shades"]
+			await app._home()
+			await get_tree().create_timer(.5).timeout
 		"home":
 			await app._home()
 			await get_tree().create_timer(.5).timeout

@@ -1830,8 +1830,8 @@ msgstr "本週放上 %d 個小絹"
 msgid "Play %d runs this week"
 msgstr "本週玩 %d 局"
 
-msgid "Finish %d clean runs this week"
-msgstr "本週完成 %d 局零掉落"
+msgid "Pile %d Kinu in %d different runs this week"
+msgstr "本週疊到 %d 個小絹，達成 %d 局"
 
 msgid "Glaze %d Kinu with shoyu this week"
 msgstr "本週為 %d 個小絹淋上醬油"
@@ -3675,9 +3675,6 @@ msgstr "除錯・重置所有教學"
 
 msgid "Every run earns XP. Level up to unlock parts and dress your Kinu!"
 msgstr "每玩一局都能獲得 XP。升級解鎖配件，幫小絹打扮吧！"
-
-msgid "Finish %d runs without a tumble"
-msgstr "零失誤完成 %d 局"
 
 msgid "Meet My Kinu"
 msgstr "認識我的小絹"

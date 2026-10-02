@@ -13,7 +13,7 @@ extends RefCounted
 const GOALS := [
 	{"id": "runs", "amount": 40},
 	{"id": "land", "amount": 1000},
-	{"id": "clean", "amount": 15},
+	{"id": "pile_times", "amount": 8},
 	{"id": "missions", "amount": 15},
 ]
 const MONTHS := ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -85,7 +85,7 @@ static func goal_text(goal: Dictionary) -> String:
 	match str(goal.id):
 		"runs": return NestTheme.t("Play %d runs")%amount
 		"land": return NestTheme.t("Land %d Kinu")%amount
-		"clean": return NestTheme.t("Finish %d runs without a tumble")%amount
+		"pile_times": return NestTheme.t("Pile %d Kinu in %d different runs")%[KinuProgress.PILE_TIMES_TARGET, amount]
 		"missions": return NestTheme.t("Finish %d daily missions")%amount
 	return ""
 
@@ -122,7 +122,7 @@ static func record_run(summary: Dictionary, missions: int) -> void:
 	if item_for(month) == null or earned(month):
 		return
 	var counts := _counts(month)
-	var add := {"runs": 1, "land": int(summary.get("placed", 0)), "clean": 1 if int(summary.get("tumbles", 0)) == 0 else 0, "missions": missions}
+	var add := {"runs": 1, "land": int(summary.get("placed", 0)), "pile_times": 1 if int(summary.get("pile", 0)) >= KinuProgress.PILE_TIMES_TARGET else 0, "missions": missions}
 	for goal in GOALS:
 		if not goal_unlocked(goal):
 			continue

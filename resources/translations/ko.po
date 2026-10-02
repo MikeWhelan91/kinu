@@ -1830,8 +1830,8 @@ msgstr "이번 주 키누 %d개 올리기"
 msgid "Play %d runs this week"
 msgstr "이번 주 %d판 플레이"
 
-msgid "Finish %d clean runs this week"
-msgstr "이번 주 안 떨어뜨리고 %d판 완료"
+msgid "Pile %d Kinu in %d different runs this week"
+msgstr "이번 주 키누 %d개 쌓기 %d판 달성"
 
 msgid "Glaze %d Kinu with shoyu this week"
 msgstr "이번 주 키누 %d개에 간장 뿌리기"
@@ -3675,9 +3675,6 @@ msgstr "디버그 · 튜토리얼 전체 초기화"
 
 msgid "Every run earns XP. Level up to unlock parts and dress your Kinu!"
 msgstr "플레이할 때마다 XP를 얻어요. 레벨을 올려 파츠를 해금하고 키누를 꾸며 보세요!"
-
-msgid "Finish %d runs without a tumble"
-msgstr "한 번도 떨어뜨리지 않고 %d판 끝내기"
 
 msgid "Meet My Kinu"
 msgstr "마이 키누를 만나요"

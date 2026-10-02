@@ -514,17 +514,17 @@ func _ready() -> void:
 	# Every weekly challenge template must work in all three modes and have clear player-facing
 	# text. Mode-specific shoyu and spinning belong in regular play,
 	# not in a shared weekly pool where Toss players could make no progress.
-	var weekly_types := ["land", "runs", "clean_runs", "time", "pile", "streak"]
+	var weekly_types := ["land", "runs", "pile_times", "time", "pile", "streak"]
 	check(KinuProgress.WEEKLY_MISSIONS.all(func(mission: Dictionary) -> bool: return str(mission.type) in weekly_types),"weekly challenges work in every game mode")
 	check(KinuProgress.WEEKLY_MISSIONS.all(func(mission: Dictionary) -> bool: return KinuProgress.weekly_text(mission) != ""),"every weekly challenge has player-facing text")
 	var weekly_land := {"type": "land", "amount": 10, "progress": 0}
-	var weekly_clean := {"type": "clean_runs", "amount": 1, "progress": 0}
+	var weekly_big_run := {"type": "pile_times", "amount": 1, "progress": 0}
 	var weekly_single_run := {"type": "pile", "amount": 12, "progress": 0}
 	KinuProgress._advance_weekly(weekly_land, {"placed": 10}, 0)
-	KinuProgress._advance_weekly(weekly_clean, {"tumbles": 0}, 0)
+	KinuProgress._advance_weekly(weekly_big_run, {"placed": 45, "tumbles": NestRun.MAX_TUMBLES}, 45)
 	# Toss reports successful throws as `pile`, so the same single-run objective is meaningful there.
 	KinuProgress._advance_weekly(weekly_single_run, {"placed": 12}, 12)
-	check(KinuProgress.complete(weekly_land) and KinuProgress.complete(weekly_clean) and KinuProgress.complete(weekly_single_run),"weekly missions advance from mode-neutral run summaries")
+	check(KinuProgress.complete(weekly_land) and KinuProgress.complete(weekly_big_run) and KinuProgress.complete(weekly_single_run),"weekly missions advance from mode-neutral run summaries")
 	Save.data.weekly = {"week": KinuProgress._week_key(), "mission": {"id": "glaze_55", "type": "glazed", "amount": 55, "progress": 10, "claimed": false}}
 	check(str(KinuProgress.weekly().id) != "glaze_55","a saved retired weekly challenge is replaced")
 	Save.data.weekly = {"week": KinuProgress._week_key(), "mission": {"id": "runs_10", "type": "runs", "amount": 1, "progress": 1, "claimed": false}}
@@ -541,18 +541,18 @@ func _ready() -> void:
 	KinuProgress._record_weekly({"placed": 3, "tumbles": 0})
 	check(KinuProgress.complete(KinuProgress.weekly()) and KinuShowcase.progress() == 0 and Save.data.showcase.weeks.is_empty(),"finishing the weekly challenge leaves the showcase alone")
 	if KinuShowcase.active():
-		KinuShowcase.record_run({"placed": 30, "tumbles": 0}, 2)
+		KinuShowcase.record_run({"placed": 40, "pile": 40, "tumbles": NestRun.MAX_TUMBLES}, 2)
 		var counts: Dictionary = Save.data.showcase.goals[showcase_month]
 		# Goals open one per week; a run only feeds the ones already open.
 		var fed := true
-		var expected := {"runs": 1, "land": 30, "clean": 1, "missions": 2}
+		var expected := {"runs": 1, "land": 40, "pile_times": 1, "missions": 2}
 		for goal in KinuShowcase.GOALS:
 			fed = fed and int(counts[goal.id]) == (int(expected[goal.id]) if KinuShowcase.goal_unlocked(goal) else 0)
 		check(fed and KinuShowcase.goal_unlocked(KinuShowcase.GOALS[0]),"a finished run feeds every open showcase goal and none still locked")
 		var week := KinuProgress.week_of(KinuShowcase.showcase_day())
 		check(KinuShowcase.GOALS.all(func(goal: Dictionary) -> bool: return KinuShowcase.goal_unlocked(goal) == (KinuShowcase.goal_week(goal) <= week)) and KinuShowcase.unlock_day(KinuShowcase.GOALS[3]) == 22,"showcase goals open on the 1st, 8th, 15th and 22nd")
-		KinuShowcase.record_run({"placed": 5, "tumbles": 2}, 0)
-		check(int(counts.runs) == 2 and int(counts.clean) == (1 if KinuShowcase.goal_unlocked(KinuShowcase.GOALS[2]) else 0),"a run with a tumble doesn't count as clean")
+		KinuShowcase.record_run({"placed": 5, "pile": 5, "tumbles": 2}, 0)
+		check(int(counts.runs) == 2 and int(counts.pile_times) == (1 if KinuShowcase.goal_unlocked(KinuShowcase.GOALS[2]) else 0),"a small pile doesn't count towards the big-pile goal")
 		for goal in KinuShowcase.GOALS:
 			counts[goal.id] = int(goal.amount)-1 if goal.id == "runs" else int(goal.amount)
 		check(not KinuShowcase.earned(),"the reward waits for every goal")

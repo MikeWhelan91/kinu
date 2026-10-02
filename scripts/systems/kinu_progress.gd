@@ -46,9 +46,9 @@ const WEEKLY_MISSIONS := [
 	{"id": "runs_10", "type": "runs", "amount": 10},
 	{"id": "runs_12", "type": "runs", "amount": 12},
 	{"id": "runs_14", "type": "runs", "amount": 14},
-	{"id": "clean_5", "type": "clean_runs", "amount": 5},
-	{"id": "clean_7", "type": "clean_runs", "amount": 7},
-	{"id": "clean_9", "type": "clean_runs", "amount": 9},
+	{"id": "pile_times_5", "type": "pile_times", "amount": 5},
+	{"id": "pile_times_7", "type": "pile_times", "amount": 7},
+	{"id": "pile_times_9", "type": "pile_times", "amount": 9},
 	{"id": "play_15", "type": "time", "amount": 900},
 	{"id": "play_20", "type": "time", "amount": 1200},
 	{"id": "single_run_35", "type": "pile", "amount": 35},
@@ -388,7 +388,7 @@ static func weekly_text(mission: Dictionary) -> String:
 	match str(mission.type):
 		"land": return _t("Land %d Kinu this week")%amount
 		"runs": return _t("Play %d runs this week")%amount
-		"clean_runs": return _t("Finish %d clean runs this week")%amount
+		"pile_times": return _t("Pile %d Kinu in %d different runs this week")%[PILE_TIMES_TARGET, amount]
 		"glazed": return _t("Glaze %d Kinu with shoyu this week")%amount
 		"time": return _t("Play for %d minutes this week")%roundi(amount / 60.0)
 		"spin": return _t("Spin the box %d full turns this week")%amount
@@ -424,8 +424,8 @@ static func _advance_weekly(mission: Dictionary, summary: Dictionary, score: int
 	match str(mission.type):
 		"land": mission.progress = int(mission.progress)+int(summary.get("placed", 0))
 		"runs": mission.progress = int(mission.progress)+1
-		"clean_runs":
-			if int(summary.get("tumbles", 0)) == 0:
+		"pile_times":
+			if score >= PILE_TIMES_TARGET:
 				mission.progress = int(mission.progress)+1
 		"glazed": mission.progress = int(mission.progress)+int(summary.get("glazed", 0))
 		"time": mission.progress = int(mission.progress)+int(summary.get("time", 0.0))

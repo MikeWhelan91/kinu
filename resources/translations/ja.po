@@ -1830,8 +1830,8 @@ msgstr "今週%d個のせる"
 msgid "Play %d runs this week"
 msgstr "今週%d回あそぶ"
 
-msgid "Finish %d clean runs this week"
-msgstr "今週落とさずに%d回クリア"
+msgid "Pile %d Kinu in %d different runs this week"
+msgstr "今週%d個積むのを%d回"
 
 msgid "Glaze %d Kinu with shoyu this week"
 msgstr "今週しょうゆを%d個のきぬにかける"
@@ -3675,9 +3675,6 @@ msgstr "デバッグ・チュートリアルを全部リセット"
 
 msgid "Every run earns XP. Level up to unlock parts and dress your Kinu!"
 msgstr "あそぶたびにXPがたまるよ。レベルを上げてパーツを解放し、きぬをおしゃれにしよう！"
-
-msgid "Finish %d runs without a tumble"
-msgstr "タンブルなしで%d回あそびきる"
 
 msgid "Meet My Kinu"
 msgstr "マイきぬ登場"

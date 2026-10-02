@@ -82,33 +82,30 @@ static func show(app: Node) -> void:
 	app._center_label(layout, HINTS[app.shop_tab], 15, NestTheme.MUTED)
 
 ## Slot filters for the Parts tab, each saying when its slot opens.
-static func _slot_chips(app: Node) -> HBoxContainer:
+static func _slot_chips(app: Node) -> Control:
 	var row := HBoxContainer.new()
 	row.name = "PartSlots"
-	row.add_theme_constant_override("separation", 4)
 	for slot in MyKinu.SLOTS:
 		var title := NestTheme.t(MyKinu.SLOT_NAMES[slot])
 		if not MyKinu.slot_unlocked(slot):
 			title = NestTheme.t("%s · Lv %d")%[title, MyKinu.slot_level(slot)]
-		var chip := NestTheme.tab(title, part_slot == slot, func() -> void:
+		var chip := NestTheme.segment(title, part_slot == slot, func() -> void:
 			part_slot = slot
 			show(app)
-		)
+		, "tap", 38)
 		chip.name = "Slot_"+slot
-		chip.custom_minimum_size.y = 48
 		chip.add_theme_font_size_override("font_size", 13)
 		row.add_child(chip)
-	return row
+	return NestTheme.segmented(row)
 
 ## The category tabs shared by the Shop and Wardrobe.
-static func tabs(app: Node, current: String, pick: Callable, sound: String = "tap", entries: Array = TABS) -> HBoxContainer:
+static func tabs(app: Node, current: String, pick: Callable, sound: String = "tap", entries: Array = TABS) -> Control:
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
 	for entry in entries:
-		var button := NestTheme.tab(entry[1], current == entry[0], func() -> void: pick.call(entry[0]), sound)
-		button.add_theme_font_size_override("font_size", 15)
+		var button := NestTheme.segment(entry[1], current == entry[0], func() -> void: pick.call(entry[0]), sound)
+		button.name = "Tab_"+str(entry[0])
 		row.add_child(button)
-	return row
+	return NestTheme.segmented(row)
 
 static func items(catalog: KinuCatalog, kind: String) -> Array:
 	match kind:

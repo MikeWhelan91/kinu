@@ -29,14 +29,10 @@ static func open(owner: Node, back: Callable, section: String = "beans") -> void
 func build() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tabs := HBoxContainer.new()
-	tabs.add_theme_constant_override("separation", 8)
-	add_child(tabs)
+	add_child(NestTheme.segmented(tabs))
 	for id in ["beans", "tickets"]:
-		var tab := NestTheme.button("Beans" if id == "beans" else "Kinu Claw", func() -> void: _set_section(id), id == initial_section)
+		var tab := NestTheme.segment("Beans" if id == "beans" else "Kinu Claw", id == initial_section, func() -> void: _set_section(id))
 		tab.name = id.capitalize()+"Tab"
-		tab.custom_minimum_size.y = 52
-		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		tab.add_theme_font_size_override("font_size", 18)
 		tabs.add_child(tab)
 		section_tabs[id] = tab
 	_currency_view("beans", Store.BEAN_PACKS, "A little extra for your favourite looks.")
@@ -138,7 +134,7 @@ func _set_section(section: String) -> void:
 	for id in section_views:
 		(section_views[id] as Control).visible = id == section
 	for id in section_tabs:
-		NestTheme.set_primary(section_tabs[id] as Button, id == section)
+		NestTheme.paint_segment(section_tabs[id] as Button, id == section)
 
 func _card(parent: Control) -> HBoxContainer:
 	var panel := PanelContainer.new()

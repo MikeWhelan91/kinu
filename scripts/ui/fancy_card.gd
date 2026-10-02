@@ -70,11 +70,15 @@ class Banner extends Control:
 	var text := ""
 	var color := NestTheme.BERRY
 	var font_size := 24
+	## Extra room either side of the text and above/below it, and a floor on the width.
+	var side_padding := 38.0
+	var height_padding := 26.0
+	var min_width := 0.0
 
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var width := NestTheme.font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x+76
-		custom_minimum_size = Vector2(width, font_size+26)
+		var width := NestTheme.font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x+side_padding*2
+		custom_minimum_size = Vector2(maxf(width, min_width), font_size+height_padding)
 
 	func _draw() -> void:
 		var h := size.y

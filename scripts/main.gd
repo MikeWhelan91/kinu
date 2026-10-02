@@ -636,54 +636,69 @@ func _flash_objective(text: String, color: Color) -> void:
 func _header(title: String, callback: Callable = _home) -> VBoxContainer:
 	var layout := _vbox(content,14)
 	layout.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var plank := PanelContainer.new()
-	plank.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	plank.custom_minimum_size.y = 72
-	plank.add_theme_stylebox_override("panel",NestTheme.box(NestTheme.WOOD,20,NestTheme.INK,8))
-	layout.add_child(plank)
-	# PanelContainer lays out this one canvas; the title and back button then share the same sign
-	# without the back button consuming a column and shifting the title off the page centre.
-	var canvas := Control.new()
-	canvas.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	plank.add_child(canvas)
-	var label := NestTheme.headline(title,28)
-	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	canvas.add_child(label)
-	var back := NestTheme.button("",func() -> void:
+	# A ribbon banner for the title with a round, glossy back button beside it. The title stays
+	# centred on the page whatever the button's width.
+	var bar := Control.new()
+	bar.name = "HeaderBar"
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	bar.custom_minimum_size.y = 76
+	layout.add_child(bar)
+	var centre := CenterContainer.new()
+	centre.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	centre.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	bar.add_child(centre)
+	var banner := FancyCard.Banner.new()
+	banner.name = "HeaderTitle"
+	banner.text = NestTheme.t(title)
+	banner.color = NestTheme.BERRY
+	banner.font_size = 34 if title.length() <= 12 else 29
+	banner.side_padding = 58
+	banner.height_padding = 32
+	banner.min_width = minf(250, get_viewport().get_visible_rect().size.x-150)
+	centre.add_child(banner)
+	var back := Button.new()
+	back.name = "Back"
+	back.focus_mode = Control.FOCUS_NONE
+	back.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	for state in ["normal", "hover", "pressed", "focus"]:
+		back.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	back.pressed.connect(func() -> void:
 		Sound.play("plop")
 		callback.call()
 	)
-	back.name = "Back"
-	back.mouse_filter = Control.MOUSE_FILTER_STOP
-	back.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	back.position = Vector2.ZERO
-	back.size = Vector2(58, 54)
-	back.custom_minimum_size = Vector2.ZERO
-	for state in ["normal", "hover", "pressed", "focus"]:
-		back.add_theme_stylebox_override(state, StyleBoxEmpty.new())
-	canvas.add_child(back)
-	# Draw the chevron instead of relying on a font glyph. Its point geometry stays centred in
-	# the fixed left-hand hit area at every page width, while the title stays centred in the sign.
-	var chevron_points := PackedVector2Array([Vector2(35, 14), Vector2(22, 27), Vector2(35, 40)])
-	var chevron_outline := Line2D.new()
-	chevron_outline.points = chevron_points
-	chevron_outline.width = 9
-	chevron_outline.default_color = NestTheme.INK
-	chevron_outline.joint_mode = Line2D.LINE_JOINT_ROUND
-	chevron_outline.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	chevron_outline.end_cap_mode = Line2D.LINE_CAP_ROUND
-	back.add_child(chevron_outline)
-	var chevron := Line2D.new()
-	chevron.points = chevron_points
-	chevron.width = 4
-	chevron.default_color = NestTheme.CREAM
-	chevron.joint_mode = Line2D.LINE_JOINT_ROUND
-	chevron.begin_cap_mode = Line2D.LINE_CAP_ROUND
-	chevron.end_cap_mode = Line2D.LINE_CAP_ROUND
-	back.add_child(chevron)
+	back.set_anchors_preset(Control.PRESET_CENTER_LEFT)
+	back.offset_left = 0
+	back.offset_right = 56
+	back.offset_top = -28
+	back.offset_bottom = 28
+	bar.add_child(back)
+	var disc := BackDisc.new()
+	disc.owner_button = back
+	disc.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	back.add_child(disc)
 	return layout
+
+## The header's back button face: a cream disc with an ink rim, a gloss and a bold chevron.
+class BackDisc extends Control:
+	var owner_button: Button
+
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if is_instance_valid(owner_button):
+			owner_button.button_down.connect(queue_redraw)
+			owner_button.button_up.connect(queue_redraw)
+
+	func _draw() -> void:
+		var pressed := is_instance_valid(owner_button) and owner_button.is_pressed()
+		var r := minf(size.x, size.y)*.5-3
+		var c := size*.5+Vector2(0, 2 if pressed else 0)
+		if not pressed:
+			draw_circle(c+Vector2(0, 3.5), r, NestTheme.INK)
+		draw_circle(c, r, NestTheme.INK)
+		draw_circle(c, r-3, Color("fffaf0"))
+		draw_arc(c, r*.62, PI*1.08, PI*1.55, 10, Color(1, 1, 1, .9), 3.0, true)
+		var chevron := PackedVector2Array([c+Vector2(r*.22, -r*.4), c+Vector2(-r*.24, 0), c+Vector2(r*.22, r*.4)])
+		draw_polyline(chevron, NestTheme.INK, 6.0, true)
 
 ## Wraps text in a paper strip, for readable copy sitting on wood.
 func _paper_text(parent: Node, text: String, font_size: int = 18) -> Label:

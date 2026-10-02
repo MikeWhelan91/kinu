@@ -8,10 +8,9 @@ static func show(app: Node) -> void:
 	_tab_badges.clear()
 	var layout = app._header("Kinu Book")
 	var tabs := HBoxContainer.new()
-	tabs.add_theme_constant_override("separation", 8)
-	layout.add_child(tabs)
+	layout.add_child(NestTheme.segmented(tabs))
 	for tab in [["flavours", "Flavours", "flavour:"], ["collection", "Collection", ""], ["records", "Records", "-"]]:
-		var button := NestTheme.tab(tab[1], app.book_tab == tab[0], func() -> void:
+		var button := NestTheme.segment(tab[1], app.book_tab == tab[0], func() -> void:
 			app.book_tab = tab[0]
 			show(app)
 		, "book")
@@ -29,25 +28,14 @@ static func show(app: Node) -> void:
 
 static func _flavours(app: Node, layout: VBoxContainer) -> void:
 	var flavours: Array[KinuFlavour] = app.run.catalog.flavours
-	var filter_row := HBoxContainer.new()
-	filter_row.add_theme_constant_override("separation", 8)
-	layout.add_child(filter_row)
-	for filter in ["All", "Found", "Missing"]:
-		var button := NestTheme.tab(filter, app.flavour_filter == filter, func() -> void:
-			app.flavour_filter = filter
-			app._collection()
-		, "book")
-		button.custom_minimum_size.y = 52
-		button.add_theme_font_size_override("font_size", 15)
-		filter_row.add_child(button)
+	layout.add_child(_filter_bar(NestTheme.t("%d / %d found")%[found(flavours), flavours.size()], ["All", "Found", "Missing"], app.flavour_filter, func(filter: String) -> void:
+		app.flavour_filter = filter
+		app._collection()
+	))
 	var scroll := DragScroll.new()
 	layout.add_child(scroll)
 	var list: VBoxContainer = app._vbox(scroll, 14)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var count := NestTheme.pill(NestTheme.t("%d / %d flavours found")%[found(flavours), flavours.size()], 18)
-	var count_row := CenterContainer.new()
-	count_row.add_child(count)
-	list.add_child(count_row)
 	var grid := CardGrid.grid(list)
 	var block: KinuShape = app.run.catalog.shapes[0]
 	for i in flavours.size():
@@ -83,17 +71,19 @@ static func _flavours(app: Node, layout: VBoxContainer) -> void:
 const RARITY_ORDER := {"": 0, "common": 1, "rare": 2, "epic": 3, "legendary": 4}
 
 static func _collection(app: Node, layout: VBoxContainer) -> void:
-	var filter_row := HBoxContainer.new()
-	filter_row.add_theme_constant_override("separation", 8)
-	layout.add_child(filter_row)
-	for filter in ["All", "Owned", "Unowned"]:
-		var button := NestTheme.tab(filter, app.collection_filter == filter, func() -> void:
-			app.collection_filter = filter
-			show(app)
-		, "book")
-		button.custom_minimum_size.y = 52
-		button.add_theme_font_size_override("font_size", 15)
-		filter_row.add_child(button)
+	var owned := 0
+	var total := 0
+	for entry in KinuShopScreen.TABS:
+		for item in KinuShopScreen.items(app.run.catalog, entry[2]):
+			if not KinuShopScreen.is_available(item):
+				continue
+			total += 1
+			if Save.owns(entry[2], item.id, item.price):
+				owned += 1
+	layout.add_child(_filter_bar(NestTheme.t("%d / %d collected")%[owned, total], ["All", "Owned", "Unowned"], app.collection_filter, func(filter: String) -> void:
+		app.collection_filter = filter
+		show(app)
+	))
 	# Give the tap a frame to paint the new header before building the grid. Thumbnails are
 	# pre-baked image files (tools/bake_collection_thumbs.gd), not a live render, so nothing here
 	# needs to wait on rendering the way it used to.
@@ -111,18 +101,7 @@ static func _collection(app: Node, layout: VBoxContainer) -> void:
 	layout.add_child(scroll)
 	var list: VBoxContainer = app._vbox(scroll, 14)
 	list.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var owned := 0
-	var total := 0
-	for entry in KinuShopScreen.TABS:
-		for item in KinuShopScreen.items(catalog, entry[2]):
-			if not KinuShopScreen.is_available(item):
-				continue
-			total += 1
-			if Save.owns(entry[2], item.id, item.price):
-				owned += 1
-	var count_row := CenterContainer.new()
-	count_row.add_child(NestTheme.pill(NestTheme.t("%d / %d collected")%[owned, total], 18))
-	list.add_child(count_row)
+
 	for entry in KinuShopScreen.TABS:
 		var kind: String = entry[2]
 		var entries: Array = KinuShopScreen.items(catalog, kind).filter(func(item: Resource) -> bool: return KinuShopScreen.is_available(item))
@@ -356,6 +335,28 @@ static func _badge(target: Control, count: int, inset: bool = false) -> void:
 	badge.offset_top = 2 if inset else -10
 	badge.offset_right = -2 if inset else 8
 	target.add_child(badge)
+
+## One slim line under the tabs: the progress count on the left and a small segmented filter on
+## the right, instead of a second full row of big buttons and a separate count pill.
+static func _filter_bar(count_text: String, filters: Array, current: String, pick: Callable) -> HBoxContainer:
+	var bar := HBoxContainer.new()
+	bar.name = "FilterBar"
+	bar.add_theme_constant_override("separation", 10)
+	var count := NestTheme.label(count_text, 16, NestTheme.INK)
+	count.name = "FilterCount"
+	count.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	count.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	count.clip_text = true
+	count.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	bar.add_child(count)
+	var row := HBoxContainer.new()
+	for filter in filters:
+		var chip := NestTheme.segment(filter, current == filter, func() -> void: pick.call(filter), "book", 34)
+		chip.custom_minimum_size.x = 74
+		chip.add_theme_font_size_override("font_size", 13)
+		row.add_child(chip)
+	bar.add_child(NestTheme.segmented(row))
+	return bar
 
 static func found(flavours: Array[KinuFlavour]) -> int:
 	var count := 0

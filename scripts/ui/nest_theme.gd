@@ -191,6 +191,64 @@ static func tab(text: String, selected: bool, callback: Callable, sound: String 
 	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return node
 
+## One option in a segmented control: flat text on the track, a raised sun pill when selected.
+## Wrap the row of segments with `segmented()`.
+static func segment(text: String, selected: bool, callback: Callable, sound: String = "tap", height: float = 46) -> Button:
+	var node := button(text, callback, false, sound)
+	node.custom_minimum_size = Vector2(0, height)
+	node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	node.focus_mode = Control.FOCUS_NONE
+	node.add_theme_font_size_override("font_size", 16 if height >= 44 else 14)
+	paint_segment(node, selected)
+	return node
+
+## Restyles a segment as selected or not, for controls that switch in place without a rebuild.
+static func paint_segment(node: Button, selected: bool) -> void:
+	var height := node.custom_minimum_size.y
+	if selected:
+		var on := box(SUN, int(height*.5), INK, 4)
+		on.border_width_left = 3
+		on.border_width_right = 3
+		on.border_width_top = 3
+		on.set_content_margin_all(4)
+		on.shadow_color = Color(SUN, .45)
+		on.shadow_size = 4
+		for state in ["normal", "hover", "pressed"]:
+			node.add_theme_stylebox_override(state, on)
+		for state in ["font_color", "font_hover_color", "font_pressed_color"]:
+			node.add_theme_color_override(state, INK)
+	else:
+		var off := StyleBoxFlat.new()
+		off.bg_color = Color(1, 1, 1, 0)
+		off.set_corner_radius_all(int(height*.5))
+		off.set_content_margin_all(4)
+		var hover := off.duplicate() as StyleBoxFlat
+		hover.bg_color = Color(1, 1, 1, .35)
+		node.add_theme_stylebox_override("normal", off)
+		node.add_theme_stylebox_override("hover", hover)
+		node.add_theme_stylebox_override("pressed", hover)
+		for state in ["font_color", "font_hover_color", "font_pressed_color"]:
+			node.add_theme_color_override(state, MUTED)
+
+## Seats a row of `segment()` buttons in one rounded track, so a set of choices reads as a single
+## control rather than a wall of separate buttons.
+static func segmented(row: HBoxContainer) -> PanelContainer:
+	var track := PanelContainer.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("f6e2bf")
+	style.border_color = INK
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(28)
+	style.set_content_margin_all(4)
+	style.shadow_color = Color(.23, .1, .05, .18)
+	style.shadow_size = 3
+	style.shadow_offset = Vector2(0, 2)
+	style.anti_aliasing = true
+	track.add_theme_stylebox_override("panel", style)
+	row.add_theme_constant_override("separation", 4)
+	track.add_child(row)
+	return track
+
 ## A cream paper strip for text or controls sitting on wood.
 static func paper(child: Control = null) -> PanelContainer:
 	var panel := PanelContainer.new()

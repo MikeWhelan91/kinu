@@ -89,6 +89,9 @@ var best_ring_passed: bool = false
 var last_shape: String = ""
 var gesture: String = ""
 var pointer_id: int = -99
+## True while a mode's first-run guide is on screen. Its cards teach Sticky Kinu and the bottle
+## themselves, so the run's own one-off tips for those stay quiet instead of talking over them.
+var guided := false
 var menu_mode: bool = true
 var accepting_input: bool = true
 var fallen_body: KinuBody
@@ -621,7 +624,13 @@ func _spawn() -> void:
 		return
 	active = make_body(next_shape, next_flavour, next_special)
 	var bottle_tip := "shoyu_bottle" if mode == "tower" else "bottle"
-	if placed >= 2 and squirts > 0 and not Save.data.seen_specials.has(bottle_tip):
+	if guided:
+		# The guide teaches these two itself; count them as seen so they don't pop up next run. Any
+		# other special's tip waits for a run without the guide talking.
+		for taught in [bottle_tip, "sticky"]:
+			if not Save.data.seen_specials.has(taught):
+				Save.data.seen_specials.append(taught)
+	elif placed >= 2 and squirts > 0 and not Save.data.seen_specials.has(bottle_tip):
 		Save.data.seen_specials.append(bottle_tip)
 		Save.persist()
 		message.emit(tr("Tap the shoyu bottle to glue Kinu together!") if mode == "tower" else tr("Tap the bottle to shrink crowded Kinu!"), Color("8a613f") if mode == "tower" else Color("5a8fb5"))

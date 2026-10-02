@@ -23,7 +23,7 @@ const OLD_OUTFIT_GOALS := {
 }
 
 func defaults() -> Dictionary:
-	return {"version": 6, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "goals": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": [], "look": "outfit", "my_kinu": MyKinu.defaults()}
+	return {"version": 6, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "tutorial_tower": false, "tutorial_toss": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "goals": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": [], "look": "outfit", "my_kinu": MyKinu.defaults()}
 
 func load_data(source: Variant = null) -> void:
 	data = defaults()
@@ -56,7 +56,7 @@ func load_data(source: Variant = null) -> void:
 				"music", "sfx":
 					if (value is float or value is int) and is_finite(float(value)):
 						data[key] = clampf(float(value), 0, 1)
-				"haptics", "tutorial", "home_tour", "debug_unlocked":
+				"haptics", "tutorial", "tutorial_tower", "tutorial_toss", "home_tour", "debug_unlocked":
 					if value is bool:
 						data[key] = value
 				"language":
@@ -222,6 +222,10 @@ func load_data(source: Variant = null) -> void:
 		# home screen, so it's only for players still on their first return to it.
 		if not loaded.has("home_tour") and int(data.runs) >= 2:
 			data.home_tour = true
+		# Tower and Toss guides arrived after launch: anyone who already has a score there knows the mode.
+		for guided_mode in ["tower", "toss"]:
+			if not loaded.has("tutorial_"+guided_mode) and int(data.mode_best.get(guided_mode, 0)) > 0:
+				data["tutorial_"+guided_mode] = true
 		# Early shop builds stored outfits separately.
 		if loaded.get("owned_outfits") is Array:
 			for item in loaded.owned_outfits:
@@ -443,7 +447,7 @@ func clear_all_fresh() -> void:
 	persist()
 
 func setting(key: String, value: Variant) -> void:
-	if key in ["music", "sfx", "haptics", "tutorial", "controls", "claw_hand", "outfit", "box", "room", "debug_unlocked", "language", "mode", "look"]:
+	if key in ["music", "sfx", "haptics", "tutorial", "tutorial_tower", "tutorial_toss", "controls", "claw_hand", "outfit", "box", "room", "debug_unlocked", "language", "mode", "look"]:
 		data[key] = value
 		persist()
 
@@ -605,10 +609,12 @@ func acknowledge_kinu_xp() -> void:
 	data.my_kinu.home_seen_xp = MyKinu.xp()
 	persist()
 
-## Debug: every first-time guide plays again, from the in-run tutorial to the home tour, the My
-## Kinu intro and the one-off special Kinu tips.
+## Debug: every first-time guide plays again, from each mode's in-run tutorial to the home tour,
+## the My Kinu intro and the one-off special Kinu tips.
 func reset_tutorials() -> void:
 	data.tutorial = false
+	data.tutorial_tower = false
+	data.tutorial_toss = false
 	data.home_tour = false
 	data.my_kinu.intro_seen = false
 	data.seen_specials = []

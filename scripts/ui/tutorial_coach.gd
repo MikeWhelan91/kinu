@@ -1,7 +1,7 @@
 class_name TutorialCoach
 extends Control
-## First-run guide: a cheerful Kinu with a speech bubble and step dots, plus a cartoon
-## finger that acts out each gesture over the real scene.
+## First-run guide for each mode: a cheerful Kinu with a speech bubble and step dots, plus a
+## cartoon finger that acts out each card's gesture over the real scene.
 
 var app: Node
 var title: Label
@@ -11,6 +11,10 @@ var dots: Control
 var step: int = 0
 var count: int = 5
 var clock: float = 0.0
+## What the hand acts out on each card ("slide", "drop", "spin", "press", "bottle", "toss_aim",
+## "toss_fire" or "" for none), and the last card's button.
+var gestures: Array = []
+var finish_text := "Let’s Stack!"
 
 func build(owner: Node, safe_bottom: float) -> void:
 	app = owner
@@ -20,8 +24,10 @@ func build(owner: Node, safe_bottom: float) -> void:
 	dock.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	dock.add_theme_constant_override("separation", 4)
 	dock.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	var classic: bool = Save.data.controls == "classic"
-	var claw: bool = Save.data.controls == "claw"
+	var toss: bool = app.run.mode == "toss"
+	var classic: bool = Save.data.controls == "classic" and not toss
+	# Toss's aim box and Fire button fill the bottom of the screen just like the claw controls.
+	var claw: bool = Save.data.controls == "claw" or toss
 	# The claw sticks and Drop button fill the lower side of the screen. Keep the guide
 	# above them so Skip Guide remains reachable during the first run.
 	dock.grow_vertical = Control.GROW_DIRECTION_END if claw else Control.GROW_DIRECTION_BEGIN
@@ -94,9 +100,12 @@ func refresh(current: int, steps: Array) -> void:
 	var entry: Array = steps[clampi(current, 0, count-1)]
 	title.text = entry[0]
 	text.text = entry[1]
+	gestures.clear()
+	for card in steps:
+		gestures.append(card[2] if card.size() > 2 else "")
 	dots.queue_redraw()
 	if current == count-1:
-		button.text = "Let’s Stack!"
+		button.text = finish_text
 		NestTheme.set_primary(button, true)
 
 ## A small open-seam tail points from the cream bubble toward the Kinu's face.
@@ -133,23 +142,45 @@ class TutorialHand extends Control:
 	func _process(delta: float) -> void:
 		coach.clock += delta
 		var run: NestRun = coach.app.run
-		var wanted := 1.0 if (coach.step <= 2 or coach.step == 4 or coach.step == 5) and run.gesture == "" and run.state == "aim" else 0.0
+		var wanted := 1.0 if gesture() != "" and run.gesture == "" and run.state == "aim" else 0.0
 		fade = move_toward(fade, wanted, delta*3.0)
 		queue_redraw()
 
+	func gesture() -> String:
+		return str(coach.gestures[coach.step]) if coach.step >= 0 and coach.step < coach.gestures.size() else ""
+
 	func _draw() -> void:
 		var run: NestRun = coach.app.run
-		if fade <= 0.0 or not is_instance_valid(run.active) or not run.orbit.camera.is_inside_tree():
+		if fade <= 0.0 or not is_instance_valid(run.active):
 			return
 		var t := coach.clock
-		var held := run.orbit.camera.unproject_position(run.active.global_position)
-		var tip := held+Vector2(0, 70)
 		var press := 0.0
 		var alpha := fade
-		match coach.step:
-			0:
+		# Toss's gestures happen on its own controls rather than over the held Kinu.
+		if gesture().begins_with("toss_"):
+			var target := coach.app.screen.find_child("TossAimBox" if gesture() == "toss_aim" else "TossFireButton", true, false) as Control
+			if target == null:
+				return
+			var area := target.get_global_rect()
+			var at := get_global_transform().affine_inverse()*area.get_center()
+			if gesture() == "toss_aim":
+				_draw_hand(at+Vector2(sin(t*2.0)*area.size.x*.3, cos(t*1.3)*area.size.y*.15-10), 0.0, alpha)
+			else:
+				# Press and hold, then let go.
+				var phase := fmod(t, 2.0)/2.0
+				press = clampf(phase/.15, 0.0, 1.0) if phase < .7 else 0.0
+				if phase >= .7:
+					alpha *= 1.0-(phase-.7)/.3
+				_draw_hand(at+Vector2(-6, -18), press, alpha)
+			return
+		if not run.orbit.camera.is_inside_tree():
+			return
+		var held := run.orbit.camera.unproject_position(run.active.global_position)
+		var tip := held+Vector2(0, 70)
+		match gesture():
+			"slide":
 				tip.x += sin(t*2.2)*70
-			1:
+			"drop":
 				var phase := fmod(t, 1.6)/1.6
 				tip = held+Vector2(0, 40)
 				if phase < .45:
@@ -157,7 +188,7 @@ class TutorialHand extends Control:
 				else:
 					tip.y -= (phase-.45)*90
 					alpha *= 1.0-(phase-.45)/.55
-			4:
+			"press":
 				# The Sticky lesson is an ordinary drop; the badge on the Kinu does the explaining.
 				var sticky_phase := fmod(t, 1.6)/1.6
 				tip = held+Vector2(0, 50)
@@ -165,7 +196,7 @@ class TutorialHand extends Control:
 					press = sin(sticky_phase/.45*PI)
 				else:
 					alpha *= 1.0-(sticky_phase-.45)/.55
-			5:
+			"bottle":
 				var phase := fmod(t, 1.6)/1.6
 				if run.aim_mode == "kinu" and is_instance_valid(coach.app.bottle_button):
 					# Tap the bottle icon first...
@@ -177,7 +208,7 @@ class TutorialHand extends Control:
 					press = sin(phase/.45*PI)
 				else:
 					alpha *= 1.0-(phase-.45)/.55
-			2:
+			"spin":
 				var phase := fmod(t, 1.4)/1.4
 				if run.control_scheme() == "classic":
 					var strip := run.spin_strip_rect()

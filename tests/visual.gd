@@ -135,6 +135,15 @@ func _ready() -> void:
 			run.orbit.lateral = .6
 			run.orbit.depth = 0.0
 			await get_tree().create_timer(1.5).timeout
+		"tutorial_tower", "tutorial_toss":
+			Save.data["tutorial_"+mode.trim_prefix("tutorial_")] = false
+			Save.data.mode = mode.trim_prefix("tutorial_")
+			Save.data.debug_unlocked = true
+			app._start()
+			await get_tree().create_timer(.6).timeout
+			app.tutorial_step = tutorial_index
+			app._tutorial_refresh()
+			await get_tree().create_timer(.6).timeout
 		"tutorial":
 			Save.data.tutorial = false
 			app._start()

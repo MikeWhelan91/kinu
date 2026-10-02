@@ -804,6 +804,18 @@ func _ready() -> void:
 	app._finish_tutorial()
 	Save.load_data()
 	check(Save.data.tutorial,"tutorial completion persists")
+	# Tower and Toss each have their own short guide, remembered under their own flag.
+	for guided_mode in ["tower", "toss"]:
+		app.tutorial_mode = guided_mode
+		app.tutorial_step = 0
+		app.run.guided = true
+		var mode_actions: Array = app.TUTORIAL_ACTIONS[guided_mode]
+		for action in mode_actions:
+			app._tutorial_action(action)
+		check(app.tutorial_step==app._tutorial_steps().size()-1,"the %s guide reaches its last card"%guided_mode)
+		check(app._tutorial_steps().all(func(card: Array) -> bool: return card.size() == 3),"every %s card names its gesture"%guided_mode)
+		app._finish_tutorial()
+		check(bool(Save.data["tutorial_"+guided_mode]) and not app.run.guided and app.tutorial_mode == "","finishing the %s guide is remembered"%guided_mode)
 	print("CHECKS=",checks," FAILURES=",failures.size()," PEAK_BODIES=",peak_bodies," BEST_RUN=",best_run," BEST_HEIGHT=",best_height)
 	var report := FileAccess.open("res://docs/integration-results.txt",FileAccess.WRITE)
 	report.store_string("Godot "+Engine.get_version_info().string+"\nChecks: "+str(checks)+"\nFailures: "+str(failures.size())+"\nBest bot tower: "+str(best_run)+"\nSimulated seconds: "+str(simulated_frames/60.0)+"\n"+"\n".join(failures))

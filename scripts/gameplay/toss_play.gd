@@ -377,6 +377,7 @@ func set_aim(x: float, y: float) -> void:
 	aim_t = clampf(x, -1, 1)
 	aim_x = aim_t*MAT_REACH
 	loft_t = clampf(y, -1, 1)
+	run.action_done.emit("aim")
 
 ## Leaving Toss mid-charge (quitting the run, say) mustn't leave the wind-up playing on.
 func _exit_tree() -> void:

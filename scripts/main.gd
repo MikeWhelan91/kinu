@@ -30,6 +30,8 @@ var hint_pill: PanelContainer
 var next_slot: VBoxContainer
 var tutorial_panel: TutorialCoach
 var tutorial_step: int = -1
+## The mode whose in-run guide is showing ("classic", "tower" or "toss"), or "" for none.
+var tutorial_mode := ""
 var initial_best: int = 0
 var flavour_filter: String = "All"
 var collection_filter: String = "All"
@@ -295,8 +297,12 @@ func _start() -> void:
 	initial_best = NestRun.best_for(NestRun.chosen_mode())
 	_new_screen("play")
 	_build_hud()
-	tutorial_step = -1 if Save.data.tutorial or NestRun.chosen_mode() != "classic" else 0
-	Analytics.run_started(NestRun.chosen_mode(), tutorial_step >= 0)
+	var mode := NestRun.chosen_mode()
+	tutorial_mode = "" if bool(Save.data.get(TUTORIAL_FLAGS[mode], true)) else mode
+	tutorial_step = 0 if tutorial_mode != "" else -1
+	Analytics.run_started(mode, tutorial_step >= 0)
+	# While a guide is teaching, the run's own one-off tips stay quiet so they don't talk over it.
+	run.guided = tutorial_step >= 0
 	run.begin()
 	if tutorial_step == 0:
 		_build_tutorial()
@@ -512,6 +518,7 @@ func _build_toss_controls() -> void:
 	row.add_theme_constant_override("separation",12)
 	content.add_child(row)
 	var aim_box := TossAimBox.new()
+	aim_box.name = "TossAimBox"
 	aim_box.run = run
 	aim_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(aim_box)
@@ -520,6 +527,7 @@ func _build_toss_controls() -> void:
 	power_meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(power_meter)
 	var fire_button := TossFireButton.new()
+	fire_button.name = "TossFireButton"
 	fire_button.run = run
 	fire_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(fire_button)
@@ -824,26 +832,51 @@ func _clear_confetti() -> void:
 			star.queue_free()
 	confetti_stars.clear()
 
+## Each mode's guide is shown once, on its first run, and remembered under its own save flag.
+const TUTORIAL_FLAGS := {"classic": "tutorial", "tower": "tutorial_tower", "toss": "tutorial_toss"}
+## The run action that turns each guide's cards over, in order. The last card waits for its button.
+const TUTORIAL_ACTIONS := {
+	"classic": ["aim","drop","spin","sticky_ready","settle","squirt"],
+	"tower": ["settle","squirt"],
+	"toss": ["aim","drop","settle"],
+}
+const TUTORIAL_FINISH := {"classic": "Let’s Stack!", "tower": "Let’s Build!", "toss": "Let’s Toss!"}
+
+## [title, text, gesture] per card. The gesture names what the coach's hand acts out (see
+## TutorialCoach.TutorialHand), or "" for a card that only talks.
 func _tutorial_steps() -> Array:
+	match tutorial_mode:
+		"tower":
+			return [
+				["Build It Tall","No box this time, just a plate. You score how tall your tower stands, so stack Kinu upwards!","drop"],
+				["Shoyu Glue","Tap the shoyu bottle, aim it at a wobbly Kinu and let go. Shoyu glues that Kinu in place.","bottle"],
+				["Careful!","Kinu that fall off the plate are tumbles. Six tumbles and the tower comes down.",""]]
+		"toss":
+			return [
+				["Aim","Drag in the aim box. Left and right picks the spot, up and down sets how high it flies. The ghost Kinu shows where it lands.","toss_aim"],
+				["Hold Fire","Hold the Fire button to power up, then let go to throw.","toss_fire"],
+				["Get It In","Kinu have to drop through a hole and stay in the box. Fill a box and the next one arrives.","toss_fire"],
+				["Score Big","Smaller holes, longer throws and streaks score more. Six misses and the run is over.",""]]
 	var grab: bool = Save.data.controls == "grab"
 	var claw: bool = Save.data.controls == "claw"
 	return [
-		["Left Stick Aims","Push the left stick to move Kinu. The shadow shows where it lands."] if claw \
-			else ["Grab Kinu","Press on Kinu and drag to move it. The shadow shows where it lands."] if grab \
-			else ["Drag To Aim","Drag anywhere to move Kinu. The shadow shows where it lands."],
-		["Tap Drop","Tap the Drop button and watch Kinu plop into the box."] if claw \
-			else ["Let Go To Drop","Lift your finger and watch Kinu plop into the box."],
-		["Spin The Box","Push the right stick to turn the box."] if claw \
-			else ["Spin The Box","Swipe anywhere else to turn the box. Swipe up or down to tilt the view."] if grab \
-			else ["Spin The Box","Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view."],
-		["Pile Them Up","Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full."],
-		["Sticky Kinu","You're holding one — see the syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together."],
-		["Nigari","Tap the bottle icon to pick it up, aim it over a crowded spot and let go. Nigari makes up to three Kinu smaller and frees up room. You earn another at 20, 35 and 50 Kinu."],
-		["Careful!","Kinu that tumble onto the counter don't count. Six tumbles and the run is over."]]
+		["Left Stick Aims","Push the left stick to move Kinu. The shadow shows where it lands.","slide"] if claw \
+			else ["Grab Kinu","Press on Kinu and drag to move it. The shadow shows where it lands.","slide"] if grab \
+			else ["Drag To Aim","Drag anywhere to move Kinu. The shadow shows where it lands.","slide"],
+		["Tap Drop","Tap the Drop button and watch Kinu plop into the box.","drop"] if claw \
+			else ["Let Go To Drop","Lift your finger and watch Kinu plop into the box.","drop"],
+		["Spin The Box","Push the right stick to turn the box.","spin"] if claw \
+			else ["Spin The Box","Swipe anywhere else to turn the box. Swipe up or down to tilt the view.","spin"] if grab \
+			else ["Spin The Box","Swipe along the bottom strip to turn the box. Swipe up or down to tilt the view.","spin"],
+		["Pile Them Up","Your score is how many Kinu are on the pile, not how tall it is. Fill the box, then stack up when it's full.",""],
+		["Sticky Kinu","You're holding one — see the syrup badge. Anything it touches is glued in place, so drop it where the pile needs holding together.","press"],
+		["Nigari","Tap the bottle icon to pick it up, aim it over a crowded spot and let go. Nigari makes up to three Kinu smaller and frees up room. You earn another at 20, 35 and 50 Kinu.","bottle"],
+		["Careful!","Kinu that tumble onto the counter don't count. Six tumbles and the run is over.",""]]
 
 func _build_tutorial() -> void:
 	tutorial_panel = TutorialCoach.new()
 	screen.add_child(tutorial_panel)
+	tutorial_panel.finish_text = TUTORIAL_FINISH.get(tutorial_mode, "Let’s Stack!")
 	tutorial_panel.build(self,safe_bottom)
 	_tutorial_refresh()
 
@@ -852,7 +885,7 @@ func _tutorial_refresh() -> void:
 		tutorial_panel.refresh(tutorial_step,_tutorial_steps())
 	# The queue always runs a turn ahead, so each subject is ordered one step before the card that
 	# explains it. The card itself only turns over once that subject is actually in hand.
-	if is_instance_valid(run):
+	if is_instance_valid(run) and tutorial_mode == "classic":
 		if tutorial_step == 3 and run.next_special != "sticky":
 			run.forced_special = "sticky"
 
@@ -860,7 +893,7 @@ func _tutorial_refresh() -> void:
 func _tutorial_action(action: String) -> void:
 	if tutorial_step<0 or page!="play":
 		return
-	var expected := ["aim","drop","spin","sticky_ready","settle","squirt"]
+	var expected: Array = TUTORIAL_ACTIONS.get(tutorial_mode, [])
 	if tutorial_step<expected.size() and action==expected[tutorial_step]:
 		if action=="squirt":
 			# The practice squirt is on the house: the guide shouldn't cost a real charge.
@@ -870,9 +903,12 @@ func _tutorial_action(action: String) -> void:
 		_tutorial_refresh()
 
 func _finish_tutorial() -> void:
-	Analytics.track("tutorial_completed")
-	Save.setting("tutorial",true)
+	Analytics.track("tutorial_completed", {"mode": tutorial_mode})
+	Save.setting(TUTORIAL_FLAGS.get(tutorial_mode, "tutorial"),true)
 	tutorial_step = -1
+	tutorial_mode = ""
+	if is_instance_valid(run):
+		run.guided = false
 	_hud_update()
 	if is_instance_valid(tutorial_panel):
 		tutorial_panel.queue_free()

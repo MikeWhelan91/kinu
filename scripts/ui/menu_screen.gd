@@ -478,8 +478,12 @@ static func _stat_tile(title: String, value: String, icon: String) -> PanelConta
 	line.add_child(text)
 	var amount := NestTheme.label(value, 22)
 	amount.name = "Value"
+	amount.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	text.add_child(amount)
-	text.add_child(NestTheme.label(NestTheme.t(title), 12, NestTheme.MUTED))
+	# The number sits centred over its name, however long the name runs.
+	var name_label := NestTheme.label(NestTheme.t(title), 12, NestTheme.MUTED)
+	name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	text.add_child(name_label)
 	return tile
 
 ## Little drawn icons for the stat tiles: a ruler for height, a heart for lives, a Kinu for counts.

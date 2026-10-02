@@ -79,7 +79,7 @@ func _ready() -> void:
 			app._start()
 			app.run.score = 12
 			app.run.placed = 14
-			app.run.tumbles = 1
+			app.run.tumbles = 2
 			app.run.tower_height = 6.4
 			app._hud_update()
 			app._pause()

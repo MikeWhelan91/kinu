@@ -197,7 +197,10 @@ static func today() -> Array:
 	# With Supabase enabled, never let a changed device clock create a new mission set before the
 	# server has supplied today's key. The Daily screen will populate immediately after startup.
 	if Rewards.configured() and server_day.is_empty():
-		return daily.get("missions", []) if daily.get("missions") is Array else []
+		var waiting: Array = daily.get("missions", []) if daily.get("missions") is Array else []
+		if _clear_ticket_flags(waiting):
+			Save.persist()
+		return waiting
 	var changed := false
 	if daily.get("day", "") != day or not daily.get("missions") is Array:
 		Save.data.daily = {"day": day, "missions": _roll(day)}

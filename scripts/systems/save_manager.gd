@@ -599,6 +599,21 @@ func acknowledge_kinu_progress() -> void:
 	data.my_kinu.intro_seen = true
 	persist()
 
+## The results card shows XP as it's earned, but leaves the "Meet My Kinu" intro for the home
+## screen, where it has room to show what levelling up unlocks.
+func acknowledge_kinu_xp() -> void:
+	data.my_kinu.home_seen_xp = MyKinu.xp()
+	persist()
+
+## Debug: every first-time guide plays again, from the in-run tutorial to the home tour, the My
+## Kinu intro and the one-off special Kinu tips.
+func reset_tutorials() -> void:
+	data.tutorial = false
+	data.home_tour = false
+	data.my_kinu.intro_seen = false
+	data.seen_specials = []
+	persist()
+
 static func _add_counts(into: Dictionary, counts: Variant) -> void:
 	if counts is Dictionary:
 		for id in counts:

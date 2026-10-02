@@ -115,6 +115,10 @@ static func show(app: Node) -> void:
 			app.run.refresh_decor()
 			app._settings()
 		))
+		more.add_child(NestTheme.button(NestTheme.t("Debug · Reset All Tutorials"), func() -> void:
+			Save.reset_tutorials()
+			app._home()
+		))
 	# The translations were written against "1.0"; the real version is dropped in after translating,
 	# so this line never needs retranslating when the version changes.
 	var version := str(ProjectSettings.get_setting("application/config/version", "1.0")).trim_suffix(".0")

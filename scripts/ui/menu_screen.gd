@@ -235,7 +235,7 @@ static func _show_kinu_home_progress(app: Node) -> bool:
 	var banner_row := CenterContainer.new()
 	banner_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var banner := FancyCard.Banner.new()
-	banner.text = NestTheme.t("My Kinu").to_upper()
+	banner.text = NestTheme.t("Meet My Kinu" if intro and after_level == before_level else "My Kinu").to_upper()
 	banner.color = Color("8f6bea")
 	banner.font_size = 24
 	banner_row.add_child(banner)
@@ -269,6 +269,8 @@ static func _show_kinu_home_progress(app: Node) -> bool:
 	earned_label.name = "MyKinuHomeXP"
 	numbers.add_child(earned_label)
 	earned_label.resized.connect(func() -> void: earned_label.pivot_offset = earned_label.size*.5)
+	# The intro can follow a results card that already counted this XP; don't pulse a "+0".
+	earned_label.visible = to_xp > from_xp
 	var xp_pulse := earned_label.create_tween().set_loops()
 	xp_pulse.tween_property(earned_label,"scale",Vector2(1.08,1.08),.8).set_trans(Tween.TRANS_SINE)
 	xp_pulse.tween_property(earned_label,"scale",Vector2.ONE,.8).set_trans(Tween.TRANS_SINE)
@@ -296,10 +298,10 @@ static func _show_kinu_home_progress(app: Node) -> bool:
 		if int(rewards.tickets) > 0:
 			gifts.append(NestTheme.t("+%d Catcher tickets")%int(rewards.tickets))
 		gifts.append(NestTheme.t("+%d level-up beans")%int(rewards.beans))
-	elif intro:
-		gifts.append(NestTheme.t("Meet My Kinu! Dress it up in the Wardrobe."))
 	for gift in gifts:
 		stack.add_child(_reward_row(gift))
+	if intro:
+		stack.add_child(_kinu_roadmap(app,after_level))
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation",10)
 	stack.add_child(actions)
@@ -426,7 +428,7 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> f
 			gifts.append(NestTheme.t("+%d Catcher tickets")%int(rewards.tickets))
 		gifts.append(NestTheme.t("+%d level-up beans")%int(rewards.beans))
 	elif intro:
-		gifts.append(NestTheme.t("Meet My Kinu! Dress it up in the Wardrobe."))
+		gifts.append(NestTheme.t("Your Kinu earns XP every run!"))
 	beat += .3
 	_reveal(app,panel,beat,"special")
 	var finished := _animate_kinu_xp(app,meter,level_label,earned_label,from_xp,to_xp,beat+.15)
@@ -434,7 +436,7 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> f
 		var row := _reward_row(gift)
 		stack.add_child(row)
 		_reveal(app,row,finished,"")
-	Save.acknowledge_kinu_progress()
+	Save.acknowledge_kinu_xp()
 	return beat
 
 ## A small stat tile for the results card: an icon, the value and its name.
@@ -543,6 +545,73 @@ class KinuHalo extends Control:
 			draw_colored_polygon(star, Color("fff3b0"))
 
 ## One reward line in a celebration: a gold star and the text on a soft white strip.
+## The first look at what levelling up gives: one line on how it works, then a strip of the
+## first unlocks (each slot's starter part and the level-5 part) with the next one in gold.
+static func _kinu_roadmap(app: Node, level: int) -> Control:
+	var column := VBoxContainer.new()
+	column.name = "MyKinuRoadmap"
+	column.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	column.add_theme_constant_override("separation",6)
+	var line := NestTheme.label(NestTheme.t("Every run earns XP. Level up to unlock parts and dress your Kinu!"),16,Color("5b3aa8"))
+	line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	line.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(line)
+	var stops: Array = []
+	for slot in MyKinu.SLOTS:
+		var starter := MyKinu.starter(slot)
+		if starter:
+			stops.append({"level": MyKinu.slot_level(slot), "part": starter, "name": NestTheme.t(MyKinu.SLOT_NAMES[slot])})
+	var special := MyKinu.level_part(MyKinu.LEVEL_PART_EVERY)
+	if special:
+		stops.append({"level": MyKinu.LEVEL_PART_EVERY, "part": special, "name": NestTheme.t("Special")})
+	stops.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return int(a.level) < int(b.level))
+	var row := HBoxContainer.new()
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation",5)
+	column.add_child(row)
+	var next_found := false
+	for stop in stops:
+		var unlocked: bool = level >= int(stop.level)
+		var is_next := not unlocked and not next_found
+		next_found = next_found or is_next
+		var tile := VBoxContainer.new()
+		tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		tile.add_theme_constant_override("separation",1)
+		tile.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		row.add_child(tile)
+		var stage := PanelContainer.new()
+		stage.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var stage_style := NestTheme.box(Color("fff8e8") if unlocked or is_next else Color("e4dcf2"),14,MyKinuScreen.GOLD_DEEP if is_next else (Color("3fb67a") if unlocked else Color("9d8fc2")),0)
+		stage_style.set_border_width_all(4 if is_next else 3)
+		stage_style.set_content_margin_all(0)
+		stage.add_theme_stylebox_override("panel",stage_style)
+		stage.custom_minimum_size = Vector2(0,62)
+		tile.add_child(stage)
+		var preview := MyKinuScreen.part_preview(app.run.catalog,stop.part,Vector2i(60,58))
+		preview.custom_minimum_size = Vector2(60,58)
+		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var holder := CenterContainer.new()
+		holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		holder.add_child(preview)
+		stage.add_child(holder)
+		if unlocked:
+			var seal := DailyTreats.Stamp.new()
+			seal.reach = 9.0
+			stage.add_child(seal)
+		elif not is_next:
+			preview.modulate = Color(.55,.5,.7,.8)
+		if is_next:
+			stage.add_child(DailyTreats.Halo.new())
+		var caption := NestTheme.label(NestTheme.t("Next!") if is_next else NestTheme.t("Lv %d")%int(stop.level),13,Color("b86a00") if is_next else MyKinuScreen.SKY_TEXT)
+		caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		tile.add_child(caption)
+		var name_label := NestTheme.label(stop.name if not is_next else NestTheme.t("%s · Lv %d")%[stop.name,int(stop.level)],11,MyKinuScreen.SKY_TEXT)
+		name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		name_label.clip_text = true
+		tile.add_child(name_label)
+	return column
+
 static func _reward_row(text: String) -> PanelContainer:
 	var row := PanelContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE

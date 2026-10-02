@@ -1905,7 +1905,7 @@ palette = {
 }
 effect = "geode"
 rarity = "legendary"
-showcase = "2026-09"
+showcase = "2027-03"
 
 [sub_resource type="Resource" id="box_gachapon"]
 script = ExtResource("5")

@@ -270,7 +270,7 @@ func _ready() -> void:
 			Save.data.box = "bamboo"
 			app.shop_tab = {"shop": "outfit", "shop_outfit": "outfit", "shop_box": "box", "shop_room": "room"}[mode]
 			app._shop()
-		"my_kinu", "my_kinu_hat", "my_kinu_bunny", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results", "my_kinu_home_progress":
+		"my_kinu", "my_kinu_unworn", "my_kinu_hat", "my_kinu_bunny", "my_kinu_flavour", "shop_part", "my_kinu_play", "my_kinu_results", "my_kinu_home_progress":
 			Save.data.best = 30
 			Save.data.beans = 2400
 			Save.data.my_kinu.xp = 520
@@ -281,6 +281,11 @@ func _ready() -> void:
 			match mode:
 				"my_kinu":
 					MyKinuScreen.tab = "body"
+					MyKinuScreen.show(app, app._home)
+				"my_kinu_unworn":
+					# The look is not worn, so the screen offers the Wear My Kinu button.
+					MyKinu.wear(app.run.catalog, false)
+					MyKinuScreen.tab = "flavour"
 					MyKinuScreen.show(app, app._home)
 				"my_kinu_bunny":
 					Save.data.owned.append("part:bunny_band")

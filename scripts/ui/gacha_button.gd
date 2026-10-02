@@ -28,6 +28,8 @@ var progress := -1.0
 var badge := 0
 ## A ribbon across the top-right corner ("FREE"), or empty.
 var ribbon := ""
+## A soft gold halo that breathes behind the cabinet, for a call to action that should stand out.
+var glow := false
 var phase := 0.0
 var _pressed_scale := 1.0
 
@@ -128,6 +130,11 @@ func _process(delta: float) -> void:
 func _draw() -> void:
 	var body := Rect2(Vector2.ZERO, size)
 	var radius := 20.0
+	if glow:
+		var breath := .5+.5*sin(phase*2.6)
+		for i in 3:
+			var spread := 3.0+i*3.0+breath*3.0
+			draw_colored_polygon(MyKinuScreen.rounded_points(body.grow(spread), radius+spread), Color(RIM, (.22-i*.06)*(.55+.45*breath)))
 	# Drop shadow and a deep lower lip, so the cabinet stands proud of the tray.
 	draw_colored_polygon(MyKinuScreen.rounded_points(Rect2(Vector2(0, 5), size), radius), Color(0, 0, 0, .35))
 	draw_colored_polygon(MyKinuScreen.rounded_points(Rect2(Vector2(0, 3), size), radius), edge_color)

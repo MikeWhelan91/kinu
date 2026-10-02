@@ -227,13 +227,28 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 	var hero := _hero(app, catalog)
 	layout.add_child(hero)
 	if not MyKinu.active():
-		var wear := NestTheme.button("Wear My Kinu In Runs", func() -> void:
+		# A prize-machine cabinet like the home buttons, with the player's own Kinu on it and a
+		# breathing gold halo: putting the look on is the one thing this screen wants done.
+		var wear := GachaButton.new()
+		wear.name = "WearMyKinu"
+		wear.icon_kind = "my_kinu"
+		wear.centered = true
+		wear.glow = true
+		wear.title_size = 24
+		wear.title_text = NestTheme.t("Wear My Kinu In Runs")
+		wear.kinu_color = MyKinu.base(catalog).color
+		wear.top_color = Color("ff9cc4")
+		wear.bottom_color = Color("e2457f")
+		wear.edge_color = Color("8d2a55")
+		wear.custom_minimum_size.y = 64
+		wear.pressed.connect(func() -> void:
+			if NestTheme.scroll_dragging:
+				return
+			Sound.play("wardrobe")
 			MyKinu.wear(catalog, true)
 			Analytics.track("my_kinu_worn", {"level": MyKinu.level()})
 			show(app)
-		, true, "wardrobe")
-		wear.name = "WearMyKinu"
-		wear.custom_minimum_size.y = 56
+		)
 		layout.add_child(wear)
 	layout.add_child(_sockets(app, catalog))
 	var scroll := DragScroll.new()
@@ -494,7 +509,8 @@ static func _socket_art(catalog: KinuCatalog, id: String, open: bool) -> Control
 		empty.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		return empty
 	var mini := part_preview(catalog, part, Vector2i(56, 52))
-	mini.fit_model(1.3, false, true, .14)
+	# Only a hat needs room above the body; every other part sits centred in its socket.
+	mini.fit_model(1.6 if id == "hat" else 1.42, false, true, -.03 if id == "hat" else -.09)
 	return mini
 
 ## A small padlock for slots that have not opened yet.

@@ -352,57 +352,63 @@ static func _show_kinu_home_progress(app: Node) -> bool:
 	return true
 
 ## My Kinu's growth on the results card: XP earned since it was last shown (one run, or a chain of
-## Play Again runs), the meter filling through any level-ups, and what those levels gave. Showing it
+## Play Again runs) and the meter filling through any level-ups. It returns what those levels gave,
+## for the unlock rows further down the card. Showing it
 ## here acknowledges it, so the home screen does not replay it.
-static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> float:
+static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> Dictionary:
 	var to_xp := MyKinu.xp()
 	var from_xp := clampi(int(Save.data.my_kinu.get("home_seen_xp",to_xp)),0,to_xp)
 	var intro := not bool(Save.data.my_kinu.intro_seen)
+	var gifts: Array[String] = []
 	if to_xp == from_xp and not intro:
-		return beat
+		return {"beat": beat, "finished": beat, "gifts": gifts}
 	var before_level := MyKinu.level_for(from_xp)
 	var after_level := MyKinu.level_for(to_xp)
+	# Drawn as a wide stat tile, so it reads as part of the same card as Height and Beans.
 	var panel := PanelContainer.new()
 	panel.name = "ResultsKinuXP"
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(1,1,1,.72)
-	style.border_color = Color("8f6bea")
+	style.bg_color = Color(1,1,1,.82)
+	style.border_color = NestTheme.INK
 	style.set_border_width_all(3)
 	style.border_width_bottom = 5
-	style.set_corner_radius_all(18)
-	style.content_margin_left = 10
+	style.set_corner_radius_all(16)
+	style.content_margin_left = 8
 	style.content_margin_right = 12
-	style.content_margin_top = 6
-	style.content_margin_bottom = 8
+	style.content_margin_top = 4
+	style.content_margin_bottom = 6
 	style.anti_aliasing = true
 	panel.add_theme_stylebox_override("panel",style)
-	column.add_child(panel)
+	var row_margin := MarginContainer.new()
+	row_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for side in ["margin_left","margin_right"]:
+		row_margin.add_theme_constant_override(side,22)
+	row_margin.add_child(panel)
+	column.add_child(row_margin)
+	var line := HBoxContainer.new()
+	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	line.add_theme_constant_override("separation",8)
+	panel.add_child(line)
+	var face := KinuPreview.new()
+	face.setup(app.run.catalog.shapes[0],MyKinu.base(app.run.catalog),true,Vector2i(54,50),"happy",null,true,false,MyKinu.equipped(app.run.catalog))
+	face.fit_model(1.05)
+	face.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	line.add_child(face)
 	var stack := VBoxContainer.new()
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stack.add_theme_constant_override("separation",4)
-	panel.add_child(stack)
+	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stack.add_theme_constant_override("separation",0)
+	line.add_child(stack)
 	var head := HBoxContainer.new()
 	head.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	head.alignment = BoxContainer.ALIGNMENT_CENTER
-	head.add_theme_constant_override("separation",14)
 	stack.add_child(head)
-	var face := KinuPreview.new()
-	face.setup(app.run.catalog.shapes[0],MyKinu.base(app.run.catalog),true,Vector2i(58,48),"happy",null,true,false,MyKinu.equipped(app.run.catalog))
-	face.fit_model(1.05)
-	head.add_child(face)
-	var names := VBoxContainer.new()
-	names.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	names.alignment = BoxContainer.ALIGNMENT_CENTER
-	names.add_theme_constant_override("separation",-4)
-	head.add_child(names)
-	names.add_child(NestTheme.label(NestTheme.t("My Kinu"),14,NestTheme.MUTED))
-	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,22,Color("8f6bea"))
+	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,18,Color("8f6bea"))
 	level_label.name = "ResultsKinuLevel"
-	names.add_child(level_label)
-	var earned_label := NestTheme.headline(NestTheme.t("+%d XP")%(to_xp-from_xp),28,Color("ffd34a"))
+	level_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(level_label)
+	var earned_label := NestTheme.headline(NestTheme.t("+%d XP")%(to_xp-from_xp),20,Color("ffb62e"))
 	earned_label.name = "ResultsKinuGain"
-	earned_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	head.add_child(earned_label)
 	var before_progress := MyKinu.progress_for(from_xp)
 	var meter := FancyCard.XpMeter.new()
@@ -410,13 +416,12 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> f
 	meter.level = before_level
 	meter.max_value = before_progress[1]
 	meter.value = before_progress[0]
-	meter.custom_minimum_size.y = 34
+	meter.custom_minimum_size.y = 26
 	stack.add_child(meter)
 	var final_progress := MyKinu.progress_for(to_xp)
-	var next_label := NestTheme.label(NestTheme.t("%d / %d XP · Next: %s")%[final_progress[0],final_progress[1],MyKinuScreen.next_reward(after_level+1)],13,MyKinuScreen.SKY_TEXT)
+	var next_label := NestTheme.label(NestTheme.t("%d / %d XP · Next: %s")%[final_progress[0],final_progress[1],MyKinuScreen.next_reward(after_level+1)],12,MyKinuScreen.SKY_TEXT)
 	next_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(next_label)
-	var gifts: Array[String] = []
 	if after_level > before_level:
 		var rewards := _kinu_rewards_between(before_level,after_level)
 		gifts.append(NestTheme.t("My Kinu reached level %d!")%after_level)
@@ -430,14 +435,10 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> f
 	elif intro:
 		gifts.append(NestTheme.t("Your Kinu earns XP every run!"))
 	beat += .3
-	_reveal(app,panel,beat,"special")
+	_reveal(app,row_margin,beat,"special")
 	var finished := _animate_kinu_xp(app,meter,level_label,earned_label,from_xp,to_xp,beat+.15)
-	for gift in gifts:
-		var row := _reward_row(gift)
-		stack.add_child(row)
-		_reveal(app,row,finished,"")
 	Save.acknowledge_kinu_xp()
-	return beat
+	return {"beat": beat, "finished": finished, "gifts": gifts}
 
 ## A small stat tile for the results card: an icon, the value and its name.
 static func _stat_tile(title: String, value: String, icon: String) -> PanelContainer:
@@ -1033,24 +1034,21 @@ static func results(app: Node, stats: Dictionary) -> void:
 	# The score counts itself up rather than simply being there: the run is replayed as a number
 	# climbing, which is the moment worth dwelling on.
 	_count_up(app,big,int(stats.score),beat,func(value: int) -> String: return _score_text(app,mode,value))
-	# How this run sits against the player's best. A near miss is the strongest reason to go again,
-	# so it is shown as a bar with the gap named rather than left for the player to work out.
+	# How this run sits against the player's best, as one line under the score. A near miss is the
+	# strongest reason to go again, so the gap is named rather than left for the player to work out.
 	if not record and int(app.initial_best) > 0:
-		var chase: VBoxContainer = app._vbox(column,2)
 		var target := int(app.initial_best)
-		var bar := FancyCard.XpMeter.new()
-		bar.show_levels = false
-		bar.max_value = target
-		bar.value = mini(int(stats.score),target)
-		bar.custom_minimum_size.y = 20
-		chase.add_child(bar)
 		# Always name the target as well as the gap. maxi keeps the gap sane if the score ever ties
 		# the best without counting as one.
 		var short: int = maxi(1,target-int(stats.score)+1)
 		var gap_text: String = NestTheme.t("%d more to beat your best of %s!")%[short,_score_text(app,mode,target)] if short <= _CLOSE_CALL else NestTheme.t("Your best: %s")%_score_text(app,mode,target)
-		app._center_label(chase,gap_text,15,NestTheme.BERRY if short <= _CLOSE_CALL else MyKinuScreen.SKY_TEXT)
+		var chase: Label = app._center_label(column,gap_text,15,NestTheme.BERRY if short <= _CLOSE_CALL else MyKinuScreen.SKY_TEXT)
+		chase.name = "ResultsBest"
 		beat += .22
 		_reveal(app,chase,beat)
+	# My Kinu's XP sits straight under the score: every run feeds it, so it is the run's first reward.
+	var kinu_xp := _results_kinu_xp(app,column,beat)
+	beat = float(kinu_xp.beat)
 	# Stat tiles: what this run measured, and the beans it paid.
 	var tiles := HBoxContainer.new()
 	tiles.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1078,8 +1076,12 @@ static func results(app: Node, stats: Dictionary) -> void:
 	var bean_value := bean_tile.find_child("Value",true,false) as Label
 	if bean_value:
 		_count_up(app,bean_value,earned,beat,func(value: int) -> String: return "+%d"%value)
-	beat = _results_kinu_xp(app,column,beat)
-	# One row per unlock, so a big run reads as a list of wins rather than one long sentence.
+	# Unlocks: one row each, so a big run reads as a list of wins rather than one long sentence.
+	# My Kinu's level-up gifts lead, landing once its meter has finished filling.
+	for gift in kinu_xp.gifts:
+		var gift_row := _reward_row(gift)
+		column.add_child(gift_row)
+		_reveal(app,gift_row,maxf(float(kinu_xp.finished),beat),"")
 	var news: Array[String] = []
 	for flavour_name in unlocked:
 		news.append(NestTheme.t("New My Kinu flavour: %s")%NestTheme.t(flavour_name) if MyKinu.active() else NestTheme.t("New flavour: %s")%NestTheme.t(flavour_name))
@@ -1095,22 +1097,6 @@ static func results(app: Node, stats: Dictionary) -> void:
 		# Each piece of good news lands on its own beat, so three unlocks feel like three wins.
 		beat += .26 if news.size() <= 4 else .16
 		_reveal(app,news_row,beat,"special")
-	# What the next run is for. Naming the very next flavour and how close it is turns "play again"
-	# into a specific goal instead of a button.
-	var next_up := _next_flavour(app,mode)
-	if not next_up.is_empty():
-		var goal_box: VBoxContainer = app._vbox(column,2)
-		app._center_label(goal_box,NestTheme.t("Next: %s at %d Kinu")%[NestTheme.t(str(next_up.name)),int(next_up.at)],15,MyKinuScreen.SKY_TEXT)
-		var goal_bar := FancyCard.XpMeter.new()
-		goal_bar.show_levels = false
-		goal_bar.fill_top = Color("e3d6ff")
-		goal_bar.fill_bottom = Color("9b7bff")
-		goal_bar.max_value = int(next_up.at)
-		goal_bar.value = mini(int(Save.data.best),int(next_up.at))
-		goal_bar.custom_minimum_size.y = 18
-		goal_box.add_child(goal_bar)
-		beat += .24
-		_reveal(app,goal_box,beat)
 	var buttons = app._vbox(app.content,12)
 	buttons.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	buttons.offset_top = -176
@@ -1246,18 +1232,6 @@ static func _praise(score: int, best: int, record: bool) -> String:
 	if share >= .5:
 		return "Nice Pile!"
 	return ""
-
-## The next flavour waiting above the player's best, so the results screen can name what the next
-## run is for. Only Classic unlocks flavours by pile, so the other modes get nothing.
-static func _next_flavour(app: Node, mode: String) -> Dictionary:
-	if mode != "classic":
-		return {}
-	var best := int(Save.data.best)
-	var closest: KinuFlavour = null
-	for flavour in app.run.catalog.flavours:
-		if flavour.unlock_kinu > best and (closest == null or flavour.unlock_kinu < closest.unlock_kinu):
-			closest = flavour
-	return {} if closest == null else {"name": closest.display_name, "at": closest.unlock_kinu}
 
 ## Fades a finished element in on its own beat. Results elements are built complete and then
 ## revealed in order, so the screen reads as a sequence of small wins rather than a wall of numbers.

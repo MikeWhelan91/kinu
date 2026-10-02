@@ -914,14 +914,14 @@ class SleepyZs extends Control:
 			draw_string(font, at, "z", HORIZONTAL_ALIGNMENT_LEFT, -1, points, Color(1, 1, 1, alpha))
 
 ## The sign's Kinu wears the player's outfit and takes the look of the given piece, if any.
-static func _mascot(app: Node, body: KinuBody, mood: String) -> CenterContainer:
+static func _mascot(app: Node, body: KinuBody, mood: String, pixels: Vector2i = Vector2i(200,130)) -> CenterContainer:
 	var shape: KinuShape = app.run.catalog.shapes[0]
 	var look: KinuFlavour = MyKinu.mascot_flavour(app.run.catalog)
 	if is_instance_valid(body):
 		shape = body.shape
 		look = body.look
 	var mascot := KinuPreview.new()
-	mascot.setup(shape,look,true,Vector2i(200,130),mood,MyKinu.worn_outfit(app.run.catalog),false,false,MyKinu.worn_parts(app.run.catalog))
+	mascot.setup(shape,look,true,pixels,mood,MyKinu.worn_outfit(app.run.catalog),false,false,MyKinu.worn_parts(app.run.catalog))
 	mascot.fit_model(1.1,true)
 	var row := CenterContainer.new()
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -976,13 +976,12 @@ static func results(app: Node, stats: Dictionary) -> void:
 	if not is_instance_valid(last) and not app.run.bodies.is_empty():
 		last = app.run.bodies.back()
 	var mascot_halo := KinuHalo.new()
-	mascot_halo.custom_minimum_size = Vector2(0,132)
+	mascot_halo.custom_minimum_size = Vector2(170,128)
 	mascot_halo.glow = NestTheme.SUN.lightened(.4) if record else Color("ffffff")
-	var mascot := _mascot(app,last,"happy" if record else "worried")
+	var mascot := _mascot(app,last,"happy" if record else "worried",Vector2i(160,120))
 	mascot.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mascot.offset_bottom = -12
 	mascot_halo.add_child(mascot)
-	column.add_child(mascot_halo)
 	var ending: String = {"classic": "Tumble!", "tower": "Timber!", "toss": "Missed!"}[mode]
 	# The headline earns its size: a new best shouts, and a strong run still gets told so.
 	var praise := _praise(int(stats.score), int(app.initial_best), record)
@@ -997,11 +996,20 @@ static func results(app: Node, stats: Dictionary) -> void:
 	column.add_child(banner_row)
 	var beat := 0.0
 	_reveal(app,banner_row,beat,"highscore" if record else "")
-	# The score: a label, then the big counted-up number.
+	# Under the banner, Kinu on its dais sits beside the score: a label, then the big counted-up
+	# number and how it compares with the best.
+	var hero := HBoxContainer.new()
+	hero.name = "ResultsHero"
+	hero.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hero.add_theme_constant_override("separation",0)
+	column.add_child(hero)
+	hero.add_child(mascot_halo)
 	var tally := VBoxContainer.new()
 	tally.add_theme_constant_override("separation",-6)
 	tally.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	column.add_child(tally)
+	tally.alignment = BoxContainer.ALIGNMENT_CENTER
+	tally.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	hero.add_child(tally)
 	app._center_label(tally,NestTheme.t(_score_title(mode)).to_upper(),15,MyKinuScreen.SKY_TEXT)
 	var big = NestTheme.headline(_score_text(app,mode,int(stats.score)),78,NestTheme.SUN)
 	big.name = "ResultsScore"
@@ -1816,6 +1824,7 @@ static func _meter(progress: int, amount: int, full: bool, height: float) -> Fan
 	if full:
 		meter.fill_top = Color("c3f5d6")
 		meter.fill_bottom = Color("37b073")
+		meter.shimmer = false
 	return meter
 
 static func _collect_button(callback: Callable) -> Button:

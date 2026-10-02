@@ -113,6 +113,8 @@ class XpMeter extends ProgressBar:
 	var level := 1
 	var fill_top := Color("fff1a8")
 	var fill_bottom := Color("f2a428")
+	## The travelling shimmer. A finished bar has nothing left to fill, so it sits still.
+	var shimmer := true
 	var phase := 0.0
 
 	func _ready() -> void:
@@ -123,6 +125,8 @@ class XpMeter extends ProgressBar:
 		custom_minimum_size.y = maxf(custom_minimum_size.y, 34.0 if show_levels else 20.0)
 
 	func _process(delta: float) -> void:
+		if not shimmer:
+			return
 		phase += delta
 		queue_redraw()
 
@@ -145,7 +149,7 @@ class XpMeter extends ProgressBar:
 			draw_line(fill.position+Vector2(r*.8, track_h*.28), Vector2(fill.end.x-r*.8, fill.position.y+track_h*.28), Color(1, 1, 1, .7), maxf(2, track_h*.16), true)
 			# A shimmer sliding along the filled part.
 			var sweep := fmod(phase*.6, 1.6)
-			if sweep < 1.0:
+			if shimmer and sweep < 1.0:
 				var x := fill.position.x+fill.size.x*sweep
 				var streak := PackedVector2Array([Vector2(x-6, fill.end.y), Vector2(x+4, fill.end.y), Vector2(x+12, fill.position.y), Vector2(x+2, fill.position.y)])
 				for piece in Geometry2D.intersect_polygons(streak, points):

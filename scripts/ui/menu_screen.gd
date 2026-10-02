@@ -482,11 +482,21 @@ static func _stat_tile(title: String, value: String, icon: String) -> PanelConta
 	text.add_child(NestTheme.label(NestTheme.t(title), 12, NestTheme.MUTED))
 	return tile
 
-## Little drawn icons for the stat tiles: a ruler for height, a Kinu for counts.
+## Little drawn icons for the stat tiles: a ruler for height, a heart for lives, a Kinu for counts.
 class StatIcon extends Control:
 	var kind := "kinu"
 	func _draw() -> void:
 		var s := minf(size.x, size.y)
+		if kind == "heart":
+			var heart := PackedVector2Array()
+			for i in 32:
+				var a := TAU*i/32.0
+				heart.append(Vector2(s*.5, s*.5)+Vector2(16*pow(sin(a), 3), -(13*cos(a)-5*cos(2*a)-2*cos(3*a)-cos(4*a)))*s*.027)
+			draw_colored_polygon(heart, Color("ff6b7d"))
+			heart.append(heart[0])
+			draw_polyline(heart, NestTheme.INK, 2.0, true)
+			draw_circle(Vector2(s*.36, s*.4), s*.07, Color(1, 1, 1, .8))
+			return
 		if kind == "height":
 			var bar := Rect2(Vector2(s*.32, s*.04), Vector2(s*.36, s*.92))
 			draw_colored_polygon(MyKinuScreen.rounded_points(bar, 4), NestTheme.SKY)
@@ -767,8 +777,9 @@ static func _icon_button(parent: Node, title: String, icon: String, callback: Ca
 		holder.add_child(label)
 	return button
 
-## Pause mirrors the results screen: a sign hung on ropes from above the screen, actions below.
-## It remains an overlay so resuming preserves the exact tower and camera position.
+## Pause matches the results card: a sky card under a ribbon with the held Kinu dozing in its
+## halo, where the run stands, and arcade buttons below. It stays an overlay so resuming keeps the
+## exact pile and camera position.
 static func pause(app: Node) -> void:
 	app._close_modal()
 	var overlay := Control.new()
@@ -777,64 +788,148 @@ static func pause(app: Node) -> void:
 	app.screen.add_child(overlay)
 	app.modal = overlay
 	var shade := ColorRect.new()
-	shade.color = Color(.10,.08,.17,.45)
+	shade.color = Color(.10,.08,.17,.55)
 	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	overlay.add_child(shade)
-	var holder := CenterContainer.new()
-	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	holder.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
-	holder.offset_top = app.safe_top+70
-	overlay.add_child(holder)
-	var sign := SignBoard.new()
-	sign.rope_length = app.safe_top+160
-	sign.custom_minimum_size.x = 400
-	holder.add_child(sign)
-	var column: VBoxContainer = app._vbox(sign,6)
-	column.add_child(_mascot(app,app.run.active,"content"))
-	var title := NestTheme.headline("Paused",58,NestTheme.CREAM)
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	column.add_child(title)
-	var ticket := PanelContainer.new()
-	ticket.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	ticket.add_theme_stylebox_override("panel",SignBoard.paper())
-	column.add_child(ticket)
-	var tally: VBoxContainer = app._vbox(ticket,-8)
-	var mode: String = app.run.mode
-	app._center_label(tally,_score_title(mode),16,NestTheme.MUTED)
-	var count := NestTheme.headline(_score_text(app,mode,app.run.score),76,NestTheme.SUN)
-	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tally.add_child(count)
-	var chips := HBoxContainer.new()
-	chips.alignment = BoxContainer.ALIGNMENT_CENTER
-	chips.add_theme_constant_override("separation",10)
-	column.add_child(chips)
-	chips.add_child(NestTheme.pill(NestTheme.t("%s Tall")%KinuFlavour.height_text(NestRun.height_cm(app.run.tower_height)),18))
-	var left: int = NestRun.MAX_TUMBLES-app.run.tumbles
-	if mode == "toss":
-		var misses: int = TossPlay.MAX_MISSES-app.run.tumbles
-		chips.add_child(NestTheme.pill(NestTheme.t("1 Miss Left") if misses == 1 else NestTheme.t("%d Misses Left")%misses,18))
-	else:
-		chips.add_child(NestTheme.pill(NestTheme.t("1 Tumble Left") if left == 1 else NestTheme.t("%d Tumbles Left")%left,18))
-	var buttons: VBoxContainer = app._vbox(overlay,12)
-	buttons.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
-	buttons.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	buttons.offset_top = -app.safe_bottom
-	buttons.offset_bottom = -app.safe_bottom
-	_centre_column(buttons,340)
-	var resume := NestTheme.button("Resume",func() -> void:
+	var resume_run := func() -> void:
 		app._close_modal()
 		app.get_tree().paused = false
-	,true,"plop")
-	resume.custom_minimum_size.y = 80
-	resume.add_theme_font_size_override("font_size",30)
+	var layout := VBoxContainer.new()
+	layout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layout.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layout.offset_top = app.safe_top+24
+	layout.offset_bottom = -maxf(20,app.safe_bottom)
+	layout.alignment = BoxContainer.ALIGNMENT_CENTER
+	layout.add_theme_constant_override("separation",18)
+	overlay.add_child(layout)
+	var holder := CenterContainer.new()
+	holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layout.add_child(holder)
+	var width := minf(400,app.get_viewport().get_visible_rect().size.x-32)
+	var card := FancyCard.new()
+	card.name = "PauseCard"
+	card.custom_minimum_size.x = width
+	card.ray_origin = Vector2(.5,.3)
+	card.top_color = Color("eef0ff")
+	card.bottom_color = Color("b9c3f2")
+	holder.add_child(card)
+	var column: VBoxContainer = app._vbox(card,8)
+	var banner_row := CenterContainer.new()
+	banner_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var banner := FancyCard.Banner.new()
+	banner.name = "PauseTitle"
+	banner.text = NestTheme.t("Paused")
+	banner.color = Color("8f6bea")
+	banner.font_size = 34
+	banner.side_padding = 48.0
+	banner_row.add_child(banner)
+	column.add_child(banner_row)
+	var halo := KinuHalo.new()
+	halo.custom_minimum_size = Vector2(0,124)
+	halo.glow = Color("d9d2ff")
+	column.add_child(halo)
+	var mascot := _mascot(app,app.run.active,"content")
+	mascot.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	mascot.offset_bottom = -6
+	halo.add_child(mascot)
+	halo.add_child(SleepyZs.new())
+	var mode: String = app.run.mode
+	var tally := VBoxContainer.new()
+	tally.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tally.add_theme_constant_override("separation",-6)
+	column.add_child(tally)
+	app._center_label(tally,NestTheme.t(_score_title(mode)).to_upper(),15,Color("4a4f86"))
+	var count := NestTheme.headline(_score_text(app,mode,app.run.score),64,NestTheme.SUN)
+	count.name = "PauseScore"
+	count.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tally.add_child(count)
+	var tiles := HBoxContainer.new()
+	tiles.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tiles.add_theme_constant_override("separation",10)
+	column.add_child(tiles)
+	match mode:
+		"tower":
+			tiles.add_child(_stat_tile("Kinu",str(app.run.pile_count()),"kinu"))
+		"toss":
+			var box_number: int = app.run.toss.box_index+1 if is_instance_valid(app.run.toss) else 1
+			tiles.add_child(_stat_tile("Box",str(box_number),"kinu"))
+		_:
+			tiles.add_child(_stat_tile("Height",KinuFlavour.height_text(NestRun.height_cm(app.run.tower_height)),"height"))
+	var lives: int = (TossPlay.MAX_MISSES if mode == "toss" else NestRun.MAX_TUMBLES)-app.run.tumbles
+	var lives_title := ("Miss Left" if lives == 1 else "Misses Left") if mode == "toss" else ("Tumble Left" if lives == 1 else "Tumbles Left")
+	tiles.add_child(_stat_tile(lives_title,str(lives),"heart"))
+	# Arcade buttons, the same family as the results screen: Resume leads, the two ways out share
+	# a row underneath.
+	var buttons := VBoxContainer.new()
+	buttons.add_theme_constant_override("separation",12)
+	buttons.custom_minimum_size.x = width
+	buttons.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	layout.add_child(buttons)
+	var resume := GachaButton.new()
+	resume.name = "Resume"
+	resume.icon_kind = "play"
+	resume.centered = true
+	resume.title_size = 30
+	resume.title_text = NestTheme.t("Resume")
+	resume.top_color = Color("ffd75a")
+	resume.bottom_color = Color("f5a020")
+	resume.edge_color = Color("8a5310")
+	resume.custom_minimum_size.y = 84
+	_gacha_press(resume,"plop",resume_run)
 	buttons.add_child(resume)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation",10)
+	buttons.add_child(row)
 	# These abandon the active run. Only a game over reaches results and records completion.
-	buttons.add_child(NestTheme.button("Restart",func() -> void:
-		app._start()
-	,false,"plop"))
-	buttons.add_child(NestTheme.button("Main Menu",func() -> void:
-		app._home()
-	,false,"plop"))
+	var restart := GachaButton.new()
+	restart.name = "Restart"
+	restart.icon_kind = "again"
+	restart.title_text = NestTheme.t("Restart")
+	restart.kinu_color = MyKinu.base(app.run.catalog).color
+	restart.top_color = Color("ff86b4")
+	restart.bottom_color = Color("e2457f")
+	restart.edge_color = Color("8d2a55")
+	_gacha_press(restart,"plop",func() -> void: app._start())
+	row.add_child(restart)
+	var menu := GachaButton.new()
+	menu.name = "Main Menu"
+	menu.icon_kind = "home"
+	menu.title_text = NestTheme.t("Main Menu")
+	menu.top_color = Color("7fc4f5")
+	menu.bottom_color = Color("3f8fd8")
+	menu.edge_color = Color("1f4f86")
+	_gacha_press(menu,"plop",func() -> void: app._home())
+	row.add_child(menu)
+	for button in [restart,menu]:
+		button.custom_minimum_size.y = 70
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	# The card drops in with a little bounce.
+	card.modulate.a = 0
+	card.pivot_offset = Vector2(width*.5,0)
+	card.scale = Vector2(.9,.9)
+	var entrance := card.create_tween().set_parallel(true)
+	entrance.tween_property(card,"modulate:a",1.0,.18)
+	entrance.tween_property(card,"scale",Vector2.ONE,.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## Three little "z"s drifting up from the paused Kinu.
+class SleepyZs extends Control:
+	var phase := 0.0
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		process_mode = Node.PROCESS_MODE_ALWAYS
+	func _process(delta: float) -> void:
+		phase += delta
+		queue_redraw()
+	func _draw() -> void:
+		var font := NestTheme.font
+		for i in 3:
+			var t := fmod(phase*.45+i/3.0, 1.0)
+			var at := Vector2(size.x*.5+68+t*26+sin(t*TAU)*6, size.y*.5-t*52)
+			var points := int(lerpf(16, 28, t))
+			var alpha := sin(t*PI)
+			draw_string_outline(font, at, "z", HORIZONTAL_ALIGNMENT_LEFT, -1, points, 5, Color(NestTheme.INK, alpha))
+			draw_string(font, at, "z", HORIZONTAL_ALIGNMENT_LEFT, -1, points, Color(1, 1, 1, alpha))
 
 ## The sign's Kinu wears the player's outfit and takes the look of the given piece, if any.
 static func _mascot(app: Node, body: KinuBody, mood: String) -> CenterContainer:

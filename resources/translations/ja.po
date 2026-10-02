@@ -3651,3 +3651,489 @@ msgstr "高さ"
 
 msgid "More below"
 msgstr "下にまだあるよ"
+
+msgid "%d / %d done"
+msgstr "%d / %d 達成"
+
+msgid "%d / %d found"
+msgstr "%d / %d 見つけた"
+
+msgid "+0 XP"
+msgstr "+0 XP"
+
+msgid "A new goal opens each week. Open goals stay open until the month ends."
+msgstr "毎週あたらしい目標がひらきます。ひらいた目標は月末まで挑戦できます。"
+
+msgid "Back"
+msgstr "もどる"
+
+msgid "Coming in the %s Monthly Showcase. Finish that month's showcase goals to earn it."
+msgstr "%sのマンスリーショーケースに登場。その月のショーケース目標を達成するともらえます。"
+
+msgid "Debug · Reset All Tutorials"
+msgstr "デバッグ・チュートリアルを全部リセット"
+
+msgid "Every run earns XP. Level up to unlock parts and dress your Kinu!"
+msgstr "あそぶたびにXPがたまるよ。レベルを上げてパーツを解放し、きぬをおしゃれにしよう！"
+
+msgid "Finish %d runs without a tumble"
+msgstr "タンブルなしで%d回あそびきる"
+
+msgid "Meet My Kinu"
+msgstr "マイきぬ登場"
+
+msgid "New in %s"
+msgstr "あたらしいミッションまで %s"
+
+msgid "Next!"
+msgstr "つぎ！"
+
+msgid "Opens %s"
+msgstr "%sにオープン"
+
+msgid "SHOWCASE GOALS"
+msgstr "ショーケース目標"
+
+msgid "Special"
+msgstr "スペシャル"
+
+msgid "TODAY"
+msgstr "きょう"
+
+msgid "This month's Showcase reward. Finish all four showcase goals in %s to earn it."
+msgstr "今月のショーケース報酬。%sのうちにショーケース目標を4つとも達成するともらえます。"
+
+msgid "This slot opens at level %d. Its parts become available then."
+msgstr "このスロットはレベル%dでひらきます。そのときにパーツが使えるようになります。"
+
+msgid "Unlock the %s slot at My Kinu level %d first."
+msgstr "先に%sスロットを解放しよう（マイきぬ レベル%d）。"
+
+msgid "Your Kinu earns XP every run!"
+msgstr "あそぶたびにきぬにXPがたまるよ！"
+
+msgid "Score"
+msgstr "スコア"
+
+msgid "Miss Left"
+msgstr "のこり回数"
+
+msgid "Misses Left"
+msgstr "のこり回数"
+
+msgid "Tumble Left"
+msgstr "のこり回数"
+
+msgid "Tumbles Left"
+msgstr "のこり回数"
+
+msgid "Shoyu! Glues a Kinu in place"
+msgstr "しょうゆ！きぬをその場にくっつける"
+
+msgid "Level up My Kinu to open each part slot."
+msgstr "マイきぬのレベルを上げると、パーツのスロットがひらきます。"
+
+msgid "Build It Tall"
+msgstr "高く積もう"
+
+msgid "No box this time, just a plate. You score how tall your tower stands, so stack Kinu upwards!"
+msgstr "今回は箱なし、お皿だけ。タワーの高さがスコアになるから、きぬを上へ上へ積もう！"
+
+msgid "Shoyu Glue"
+msgstr "しょうゆでくっつけ"
+
+msgid "Tap the shoyu bottle, aim it at a wobbly Kinu and let go. Shoyu glues that Kinu in place."
+msgstr "しょうゆボトルをタップして、ぐらぐらのきぬにねらいを合わせて指をはなそう。しょうゆがそのきぬをくっつけるよ。"
+
+msgid "Kinu that fall off the plate are tumbles. Six tumbles and the tower comes down."
+msgstr "お皿から落ちたきぬはタンブル。6回タンブルするとタワーはおしまい。"
+
+msgid "Aim"
+msgstr "ねらう"
+
+msgid "Drag in the aim box. Left and right picks the spot, up and down sets how high it flies. The ghost Kinu shows where it lands."
+msgstr "ねらいボックスの中をドラッグ。左右で場所を、上下で飛ぶ高さを決めよう。半透明のきぬが着地点だよ。"
+
+msgid "Hold Fire"
+msgstr "発射を長押し"
+
+msgid "Hold the Fire button to power up, then let go to throw."
+msgstr "発射ボタンを長押ししてパワーをためて、はなすと投げるよ。"
+
+msgid "Get It In"
+msgstr "箱に入れよう"
+
+msgid "Kinu have to drop through a hole and stay in the box. Fill a box and the next one arrives."
+msgstr "きぬは穴から入って、箱の中に残らないとダメ。箱がいっぱいになると次の箱が来るよ。"
+
+msgid "Score Big"
+msgstr "大量得点"
+
+msgid "Smaller holes, longer throws and streaks score more. Six misses and the run is over."
+msgstr "小さい穴、遠い投げ、連続成功ほど高得点。6回はずすとおしまい。"
+
+msgid "Let’s Build!"
+msgstr "積み上げよう！"
+
+msgid "Let’s Toss!"
+msgstr "投げてみよう！"
+
+msgid "A soft lilac tee with a little pocket for treasures."
+msgstr "宝物を入れる小さなポケットつきの、やわらかいライラック色のTシャツ。"
+
+msgid "A breezy blue tee the colour of a clear afternoon."
+msgstr "晴れた午後の空みたいな、さわやかな青いTシャツ。"
+
+msgid "Cream and navy stripes for a day by the water."
+msgstr "水辺で過ごす日にぴったりの、クリームと紺のボーダー。"
+
+msgid "A warm red scarf finished with sunny yellow fringe."
+msgstr "おひさま色のフリンジがついた、あたたかい赤いマフラー。"
+
+msgid "A berry pink bow for Kinu's fanciest occasions."
+msgstr "きぬのとっておきの日のための、ベリーピンクの蝶ネクタイ。"
+
+msgid "A café apron with a roomy pocket for order slips."
+msgstr "注文伝票がたっぷり入るポケットつきのカフェエプロン。"
+
+msgid "A mint green hoodie with a snug hood and soft cuffs."
+msgstr "ぴったりフードとやわらかい袖口の、ミントグリーンのパーカー。"
+
+msgid "Blue dungarees with bright buttons and sturdy straps."
+msgstr "明るいボタンとじょうぶな肩ひもの、青いサロペット。"
+
+msgid "A deep blue yukata tied with a vivid pink sash."
+msgstr "あざやかなピンクの帯をむすんだ、深い青のゆかた。"
+
+msgid "A fluffy pink tutu made for tiny curtain calls."
+msgstr "小さなカーテンコールのための、ふわふわピンクのチュチュ。"
+
+msgid "A candy pink swim ring ready for a pool day."
+msgstr "プールの日にそなえた、キャンディピンクのうきわ。"
+
+msgid "A green striped jersey for Kinu's biggest fans."
+msgstr "きぬの大ファンのための、緑のしましまジャージ。"
+
+msgid "Sturdy golden overalls with pockets for a busy day."
+msgstr "いそがしい日にも頼れる、ポケットつきのじょうぶな金色つなぎ。"
+
+msgid "A cream bib for the inevitable splash of shoyu."
+msgstr "しょうゆのはねもへっちゃらな、クリーム色のよだれかけ。"
+
+msgid "A cosy coral knit with a row of cream stitches."
+msgstr "クリーム色のステッチがならぶ、ぬくぬくコーラルニット。"
+
+msgid "A midnight scarf with a flash of starlight gold."
+msgstr "星の光のような金色がきらめく、真夜中色のマフラー。"
+
+msgid "A shining sash tied for a grand celebration."
+msgstr "盛大なお祝いのためにむすんだ、かがやく帯。"
+
+msgid "A bright yellow coat for puddles and grey skies."
+msgstr "水たまりとくもり空にぴったりの、明るい黄色のコート。"
+
+msgid "A rosy cardigan with sweet cream trim."
+msgstr "あまいクリーム色のふちどりがついた、ばら色のカーディガン。"
+
+msgid "Soft green patches sewn together for one more adventure."
+msgstr "次の冒険のためにぬい合わせた、やわらかい緑のパッチワーク。"
+
+msgid "A dark haori with a quiet lavender lining."
+msgstr "おだやかなラベンダー色の裏地がついた、濃い色の羽織。"
+
+msgid "Sky blue pajamas striped like a sleepy cloud."
+msgstr "ねむたい雲みたいなしましまの、空色のパジャマ。"
+
+msgid "A warm honey waistcoat dressed up with cream trim."
+msgstr "クリーム色のふちどりでおめかしした、あたたかいはちみつ色のベスト。"
+
+msgid "Berry red overalls made for grass stained picnics."
+msgstr "草のしみがついても平気な、ピクニック用のベリーレッドのサロペット。"
+
+msgid "An orange windbreaker with a zing of lemon yellow."
+msgstr "レモンイエローがきいた、オレンジ色のウィンドブレーカー。"
+
+msgid "A lilac patchwork layer stitched for chilly mornings."
+msgstr "肌寒い朝のためにぬったライラック色のパッチワーク。"
+
+msgid "A neat green vest for the busiest tea counter."
+msgstr "いちばんいそがしいお茶のカウンターに似合う、きちんとした緑のベスト。"
+
+msgid "A blue raincoat edged with a rosy evening glow."
+msgstr "夕やけのばら色にふちどられた、青いレインコート。"
+
+msgid "A navy cape scarf trimmed with moonlight gold."
+msgstr "月明かりの金色でふちどった、紺色のケープ。"
+
+msgid "A patchwork party outfit in confetti colours."
+msgstr "紙吹雪みたいな色のパッチワークのパーティー衣装。"
+
+msgid "A little red beanie with a soft cream brim."
+msgstr "やわらかいクリーム色のふちがついた、小さな赤いニット帽。"
+
+msgid "A yellow cap for chasing the afternoon sun."
+msgstr "午後のおひさまを追いかける、黄色いキャップ。"
+
+msgid "A jaunty red beret for Kinu's next masterpiece."
+msgstr "きぬの次の傑作のための、しゃれた赤いベレー帽。"
+
+msgid "A sky blue cone topped with a golden pompom."
+msgstr "てっぺんに金色のポンポンがついた、空色のとんがり帽子。"
+
+msgid "A pink ribbon tied into a cheerful little bow."
+msgstr "ごきげんな小さいちょうちょ結びにした、ピンクのリボン。"
+
+msgid "A leafy green bucket hat with a shady brim."
+msgstr "日かげをつくるつばの、葉っぱ色のバケットハット。"
+
+msgid "A tall black hat with a smart red band."
+msgstr "おしゃれな赤いバンドを巻いた、背の高い黒い帽子。"
+
+msgid "A puffy white chef's hat ready for the kitchen."
+msgstr "キッチンでの出番を待つ、ふっくら白いコック帽。"
+
+msgid "A crown of fresh blossoms in spring colours."
+msgstr "春色のつみたての花でつくった花かんむり。"
+
+msgid "A woven straw hat with a berry red ribbon."
+msgstr "ベリーレッドのリボンがついた、編んだ麦わら帽子。"
+
+msgid "A violet witch's hat with a glint of gold."
+msgstr "金色がきらりと光る、すみれ色の魔女の帽子。"
+
+msgid "A golden crown set with bright little jewels."
+msgstr "きらきらの小さな宝石をちりばめた金の冠。"
+
+msgid "A warm golden halo floating just overhead."
+msgstr "頭の上にふわりと浮かぶ、あたたかい金色の輪。"
+
+msgid "A navy cap saved for a hard won victory."
+msgstr "苦労してつかんだ勝利のためにとっておいた紺のキャップ。"
+
+msgid "A lucky clover sprouting from Kinu's head."
+msgstr "きぬの頭からひょっこり生えた四つ葉のクローバー。"
+
+msgid "A cream sun hat with a cool blue band."
+msgstr "すずしげな青いバンドを巻いた、クリーム色の日よけ帽子。"
+
+msgid "Two soft bunny ears ready for a little hop."
+msgstr "ぴょんと跳ねたくなる、やわらかいうさぎの耳。"
+
+msgid "Pointy black cat ears with pink inner fluff."
+msgstr "内側がピンクのふわふわの、とがった黒ねこ耳。"
+
+msgid "A bright red cap with a playful spinning propeller."
+msgstr "くるくる回るプロペラつきの、明るい赤のキャップ。"
+
+msgid "A red mushroom cap dotted with white spots."
+msgstr "白い水玉もようの赤いきのこぼうし。"
+
+msgid "Comfy headphones in every colour of the rainbow."
+msgstr "虹の全部の色がそろった、つけ心地のいいヘッドホン。"
+
+msgid "Warm orange fox ears tipped with cream."
+msgstr "先っぽがクリーム色の、あたたかいオレンジのキツネ耳。"
+
+msgid "A twilight beret for wandering lantern lit stalls."
+msgstr "ちょうちんの灯る屋台めぐりにぴったりの、たそがれ色のベレー帽。"
+
+msgid "A little garland of peach blossoms and leaves."
+msgstr "桃の花と葉っぱでつくった小さな花かざり。"
+
+msgid "A midnight cap for counting faraway stars."
+msgstr "遠くの星をかぞえるための、真夜中色の帽子。"
+
+msgid "A creamy mushroom cap as soft as tofu."
+msgstr "とうふみたいにやわらかい、クリーム色のきのこぼうし。"
+
+msgid "Mint green headphones for a mellow melody."
+msgstr "まったりしたメロディーにぴったりの、ミントグリーンのヘッドホン。"
+
+msgid "A coral bucket hat warmed by sunset colours."
+msgstr "夕やけ色にそまった、コーラルのバケットハット。"
+
+msgid "A purple mushroom cap with a sweet plum glow."
+msgstr "あまいプラム色にかがやく、むらさきのきのこぼうし。"
+
+msgid "Dark blue headphones streaked with comet gold."
+msgstr "彗星のような金色のすじが入った、濃い青のヘッドホン。"
+
+msgid "Two tiny arms for waving at the world."
+msgstr "世界に手をふるための、ちいさな2本のうで。"
+
+msgid "Pink mittens to keep little hands warm."
+msgstr "小さな手をぬくぬくにするピンクのミトン。"
+
+msgid "Big cream gloves made for extra expressive waves."
+msgstr "思いきり手をふるための、大きなクリーム色の手袋。"
+
+msgid "One little arm always ready to say hello."
+msgstr "いつでも「やあ！」と言える、ちいさなうで1本。"
+
+msgid "A bright red balloon bobbing above one hand."
+msgstr "片手の上でふわふわゆれる、真っ赤なふうせん。"
+
+msgid "Red padded gloves for a friendly sparring match."
+msgstr "なかよしスパーリング用の、ふかふかの赤いグローブ。"
+
+msgid "Golden pom-poms that shake with every cheer."
+msgstr "応援するたびにゆれる、金色のポンポン。"
+
+msgid "Small cream wings with soft feathered tips."
+msgstr "先がふわふわの羽になった、小さなクリーム色のつばさ。"
+
+msgid "A purple wand for blowing rainbow bubbles."
+msgstr "虹色のシャボン玉をふく、むらさきのスティック。"
+
+msgid "Tiny sparklers fizzing with golden light."
+msgstr "金色の光がぱちぱちはじける、小さな線香花火。"
+
+msgid "Blue mitts with a sure and gentle grip."
+msgstr "しっかりやさしくつかめる、青いミトン。"
+
+msgid "Tough tan gloves for reaching the next ledge."
+msgstr "次の足場に手をのばすための、じょうぶな茶色の手袋。"
+
+msgid "A red flag to wave at the top of the pile."
+msgstr "積み上げたてっぺんでふる、赤い旗。"
+
+msgid "Shimmering wings fit for a champion Kinu."
+msgstr "チャンピオンのきぬにふさわしい、きらめくつばさ。"
+
+msgid "A warm paper lantern for the walk home."
+msgstr "帰り道を照らす、あたたかいちょうちん。"
+
+msgid "A peach sweet on a stick for a small treat."
+msgstr "ちょっとしたごほうびの、棒つきのももキャンディ。"
+
+msgid "A pair of maracas for a noisy little parade."
+msgstr "にぎやかな小さなパレードのためのマラカス。"
+
+msgid "Flour coloured mitts fresh from the oven."
+msgstr "焼きたてのオーブンから出てきた、小麦粉色のミトン。"
+
+msgid "Two bright flags for a colourful procession."
+msgstr "カラフルな行列のための、あざやかな2本の旗。"
+
+msgid "Soft purple wings with a graceful sweep."
+msgstr "優雅にひろがる、やわらかいむらさきのつばさ。"
+
+msgid "Mint green pom-poms for a fresh new cheer."
+msgstr "フレッシュな応援のための、ミントグリーンのポンポン。"
+
+msgid "A blue balloon floating like a pocket of sky."
+msgstr "空のかけらみたいにふわりと浮かぶ、青いふうせん。"
+
+msgid "A sunny lemon sweet with a little tang."
+msgstr "ちょっぴりすっぱい、おひさま色のレモンキャンディ。"
+
+msgid "A green lantern glowing with good fortune."
+msgstr "幸運の光をともす、緑のちょうちん。"
+
+msgid "Cocoa brown maracas with a gentle rattle."
+msgstr "やさしい音でシャカシャカ鳴る、ココア色のマラカス。"
+
+msgid "Violet boxing gloves with soft cream cuffs."
+msgstr "やわらかいクリーム色の手首つきの、すみれ色のボクシンググローブ。"
+
+msgid "Orange wings lit up like a morning sunburst."
+msgstr "朝日のようにかがやく、オレンジのつばさ。"
+
+msgid "A deep blue lantern with a warm moon glow."
+msgstr "あたたかい月明かりのような光の、深い青のちょうちん。"
+
+msgid "Little green maracas speckled with firefly light."
+msgstr "ホタルの光をちりばめた、小さな緑のマラカス。"
+
+msgid "A pink heart sweet to share with a friend."
+msgstr "ともだちと分けっこしたい、ピンクのハートのキャンディ。"
+
+msgid "Simple round frames for a curious Kinu."
+msgstr "好奇心いっぱいのきぬのための、シンプルなまるめがね。"
+
+msgid "Cheerful red frames with tidy square corners."
+msgstr "きっちり四角い、元気な赤ぶちめがね。"
+
+msgid "Golden star frames that steal the spotlight."
+msgstr "注目をひとりじめする、金色の星形めがね。"
+
+msgid "Pink heart frames for seeing the lovely side."
+msgstr "すてきな面が見えてくる、ピンクのハートめがね。"
+
+msgid "Bold black frames with a bookish charm."
+msgstr "本好きっぽい魅力の、しっかりした黒ぶちめがね。"
+
+msgid "Dark shades for a very cool afternoon."
+msgstr "とってもクールな午後のための、濃いサングラス。"
+
+msgid "One golden lens for a distinguished look."
+msgstr "気品ただよう、金色のレンズひとつ。"
+
+msgid "Blue goggles ready for a big splash."
+msgstr "大きな水しぶきにそなえた、青いゴーグル。"
+
+msgid "Red and blue lenses for a pop out picture."
+msgstr "絵が飛び出して見える、赤と青のレンズ。"
+
+msgid "Upswept violet frames with feline flair."
+msgstr "ねこっぽさのある、つり上がったすみれ色のめがね。"
+
+msgid "Round brown specs for the careful taste tester."
+msgstr "ていねいな味見係のための、茶色のまるめがね。"
+
+msgid "Square blue frames for plotting the next move."
+msgstr "次の一手を考えるための、四角い青のめがね。"
+
+msgid "Polished gold frames with a soft shine."
+msgstr "やさしく光る、みがかれた金のめがね。"
+
+msgid "Purple shades scattered with little stars."
+msgstr "小さな星をちりばめた、むらさきのサングラス。"
+
+msgid "Chunky navy frames straight from a pixel game."
+msgstr "ドット絵のゲームから飛び出してきた、ごつい紺のめがね。"
+
+msgid "Butterfly frames with a warm honey glow."
+msgstr "あたたかいはちみつ色にかがやく、蝶の形のめがね。"
+
+msgid "A bright visor for a day of festival lights."
+msgstr "お祭りの灯りの日にぴったりの、明るいバイザー。"
+
+msgid "Plum coloured cat eyes with a playful flick."
+msgstr "ちょっと遊び心のある、プラム色のキャットアイめがね。"
+
+msgid "Delicate frames that catch the starlight."
+msgstr "星の光をつかまえる、繊細なめがね。"
+
+msgid "Pale sea glass goggles for clear blue water."
+msgstr "すきとおった青い海にぴったりの、淡いシーグラスのゴーグル。"
+
+msgid "Cocoa brown circles with cosy charm."
+msgstr "ほっこりかわいい、ココア色のまるめがね。"
+
+msgid "Mint green pixel frames with crisp corners."
+msgstr "かどがくっきりした、ミントグリーンのドット絵めがね。"
+
+msgid "Rose pink butterfly frames ready to flutter."
+msgstr "今にもはばたきそうな、ローズピンクの蝶めがね。"
+
+msgid "An amber visor glowing like late sunshine."
+msgstr "夕方の日ざしのようにかがやく、琥珀色のバイザー。"
+
+msgid "Lilac tinted lenses for a dreamy view."
+msgstr "夢みたいな景色が見える、ライラック色のレンズ。"
+
+msgid "Blue butterfly frames light as a cloud."
+msgstr "雲のように軽い、青い蝶のめがね。"
+
+msgid "A coral visor lit by the first sunrise."
+msgstr "初日の出に照らされた、コーラル色のバイザー。"
+
+msgid "Midnight blue pixel frames with a quiet gleam."
+msgstr "しずかに光る、真夜中の青のドット絵めがね。"
+
+msgid "Teal butterfly frames washed in aurora colour."
+msgstr "オーロラ色にそまった、青緑の蝶めがね。"
+
+msgid "A golden visor with a brilliant finish."
+msgstr "まばゆい仕上げの金色のバイザー。"

@@ -3651,3 +3651,489 @@ msgstr "高度"
 
 msgid "More below"
 msgstr "下面還有喔"
+
+msgid "%d / %d done"
+msgstr "已完成 %d / %d"
+
+msgid "%d / %d found"
+msgstr "已發現 %d / %d"
+
+msgid "+0 XP"
+msgstr "+0 XP"
+
+msgid "A new goal opens each week. Open goals stay open until the month ends."
+msgstr "每週會開放一個新目標，開放後可以挑戰到月底。"
+
+msgid "Back"
+msgstr "返回"
+
+msgid "Coming in the %s Monthly Showcase. Finish that month's showcase goals to earn it."
+msgstr "將於%s的每月精選登場。完成當月的精選目標即可獲得。"
+
+msgid "Debug · Reset All Tutorials"
+msgstr "除錯・重置所有教學"
+
+msgid "Every run earns XP. Level up to unlock parts and dress your Kinu!"
+msgstr "每玩一局都能獲得 XP。升級解鎖配件，幫小絹打扮吧！"
+
+msgid "Finish %d runs without a tumble"
+msgstr "零失誤完成 %d 局"
+
+msgid "Meet My Kinu"
+msgstr "認識我的小絹"
+
+msgid "New in %s"
+msgstr "新任務倒數 %s"
+
+msgid "Next!"
+msgstr "下一個！"
+
+msgid "Opens %s"
+msgstr "%s開放"
+
+msgid "SHOWCASE GOALS"
+msgstr "精選目標"
+
+msgid "Special"
+msgstr "特別"
+
+msgid "TODAY"
+msgstr "今天"
+
+msgid "This month's Showcase reward. Finish all four showcase goals in %s to earn it."
+msgstr "本月精選獎勵。在%s內完成全部四個精選目標即可獲得。"
+
+msgid "This slot opens at level %d. Its parts become available then."
+msgstr "這個欄位在等級 %d 開放，屆時就能使用它的配件。"
+
+msgid "Unlock the %s slot at My Kinu level %d first."
+msgstr "請先解鎖%s欄位（我的小絹等級 %d）。"
+
+msgid "Your Kinu earns XP every run!"
+msgstr "每玩一局，小絹都會獲得 XP！"
+
+msgid "Score"
+msgstr "分數"
+
+msgid "Miss Left"
+msgstr "剩餘次數"
+
+msgid "Misses Left"
+msgstr "剩餘次數"
+
+msgid "Tumble Left"
+msgstr "剩餘機會"
+
+msgid "Tumbles Left"
+msgstr "剩餘機會"
+
+msgid "Shoyu! Glues a Kinu in place"
+msgstr "醬油！把小絹黏在原地"
+
+msgid "Level up My Kinu to open each part slot."
+msgstr "提升我的小絹等級來開放各個配件欄位。"
+
+msgid "Build It Tall"
+msgstr "疊得高高的"
+
+msgid "No box this time, just a plate. You score how tall your tower stands, so stack Kinu upwards!"
+msgstr "這次沒有盒子，只有盤子。分數是高塔的高度，所以把小絹往上疊吧！"
+
+msgid "Shoyu Glue"
+msgstr "醬油黏黏"
+
+msgid "Tap the shoyu bottle, aim it at a wobbly Kinu and let go. Shoyu glues that Kinu in place."
+msgstr "點一下醬油瓶，對準搖晃的小絹後放開。醬油會把那個小絹黏住。"
+
+msgid "Kinu that fall off the plate are tumbles. Six tumbles and the tower comes down."
+msgstr "從盤子掉下去的小絹算失誤。失誤六次，高塔就結束了。"
+
+msgid "Aim"
+msgstr "瞄準"
+
+msgid "Drag in the aim box. Left and right picks the spot, up and down sets how high it flies. The ghost Kinu shows where it lands."
+msgstr "在瞄準框裡拖曳。左右決定位置，上下決定飛多高。半透明的小絹會顯示落點。"
+
+msgid "Hold Fire"
+msgstr "按住發射"
+
+msgid "Hold the Fire button to power up, then let go to throw."
+msgstr "按住發射鈕蓄力，放開就會丟出去。"
+
+msgid "Get It In"
+msgstr "丟進盒子"
+
+msgid "Kinu have to drop through a hole and stay in the box. Fill a box and the next one arrives."
+msgstr "小絹要從洞口掉進去並留在盒子裡。裝滿一個盒子，下一個就會出現。"
+
+msgid "Score Big"
+msgstr "拿高分"
+
+msgid "Smaller holes, longer throws and streaks score more. Six misses and the run is over."
+msgstr "洞越小、丟得越遠、連續命中越多，分數越高。沒中六次就結束。"
+
+msgid "Let’s Build!"
+msgstr "開始蓋吧！"
+
+msgid "Let’s Toss!"
+msgstr "開始丟吧！"
+
+msgid "A soft lilac tee with a little pocket for treasures."
+msgstr "附有小口袋可以收藏寶物的柔軟淡紫色T恤。"
+
+msgid "A breezy blue tee the colour of a clear afternoon."
+msgstr "像晴朗午後天空般清爽的藍色T恤。"
+
+msgid "Cream and navy stripes for a day by the water."
+msgstr "適合水邊一日遊的奶油色與海軍藍條紋。"
+
+msgid "A warm red scarf finished with sunny yellow fringe."
+msgstr "綴著陽光黃流蘇的溫暖紅色圍巾。"
+
+msgid "A berry pink bow for Kinu's fanciest occasions."
+msgstr "小絹最隆重場合專用的莓果粉紅領結。"
+
+msgid "A café apron with a roomy pocket for order slips."
+msgstr "附有大口袋可放點單的咖啡館圍裙。"
+
+msgid "A mint green hoodie with a snug hood and soft cuffs."
+msgstr "有著貼合帽兜和柔軟袖口的薄荷綠帽T。"
+
+msgid "Blue dungarees with bright buttons and sturdy straps."
+msgstr "有亮眼鈕扣和堅固背帶的藍色吊帶褲。"
+
+msgid "A deep blue yukata tied with a vivid pink sash."
+msgstr "繫著鮮豔粉紅腰帶的深藍色浴衣。"
+
+msgid "A fluffy pink tutu made for tiny curtain calls."
+msgstr "為小小謝幕準備的蓬鬆粉紅芭蕾紗裙。"
+
+msgid "A candy pink swim ring ready for a pool day."
+msgstr "準備好去泳池的糖果粉紅游泳圈。"
+
+msgid "A green striped jersey for Kinu's biggest fans."
+msgstr "給小絹頭號粉絲的綠色條紋球衣。"
+
+msgid "Sturdy golden overalls with pockets for a busy day."
+msgstr "附口袋、適合忙碌日子的堅固金色連身工作服。"
+
+msgid "A cream bib for the inevitable splash of shoyu."
+msgstr "應付難免濺出醬油的奶油色圍兜。"
+
+msgid "A cosy coral knit with a row of cream stitches."
+msgstr "有一排奶油色針腳的溫暖珊瑚色毛衣。"
+
+msgid "A midnight scarf with a flash of starlight gold."
+msgstr "閃著星光金色的午夜色圍巾。"
+
+msgid "A shining sash tied for a grand celebration."
+msgstr "為盛大慶典繫上的閃亮綬帶。"
+
+msgid "A bright yellow coat for puddles and grey skies."
+msgstr "適合水窪與陰天的亮黃色外套。"
+
+msgid "A rosy cardigan with sweet cream trim."
+msgstr "鑲著甜美奶油色滾邊的玫瑰色開襟衫。"
+
+msgid "Soft green patches sewn together for one more adventure."
+msgstr "為下一場冒險縫在一起的柔和綠色拼布。"
+
+msgid "A dark haori with a quiet lavender lining."
+msgstr "有著低調薰衣草色內裡的深色羽織。"
+
+msgid "Sky blue pajamas striped like a sleepy cloud."
+msgstr "像愛睏雲朵般有條紋的天藍色睡衣。"
+
+msgid "A warm honey waistcoat dressed up with cream trim."
+msgstr "以奶油色滾邊點綴的溫暖蜂蜜色背心。"
+
+msgid "Berry red overalls made for grass stained picnics."
+msgstr "為沾滿草漬的野餐而做的莓果紅吊帶褲。"
+
+msgid "An orange windbreaker with a zing of lemon yellow."
+msgstr "帶點檸檬黃俏皮感的橘色風衣。"
+
+msgid "A lilac patchwork layer stitched for chilly mornings."
+msgstr "為微涼早晨縫製的淡紫色拼布外搭。"
+
+msgid "A neat green vest for the busiest tea counter."
+msgstr "適合最忙碌茶館櫃台的整齊綠色背心。"
+
+msgid "A blue raincoat edged with a rosy evening glow."
+msgstr "鑲著玫瑰色晚霞邊的藍色雨衣。"
+
+msgid "A navy cape scarf trimmed with moonlight gold."
+msgstr "以月光金滾邊的海軍藍披肩圍巾。"
+
+msgid "A patchwork party outfit in confetti colours."
+msgstr "彩色紙花配色的拼布派對裝。"
+
+msgid "A little red beanie with a soft cream brim."
+msgstr "有柔軟奶油色帽緣的小紅毛帽。"
+
+msgid "A yellow cap for chasing the afternoon sun."
+msgstr "追逐午後陽光的黃色棒球帽。"
+
+msgid "A jaunty red beret for Kinu's next masterpiece."
+msgstr "為小絹下一幅傑作準備的俏皮紅色貝雷帽。"
+
+msgid "A sky blue cone topped with a golden pompom."
+msgstr "頂端有金色毛球的天藍色尖帽。"
+
+msgid "A pink ribbon tied into a cheerful little bow."
+msgstr "綁成可愛小蝴蝶結的粉紅緞帶。"
+
+msgid "A leafy green bucket hat with a shady brim."
+msgstr "有遮陽帽簷的葉綠色漁夫帽。"
+
+msgid "A tall black hat with a smart red band."
+msgstr "繫著俐落紅色帽帶的高筒黑帽。"
+
+msgid "A puffy white chef's hat ready for the kitchen."
+msgstr "準備好下廚的蓬鬆白色廚師帽。"
+
+msgid "A crown of fresh blossoms in spring colours."
+msgstr "用春天色彩的鮮花編成的花冠。"
+
+msgid "A woven straw hat with a berry red ribbon."
+msgstr "繫著莓果紅緞帶的編織草帽。"
+
+msgid "A violet witch's hat with a glint of gold."
+msgstr "閃著一抹金光的紫羅蘭色巫師帽。"
+
+msgid "A golden crown set with bright little jewels."
+msgstr "鑲著閃亮小寶石的金色王冠。"
+
+msgid "A warm golden halo floating just overhead."
+msgstr "飄浮在頭頂上的溫暖金色光環。"
+
+msgid "A navy cap saved for a hard won victory."
+msgstr "為來之不易的勝利珍藏的海軍藍帽子。"
+
+msgid "A lucky clover sprouting from Kinu's head."
+msgstr "從小絹頭上冒出來的幸運草。"
+
+msgid "A cream sun hat with a cool blue band."
+msgstr "繫著清爽藍色帽帶的奶油色遮陽帽。"
+
+msgid "Two soft bunny ears ready for a little hop."
+msgstr "準備輕輕一跳的柔軟兔耳朵。"
+
+msgid "Pointy black cat ears with pink inner fluff."
+msgstr "內側有粉紅絨毛的尖尖黑貓耳。"
+
+msgid "A bright red cap with a playful spinning propeller."
+msgstr "有好玩旋轉螺旋槳的鮮紅帽子。"
+
+msgid "A red mushroom cap dotted with white spots."
+msgstr "點綴白色圓點的紅色蘑菇帽。"
+
+msgid "Comfy headphones in every colour of the rainbow."
+msgstr "集合彩虹所有顏色的舒適耳機。"
+
+msgid "Warm orange fox ears tipped with cream."
+msgstr "耳尖是奶油色的溫暖橘色狐狸耳。"
+
+msgid "A twilight beret for wandering lantern lit stalls."
+msgstr "適合逛燈籠夜市的暮色貝雷帽。"
+
+msgid "A little garland of peach blossoms and leaves."
+msgstr "用桃花和葉子編成的小花環。"
+
+msgid "A midnight cap for counting faraway stars."
+msgstr "用來數遠方星星的午夜色帽子。"
+
+msgid "A creamy mushroom cap as soft as tofu."
+msgstr "像豆腐一樣柔軟的奶油色蘑菇帽。"
+
+msgid "Mint green headphones for a mellow melody."
+msgstr "聆聽悠閒旋律的薄荷綠耳機。"
+
+msgid "A coral bucket hat warmed by sunset colours."
+msgstr "染上夕陽色彩的珊瑚色漁夫帽。"
+
+msgid "A purple mushroom cap with a sweet plum glow."
+msgstr "散發甜美梅子色光澤的紫色蘑菇帽。"
+
+msgid "Dark blue headphones streaked with comet gold."
+msgstr "劃過彗星金色線條的深藍耳機。"
+
+msgid "Two tiny arms for waving at the world."
+msgstr "用來向世界揮手的兩隻小手臂。"
+
+msgid "Pink mittens to keep little hands warm."
+msgstr "讓小手暖呼呼的粉紅連指手套。"
+
+msgid "Big cream gloves made for extra expressive waves."
+msgstr "能盡情揮手的大大奶油色手套。"
+
+msgid "One little arm always ready to say hello."
+msgstr "隨時準備打招呼的一隻小手臂。"
+
+msgid "A bright red balloon bobbing above one hand."
+msgstr "在手上方輕輕飄動的鮮紅氣球。"
+
+msgid "Red padded gloves for a friendly sparring match."
+msgstr "用於友誼對練的紅色護墊手套。"
+
+msgid "Golden pom-poms that shake with every cheer."
+msgstr "每次加油都會搖晃的金色彩球。"
+
+msgid "Small cream wings with soft feathered tips."
+msgstr "末端有柔軟羽毛的小小奶油色翅膀。"
+
+msgid "A purple wand for blowing rainbow bubbles."
+msgstr "吹出彩虹泡泡的紫色泡泡棒。"
+
+msgid "Tiny sparklers fizzing with golden light."
+msgstr "迸出金色火光的小小仙女棒。"
+
+msgid "Blue mitts with a sure and gentle grip."
+msgstr "能穩穩又溫柔抓握的藍色手套。"
+
+msgid "Tough tan gloves for reaching the next ledge."
+msgstr "攀上下一個岩架用的耐用棕褐色手套。"
+
+msgid "A red flag to wave at the top of the pile."
+msgstr "在疊堆頂端揮舞的紅旗。"
+
+msgid "Shimmering wings fit for a champion Kinu."
+msgstr "配得上冠軍小絹的閃耀翅膀。"
+
+msgid "A warm paper lantern for the walk home."
+msgstr "照亮回家路的溫暖紙燈籠。"
+
+msgid "A peach sweet on a stick for a small treat."
+msgstr "當作小點心的桃子棒棒糖。"
+
+msgid "A pair of maracas for a noisy little parade."
+msgstr "為熱鬧小遊行準備的一對沙鈴。"
+
+msgid "Flour coloured mitts fresh from the oven."
+msgstr "剛從烤箱出爐的麵粉色隔熱手套。"
+
+msgid "Two bright flags for a colourful procession."
+msgstr "為繽紛遊行準備的兩面鮮豔旗子。"
+
+msgid "Soft purple wings with a graceful sweep."
+msgstr "優雅展開的柔和紫色翅膀。"
+
+msgid "Mint green pom-poms for a fresh new cheer."
+msgstr "帶來清新加油聲的薄荷綠彩球。"
+
+msgid "A blue balloon floating like a pocket of sky."
+msgstr "像一小片天空般飄浮的藍色氣球。"
+
+msgid "A sunny lemon sweet with a little tang."
+msgstr "帶點酸味的陽光檸檬糖。"
+
+msgid "A green lantern glowing with good fortune."
+msgstr "閃耀著好運的綠色燈籠。"
+
+msgid "Cocoa brown maracas with a gentle rattle."
+msgstr "發出輕柔沙沙聲的可可色沙鈴。"
+
+msgid "Violet boxing gloves with soft cream cuffs."
+msgstr "有柔軟奶油色袖口的紫羅蘭色拳擊手套。"
+
+msgid "Orange wings lit up like a morning sunburst."
+msgstr "像朝陽般閃耀的橘色翅膀。"
+
+msgid "A deep blue lantern with a warm moon glow."
+msgstr "散發溫暖月光的深藍燈籠。"
+
+msgid "Little green maracas speckled with firefly light."
+msgstr "點綴螢火蟲光點的綠色小沙鈴。"
+
+msgid "A pink heart sweet to share with a friend."
+msgstr "想和朋友分享的粉紅愛心糖。"
+
+msgid "Simple round frames for a curious Kinu."
+msgstr "給好奇小絹的簡單圓框眼鏡。"
+
+msgid "Cheerful red frames with tidy square corners."
+msgstr "有著整齊方角的活潑紅框眼鏡。"
+
+msgid "Golden star frames that steal the spotlight."
+msgstr "搶盡鋒頭的金色星星眼鏡。"
+
+msgid "Pink heart frames for seeing the lovely side."
+msgstr "讓你看見美好一面的粉紅愛心眼鏡。"
+
+msgid "Bold black frames with a bookish charm."
+msgstr "帶點書卷氣的粗黑框眼鏡。"
+
+msgid "Dark shades for a very cool afternoon."
+msgstr "度過超酷午後的深色墨鏡。"
+
+msgid "One golden lens for a distinguished look."
+msgstr "增添氣質的一片金色鏡片。"
+
+msgid "Blue goggles ready for a big splash."
+msgstr "準備好迎接大水花的藍色泳鏡。"
+
+msgid "Red and blue lenses for a pop out picture."
+msgstr "讓畫面跳出來的紅藍鏡片。"
+
+msgid "Upswept violet frames with feline flair."
+msgstr "帶有貓咪風情的上揚紫羅蘭色鏡框。"
+
+msgid "Round brown specs for the careful taste tester."
+msgstr "給細心試吃員的棕色圓眼鏡。"
+
+msgid "Square blue frames for plotting the next move."
+msgstr "用來盤算下一步的方形藍框眼鏡。"
+
+msgid "Polished gold frames with a soft shine."
+msgstr "散發柔和光澤的拋光金框眼鏡。"
+
+msgid "Purple shades scattered with little stars."
+msgstr "點綴小星星的紫色墨鏡。"
+
+msgid "Chunky navy frames straight from a pixel game."
+msgstr "彷彿從像素遊戲裡跳出來的粗厚海軍藍鏡框。"
+
+msgid "Butterfly frames with a warm honey glow."
+msgstr "散發溫暖蜂蜜光澤的蝴蝶框眼鏡。"
+
+msgid "A bright visor for a day of festival lights."
+msgstr "適合節慶燈火之日的明亮遮陽帽簷鏡。"
+
+msgid "Plum coloured cat eyes with a playful flick."
+msgstr "帶點俏皮上揚的梅子色貓眼眼鏡。"
+
+msgid "Delicate frames that catch the starlight."
+msgstr "捕捉星光的纖細鏡框。"
+
+msgid "Pale sea glass goggles for clear blue water."
+msgstr "適合清澈藍水的淡色海玻璃泳鏡。"
+
+msgid "Cocoa brown circles with cosy charm."
+msgstr "帶著溫暖魅力的可可色圓框。"
+
+msgid "Mint green pixel frames with crisp corners."
+msgstr "邊角俐落的薄荷綠像素鏡框。"
+
+msgid "Rose pink butterfly frames ready to flutter."
+msgstr "彷彿就要振翅的玫瑰粉紅蝴蝶框眼鏡。"
+
+msgid "An amber visor glowing like late sunshine."
+msgstr "像傍晚陽光般閃耀的琥珀色帽簷鏡。"
+
+msgid "Lilac tinted lenses for a dreamy view."
+msgstr "看見夢幻景色的淡紫色鏡片。"
+
+msgid "Blue butterfly frames light as a cloud."
+msgstr "像雲一樣輕盈的藍色蝴蝶框眼鏡。"
+
+msgid "A coral visor lit by the first sunrise."
+msgstr "被第一道曙光照亮的珊瑚色帽簷鏡。"
+
+msgid "Midnight blue pixel frames with a quiet gleam."
+msgstr "散發低調光芒的午夜藍像素鏡框。"
+
+msgid "Teal butterfly frames washed in aurora colour."
+msgstr "染上極光色彩的藍綠色蝴蝶框眼鏡。"
+
+msgid "A golden visor with a brilliant finish."
+msgstr "閃耀奪目的金色帽簷鏡。"

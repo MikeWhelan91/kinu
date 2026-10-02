@@ -3651,3 +3651,489 @@ msgstr "높이"
 
 msgid "More below"
 msgstr "아래에 더 있어요"
+
+msgid "%d / %d done"
+msgstr "%d / %d 완료"
+
+msgid "%d / %d found"
+msgstr "%d / %d 발견"
+
+msgid "+0 XP"
+msgstr "+0 XP"
+
+msgid "A new goal opens each week. Open goals stay open until the month ends."
+msgstr "매주 새 목표가 열려요. 열린 목표는 월말까지 도전할 수 있어요."
+
+msgid "Back"
+msgstr "뒤로"
+
+msgid "Coming in the %s Monthly Showcase. Finish that month's showcase goals to earn it."
+msgstr "%s 월간 쇼케이스에 등장해요. 그달의 쇼케이스 목표를 완료하면 받을 수 있어요."
+
+msgid "Debug · Reset All Tutorials"
+msgstr "디버그 · 튜토리얼 전체 초기화"
+
+msgid "Every run earns XP. Level up to unlock parts and dress your Kinu!"
+msgstr "플레이할 때마다 XP를 얻어요. 레벨을 올려 파츠를 해금하고 키누를 꾸며 보세요!"
+
+msgid "Finish %d runs without a tumble"
+msgstr "한 번도 떨어뜨리지 않고 %d판 끝내기"
+
+msgid "Meet My Kinu"
+msgstr "마이 키누를 만나요"
+
+msgid "New in %s"
+msgstr "새 미션까지 %s"
+
+msgid "Next!"
+msgstr "다음!"
+
+msgid "Opens %s"
+msgstr "%s 오픈"
+
+msgid "SHOWCASE GOALS"
+msgstr "쇼케이스 목표"
+
+msgid "Special"
+msgstr "스페셜"
+
+msgid "TODAY"
+msgstr "오늘"
+
+msgid "This month's Showcase reward. Finish all four showcase goals in %s to earn it."
+msgstr "이번 달 쇼케이스 보상이에요. %s 안에 쇼케이스 목표 4개를 모두 완료하면 받을 수 있어요."
+
+msgid "This slot opens at level %d. Its parts become available then."
+msgstr "이 슬롯은 레벨 %d에 열려요. 그때부터 파츠를 쓸 수 있어요."
+
+msgid "Unlock the %s slot at My Kinu level %d first."
+msgstr "먼저 %s 슬롯을 해금하세요 (마이 키누 레벨 %d)."
+
+msgid "Your Kinu earns XP every run!"
+msgstr "플레이할 때마다 키누가 XP를 얻어요!"
+
+msgid "Score"
+msgstr "점수"
+
+msgid "Miss Left"
+msgstr "남은 기회"
+
+msgid "Misses Left"
+msgstr "남은 기회"
+
+msgid "Tumble Left"
+msgstr "남은 기회"
+
+msgid "Tumbles Left"
+msgstr "남은 기회"
+
+msgid "Shoyu! Glues a Kinu in place"
+msgstr "간장! 키누를 그 자리에 붙여요"
+
+msgid "Level up My Kinu to open each part slot."
+msgstr "마이 키누 레벨을 올리면 파츠 슬롯이 열려요."
+
+msgid "Build It Tall"
+msgstr "높이 쌓아요"
+
+msgid "No box this time, just a plate. You score how tall your tower stands, so stack Kinu upwards!"
+msgstr "이번엔 상자 없이 접시뿐이에요. 타워 높이가 점수니까 키누를 위로 쌓아요!"
+
+msgid "Shoyu Glue"
+msgstr "간장 접착"
+
+msgid "Tap the shoyu bottle, aim it at a wobbly Kinu and let go. Shoyu glues that Kinu in place."
+msgstr "간장병을 탭하고 흔들리는 키누를 겨냥한 뒤 손을 떼요. 간장이 그 키누를 그 자리에 붙여요."
+
+msgid "Kinu that fall off the plate are tumbles. Six tumbles and the tower comes down."
+msgstr "접시에서 떨어진 키누는 실수로 쳐요. 여섯 번 떨어지면 타워가 끝나요."
+
+msgid "Aim"
+msgstr "조준"
+
+msgid "Drag in the aim box. Left and right picks the spot, up and down sets how high it flies. The ghost Kinu shows where it lands."
+msgstr "조준 상자 안을 드래그해요. 좌우로 위치를, 위아래로 높이를 정해요. 반투명 키누가 떨어질 곳을 보여 줘요."
+
+msgid "Hold Fire"
+msgstr "발사 꾹 누르기"
+
+msgid "Hold the Fire button to power up, then let go to throw."
+msgstr "발사 버튼을 꾹 눌러 힘을 모으고, 손을 떼면 던져요."
+
+msgid "Get It In"
+msgstr "상자에 넣어요"
+
+msgid "Kinu have to drop through a hole and stay in the box. Fill a box and the next one arrives."
+msgstr "키누가 구멍으로 들어가서 상자 안에 남아 있어야 해요. 상자를 채우면 다음 상자가 와요."
+
+msgid "Score Big"
+msgstr "고득점"
+
+msgid "Smaller holes, longer throws and streaks score more. Six misses and the run is over."
+msgstr "작은 구멍, 먼 던지기, 연속 성공일수록 점수가 높아요. 여섯 번 놓치면 끝나요."
+
+msgid "Let’s Build!"
+msgstr "쌓아 올려요!"
+
+msgid "Let’s Toss!"
+msgstr "던져 볼까요!"
+
+msgid "A soft lilac tee with a little pocket for treasures."
+msgstr "보물을 넣는 작은 주머니가 달린 부드러운 라일락색 티셔츠."
+
+msgid "A breezy blue tee the colour of a clear afternoon."
+msgstr "맑은 오후 하늘빛의 산뜻한 파란 티셔츠."
+
+msgid "Cream and navy stripes for a day by the water."
+msgstr "물가에서 보내는 날에 어울리는 크림색과 남색 줄무늬."
+
+msgid "A warm red scarf finished with sunny yellow fringe."
+msgstr "햇살 같은 노란 술이 달린 따뜻한 빨간 목도리."
+
+msgid "A berry pink bow for Kinu's fanciest occasions."
+msgstr "키누의 가장 특별한 날을 위한 베리 핑크 나비넥타이."
+
+msgid "A café apron with a roomy pocket for order slips."
+msgstr "주문서를 넉넉히 넣는 주머니가 달린 카페 앞치마."
+
+msgid "A mint green hoodie with a snug hood and soft cuffs."
+msgstr "포근한 후드와 부드러운 소매의 민트색 후드티."
+
+msgid "Blue dungarees with bright buttons and sturdy straps."
+msgstr "반짝이는 단추와 튼튼한 멜빵의 파란 멜빵바지."
+
+msgid "A deep blue yukata tied with a vivid pink sash."
+msgstr "선명한 분홍 띠를 두른 짙은 파란색 유카타."
+
+msgid "A fluffy pink tutu made for tiny curtain calls."
+msgstr "작은 커튼콜을 위한 폭신한 분홍 튀튀."
+
+msgid "A candy pink swim ring ready for a pool day."
+msgstr "수영장 가는 날을 위한 캔디 핑크 튜브."
+
+msgid "A green striped jersey for Kinu's biggest fans."
+msgstr "키누의 열성 팬을 위한 초록 줄무늬 저지."
+
+msgid "Sturdy golden overalls with pockets for a busy day."
+msgstr "바쁜 날을 위한 주머니 달린 튼튼한 황금색 작업복."
+
+msgid "A cream bib for the inevitable splash of shoyu."
+msgstr "피할 수 없는 간장 튀김에 대비한 크림색 턱받이."
+
+msgid "A cosy coral knit with a row of cream stitches."
+msgstr "크림색 땀이 한 줄 있는 포근한 코랄색 니트."
+
+msgid "A midnight scarf with a flash of starlight gold."
+msgstr "별빛 같은 금색이 반짝이는 한밤중 빛깔 목도리."
+
+msgid "A shining sash tied for a grand celebration."
+msgstr "성대한 축하를 위해 두른 반짝이는 띠."
+
+msgid "A bright yellow coat for puddles and grey skies."
+msgstr "물웅덩이와 흐린 하늘을 위한 밝은 노란 코트."
+
+msgid "A rosy cardigan with sweet cream trim."
+msgstr "달콤한 크림색 테두리의 장밋빛 카디건."
+
+msgid "Soft green patches sewn together for one more adventure."
+msgstr "또 한 번의 모험을 위해 이어 붙인 부드러운 초록 패치워크."
+
+msgid "A dark haori with a quiet lavender lining."
+msgstr "차분한 라벤더색 안감의 어두운 하오리."
+
+msgid "Sky blue pajamas striped like a sleepy cloud."
+msgstr "졸린 구름처럼 줄무늬가 있는 하늘색 잠옷."
+
+msgid "A warm honey waistcoat dressed up with cream trim."
+msgstr "크림색 테두리로 멋을 낸 따뜻한 꿀색 조끼."
+
+msgid "Berry red overalls made for grass stained picnics."
+msgstr "풀물 드는 피크닉을 위한 베리 레드 멜빵바지."
+
+msgid "An orange windbreaker with a zing of lemon yellow."
+msgstr "레몬 노랑이 톡 쏘는 주황색 바람막이."
+
+msgid "A lilac patchwork layer stitched for chilly mornings."
+msgstr "쌀쌀한 아침을 위해 지은 라일락색 패치워크 겉옷."
+
+msgid "A neat green vest for the busiest tea counter."
+msgstr "가장 바쁜 찻집 카운터를 위한 단정한 초록 조끼."
+
+msgid "A blue raincoat edged with a rosy evening glow."
+msgstr "장밋빛 저녁노을로 테두리를 두른 파란 우비."
+
+msgid "A navy cape scarf trimmed with moonlight gold."
+msgstr "달빛 금색으로 장식한 남색 케이프 스카프."
+
+msgid "A patchwork party outfit in confetti colours."
+msgstr "색종이 조각 같은 색의 패치워크 파티 옷."
+
+msgid "A little red beanie with a soft cream brim."
+msgstr "부드러운 크림색 챙의 작은 빨간 비니."
+
+msgid "A yellow cap for chasing the afternoon sun."
+msgstr "오후의 햇살을 쫓는 노란 모자."
+
+msgid "A jaunty red beret for Kinu's next masterpiece."
+msgstr "키누의 다음 걸작을 위한 경쾌한 빨간 베레모."
+
+msgid "A sky blue cone topped with a golden pompom."
+msgstr "꼭대기에 금색 방울이 달린 하늘색 고깔모자."
+
+msgid "A pink ribbon tied into a cheerful little bow."
+msgstr "쾌활한 작은 나비 모양으로 묶은 분홍 리본."
+
+msgid "A leafy green bucket hat with a shady brim."
+msgstr "그늘을 만들어 주는 챙의 잎사귀색 버킷햇."
+
+msgid "A tall black hat with a smart red band."
+msgstr "멋스러운 빨간 띠를 두른 높은 검은 모자."
+
+msgid "A puffy white chef's hat ready for the kitchen."
+msgstr "주방에 나설 준비가 된 폭신한 하얀 요리사 모자."
+
+msgid "A crown of fresh blossoms in spring colours."
+msgstr "봄빛 생화로 만든 화관."
+
+msgid "A woven straw hat with a berry red ribbon."
+msgstr "베리 레드 리본을 단 엮은 밀짚모자."
+
+msgid "A violet witch's hat with a glint of gold."
+msgstr "금빛이 반짝이는 보라색 마녀 모자."
+
+msgid "A golden crown set with bright little jewels."
+msgstr "반짝이는 작은 보석이 박힌 황금 왕관."
+
+msgid "A warm golden halo floating just overhead."
+msgstr "머리 위에 둥실 떠 있는 따뜻한 황금빛 고리."
+
+msgid "A navy cap saved for a hard won victory."
+msgstr "어렵게 얻은 승리를 위해 아껴 둔 남색 모자."
+
+msgid "A lucky clover sprouting from Kinu's head."
+msgstr "키누 머리 위로 돋아난 행운의 클로버."
+
+msgid "A cream sun hat with a cool blue band."
+msgstr "시원한 파란 띠를 두른 크림색 햇빛 가리개 모자."
+
+msgid "Two soft bunny ears ready for a little hop."
+msgstr "깡충 뛸 준비가 된 부드러운 토끼 귀 한 쌍."
+
+msgid "Pointy black cat ears with pink inner fluff."
+msgstr "안쪽이 분홍색 솜털인 뾰족한 검은 고양이 귀."
+
+msgid "A bright red cap with a playful spinning propeller."
+msgstr "빙글빙글 도는 프로펠러가 달린 새빨간 모자."
+
+msgid "A red mushroom cap dotted with white spots."
+msgstr "하얀 점이 콕콕 박힌 빨간 버섯 모자."
+
+msgid "Comfy headphones in every colour of the rainbow."
+msgstr "무지개의 모든 색을 담은 편안한 헤드폰."
+
+msgid "Warm orange fox ears tipped with cream."
+msgstr "끝이 크림색인 따뜻한 주황색 여우 귀."
+
+msgid "A twilight beret for wandering lantern lit stalls."
+msgstr "등불 밝힌 노점을 거닐기 좋은 황혼빛 베레모."
+
+msgid "A little garland of peach blossoms and leaves."
+msgstr "복숭아꽃과 잎으로 엮은 작은 화환."
+
+msgid "A midnight cap for counting faraway stars."
+msgstr "먼 별을 세기 위한 한밤중 빛깔 모자."
+
+msgid "A creamy mushroom cap as soft as tofu."
+msgstr "두부처럼 말랑한 크림색 버섯 모자."
+
+msgid "Mint green headphones for a mellow melody."
+msgstr "느긋한 멜로디를 위한 민트색 헤드폰."
+
+msgid "A coral bucket hat warmed by sunset colours."
+msgstr "노을빛으로 물든 코랄색 버킷햇."
+
+msgid "A purple mushroom cap with a sweet plum glow."
+msgstr "달콤한 자두빛이 감도는 보라색 버섯 모자."
+
+msgid "Dark blue headphones streaked with comet gold."
+msgstr "혜성 같은 금빛 줄무늬가 있는 짙은 파란 헤드폰."
+
+msgid "Two tiny arms for waving at the world."
+msgstr "세상에 손을 흔드는 작은 두 팔."
+
+msgid "Pink mittens to keep little hands warm."
+msgstr "작은 손을 따뜻하게 지켜 주는 분홍 벙어리장갑."
+
+msgid "Big cream gloves made for extra expressive waves."
+msgstr "더 신나게 손 흔들기 위한 커다란 크림색 장갑."
+
+msgid "One little arm always ready to say hello."
+msgstr "언제든 인사할 준비가 된 작은 팔 하나."
+
+msgid "A bright red balloon bobbing above one hand."
+msgstr "한 손 위에서 둥실거리는 새빨간 풍선."
+
+msgid "Red padded gloves for a friendly sparring match."
+msgstr "친선 스파링을 위한 푹신한 빨간 글러브."
+
+msgid "Golden pom-poms that shake with every cheer."
+msgstr "응원할 때마다 흔들리는 황금색 폼폼."
+
+msgid "Small cream wings with soft feathered tips."
+msgstr "끝이 보드라운 깃털인 작은 크림색 날개."
+
+msgid "A purple wand for blowing rainbow bubbles."
+msgstr "무지갯빛 비눗방울을 부는 보라색 막대."
+
+msgid "Tiny sparklers fizzing with golden light."
+msgstr "금빛으로 타닥거리는 작은 불꽃 막대."
+
+msgid "Blue mitts with a sure and gentle grip."
+msgstr "단단하고도 부드럽게 잡아 주는 파란 장갑."
+
+msgid "Tough tan gloves for reaching the next ledge."
+msgstr "다음 바위턱을 잡기 위한 튼튼한 황갈색 장갑."
+
+msgid "A red flag to wave at the top of the pile."
+msgstr "더미 꼭대기에서 흔드는 빨간 깃발."
+
+msgid "Shimmering wings fit for a champion Kinu."
+msgstr "챔피언 키누에게 어울리는 반짝이는 날개."
+
+msgid "A warm paper lantern for the walk home."
+msgstr "집에 가는 길을 밝혀 주는 따뜻한 종이 등불."
+
+msgid "A peach sweet on a stick for a small treat."
+msgstr "작은 간식으로 좋은 막대 복숭아 사탕."
+
+msgid "A pair of maracas for a noisy little parade."
+msgstr "떠들썩한 작은 퍼레이드를 위한 마라카스 한 쌍."
+
+msgid "Flour coloured mitts fresh from the oven."
+msgstr "오븐에서 갓 나온 밀가루색 장갑."
+
+msgid "Two bright flags for a colourful procession."
+msgstr "알록달록한 행렬을 위한 밝은 깃발 두 개."
+
+msgid "Soft purple wings with a graceful sweep."
+msgstr "우아하게 펼쳐지는 부드러운 보라색 날개."
+
+msgid "Mint green pom-poms for a fresh new cheer."
+msgstr "상큼한 새 응원을 위한 민트색 폼폼."
+
+msgid "A blue balloon floating like a pocket of sky."
+msgstr "하늘 한 조각처럼 떠다니는 파란 풍선."
+
+msgid "A sunny lemon sweet with a little tang."
+msgstr "살짝 새콤한 햇살 같은 레몬 사탕."
+
+msgid "A green lantern glowing with good fortune."
+msgstr "행운으로 빛나는 초록 등불."
+
+msgid "Cocoa brown maracas with a gentle rattle."
+msgstr "부드럽게 찰랑이는 코코아색 마라카스."
+
+msgid "Violet boxing gloves with soft cream cuffs."
+msgstr "부드러운 크림색 손목의 보라색 권투 글러브."
+
+msgid "Orange wings lit up like a morning sunburst."
+msgstr "아침 햇살처럼 빛나는 주황색 날개."
+
+msgid "A deep blue lantern with a warm moon glow."
+msgstr "따뜻한 달빛이 감도는 짙은 파란 등불."
+
+msgid "Little green maracas speckled with firefly light."
+msgstr "반딧불 빛이 점점이 박힌 작은 초록 마라카스."
+
+msgid "A pink heart sweet to share with a friend."
+msgstr "친구와 나눠 먹고 싶은 분홍 하트 사탕."
+
+msgid "Simple round frames for a curious Kinu."
+msgstr "호기심 많은 키누를 위한 심플한 동그란 안경테."
+
+msgid "Cheerful red frames with tidy square corners."
+msgstr "반듯한 네모 모서리의 경쾌한 빨간 안경테."
+
+msgid "Golden star frames that steal the spotlight."
+msgstr "모든 시선을 사로잡는 황금 별 안경."
+
+msgid "Pink heart frames for seeing the lovely side."
+msgstr "사랑스러운 면만 보여 주는 분홍 하트 안경."
+
+msgid "Bold black frames with a bookish charm."
+msgstr "책벌레 같은 매력의 굵은 검은 안경테."
+
+msgid "Dark shades for a very cool afternoon."
+msgstr "아주 쿨한 오후를 위한 짙은 선글라스."
+
+msgid "One golden lens for a distinguished look."
+msgstr "품격 있어 보이는 황금 렌즈 하나."
+
+msgid "Blue goggles ready for a big splash."
+msgstr "커다란 물보라에 대비한 파란 물안경."
+
+msgid "Red and blue lenses for a pop out picture."
+msgstr "그림이 튀어나와 보이는 빨강 파랑 렌즈."
+
+msgid "Upswept violet frames with feline flair."
+msgstr "고양이 같은 멋이 있는 치켜 올라간 보라색 안경테."
+
+msgid "Round brown specs for the careful taste tester."
+msgstr "꼼꼼한 맛 감별사를 위한 갈색 동그란 안경."
+
+msgid "Square blue frames for plotting the next move."
+msgstr "다음 수를 궁리하기 위한 네모난 파란 안경테."
+
+msgid "Polished gold frames with a soft shine."
+msgstr "은은하게 빛나는 윤기 나는 금테 안경."
+
+msgid "Purple shades scattered with little stars."
+msgstr "작은 별이 흩뿌려진 보라색 선글라스."
+
+msgid "Chunky navy frames straight from a pixel game."
+msgstr "픽셀 게임에서 막 튀어나온 두툼한 남색 안경테."
+
+msgid "Butterfly frames with a warm honey glow."
+msgstr "따뜻한 꿀빛이 도는 나비 모양 안경테."
+
+msgid "A bright visor for a day of festival lights."
+msgstr "축제 불빛 가득한 날을 위한 밝은 바이저."
+
+msgid "Plum coloured cat eyes with a playful flick."
+msgstr "장난스럽게 치켜 올라간 자두색 캣아이 안경."
+
+msgid "Delicate frames that catch the starlight."
+msgstr "별빛을 붙잡는 섬세한 안경테."
+
+msgid "Pale sea glass goggles for clear blue water."
+msgstr "맑고 푸른 물을 위한 연한 바다유리 물안경."
+
+msgid "Cocoa brown circles with cosy charm."
+msgstr "포근한 매력의 코코아색 동그란 안경."
+
+msgid "Mint green pixel frames with crisp corners."
+msgstr "모서리가 또렷한 민트색 픽셀 안경테."
+
+msgid "Rose pink butterfly frames ready to flutter."
+msgstr "금방이라도 날갯짓할 듯한 장밋빛 나비 안경테."
+
+msgid "An amber visor glowing like late sunshine."
+msgstr "늦은 오후 햇살처럼 빛나는 호박색 바이저."
+
+msgid "Lilac tinted lenses for a dreamy view."
+msgstr "꿈결 같은 풍경을 보여 주는 라일락빛 렌즈."
+
+msgid "Blue butterfly frames light as a cloud."
+msgstr "구름처럼 가벼운 파란 나비 안경테."
+
+msgid "A coral visor lit by the first sunrise."
+msgstr "새해 첫 해돋이에 물든 코랄색 바이저."
+
+msgid "Midnight blue pixel frames with a quiet gleam."
+msgstr "은은하게 반짝이는 한밤중 파란색 픽셀 안경테."
+
+msgid "Teal butterfly frames washed in aurora colour."
+msgstr "오로라 빛으로 물든 청록색 나비 안경테."
+
+msgid "A golden visor with a brilliant finish."
+msgstr "눈부시게 마감된 황금 바이저."

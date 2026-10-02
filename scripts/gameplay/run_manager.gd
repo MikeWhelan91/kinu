@@ -69,6 +69,8 @@ var next_milestone: int = MILESTONE_STEP
 var placed: int = 0
 ## Kinu that tumbled onto the counter this run; the run ends at MAX_TUMBLES.
 var tumbles: int = 0
+## The pile the run reached before its first tumble, or -1 while it has not tumbled yet.
+var clean_pile: int = -1
 var tower_height: float = 0.0
 var elapsed: float = 0.0
 var hold_time: float = 0.0
@@ -447,6 +449,7 @@ func begin() -> void:
 	cheered_best = false
 	placed = 0
 	tumbles = 0
+	clean_pile = -1
 	next_special = ""
 	lucky_caught = 0
 	lucky_spawned = false
@@ -1188,6 +1191,7 @@ func is_fallen(body: KinuBody) -> bool:
 	return radius > TofuShop.COUNTER_HALF*1.5 or (not box_contains(p, .35) and p.y < TofuBox.RIM_HEIGHT*.75)
 
 func _fall(body: KinuBody) -> void:
+	note_tumble()
 	body.fallen = true
 	fallen_body = body
 	tumbles += 1
@@ -1227,6 +1231,16 @@ func _clear_fallen(body: KinuBody) -> void:
 	if fallen_body == body:
 		fallen_body = null
 	body.queue_free()
+
+## Kinu on the pile as missions and results count it: every landed Kinu in Toss.
+func run_pile() -> int:
+	return placed if mode == "toss" else pile_count()
+
+## Called before a tumble (or Toss miss) is counted. Runs only end by tumbling out, so "without a
+## tumble" goals score the pile as it stood just before the first one.
+func note_tumble() -> void:
+	if clean_pile < 0:
+		clean_pile = run_pile()
 
 ## Kinu counted on the pile: settled at least once and not fallen onto the counter.
 func pile_count() -> int:
@@ -1328,7 +1342,8 @@ func end() -> void:
 
 ## Everything the results screen, lifetime stats and daily missions need about this run.
 func summary() -> Dictionary:
-	return {"mode": mode, "pile": placed if mode == "toss" else pile_count(), "boxes": boxes_filled, "distance": longest_cm, "score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "run_id": run_id, "dressed": MyKinu.dressed(catalog), "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
+	var pile := run_pile()
+	return {"mode": mode, "pile": pile, "clean": clean_pile if clean_pile >= 0 else pile, "boxes": boxes_filled, "distance": longest_cm, "score": score, "placed": placed, "height": tower_height, "tumbles": tumbles, "lucky": lucky_caught, "hearts": hearts_caught, "bonus": bonus_beans, "flavours": flavour_counts.duplicate(), "shapes": shape_counts.duplicate(), "streak": best_streak, "time": run_time, "squirts": squirts_used, "glazed": glazed, "turns": int(orbit.travelled/TAU), "new_flavours": new_flavours, "run_id": run_id, "dressed": MyKinu.dressed(catalog), "decorated": str(Save.data.room) != "shop" or str(Save.data.box) != "hinoki"}
 
 func _landed(body: KinuBody, other: Node, force: float) -> void:
 	if menu_mode or state == "over":

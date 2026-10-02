@@ -449,8 +449,7 @@ static func record_run(summary: Dictionary) -> int:
 			"land":
 				mission.progress = int(mission.progress)+int(summary.get("placed", 0))
 			"clean":
-				if int(summary.get("tumbles", 0)) == 0:
-					mission.progress = maxi(int(mission.progress), score)
+				mission.progress = maxi(int(mission.progress), int(summary.get("clean", 0)))
 			"lucky":
 				mission.progress = int(mission.progress)+int(summary.get("lucky", 0))
 			"heart":

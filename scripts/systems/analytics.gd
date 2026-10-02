@@ -1,11 +1,11 @@
 extends Node
-## Firebase is opt-in for production exports. Local runs and test iOS builds never configure it.
+## Firebase runs in every iOS release export. Debug exports, editor runs and tests never configure it.
 
 var bridge: Object
 var session_started_at := 0
 
 func _ready() -> void:
-	if OS.get_name() != "iOS" or not OS.has_feature("production") or not Engine.has_singleton("FirebaseBridge"):
+	if OS.get_name() != "iOS" or OS.is_debug_build() or not Engine.has_singleton("FirebaseBridge"):
 		return
 	bridge = Engine.get_singleton("FirebaseBridge")
 	bridge.call("configure")

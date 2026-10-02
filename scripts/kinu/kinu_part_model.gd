@@ -607,6 +607,10 @@ static func _glasses(kit: MeshKit, shape: KinuShape, part: KinuPart) -> void:
 				_hoop(kit,lens,r*.9,tube,c)
 				var outward := 1.0 if lens == lenses[1] else -1.0
 				kit.add_transformed("sphere",Transform3D(lens.basis*Basis.from_scale(Vector3(.13,.08,.02)),lens*Vector3(outward*r*.75,r*.55,0)),accent,false)
+			"browline":
+				# A heavy brow over a fine gold rim, so it never reads as plain round specs.
+				_hoop(kit, lens, r, tube*.7, accent)
+				kit.add_transformed("block", Transform3D(lens.basis*Basis.from_scale(Vector3(r*2.35, tube*3.2, tube*2)), lens*Vector3(0, r*.82, .005)), c)
 			"visor":
 				_hoop(kit,lens,r,tube,accent)
 				kit.add_transformed("sphere",Transform3D(lens.basis*Basis.from_scale(Vector3(r*2,r*1.7,.02)),lens*Vector3(0,0,-.004)),c.lightened(.25),false)

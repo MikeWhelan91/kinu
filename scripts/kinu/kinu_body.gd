@@ -242,6 +242,9 @@ func release(impulse: Vector3 = Vector3.ZERO, shaken: bool = false) -> void:
 	gripped = false
 	freeze = false
 	sleeping = false
+	# Shaking breaks the old glue joint. A sticky Kinu stays sticky, so clearing `stuck` lets it
+	# bond again to whatever it lands on instead of tumbling about as plain tofu.
+	stuck = false
 	grip_time = 0
 	regrip_cooldown = 1.2
 	if impulse != Vector3.ZERO:

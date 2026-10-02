@@ -564,8 +564,7 @@ func finish_run(summary: Dictionary) -> bool:
 		data.recent.append(score)
 		data.recent = data.recent.slice(-RECENT_RUNS)
 	_record_day()
-	if int(summary.get("tumbles", 0)) == 0:
-		data.stats.clean = maxi(int(data.stats.clean), pile)
+	data.stats.clean = maxi(int(data.stats.clean), int(summary.get("clean", 0)))
 	GrandOpening.record_run()
 	KinuProgress.record_run(summary)
 	_grant_run_xp(summary, record)

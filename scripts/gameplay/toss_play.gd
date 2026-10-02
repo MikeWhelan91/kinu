@@ -832,6 +832,7 @@ func _on_lid(body: KinuBody) -> void:
 ## `gone` means the Kinu has already left the table, so it is taken away at once instead of being
 ## left lying about; one that stopped on the table gets a moment to be seen before it is cleared.
 func _miss(body: KinuBody, gone: bool = false) -> void:
+	run.note_tumble()
 	body.fallen = true
 	body.mood_override = ""
 	run.fallen_body = body

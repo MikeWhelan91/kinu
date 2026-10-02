@@ -505,6 +505,12 @@ func _ready() -> void:
 	check(KinuProgress.record_run({"score": 12, "placed": 14, "tumbles": 1, "lucky": 0, "height": 3.0}) == 1 and KinuProgress.claimable() == 1,"a run completes the matching daily mission only")
 	check(KinuProgress.claim(0) == 25 and int(Save.data.beans) == beans_before+25 and KinuProgress.claim(0) == 0 and int(Save.data.beans) == beans_before+25,"a daily reward grants its beans exactly once")
 	check(int(Save.data.tickets) == tickets_before,"claiming a daily mission never hands out a ticket")
+	# Runs only end by tumbling out, so "without a tumble" counts the pile from before the first one.
+	var clean_mission := {"type": "clean", "amount": 15, "reward": 20, "progress": 0, "claimed": false, "flavour": "", "shape": ""}
+	Save.data.daily.missions.append(clean_mission)
+	KinuProgress.record_run({"score": 30, "pile": 30, "clean": 16, "tumbles": NestRun.MAX_TUMBLES})
+	check(KinuProgress.complete(clean_mission),"a run that tumbled out still completes a clean pile mission")
+	Save.data.daily.missions.pop_back()
 	# Every weekly challenge template must work in all three modes and have clear player-facing
 	# text. Mode-specific shoyu and spinning belong in regular play,
 	# not in a shared weekly pool where Toss players could make no progress.

@@ -113,7 +113,7 @@ const ROWS := [
 	["swim_goggles", "glasses", "Swim Goggles", "goggles", "7fc4f5", "304257", "epic", 0],
 	["three_d_glasses", "glasses", "3D Glasses", "three_d", "f7f3ea", "e84a5f", "epic", 2],
 	["cat_eye_glasses", "glasses", "Cat-eye Glasses", "cat_eye", "b99cf2", "6a4c9c", "crane:rare", 0],
-	["taster_specs", "glasses", "Taster's Specs", "round", "8a5a2b", "8a5a2b", "flavours", 12],
+	["taster_specs", "glasses", "Taster's Specs", "browline", "6b3f1d", "e0b36a", "flavours", 12],
 	["planner_glasses", "glasses", "Planner Glasses", "square", "4f8cc9", "4f8cc9", "missions", 25],
 	["golden_specs", "glasses", "Golden Specs", "round", "f5c14e", "f5c14e", "level", 10],
 	["star_shades", "glasses", "Star Shades", "shades", "6a4c9c", "ffe36e", "level", 35],

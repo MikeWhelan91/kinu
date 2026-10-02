@@ -10,7 +10,7 @@ extends Control
 const SHADE := Color(.05, .03, .1, .72)
 const PAD := 10.0
 const RADIUS := 20.0
-## Enough height for the Kinu and a three-line bubble.
+## Fallback height until the bubble's wrapped text has been measured.
 const DOCK_HEIGHT := 150.0
 
 const HOLE_SHADER := """
@@ -223,22 +223,24 @@ func _show_step(index: int, instant: bool = false) -> void:
 func _place_dock() -> void:
 	var width := size.x-32
 	var above := hole.get_center().y > size.y*.5
-	var y: float
-	if above:
-		y = maxf(float(app.safe_top)+64, hole.position.y-DOCK_HEIGHT-24)
-	else:
-		y = minf(size.y-float(app.safe_bottom)-DOCK_HEIGHT-20, hole.end.y+24)
 	# Wrapped text measures its height against its width, so it's given the bubble's width up front;
 	# without it the first stop lays out one word per line and the bubble runs off the screen.
 	text.custom_minimum_size.x = width-104-4-28
-	dock.position = Vector2(16, y)
 	dock.custom_minimum_size = Vector2(width, 0)
+	var gap := 64.0 if steps[step][0] == ["MyKinuHome"] else 24.0
+	_position_dock(width, above, gap)
+	# Re-measure after the new wrapped text has laid out; the My Kinu explanation can make the
+	# bubble taller than the usual dock height.
+	get_tree().process_frame.connect(_position_dock.bind(width, above, gap), CONNECT_ONE_SHOT)
+
+func _position_dock(width: float, above: bool, gap: float) -> void:
+	if not is_instance_valid(dock):
+		return
+	# A container keeps its previous size unless it is explicitly shrunk to its new minimum.
 	dock.size = Vector2(width, 0)
-	# A container keeps a size it has grown to, so it's shrunk back to fit once the new text has
-	# measured itself.
-	get_tree().process_frame.connect(func() -> void:
-		if is_instance_valid(dock):
-			dock.size = Vector2(width, 0), CONNECT_ONE_SHOT)
+	var height := maxf(DOCK_HEIGHT, dock.size.y)
+	var y := maxf(float(app.safe_top)+64, hole.position.y-height-gap) if above else minf(size.y-float(app.safe_bottom)-height-20, hole.end.y+gap)
+	dock.position = Vector2(16, y)
 
 func _process(delta: float) -> void:
 	clock += delta

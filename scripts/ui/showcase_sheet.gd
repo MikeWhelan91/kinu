@@ -203,8 +203,9 @@ static func exclusive_pill(points: int, text: String = "Showcase exclusive") -> 
 	pill.add_theme_stylebox_override("panel", style)
 	return pill
 
-## The month's four goals, any order, all month long. Each shows its progress and is stamped when
-## done; once all four are in, the card hands over to wearing the reward.
+## The month's four goals, one unlocking each week. Open goals show their progress and are stamped
+## when done; locked ones say when they open. Once all four are in, the card hands over to wearing
+## the reward.
 func _goals(stack: Node, item: Resource) -> void:
 	var paper := VBoxContainer.new()
 	paper.add_theme_constant_override("separation", 8)
@@ -229,7 +230,14 @@ func _goals(stack: Node, item: Resource) -> void:
 		top.add_child(text)
 		var amount := int(goal.amount)
 		var progress := KinuShowcase.goal_progress(goal)
-		if done:
+		if not done and not KinuShowcase.goal_unlocked(goal):
+			row.modulate = Color(1, 1, 1, .55)
+			var lock := LockGlyph.new()
+			lock.custom_minimum_size = Vector2(14, 16)
+			lock.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+			top.add_child(lock)
+			top.add_child(NestTheme.label(NestTheme.t("Opens %s")%KinuShowcase.day_name(KinuShowcase.unlock_day(goal)), 14, NestTheme.MUTED))
+		elif done:
 			var seal := DailyTreats.Stamp.new()
 			seal.custom_minimum_size = Vector2(24, 24)
 			top.add_child(seal)
@@ -254,7 +262,7 @@ func _goals(stack: Node, item: Resource) -> void:
 			app._home()
 		, true, "wardrobe"))
 	else:
-		var hint := NestTheme.label(NestTheme.t("Finish all %d before the month ends, in any order.")%KinuShowcase.goal_count(), 13, NestTheme.MUTED)
+		var hint := NestTheme.label(NestTheme.t("A new goal opens each week. Open goals stay open until the month ends."), 13, NestTheme.MUTED)
 		hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		paper.add_child(hint)
 	stack.add_child(NestTheme.paper(paper))
@@ -403,3 +411,15 @@ func _finish_celebration(wear: bool) -> void:
 		app._home()
 	elif app.page == "home":
 		KinuShowcase.prompt(app)
+
+## A small padlock for goals that haven't opened yet.
+class LockGlyph extends Control:
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+	func _draw() -> void:
+		var w := size.x
+		var h := size.y
+		draw_arc(Vector2(w*.5, h*.45), w*.3, PI, TAU, 12, NestTheme.MUTED, 2.0, true)
+		var body := Rect2(Vector2(0, h*.42), Vector2(w, h*.58))
+		draw_rect(body, NestTheme.MUTED)
+		draw_circle(body.get_center(), 1.6, Color("fff8e8"))

@@ -146,9 +146,12 @@ class RedDot extends Control:
 		draw_circle(size*.5, 11.0, NestTheme.INK)
 		draw_circle(size*.5, 8.5, Color("e5383b"))
 
-## A breathing gold halo behind a rail button with two sparkling arcs orbiting its rim, so the
-## events catch the eye from the home screen. It burns brighter while the event wants the player.
+## A breathing gold halo behind a rail button. Every so often two glints run one lap of its rim,
+## so the events catch the eye from the home screen. It burns brighter while the event wants the player.
 class Shine extends Control:
+	## Seconds for the glints' lap of the ring, and the pause before the next one.
+	const LAP := 4.5
+	const REST := 4.0
 	var tint := NestTheme.SUN
 	var hot := false
 	var phase := 0.0
@@ -174,19 +177,25 @@ class Shine extends Control:
 		# A gold ring hugging the rim.
 		draw_arc(c, r+3.5, 0, TAU, 56, NestTheme.INK, 6.0, true)
 		draw_arc(c, r+3.5, 0, TAU, 56, Color("ffcf4a"), 3.5, true)
+		# The glints run one slow lap of the ring, fade away, then rest before the next lap.
+		var cycle := fmod(phase, LAP+REST)
+		if cycle >= LAP:
+			return
+		var lap := cycle/LAP
+		var fade := clampf(minf(lap, 1.0-lap)*8.0, 0.0, 1.0)*strength
 		var orbit := r+3.5
 		for side in 2:
-			var start := phase*1.7+side*PI
+			var start := -PI*.5+lap*TAU+side*PI
 			# A comet of light running round the ring, fading along its tail.
 			var tail := PackedVector2Array()
 			var shades := PackedColorArray()
 			for step in 14:
 				var t := float(step)/13.0
 				tail.append(c+Vector2.RIGHT.rotated(start-t*1.3)*orbit)
-				shades.append(Color(1, 1, .92, (1.0-t)*strength))
+				shades.append(Color(1, 1, .92, (1.0-t)*fade))
 			draw_polyline_colors(tail, shades, 3.5, true)
 			var head := c+Vector2.RIGHT.rotated(start)*orbit
 			var arm := 6.0+3.0*pulse
-			draw_circle(head, 3.2, Color(1, 1, 1, strength))
-			draw_line(head-Vector2(arm, 0), head+Vector2(arm, 0), Color(1, 1, 1, strength), 2.0, true)
-			draw_line(head-Vector2(0, arm), head+Vector2(0, arm), Color(1, 1, 1, strength), 2.0, true)
+			draw_circle(head, 3.2, Color(1, 1, 1, fade))
+			draw_line(head-Vector2(arm, 0), head+Vector2(arm, 0), Color(1, 1, 1, fade), 2.0, true)
+			draw_line(head-Vector2(0, arm), head+Vector2(0, arm), Color(1, 1, 1, fade), 2.0, true)

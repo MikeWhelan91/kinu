@@ -537,9 +537,16 @@ func _ready() -> void:
 	if KinuShowcase.active():
 		KinuShowcase.record_run({"placed": 30, "tumbles": 0}, 2)
 		var counts: Dictionary = Save.data.showcase.goals[showcase_month]
-		check(int(counts.runs) == 1 and int(counts.land) == 30 and int(counts.clean) == 1 and int(counts.missions) == 2,"a finished run feeds every showcase goal")
+		# Goals open one per week; a run only feeds the ones already open.
+		var fed := true
+		var expected := {"runs": 1, "land": 30, "clean": 1, "missions": 2}
+		for goal in KinuShowcase.GOALS:
+			fed = fed and int(counts[goal.id]) == (int(expected[goal.id]) if KinuShowcase.goal_unlocked(goal) else 0)
+		check(fed and KinuShowcase.goal_unlocked(KinuShowcase.GOALS[0]),"a finished run feeds every open showcase goal and none still locked")
+		var week := KinuProgress.week_of(KinuShowcase.showcase_day())
+		check(KinuShowcase.GOALS.all(func(goal: Dictionary) -> bool: return KinuShowcase.goal_unlocked(goal) == (KinuShowcase.goal_week(goal) <= week)) and KinuShowcase.unlock_day(KinuShowcase.GOALS[3]) == 22,"showcase goals open on the 1st, 8th, 15th and 22nd")
 		KinuShowcase.record_run({"placed": 5, "tumbles": 2}, 0)
-		check(int(counts.runs) == 2 and int(counts.clean) == 1,"a run with a tumble doesn't count as clean")
+		check(int(counts.runs) == 2 and int(counts.clean) == (1 if KinuShowcase.goal_unlocked(KinuShowcase.GOALS[2]) else 0),"a run with a tumble doesn't count as clean")
 		for goal in KinuShowcase.GOALS:
 			counts[goal.id] = int(goal.amount)-1 if goal.id == "runs" else int(goal.amount)
 		check(not KinuShowcase.earned(),"the reward waits for every goal")

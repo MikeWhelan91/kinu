@@ -4,15 +4,17 @@ extends RefCounted
 ## the month's four showcase goals. The schedule lives on the catalogue items themselves
 ## (`showcase = "2026-10"`), so a month with no tagged item simply has no showcase.
 ##
-## The goals are the Showcase's own: they run the whole month, can be finished in any order, and
-## have nothing to do with the weekly challenge in Daily Missions. Everything resets on the 1st.
+## The goals are the Showcase's own and have nothing to do with the weekly challenge in Daily
+## Missions. One unlocks each week (the 1st, 8th, 15th and 22nd); once open, a goal stays open until
+## the month ends, so a busy week can be caught up later. Everything resets on the 1st.
 
-## The month's goals. Every one counts in Classic, Tower and Kinu Toss alike.
+## The month's goals in unlock order, one per week. Every one counts in Classic, Tower and Kinu
+## Toss alike. Later goals are smaller because they have less of the month left to run in.
 const GOALS := [
 	{"id": "runs", "amount": 40},
 	{"id": "land", "amount": 1000},
 	{"id": "clean", "amount": 15},
-	{"id": "missions", "amount": 20},
+	{"id": "missions", "amount": 15},
 ]
 const MONTHS := ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 const MONTHS_SHORT := ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -87,6 +89,16 @@ static func goal_text(goal: Dictionary) -> String:
 		"missions": return NestTheme.t("Finish %d daily missions")%amount
 	return ""
 
+## The week (1-4) a goal opens in, and the day of the month that is.
+static func goal_week(goal: Dictionary) -> int:
+	return GOALS.find(goal)+1
+
+static func unlock_day(goal: Dictionary) -> int:
+	return (goal_week(goal)-1)*7+1
+
+static func goal_unlocked(goal: Dictionary) -> bool:
+	return KinuProgress.week_of(showcase_day()) >= goal_week(goal)
+
 static func goal_progress(goal: Dictionary) -> int:
 	return mini(int(_counts().get(goal.id, 0)), int(goal.amount))
 
@@ -112,6 +124,8 @@ static func record_run(summary: Dictionary, missions: int) -> void:
 	var counts := _counts(month)
 	var add := {"runs": 1, "land": int(summary.get("placed", 0)), "clean": 1 if int(summary.get("tumbles", 0)) == 0 else 0, "missions": missions}
 	for goal in GOALS:
+		if not goal_unlocked(goal):
+			continue
 		counts[goal.id] = mini(int(counts.get(goal.id, 0))+int(add.get(goal.id, 0)), int(goal.amount))
 	# Months that have been and gone are only kept long enough to finish.
 	var state := _state()

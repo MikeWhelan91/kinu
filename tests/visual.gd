@@ -59,7 +59,7 @@ func _ready() -> void:
 			await app._home()
 			await get_tree().create_timer(.5).timeout
 		"showcase":
-			Save.data.showcase.goals[KinuShowcase.current_month()] = {"runs": 40, "land": 640, "clean": 3, "missions": 20}
+			Save.data.showcase.goals[KinuShowcase.current_month()] = {"runs": 26, "land": 0, "clean": 0, "missions": 0}
 			await app._home()
 			await get_tree().create_timer(.3).timeout
 			ShowcaseSheet.open(app)

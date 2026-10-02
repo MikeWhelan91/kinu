@@ -44,8 +44,9 @@ const ROOM_MUSIC_FILES := {
 	# Not a room you can equip: the Claw Machine page, which has a loop of its own rather than
 	# borrowing the Game Centre's.
 	"catcher": "clawmachinemusic.mp3",
+	"my_kinu": "dressup.mp3",
 }
-const ROOM_MUSIC_TRIM := {"catcher": -19.0}
+const ROOM_MUSIC_TRIM := {"catcher": -9.0}
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS

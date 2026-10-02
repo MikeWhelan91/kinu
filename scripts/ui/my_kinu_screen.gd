@@ -219,8 +219,9 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 	if not back.is_valid():
 		back = app._show_wardrobe
 	var catalog: KinuCatalog = app.run.catalog
+	Sound.play_room_music("my_kinu")
 	app._new_screen("my_kinu", true)
-	var layout: VBoxContainer = app._header("My Kinu", back)
+	var layout: VBoxContainer = app._header("My Kinu", _leave)
 	layout.add_theme_constant_override("separation", 10)
 	# The showcase and the slot sockets stay put; only the item list below them scrolls.
 	var hero := _hero(app, catalog)
@@ -260,6 +261,7 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 			app.shop_tab = "part"
 			KinuShopScreen.part_slot = tab
 			app.shop_back = func() -> void: show(app)
+			Sound.play_room_music(str(Save.data.room))
 			app._show_shop()
 		, false, "wardrobe")
 		more.name = "GetMoreParts"
@@ -277,6 +279,11 @@ static func show(app: Node, back_to: Callable = Callable()) -> void:
 	spacer.custom_minimum_size.y = 12
 	list.add_child(spacer)
 	Save.data.my_kinu.seen_level = maxi(int(Save.data.my_kinu.seen_level), MyKinu.level())
+
+static func _leave() -> void:
+	Sound.play_room_music(str(Save.data.room))
+	if back.is_valid():
+		back.call()
 
 ## The showcase card: live model on the pedestal, shape switcher, nameplate and level progress.
 static func _hero(app: Node, catalog: KinuCatalog) -> Control:
@@ -602,13 +609,15 @@ static func _tile(grid: GridContainer, preview: Control, title: String, tint: Co
 	return {"button": button, "stage": stage, "column": column}
 
 static func _flavours(app: Node, catalog: KinuCatalog, grid: GridContainer) -> void:
-	var shape: KinuShape = catalog.shapes[0]
 	var chosen := MyKinu.base(catalog)
 	for flavour in catalog.flavours:
 		var open := Save.flavour_unlocked(flavour)
-		var preview := KinuPreview.new()
-		preview.setup(shape, flavour, open, Vector2i(96, 76), "calm")
-		preview.fit_model(1.04)
+		var preview := TextureRect.new()
+		preview.texture = load("res://resources/kinu/thumbs/flavour_%s.png" % (flavour.id if open else "locked"))
+		preview.custom_minimum_size = Vector2(96, 76)
+		preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var built := _tile(grid, preview, flavour.display_name if open else "???", flavour.color.lightened(.6) if open else Color("eee4d6"), flavour == chosen, open, func() -> void:
 			if MyKinu.choose_flavour(catalog, flavour.id):
 				show(app)

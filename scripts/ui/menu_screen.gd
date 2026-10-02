@@ -364,51 +364,28 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> D
 		return {"beat": beat, "finished": beat, "gifts": gifts}
 	var before_level := MyKinu.level_for(from_xp)
 	var after_level := MyKinu.level_for(to_xp)
-	# Drawn as a wide stat tile, so it reads as part of the same card as Height and Beans.
-	var panel := PanelContainer.new()
-	panel.name = "ResultsKinuXP"
-	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color(1,1,1,.82)
-	style.border_color = NestTheme.INK
-	style.set_border_width_all(3)
-	style.border_width_bottom = 5
-	style.set_corner_radius_all(16)
-	style.content_margin_left = 8
-	style.content_margin_right = 12
-	style.content_margin_top = 4
-	style.content_margin_bottom = 6
-	style.anti_aliasing = true
-	panel.add_theme_stylebox_override("panel",style)
+	# No frame of its own: a level line, the meter and its numbers sit straight on the card, lined
+	# up with the stat tiles below.
 	var row_margin := MarginContainer.new()
+	row_margin.name = "ResultsKinuXP"
 	row_margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for side in ["margin_left","margin_right"]:
 		row_margin.add_theme_constant_override(side,22)
-	row_margin.add_child(panel)
 	column.add_child(row_margin)
-	var line := HBoxContainer.new()
-	line.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	line.add_theme_constant_override("separation",8)
-	panel.add_child(line)
-	var face := KinuPreview.new()
-	face.setup(app.run.catalog.shapes[0],MyKinu.base(app.run.catalog),true,Vector2i(54,50),"happy",null,true,false,MyKinu.equipped(app.run.catalog))
-	face.fit_model(1.05)
-	face.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	line.add_child(face)
 	var stack := VBoxContainer.new()
 	stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	stack.add_theme_constant_override("separation",0)
-	line.add_child(stack)
+	stack.add_theme_constant_override("separation",2)
+	row_margin.add_child(stack)
 	var head := HBoxContainer.new()
 	head.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	stack.add_child(head)
-	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,18,Color("8f6bea"))
+	var level_label := NestTheme.headline(NestTheme.t("Level %d")%before_level,22,Color("8f6bea"))
 	level_label.name = "ResultsKinuLevel"
 	level_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(level_label)
-	var earned_label := NestTheme.headline(NestTheme.t("+%d XP")%(to_xp-from_xp),20,Color("ffb62e"))
+	var earned_label := NestTheme.headline(NestTheme.t("+%d XP")%(to_xp-from_xp),24,Color("ffb62e"))
 	earned_label.name = "ResultsKinuGain"
+	earned_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	head.add_child(earned_label)
 	var before_progress := MyKinu.progress_for(from_xp)
 	var meter := FancyCard.XpMeter.new()
@@ -416,10 +393,10 @@ static func _results_kinu_xp(app: Node, column: VBoxContainer, beat: float) -> D
 	meter.level = before_level
 	meter.max_value = before_progress[1]
 	meter.value = before_progress[0]
-	meter.custom_minimum_size.y = 26
+	meter.custom_minimum_size.y = 36
 	stack.add_child(meter)
 	var final_progress := MyKinu.progress_for(to_xp)
-	var next_label := NestTheme.label(NestTheme.t("%d / %d XP · Next: %s")%[final_progress[0],final_progress[1],MyKinuScreen.next_reward(after_level+1)],12,MyKinuScreen.SKY_TEXT)
+	var next_label := NestTheme.label(NestTheme.t("%d / %d XP · Next: %s")%[final_progress[0],final_progress[1],MyKinuScreen.next_reward(after_level+1)],14,MyKinuScreen.SKY_TEXT)
 	next_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stack.add_child(next_label)
 	if after_level > before_level:
@@ -1042,7 +1019,7 @@ static func results(app: Node, stats: Dictionary) -> void:
 		# the best without counting as one.
 		var short: int = maxi(1,target-int(stats.score)+1)
 		var gap_text: String = NestTheme.t("%d more to beat your best of %s!")%[short,_score_text(app,mode,target)] if short <= _CLOSE_CALL else NestTheme.t("Your best: %s")%_score_text(app,mode,target)
-		var chase: Label = app._center_label(column,gap_text,15,NestTheme.BERRY if short <= _CLOSE_CALL else MyKinuScreen.SKY_TEXT)
+		var chase: Label = app._center_label(tally,gap_text,15,NestTheme.BERRY if short <= _CLOSE_CALL else MyKinuScreen.SKY_TEXT)
 		chase.name = "ResultsBest"
 		beat += .22
 		_reveal(app,chase,beat)

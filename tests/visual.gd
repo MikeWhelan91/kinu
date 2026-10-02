@@ -375,7 +375,7 @@ func _ready() -> void:
 				for i in tour.steps.size():
 					if tour.steps[i][0][0] == "MyKinuHome":
 						tour._show_step(i, true)
-	await get_tree().create_timer(4 if mode in ["my_kinu_home_progress", "results_tower", "results_many"] else 1).timeout
+	await get_tree().create_timer(4 if mode in ["my_kinu_home_progress", "my_kinu_results", "results_tower", "results_many"] else 1).timeout
 	await RenderingServer.frame_post_draw
 	get_viewport().get_texture().get_image().save_png("res://docs/"+mode+suffix+".png")
 	print("CAPTURE ",mode," ",get_viewport().get_visible_rect())

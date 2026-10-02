@@ -39,7 +39,6 @@ const PILE_TIMES_TARGET := 40
 
 ## One substantial, repeatable challenge rotates each week. Every option works in Classic, Tower
 ## and Kinu Toss, so a player's active mode never leaves the week's progress stuck at zero.
-## Targets sit in a narrow band because all four weeks are needed for a Monthly Showcase reward.
 const WEEKLY_MISSIONS := [
 	{"id": "land_250", "type": "land", "amount": 250},
 	{"id": "land_325", "type": "land", "amount": 325},
@@ -58,6 +57,8 @@ const WEEKLY_MISSIONS := [
 	{"id": "streak_30", "type": "streak", "amount": 30},
 ]
 const WEEKLY_BEANS := 750
+## Weekly challenges follow month-aligned weeks, so every month holds exactly four.
+const WEEKS_PER_MONTH := 4
 const WEEKLY_TICKETS := 1
 
 ## Earnable items by "kind:id" (outfit, box or room).
@@ -323,11 +324,10 @@ static func complete(mission: Dictionary) -> bool:
 
 # ---------- Weekly challenge ----------
 
-## Weeks are cut from the calendar month so every month holds exactly four for the Monthly
-## Showcase: the 1st-7th, 8th-14th, 15th-21st, and the 22nd to the month's end (7 to 10 days).
+## Weeks are cut from the calendar month: the 1st-7th, 8th-14th, 15th-21st, and the 22nd to the month's end (7 to 10 days).
 ## The key ("2026-09-w4") is stable across restarts within the week.
 static func week_of(day: String) -> int:
-	return clampi((int(day.substr(8, 2))-1)/7+1, 1, KinuShowcase.WEEKS)
+	return clampi((int(day.substr(8, 2))-1)/7+1, 1, WEEKS_PER_MONTH)
 
 ## Seconds until the weekly challenge rolls over: the rest of today plus the days left in the week.
 static func weekly_seconds_remaining() -> int:
@@ -338,7 +338,7 @@ static func weekly_seconds_remaining() -> int:
 	var year := int(day.substr(0, 4))
 	var month := int(day.substr(5, 2))
 	var last_day := 7*week
-	if week >= KinuShowcase.WEEKS:
+	if week >= WEEKS_PER_MONTH:
 		last_day = 31 if month in [1, 3, 5, 7, 8, 10, 12] else 30
 		if month == 2:
 			last_day = 29 if (year % 4 == 0 and year % 100 != 0) or year % 400 == 0 else 28
@@ -356,7 +356,7 @@ static func _week_key(day: String = calendar_day()) -> String:
 	return "%s-w%d" % [day.substr(0, 7), week_of(day)]
 
 ## Saves from before month weeks keyed a week by days since 1970 / 7. That challenge is kept for
-## the rest of its own week, and counts towards the showcase week it's finished in.
+## the rest of its own week.
 static func _legacy_week_key(day: String) -> String:
 	return str(floori(Time.get_unix_time_from_datetime_string(day) / 604800.0))
 
@@ -366,8 +366,6 @@ static func weekly() -> Dictionary:
 	var saved: Dictionary = Save.data.weekly
 	if saved.get("week", "") == _legacy_week_key(day) and saved.get("mission") is Dictionary:
 		saved.week = key
-		if complete(saved.mission):
-			KinuShowcase.record_week(key)
 		Save.persist()
 	if saved.get("week", "") == key and saved.get("mission") is Dictionary:
 		# Do not strand a player on a retired mode-specific challenge after the weekly pool changes.
@@ -420,10 +418,7 @@ static func _record_weekly(summary: Dictionary) -> bool:
 		return false
 	var score := int(summary.get("pile", summary.get("score", 0)))
 	_advance_weekly(mission, summary, score)
-	if not complete(mission):
-		return false
-	KinuShowcase.record_week(str(Save.data.weekly.week))
-	return true
+	return complete(mission)
 
 static func _advance_weekly(mission: Dictionary, summary: Dictionary, score: int) -> void:
 	match str(mission.type):
@@ -484,6 +479,7 @@ static func record_run(summary: Dictionary) -> int:
 		if complete(mission):
 			finished += 1
 	_record_weekly(summary)
+	KinuShowcase.record_run(summary, finished)
 	GrandOpening.record_missions(finished)
 	return finished
 

@@ -2,7 +2,7 @@ class_name EventRail
 extends VBoxContainer
 ## The home screen's event rail: a round button per live event on the left edge, halfway down the
 ## open scene, the way live games keep their calendar and current event one tap away. Each shows its
-## state without being opened (a countdown, the month's week dots) and a red dot when it wants
+## state without being opened (a countdown, the month's goals) and a red dot when it wants
 ## the player. The Daily curtain is left to the missions.
 
 const SIZE := 76.0
@@ -77,10 +77,14 @@ func _button(title: String, fill: Color, art: Control, callback: Callable) -> Di
 	var dot := RedDot.new()
 	dot.position = Vector2(SIZE-18, -2)
 	button.add_child(dot)
+	var shine := Shine.new()
+	shine.tint = fill
+	shine.phase = get_child_count()*1.3
+	button.add_child(shine)
 	var throb := DailyTreats.Throb.new()
 	throb.amount = .06
 	button.add_child(throb)
-	return {"column": column, "button": button, "status": status, "label": status.get_child(0), "dot": dot, "throb": throb}
+	return {"column": column, "button": button, "status": status, "label": status.get_child(0), "dot": dot, "throb": throb, "shine": shine}
 
 static func _thumb(item: Resource) -> Control:
 	var kind := "outfit" if item is KinuOutfit else str(item.kind)
@@ -112,7 +116,7 @@ func refresh() -> void:
 	if _showcase.is_empty():
 		return
 	var earned := KinuShowcase.earned()
-	(_showcase.label as Label).text = NestTheme.t("Earned!") if earned else "%d / %d" % [KinuShowcase.progress(), KinuShowcase.required_weeks().size()]
+	(_showcase.label as Label).text = NestTheme.t("Earned!") if earned else "%d / %d" % [KinuShowcase.progress(), KinuShowcase.goal_count()]
 	_alert(_showcase, not KinuShowcase.pending_reveal().is_empty() or KinuShowcase.should_announce())
 
 func _sync_showcase_month() -> void:
@@ -128,6 +132,7 @@ func _sync_showcase_month() -> void:
 
 func _alert(entry: Dictionary, on: bool) -> void:
 	(entry.dot as Control).visible = on
+	(entry.shine as Shine).hot = on
 	var throb: DailyTreats.Throb = entry.throb
 	throb.set_process(on)
 	if not on:
@@ -140,3 +145,48 @@ class RedDot extends Control:
 	func _draw() -> void:
 		draw_circle(size*.5, 11.0, NestTheme.INK)
 		draw_circle(size*.5, 8.5, Color("e5383b"))
+
+## A breathing gold halo behind a rail button with two sparkling arcs orbiting its rim, so the
+## events catch the eye from the home screen. It burns brighter while the event wants the player.
+class Shine extends Control:
+	var tint := NestTheme.SUN
+	var hot := false
+	var phase := 0.0
+
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		show_behind_parent = true
+		set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+
+	func _process(delta: float) -> void:
+		phase += delta
+		queue_redraw()
+
+	func _draw() -> void:
+		var c := size*.5
+		var r := minf(size.x, size.y)*.5
+		var gold := DailyTreats.GOLD_BRIGHT
+		var pulse := .5+.5*sin(phase*2.6)
+		var strength := 1.0 if hot else .8
+		# Soft breathing glow in gold.
+		for ring in 4:
+			draw_circle(c, r+2.0+ring*4.5+pulse*4.0, Color(gold, (.42-ring*.09)*(.6+.4*pulse)*strength))
+		# A gold ring hugging the rim.
+		draw_arc(c, r+3.5, 0, TAU, 56, NestTheme.INK, 6.0, true)
+		draw_arc(c, r+3.5, 0, TAU, 56, Color("ffcf4a"), 3.5, true)
+		var orbit := r+3.5
+		for side in 2:
+			var start := phase*1.7+side*PI
+			# A comet of light running round the ring, fading along its tail.
+			var tail := PackedVector2Array()
+			var shades := PackedColorArray()
+			for step in 14:
+				var t := float(step)/13.0
+				tail.append(c+Vector2.RIGHT.rotated(start-t*1.3)*orbit)
+				shades.append(Color(1, 1, .92, (1.0-t)*strength))
+			draw_polyline_colors(tail, shades, 3.5, true)
+			var head := c+Vector2.RIGHT.rotated(start)*orbit
+			var arm := 6.0+3.0*pulse
+			draw_circle(head, 3.2, Color(1, 1, 1, strength))
+			draw_line(head-Vector2(arm, 0), head+Vector2(arm, 0), Color(1, 1, 1, strength), 2.0, true)
+			draw_line(head-Vector2(0, arm), head+Vector2(0, arm), Color(1, 1, 1, strength), 2.0, true)

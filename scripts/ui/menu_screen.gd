@@ -4,8 +4,6 @@ extends RefCounted
 ## The Modes sheet is built and works, but its "?" button crowded the mode row, so it is off the
 ## home screen for now. `modes()` below is kept ready for wherever it earns its place.
 const SHOW_MODES_SHEET := false
-## Pick once per app launch so the treat banner feels fresh without flickering on every reopen.
-static var daily_treat_outfit_id := ""
 
 ## The touch target follows the cloth outline, including its slanted sides.
 class CurtainButton extends Button:
@@ -1436,377 +1434,378 @@ static func _home_control_style(fill: Color, radius: int, pressed: bool = false)
 	style.shadow_offset = Vector2(0,1 if pressed else 2)
 	return style
 
-## Today's three missions, each earning beans.
+## Daily Missions: a sky card under a ribbon. The weekly challenge leads as a gold ticket, then
+## today's three missions as chunky cards ranked easy, medium and stretch. Events like the treat,
+## the Grand Opening and the Showcase live on the home rail, so they stay out of this sheet.
+const _TIER_COLORS := [Color("7ed957"), Color("4fb3ff"), Color("ff6fa8")]
+
 static func daily_missions(app: Node) -> void:
-	var stack = app._modal("Daily Missions")
-	app.modal.set_meta("daily_missions", true)
-	# The calendar is an upcoming reward, not a plain form button.
-	var calendar := NestTheme.button("", func() -> void: DailyCalendar.show(app), false, "cashregister")
-	calendar.custom_minimum_size.y = 142
-	calendar.name = "DailyTreatStatus"
-	var calendar_style := NestTheme.box(Color("5b3568"), 24, Color("ffd66d"), 7)
-	calendar_style.content_margin_left = 12
-	calendar_style.content_margin_right = 12
-	calendar.add_theme_stylebox_override("normal", calendar_style)
-	calendar.add_theme_stylebox_override("hover", NestTheme.box(Color("74427e"), 24, Color("fff0ad"), 7))
-	calendar.add_theme_stylebox_override("pressed", NestTheme.box(Color("43274f"), 24, Color("ffd66d"), 3))
-	var calendar_row := HBoxContainer.new()
-	calendar_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	calendar_row.add_theme_constant_override("separation", 8)
-	calendar_row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	calendar_row.offset_left = 20
-	calendar_row.offset_right = -16
-	calendar_row.offset_top = 8
-	calendar_row.offset_bottom = -8
-	calendar.add_child(calendar_row)
-	var calendar_copy := VBoxContainer.new()
-	calendar_copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	calendar_copy.alignment = BoxContainer.ALIGNMENT_CENTER
-	calendar_copy.add_theme_constant_override("separation", 5)
-	calendar_row.add_child(calendar_copy)
-	var treat_label := NestTheme.label("NEXT TREAT", 15, Color("ffe49b"))
-	treat_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	calendar_copy.add_child(treat_label)
-	var countdown := NestTheme.label("", 32, NestTheme.CREAM)
-	countdown.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	countdown.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	calendar_copy.add_child(countdown)
-	var encouragement := NestTheme.label("A little prize is waiting!", 15, Color("dfc9eb"))
-	encouragement.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	calendar_copy.add_child(encouragement)
-	# The right-hand Kinu is a fresh costume pick each launch, then stays consistent in this session.
-	var treat_kinu := KinuPreview.new()
-	treat_kinu.setup(app.run.catalog.shapes[0], app.run.catalog.flavours[0], true, Vector2i(164, 126), "happy", _daily_treat_outfit(app), true)
-	treat_kinu.fit_model(1.16, true)
-	calendar_row.add_child(treat_kinu)
-	var update_treat := func() -> void:
-		countdown.text = "Claim it!" if DailyCalendar.ready() else DailyCalendar.countdown_clock()
-		treat_label.text = "DAILY TREAT READY" if DailyCalendar.ready() else "NEXT TREAT"
-		encouragement.text = "Tap to open your reward" if DailyCalendar.ready() else "Come back for your next treat"
-	update_treat.call()
-	var countdown_timer := Timer.new()
-	countdown_timer.wait_time = 1.0
-	countdown_timer.timeout.connect(update_treat)
-	calendar.add_child(countdown_timer)
-	countdown_timer.call_deferred("start")
-	var gloss := ButtonGloss.new()
-	gloss.radius = 18
-	calendar.add_child(gloss)
-	calendar.move_child(gloss, 0)
-	stack.add_child(calendar)
-	if GrandOpening.active() and not GrandOpening.complete():
-		stack.add_child(_grand_opening_banner(app))
-	if KinuShowcase.active():
-		stack.add_child(_showcase_banner(app))
+	app._close_modal()
+	var modal := Control.new()
+	modal.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	modal.process_mode = Node.PROCESS_MODE_ALWAYS
+	modal.add_to_group("modal_input_lock")
+	modal.set_meta("daily_missions", true)
+	app.modal = modal
+	app.screen.add_child(modal)
+	var close := func() -> void:
+		Sound.play("plop")
+		app._close_modal()
+	# Tapping the dimmed room outside the card closes it too.
+	var shade := ColorRect.new()
+	shade.color = Color(.12, .07, .05, .55)
+	shade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	shade.gui_input.connect(func(event: InputEvent) -> void:
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			close.call())
+	modal.add_child(shade)
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	modal.add_child(center)
+	var card := FancyCard.new()
+	card.name = "DailyMissionsCard"
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	card.custom_minimum_size.x = minf(420, app.get_viewport().get_visible_rect().size.x-28)
+	card.ray_origin = Vector2(.5, .1)
+	card.add_theme_stylebox_override("panel", _daily_margins())
+	center.add_child(card)
+	var stack: VBoxContainer = app._vbox(card, 10)
+	# Ribbon title, with a round close button tucked into the corner.
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 0)
+	stack.add_child(head)
+	var balance := Control.new()
+	balance.custom_minimum_size.x = 46
+	head.add_child(balance)
+	var ribbon_holder := CenterContainer.new()
+	ribbon_holder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ribbon_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	head.add_child(ribbon_holder)
+	var ribbon := FancyCard.Banner.new()
+	ribbon.name = "DailyMissionsTitle"
+	ribbon.text = NestTheme.t("Daily Missions")
+	ribbon.font_size = 28
+	ribbon.side_padding = 44.0
+	ribbon.height_padding = 28.0
+	ribbon_holder.add_child(ribbon)
+	var close_button := Button.new()
+	close_button.name = "Close"
+	close_button.flat = true
+	close_button.focus_mode = Control.FOCUS_NONE
+	close_button.custom_minimum_size = Vector2(46, 46)
+	close_button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	for state in ["normal", "hover", "pressed", "focus"]:
+		close_button.add_theme_stylebox_override(state, StyleBoxEmpty.new())
+	close_button.pressed.connect(close)
+	var close_art := CloseDisc.new()
+	close_art.owner_button = close_button
+	close_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	close_button.add_child(close_art)
+	head.add_child(close_button)
+	stack.add_child(_weekly_card(app))
+	# Today's missions, with the time until a fresh set.
+	var today_row := HBoxContainer.new()
+	today_row.add_theme_constant_override("separation", 6)
+	stack.add_child(today_row)
+	var today_label := NestTheme.headline(NestTheme.t("TODAY"), 18, NestTheme.CREAM)
+	today_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	today_row.add_child(today_label)
+	var reset := _clock_chip(func() -> String: return NestTheme.t("New in %s")%KinuProgress.daily_clock())
+	reset.name = "MissionResetTimer"
+	today_row.add_child(reset)
+	var missions := KinuProgress.today()
+	for i in missions.size():
+		stack.add_child(_mission_card(app, missions[i], i))
+	_fit_daily(app, card)
+
+static func _daily_margins() -> StyleBoxEmpty:
+	var margins := StyleBoxEmpty.new()
+	margins.content_margin_left = 18
+	margins.content_margin_right = 18
+	margins.content_margin_top = 16
+	margins.content_margin_bottom = 22
+	return margins
+
+## A cream capsule with a little clock, ticking every second.
+static func _clock_chip(text: Callable, ink: Color = MyKinuScreen.SKY_TEXT) -> PanelContainer:
+	var chip := PanelContainer.new()
+	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	chip.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var style := NestTheme.box(Color(1, 1, 1, .78), 16, Color(ink, .0), 0)
+	style.set_border_width_all(0)
+	style.content_margin_left = 10
+	style.content_margin_right = 12
+	style.content_margin_top = 3
+	style.content_margin_bottom = 4
+	chip.add_theme_stylebox_override("panel", style)
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 5)
+	chip.add_child(row)
+	var dial := ClockGlyph.new()
+	dial.custom_minimum_size = Vector2(16, 16)
+	dial.color = ink
+	dial.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(dial)
+	var label := NestTheme.label(text.call(), 14, ink)
+	row.add_child(label)
+	var timer := Timer.new()
+	timer.wait_time = 1.0
+	timer.autostart = true
+	timer.timeout.connect(func() -> void: label.text = text.call())
+	chip.add_child(timer)
+	return chip
+
+## The week's one big challenge: a gold-edged ticket with its countdown, a chunky meter and the
+## beans and claw ticket it pays.
+static func _weekly_card(app: Node) -> Control:
 	var weekly := KinuProgress.weekly()
-	var weekly_row := VBoxContainer.new()
-	weekly_row.add_theme_constant_override("separation", 6)
-	var weekly_top := HBoxContainer.new()
-	weekly_row.add_child(weekly_top)
-	var weekly_reset := NestTheme.label("", 15, NestTheme.MUTED)
-	weekly_reset.name = "WeeklyResetTimer"
-	var weekly_copy := VBoxContainer.new()
-	weekly_copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	weekly_copy.add_theme_constant_override("separation", 2)
-	weekly_top.add_child(weekly_copy)
-	weekly_copy.add_child(NestTheme.label("WEEKLY CHALLENGE", 15, Color("9f562b")))
-	weekly_copy.add_child(weekly_reset)
-	var update_weekly := func() -> void:
-		weekly_reset.text = NestTheme.t("Resets in %s") % KinuProgress.weekly_clock()
-	update_weekly.call()
-	var weekly_timer := Timer.new()
-	weekly_timer.wait_time = 1.0
-	weekly_timer.timeout.connect(update_weekly)
-	weekly_reset.add_child(weekly_timer)
-	weekly_timer.call_deferred("start")
-	var weekly_label := NestTheme.label(KinuProgress.weekly_text(weekly), 19)
-	weekly_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weekly_copy.add_child(weekly_label)
-	var weekly_rewards := VBoxContainer.new()
-	weekly_rewards.add_theme_constant_override("separation", 3)
-	weekly_top.add_child(weekly_rewards)
-	weekly_rewards.add_child(NestTheme.bean_pill("+%d"%KinuProgress.WEEKLY_BEANS, 16))
-	weekly_rewards.add_child(NestTheme.ticket_pill("+%d"%KinuProgress.WEEKLY_TICKETS, 16))
-	var weekly_bottom := HBoxContainer.new()
-	weekly_row.add_child(weekly_bottom)
-	var weekly_amount := int(weekly.amount)
-	var weekly_progress := mini(int(weekly.progress), weekly_amount)
-	var weekly_bar := NestTheme.progress(weekly_progress, weekly_amount)
-	weekly_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	weekly_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	weekly_bottom.add_child(weekly_bar)
-	if bool(weekly.claimed):
-		_collected(weekly_bottom)
-	elif KinuProgress.complete(weekly):
-		var weekly_claim := NestTheme.button("Collect", func() -> void:
+	var claimed := bool(weekly.claimed)
+	var ready := KinuProgress.complete(weekly) and not claimed
+	var panel := PanelContainer.new()
+	panel.name = "WeeklyChallenge"
+	var style := NestTheme.box(Color("fff5d6"), 22, NestTheme.INK, 6)
+	style.set_border_width_all(4)
+	style.border_width_bottom = 7
+	style.content_margin_left = 14
+	style.content_margin_right = 14
+	style.content_margin_top = 10
+	style.content_margin_bottom = 12
+	panel.add_theme_stylebox_override("panel", style)
+	panel.add_child(WeeklyTrim.new())
+	var body := VBoxContainer.new()
+	body.add_theme_constant_override("separation", 7)
+	panel.add_child(body)
+	var top := HBoxContainer.new()
+	top.add_theme_constant_override("separation", 6)
+	body.add_child(top)
+	var tag := NestTheme.pill(NestTheme.t("WEEKLY CHALLENGE"), 13, NestTheme.CREAM)
+	var tag_style := (tag.get_theme_stylebox("panel") as StyleBoxFlat).duplicate() as StyleBoxFlat
+	tag_style.bg_color = NestTheme.BERRY
+	tag_style.content_margin_left = 10
+	tag_style.content_margin_right = 10
+	tag_style.content_margin_top = 2
+	tag_style.content_margin_bottom = 3
+	tag.add_theme_stylebox_override("panel", tag_style)
+	tag.size_flags_horizontal = Control.SIZE_EXPAND | Control.SIZE_SHRINK_BEGIN
+	top.add_child(tag)
+	var clock := _clock_chip(func() -> String: return KinuProgress.weekly_clock(), Color("9f562b"))
+	clock.name = "WeeklyResetTimer"
+	(clock.get_theme_stylebox("panel") as StyleBoxFlat).bg_color = Color("ffe6a8")
+	top.add_child(clock)
+	var text := NestTheme.label(KinuProgress.weekly_text(weekly), 20)
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_child(text)
+	var amount := int(weekly.amount)
+	var progress := mini(int(weekly.progress), amount)
+	var meter_row := HBoxContainer.new()
+	meter_row.add_theme_constant_override("separation", 8)
+	body.add_child(meter_row)
+	var meter := _meter(progress, amount, claimed or ready, 22)
+	meter_row.add_child(meter)
+	var count := "%d / %d" % [progress, amount]
+	if str(weekly.type) == "time":
+		count = "%dm / %dm" % [floori(progress / 60.0), floori(amount / 60.0)]
+	meter_row.add_child(NestTheme.label(count, 15, NestTheme.MUTED))
+	var bottom := HBoxContainer.new()
+	bottom.add_theme_constant_override("separation", 6)
+	body.add_child(bottom)
+	bottom.add_child(NestTheme.bean_pill("+%d"%KinuProgress.WEEKLY_BEANS, 16))
+	bottom.add_child(NestTheme.ticket_pill("+%d"%KinuProgress.WEEKLY_TICKETS, 16))
+	var gap := Control.new()
+	gap.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bottom.add_child(gap)
+	if claimed:
+		bottom.add_child(_done_badge())
+		_dim_done(panel, text)
+	elif ready:
+		bottom.add_child(_collect_button(func() -> void:
 			if KinuProgress.claim_weekly():
 				Sound.play("special")
 				Haptics.pulse(35, .65)
 			home(app)
-			daily_missions(app)
-		, true)
-		weekly_claim.custom_minimum_size = Vector2(120, 50)
-		weekly_claim.add_theme_font_size_override("font_size", 17)
-		weekly_bottom.add_child(weekly_claim)
-	else:
-		var weekly_count := "%d / %d" % [weekly_progress, weekly_amount]
-		if str(weekly.type) == "time":
-			weekly_count = "%dm / %dm" % [floori(weekly_progress / 60.0), floori(weekly_amount / 60.0)]
-		weekly_bottom.add_child(NestTheme.label(weekly_count, 16, NestTheme.MUTED))
-	var weekly_paper := NestTheme.paper(weekly_row)
-	stack.add_child(weekly_paper)
-	if bool(weekly.claimed):
-		_mark_done(weekly_paper, weekly_label)
-	# Missions rotate at server UTC midnight, independently of the Treat's 24-hour cooldown.
-	var reset_row := HBoxContainer.new()
-	reset_row.name = "MissionResetTimer"
-	reset_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	reset_row.add_theme_constant_override("separation", 8)
-	reset_row.add_child(NestTheme.label("MISSIONS RESET IN", 15, Color("ffe49b")))
-	var reset_clock := NestTheme.label(KinuProgress.daily_clock(), 22, NestTheme.CREAM)
-	reset_row.add_child(reset_clock)
-	var reset_timer := Timer.new()
-	reset_timer.wait_time = 1.0
-	reset_timer.timeout.connect(func() -> void: reset_clock.text = KinuProgress.daily_clock())
-	reset_row.add_child(reset_timer)
-	reset_timer.call_deferred("start")
-	stack.add_child(reset_row)
-	var missions := KinuProgress.today()
-	for i in missions.size():
-		var mission: Dictionary = missions[i]
-		var row := VBoxContainer.new()
-		row.add_theme_constant_override("separation",6)
-		var top := HBoxContainer.new()
-		row.add_child(top)
-		var text := NestTheme.label(KinuProgress.mission_text(mission),18)
-		text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		top.add_child(text)
-		var rewards := VBoxContainer.new()
-		rewards.add_theme_constant_override("separation", 3)
-		top.add_child(rewards)
-		rewards.add_child(NestTheme.bean_pill("+%d"%int(mission.reward),16))
-		var amount := int(mission.amount)
-		var progress := mini(int(mission.progress),amount)
-		var bottom := HBoxContainer.new()
-		row.add_child(bottom)
-		var bar := NestTheme.progress(progress,amount)
-		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		bottom.add_child(bar)
-		if mission.claimed:
-			_collected(bottom)
-		elif KinuProgress.complete(mission):
-			var claim := NestTheme.button("Collect",func() -> void:
-				var beans := KinuProgress.claim(i)
-				if beans > 0:
-					Sound.play("special")
-					Haptics.pulse(30,.5)
-				home(app)
-				daily_missions(app)
-			,true)
-			claim.custom_minimum_size = Vector2(120,50)
-			claim.add_theme_font_size_override("font_size",17)
-			bottom.add_child(claim)
-		else:
-			var count_text := "%s / %s"%[KinuFlavour.height_text(progress),KinuFlavour.height_text(amount)] if mission.type == "height" else "%d / %d"%[progress,amount]
-			bottom.add_child(NestTheme.label(count_text,16,NestTheme.MUTED))
-		var paper := NestTheme.paper(row)
-		stack.add_child(paper)
-		if mission.claimed:
-			_mark_done(paper, text)
-	stack.add_child(NestTheme.button("Close",func() -> void:
-		Sound.play("plop")
-		app._close_modal()
-	))
-	_fit_modal(app, stack)
+			daily_missions(app)))
+		panel.add_child(DailyTreats.Halo.new())
+	return panel
 
-## Collected missions sink back: the card dims and its line is struck through, so what's left to
-## do stands out at a glance.
-static func _mark_done(paper: Control, text: Label) -> void:
-	paper.self_modulate = Color(.8, .76, .72)
-	for child in paper.get_children():
-		child.modulate = Color(.72, .68, .64)
-	text.add_child(Strike.new())
-
-static func _collected(parent: Control) -> void:
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 4)
-	row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	var seal := DailyTreats.Stamp.new()
-	seal.custom_minimum_size = Vector2(28, 28)
-	row.add_child(seal)
-	row.add_child(NestTheme.label("Collected", 16, NestTheme.MUTED))
-	parent.add_child(row)
-
-## Daily Missions has grown past short phones' height: shrink the whole sign to fit rather than
-## let its Close button fall off the bottom of the screen.
-static func _fit_modal(app: Node, stack: Control) -> void:
-	await app.get_tree().process_frame
-	var sign := stack.get_parent() as Control
-	if not is_instance_valid(sign):
-		return
-	var room: float = app.get_viewport().get_visible_rect().size.y-app.safe_top-maxf(16, app.safe_bottom)-24
-	if sign.size.y > room:
-		sign.pivot_offset = sign.size*.5
-		sign.scale = Vector2.ONE*room/sign.size.y
-
-## A slim ticket into the Grand Opening: the three launch exclusives in a row, and how many are in.
-## It leaves the missions page once all three are collected, handing over to the Showcase below.
-static func _grand_opening_banner(app: Node) -> Button:
-	var banner := NestTheme.button("", func() -> void: GrandOpeningSheet.open(app), false, "cashregister")
-	banner.name = "GrandOpeningBanner"
-	banner.custom_minimum_size.y = 96
-	banner.clip_contents = true
-	banner.add_theme_stylebox_override("normal", NestTheme.box(GrandOpeningSheet.PANEL, 22, GrandOpeningSheet.GOLD, 7))
-	banner.add_theme_stylebox_override("hover", NestTheme.box(GrandOpeningSheet.PANEL.lightened(.1), 22, GrandOpeningSheet.GOLD_BRIGHT, 7))
-	banner.add_theme_stylebox_override("pressed", NestTheme.box(GrandOpeningSheet.DEEP, 22, GrandOpeningSheet.GOLD, 3))
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 6)
-	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	row.offset_left = 12
-	row.offset_right = -10
-	row.offset_top = 6
-	row.offset_bottom = -10
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	banner.add_child(row)
-	var copy := VBoxContainer.new()
-	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	copy.alignment = BoxContainer.ALIGNMENT_CENTER
-	copy.add_theme_constant_override("separation", 2)
-	copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(copy)
-	var heading := NestTheme.label(NestTheme.t("GRAND OPENING"), 13, GrandOpeningSheet.GOLD_BRIGHT)
-	heading.clip_text = true
-	heading.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	copy.add_child(heading)
-	var name_label := NestTheme.headline(NestTheme.t("Launch exclusives"), 22)
-	name_label.clip_text = true
-	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	copy.add_child(name_label)
-	copy.add_child(NestTheme.label(NestTheme.t("%d / %d collected")%[GrandOpening.earned_count(), GrandOpening.rewards().size()]+" · "+GrandOpening.ends_text(), 13, GrandOpeningSheet.SOFT))
-	# Each reward on its own cream tile, in full colour so it reads on the red; the ones already
-	# collected are stamped rather than the others being faded.
-	var tiles := HBoxContainer.new()
-	tiles.add_theme_constant_override("separation", 4)
-	tiles.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	tiles.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(tiles)
-	for reward in GrandOpening.rewards():
-		var tile := PanelContainer.new()
-		tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var tile_style := NestTheme.box(NestTheme.CREAM, 12, GrandOpeningSheet.GOLD, 3)
-		tile_style.set_content_margin_all(2)
-		tile.add_theme_stylebox_override("panel", tile_style)
-		tile.add_child(GrandOpeningSheet.thumb(reward.item, Vector2(40, 38)))
-		if GrandOpening.earned(reward.key):
-			var stamp := DailyTreats.Stamp.new()
-			stamp.reach = 9.0
-			tile.add_child(stamp)
-		tiles.add_child(tile)
-	var chevron := NestTheme.headline("›", 34, GrandOpeningSheet.GOLD_BRIGHT)
-	chevron.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(chevron)
-	var gloss := ButtonGloss.new()
-	gloss.radius = 16
-	banner.add_child(gloss)
-	banner.move_child(gloss, 0)
-	return banner
-
-## A slim ticket into the Monthly Showcase: the reward, its name, and a pip per week.
-static func _showcase_banner(app: Node) -> Button:
-	var item := KinuShowcase.item_for(KinuShowcase.current_month())
-	var kind := KinuShowcase.kind_of(item)
-	var banner := NestTheme.button("", func() -> void: ShowcaseSheet.open(app), false, "cashregister")
-	banner.name = "ShowcaseBanner"
-	banner.custom_minimum_size.y = 96
-	banner.add_theme_stylebox_override("normal", NestTheme.box(ShowcaseSheet.PANEL, 22, ShowcaseSheet.GOLD, 7))
-	banner.add_theme_stylebox_override("hover", NestTheme.box(ShowcaseSheet.PANEL.lightened(.1), 22, ShowcaseSheet.GOLD_BRIGHT, 7))
-	banner.add_theme_stylebox_override("pressed", NestTheme.box(ShowcaseSheet.DEEP, 22, ShowcaseSheet.GOLD, 3))
+## One of today's missions: its tier badge, the goal and a meter, and the beans it pays.
+static func _mission_card(app: Node, mission: Dictionary, index: int) -> Control:
+	var claimed := bool(mission.claimed)
+	var ready := KinuProgress.complete(mission) and not claimed
+	var panel := PanelContainer.new()
+	panel.name = "Mission%d" % index
+	var style := NestTheme.box(Color("fffaf0"), 20, NestTheme.INK, 6)
+	style.set_border_width_all(4)
+	style.border_width_bottom = 7
+	style.content_margin_left = 10
+	style.content_margin_right = 12
+	style.content_margin_top = 9
+	style.content_margin_bottom = 11
+	panel.add_theme_stylebox_override("panel", style)
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 10)
-	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	row.offset_left = 12
-	row.offset_right = -16
-	row.offset_top = 6
-	row.offset_bottom = -10
-	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	banner.add_child(row)
-	var art: Control
-	if kind == "room":
-		art = DecorPreview.room_swatch(item, Vector2i(80, 70))
-	else:
-		var rect := TextureRect.new()
-		rect.texture = CollectionThumb.outfit(item) if kind == "outfit" else CollectionThumb.box(item)
-		rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		art = rect
-	art.custom_minimum_size = Vector2(80, 70)
-	art.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	art.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(art)
-	var copy := VBoxContainer.new()
-	copy.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	copy.alignment = BoxContainer.ALIGNMENT_CENTER
-	copy.add_theme_constant_override("separation", 2)
-	copy.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	row.add_child(copy)
-	copy.add_child(NestTheme.label(NestTheme.t("%s SHOWCASE")%KinuShowcase.month_only(KinuShowcase.current_month()).to_upper(), 14, ShowcaseSheet.GOLD))
-	var name_label := NestTheme.headline(NestTheme.t(item.display_name), 22)
-	name_label.clip_text = true
-	name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	copy.add_child(name_label)
-	var pips := HBoxContainer.new()
-	pips.add_theme_constant_override("separation", 5)
-	pips.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	copy.add_child(pips)
-	var now := KinuShowcase.current_week()
-	for week in range(1, KinuShowcase.WEEKS+1):
-		var pip := DailyTreats.Pip.new()
-		pip.lit = KinuShowcase.week_done(week)
-		pip.live = week == now and not pip.lit and not KinuShowcase.earned()
-		if week < KinuShowcase.first_week():
-			pip.modulate.a = .35
-		pips.add_child(pip)
-	var state := "Earned!" if KinuShowcase.earned() else ("Missed" if KinuShowcase.missed() else "%d / %d" % [KinuShowcase.progress(), KinuShowcase.required_weeks().size()])
-	pips.add_child(NestTheme.label(state, 14, ShowcaseSheet.SOFT))
-	var chevron := NestTheme.headline("›", 34, ShowcaseSheet.GOLD_BRIGHT)
-	chevron.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	row.add_child(chevron)
-	var gloss := ButtonGloss.new()
-	gloss.radius = 16
-	banner.add_child(gloss)
-	banner.move_child(gloss, 0)
-	return banner
+	panel.add_child(row)
+	var badge := TierBadge.new()
+	badge.tier = index
+	badge.color = _TIER_COLORS[clampi(index, 0, _TIER_COLORS.size()-1)]
+	badge.custom_minimum_size = Vector2(48, 48)
+	badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	row.add_child(badge)
+	var middle := VBoxContainer.new()
+	middle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	middle.add_theme_constant_override("separation", 5)
+	row.add_child(middle)
+	var text := NestTheme.label(KinuProgress.mission_text(mission), 17)
+	text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	middle.add_child(text)
+	var amount := int(mission.amount)
+	var progress := mini(int(mission.progress), amount)
+	var meter_row := HBoxContainer.new()
+	meter_row.add_theme_constant_override("separation", 6)
+	middle.add_child(meter_row)
+	meter_row.add_child(_meter(progress, amount, claimed or ready, 16))
+	var count := "%s / %s"%[KinuFlavour.height_text(progress), KinuFlavour.height_text(amount)] if mission.type == "height" else "%d / %d"%[progress, amount]
+	meter_row.add_child(NestTheme.label(count, 13, NestTheme.MUTED))
+	var reward := VBoxContainer.new()
+	reward.alignment = BoxContainer.ALIGNMENT_CENTER
+	reward.add_theme_constant_override("separation", 5)
+	row.add_child(reward)
+	var pill := NestTheme.bean_pill("+%d"%int(mission.reward), 15)
+	pill.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	reward.add_child(pill)
+	if claimed:
+		reward.add_child(_done_badge())
+		_dim_done(panel, text)
+	elif ready:
+		reward.add_child(_collect_button(func() -> void:
+			if KinuProgress.claim(index) > 0:
+				Sound.play("special")
+				Haptics.pulse(30, .5)
+			home(app)
+			daily_missions(app)))
+		panel.add_child(DailyTreats.Halo.new())
+	return panel
 
-static func _daily_treat_outfit(app: Node) -> KinuOutfit:
-	if daily_treat_outfit_id.is_empty():
-		var choices: Array[KinuOutfit] = []
-		for outfit in app.run.catalog.outfits:
-			# Keep pattern finishes out: this banner must always show a visibly dressed Kinu.
-			if outfit.style in KinuModel.CUTE_STYLES or outfit.style in KinuModel.PREMIUM_STYLES or outfit.style in ["tanuki", "bunny", "bat", "fox", "frog", "pirate", "ninja", "panda", "dino", "astronaut", "ghost", "shark", "strawberry", "tiger", "dragon", "bee", "daruma", "tako", "kappa"]:
-				choices.append(outfit)
-		var rng := RandomNumberGenerator.new()
-		rng.randomize()
-		daily_treat_outfit_id = choices[rng.randi_range(0, choices.size()-1)].id
-	return app.run.catalog.outfit(daily_treat_outfit_id)
+static func _meter(progress: int, amount: int, full: bool, height: float) -> FancyCard.XpMeter:
+	var meter := FancyCard.XpMeter.new()
+	meter.show_levels = false
+	meter.max_value = maxi(1, amount)
+	meter.value = progress
+	meter.custom_minimum_size.y = height
+	meter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	if full:
+		meter.fill_top = Color("c3f5d6")
+		meter.fill_bottom = Color("37b073")
+	return meter
 
-class TreatCountdownIcon extends Control:
-	var ready_to_claim := false
+static func _collect_button(callback: Callable) -> Button:
+	var button := NestTheme.button("Collect", callback, true, "plop")
+	button.name = "Collect"
+	button.custom_minimum_size = Vector2(98, 44)
+	button.add_theme_font_size_override("font_size", 16)
+	button.add_child(DailyTreats.Throb.new())
+	return button
+
+static func _done_badge() -> Control:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 3)
+	row.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var seal := DailyTreats.Stamp.new()
+	seal.custom_minimum_size = Vector2(26, 26)
+	row.add_child(seal)
+	row.add_child(NestTheme.label("Done", 14, Color("2f8f66")))
+	return row
+
+## Collected missions sink back: the card fades and its line is struck through, so what's left to
+## do stands out at a glance.
+static func _dim_done(panel: Control, text: Label) -> void:
+	panel.modulate = Color(1, 1, 1, .72)
+	text.add_child(Strike.new())
+
+## The card is sized to its content; on short phones shrink it to fit rather than let it run off
+## the bottom of the screen.
+static func _fit_daily(app: Node, card: Control) -> void:
+	await app.get_tree().process_frame
+	if not is_instance_valid(card):
+		return
+	var room: float = app.get_viewport().get_visible_rect().size.y-app.safe_top-maxf(16, app.safe_bottom)-24
+	if card.size.y > room:
+		card.pivot_offset = card.size*.5
+		card.scale = Vector2.ONE*room/card.size.y
+
+## Easy, medium or stretch: a glossy coin with one to three stars.
+class TierBadge extends Control:
+	var tier := 0
+	var color := Color("7ed957")
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	func _draw() -> void:
 		var c := size*.5
-		var fill := NestTheme.SUN if ready_to_claim else Color("b77edf")
-		draw_circle(c+Vector2(0, 2), size.x*.45, Color("2b1735"))
-		draw_circle(c, size.x*.45, fill)
-		draw_arc(c, size.x*.31, 0, TAU, 28, NestTheme.INK, 2.5, true)
-		if ready_to_claim:
-			draw_string(get_theme_default_font(), c+Vector2(-9, 8), "!", HORIZONTAL_ALIGNMENT_CENTER, 18, 22, NestTheme.INK)
-		else:
-			draw_line(c, c+Vector2(0, -size.y*.18), NestTheme.INK, 3.0, true)
-			draw_line(c, c+Vector2(size.x*.14, size.y*.11), NestTheme.INK, 3.0, true)
-			draw_circle(c, 3, NestTheme.INK)
+		var r := minf(size.x, size.y)*.5-2
+		draw_circle(c+Vector2(0, 3), r, NestTheme.INK)
+		draw_circle(c, r, NestTheme.INK)
+		draw_circle(c, r-3, color.darkened(.12))
+		draw_circle(c-Vector2(0, 2), r-6, color)
+		draw_arc(c, r*.62, PI*1.1, PI*1.6, 10, Color(1, 1, 1, .75), 3.0, true)
+		var count := tier+1
+		var star_r := r*(.42 if count == 1 else (.32 if count == 2 else .27))
+		for i in count:
+			var at := c+Vector2((i-(count-1)*.5)*star_r*1.85, 1.0+(star_r*.35 if count == 3 and i != 1 else 0.0))
+			var star := PackedVector2Array()
+			for j in 10:
+				star.append(at+Vector2.UP.rotated(TAU*j/10.0)*(star_r if j % 2 == 0 else star_r*.45))
+			draw_colored_polygon(star, NestTheme.CREAM)
+			star.append(star[0])
+			draw_polyline(star, NestTheme.INK, 2.0, true)
+
+## The gold inner rule and corner gems that make the weekly card read as a special ticket.
+class WeeklyTrim extends Control:
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		show_behind_parent = true
+	func _draw() -> void:
+		var rect := Rect2(Vector2.ZERO, size).grow_individual(-8, -8, -8, -11)
+		var points := MyKinuScreen.rounded_points(rect, 15)
+		points.append(points[0])
+		draw_polyline(points, MyKinuScreen.GOLD, 2.0, true)
+		for corner in [rect.position, Vector2(rect.end.x, rect.position.y), Vector2(rect.position.x, rect.end.y), rect.end]:
+			var at: Vector2 = corner+(rect.get_center()-corner).normalized()*8
+			var gem := PackedVector2Array([at+Vector2(0, -4), at+Vector2(4, 0), at+Vector2(0, 4), at+Vector2(-4, 0)])
+			draw_colored_polygon(gem, MyKinuScreen.GOLD)
+
+## A tiny clock face for countdown chips.
+class ClockGlyph extends Control:
+	var color := NestTheme.INK
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+	func _draw() -> void:
+		var c := size*.5
+		var r := minf(size.x, size.y)*.5-1
+		draw_arc(c, r, 0, TAU, 20, color, 2.0, true)
+		draw_line(c, c+Vector2(0, -r*.6), color, 2.0, true)
+		draw_line(c, c+Vector2(r*.45, 0), color, 2.0, true)
+
+## A round cream close button with an inked cross, matching the header back button.
+class CloseDisc extends Control:
+	var owner_button: Button
+	func _ready() -> void:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if is_instance_valid(owner_button):
+			owner_button.button_down.connect(queue_redraw)
+			owner_button.button_up.connect(queue_redraw)
+	func _draw() -> void:
+		var pressed := is_instance_valid(owner_button) and owner_button.is_pressed()
+		var r := minf(size.x, size.y)*.5-3
+		var c := size*.5+Vector2(0, 2 if pressed else 0)
+		if not pressed:
+			draw_circle(c+Vector2(0, 3), r, NestTheme.INK)
+		draw_circle(c, r, NestTheme.INK)
+		draw_circle(c, r-3, Color("fffaf0"))
+		draw_arc(c, r*.62, PI*1.08, PI*1.55, 10, Color(1, 1, 1, .9), 3.0, true)
+		var arm := r*.36
+		draw_line(c+Vector2(-arm, -arm), c+Vector2(arm, arm), NestTheme.INK, 5.0, true)
+		draw_line(c+Vector2(arm, -arm), c+Vector2(-arm, arm), NestTheme.INK, 5.0, true)
 
 ## A strike-through across a label's text, following each wrapped line to its own length.
 class Strike extends Control:

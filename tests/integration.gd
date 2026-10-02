@@ -505,8 +505,8 @@ func _ready() -> void:
 	check(KinuProgress.record_run({"score": 12, "placed": 14, "tumbles": 1, "lucky": 0, "height": 3.0}) == 1 and KinuProgress.claimable() == 1,"a run completes the matching daily mission only")
 	check(KinuProgress.claim(0) == 25 and int(Save.data.beans) == beans_before+25 and KinuProgress.claim(0) == 0 and int(Save.data.beans) == beans_before+25,"a daily reward grants its beans exactly once")
 	check(int(Save.data.tickets) == tickets_before,"claiming a daily mission never hands out a ticket")
-	# Weekly challenges gate the Monthly Showcase, so every template must work in all three modes
-	# and have clear player-facing text. Mode-specific shoyu and spinning belong in regular play,
+	# Every weekly challenge template must work in all three modes and have clear player-facing
+	# text. Mode-specific shoyu and spinning belong in regular play,
 	# not in a shared weekly pool where Toss players could make no progress.
 	var weekly_types := ["land", "runs", "clean_runs", "time", "pile", "streak"]
 	check(KinuProgress.WEEKLY_MISSIONS.all(func(mission: Dictionary) -> bool: return str(mission.type) in weekly_types),"weekly challenges work in every game mode")
@@ -525,6 +525,27 @@ func _ready() -> void:
 	var weekly_beans := int(Save.data.beans)
 	var weekly_tickets := int(Save.data.tickets)
 	check(KinuProgress.weekly_claimable() and KinuProgress.claim_weekly() and int(Save.data.beans) == weekly_beans+KinuProgress.WEEKLY_BEANS and int(Save.data.tickets) == weekly_tickets+KinuProgress.WEEKLY_TICKETS,"a completed weekly challenge pays its beans and ticket once")
+	# The Monthly Showcase has its own goals; the weekly challenge no longer feeds it.
+	var showcase_month := KinuShowcase.current_month()
+	var saved_showcase: Dictionary = Save.data.showcase.duplicate(true)
+	Save.data.showcase = {"weeks": {showcase_month: [1]}, "goals": {}, "announced": "", "earned": [], "reveal": []}
+	check(KinuShowcase.progress() == 1 and KinuShowcase.goal_done(KinuShowcase.GOALS[0]),"weeks finished under the old showcase carry over as finished goals")
+	Save.data.showcase = {"weeks": {}, "goals": {}, "announced": "", "earned": [], "reveal": []}
+	Save.data.weekly = {"week": KinuProgress._week_key(), "mission": {"id": "runs_10", "type": "runs", "amount": 1, "progress": 0, "claimed": false}}
+	KinuProgress._record_weekly({"placed": 3, "tumbles": 0})
+	check(KinuProgress.complete(KinuProgress.weekly()) and KinuShowcase.progress() == 0 and Save.data.showcase.weeks.is_empty(),"finishing the weekly challenge leaves the showcase alone")
+	if KinuShowcase.active():
+		KinuShowcase.record_run({"placed": 30, "tumbles": 0}, 2)
+		var counts: Dictionary = Save.data.showcase.goals[showcase_month]
+		check(int(counts.runs) == 1 and int(counts.land) == 30 and int(counts.clean) == 1 and int(counts.missions) == 2,"a finished run feeds every showcase goal")
+		KinuShowcase.record_run({"placed": 5, "tumbles": 2}, 0)
+		check(int(counts.runs) == 2 and int(counts.clean) == 1,"a run with a tumble doesn't count as clean")
+		for goal in KinuShowcase.GOALS:
+			counts[goal.id] = int(goal.amount)-1 if goal.id == "runs" else int(goal.amount)
+		check(not KinuShowcase.earned(),"the reward waits for every goal")
+		KinuShowcase.record_run({"placed": 1, "tumbles": 1}, 0)
+		check(KinuShowcase.earned() and not KinuShowcase.pending_reveal().is_empty(),"finishing the last goal earns the month's reward")
+	Save.data.showcase = saved_showcase
 	# Heart Kinu give back a tumble; Lucky Kinu pay bonus beans.
 	app._start()
 	await frames(3)

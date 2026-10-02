@@ -23,7 +23,7 @@ const OLD_OUTFIT_GOALS := {
 }
 
 func defaults() -> Dictionary:
-	return {"version": 6, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": [], "look": "outfit", "my_kinu": MyKinu.defaults()}
+	return {"version": 6, "cloud_revision": 0, "cloud_updated_at": 0.0, "cloud_last_downloaded": "", "cloud_last_uploaded": "", "best": 0, "best_height": 0.0, "discovered": [], "music": 0.55, "sfx": 0.8, "haptics": true, "tutorial": false, "home_tour": false, "runs": 0, "outfit": "", "controls": "classic", "claw_hand": "right", "beans": 0, "tickets": 0, "owned": [], "box": "hinoki", "room": "shop", "excluded_flavours": [], "debug_unlocked": false, "seen_specials": [], "fresh": [], "language": "", "backend_session": {}, "stats": {"total": 0, "clean": 0, "lucky": 0, "missions": 0, "piled": 0, "tumbles": 0, "hearts": 0, "streak": 0, "spins": 0, "beans_earned": 0, "bonus_beans": 0, "beans_spent": 0, "time": 0, "longest_time": 0, "squirts": 0, "glazed": 0, "day_streak": 0, "best_day_streak": 0, "crane_plays": 0, "crane_items": 0, "crane_jackpots": 0, "crane_beans_won": 0, "crane_tickets_won": 0, "crane_spent": 0, "crane_tickets_spent": 0, "boxes_shipped": 0}, "crane": {"since_item": 0, "free_day": "", "free_used": 0, "history": []}, "daily_calendar": {"last_day": "", "streak": 0}, "mode": "classic", "mode_best": {}, "daily": {}, "weekly": {}, "showcase": {"weeks": {}, "goals": {}, "announced": "", "earned": [], "reveal": []}, "grand_opening": {"runs": 0, "missions": 0, "days": [], "earned": [], "reveal": [], "announced": false}, "first_played": "", "last_played": "", "flavour_counts": {}, "shape_counts": {}, "outfit_best": {}, "room_best": {}, "recent": [], "look": "outfit", "my_kinu": MyKinu.defaults()}
 
 func load_data(source: Variant = null) -> void:
 	data = defaults()
@@ -157,6 +157,15 @@ func load_data(source: Variant = null) -> void:
 									for week in value.weeks[month]:
 										if (week is float or week is int) and not data.showcase.weeks[month].has(int(week)):
 											data.showcase.weeks[month].append(int(week))
+						if value.get("goals") is Dictionary:
+							for month in value.goals:
+								if month is String and value.goals[month] is Dictionary:
+									var counts := {}
+									for goal in KinuShowcase.GOALS:
+										var number: Variant = value.goals[month].get(goal.id, 0)
+										if (number is float or number is int) and is_finite(float(number)):
+											counts[goal.id] = clampi(int(number), 0, int(goal.amount))
+									data.showcase.goals[month] = counts
 						for list in ["earned", "reveal"]:
 							if value.get(list) is Array:
 								for entry in value[list]:

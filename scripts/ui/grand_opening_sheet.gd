@@ -80,7 +80,7 @@ func build() -> void:
 		caption(stack, "Kinu Tumble is open! Earn three launch exclusives before 31 October.", 16, WHITE)
 	for row in GrandOpening.rewards():
 		stack.add_child(_reward_card(row))
-	if GrandOpening.complete() and KinuShowcase.active() and not KinuShowcase.missed() and not KinuShowcase.earned():
+	if GrandOpening.complete() and KinuShowcase.active() and not KinuShowcase.earned():
 		var next := NestTheme.button(NestTheme.t("See the %s Showcase")%KinuShowcase.month_only(KinuShowcase.current_month()), func() -> void: ShowcaseSheet.open(app), false, "plop")
 		next.name = "GrandOpeningShowcase"
 		stack.add_child(next)

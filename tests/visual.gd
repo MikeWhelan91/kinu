@@ -58,6 +58,15 @@ func _ready() -> void:
 		"home":
 			await app._home()
 			await get_tree().create_timer(.5).timeout
+		"showcase":
+			Save.data.showcase.goals[KinuShowcase.current_month()] = {"runs": 40, "land": 640, "clean": 3, "missions": 20}
+			await app._home()
+			await get_tree().create_timer(.3).timeout
+			ShowcaseSheet.open(app)
+		"rail":
+			DailyCalendar.apply_server_status({"ready": false, "streak": 2, "seconds_remaining": 7200})
+			await app._home()
+			await get_tree().create_timer(1.2).timeout
 		"play": app._start()
 		"pause":
 			app._start()
@@ -154,7 +163,11 @@ func _ready() -> void:
 			Save.data.my_kinu.equipped = {"body": "comfy_tee", "hat": "top_hat", "arms": "little_arms", "glasses": "cool_shades"}
 			app._wardrobe()
 		"daily":
+			KinuProgress.server_day = Time.get_date_string_from_system()
 			KinuProgress.today()[0].progress = 999
+			KinuProgress.today()[2].progress = 999
+			KinuProgress.today()[2].claimed = true
+			KinuProgress.weekly().progress = 3
 			KinuProgress.today()[1].progress = 1
 			app._home()
 			await get_tree().create_timer(.3).timeout
